@@ -45,8 +45,8 @@ export const authService = {
                 }
             });
 
-            // Seed default roles for the new tenant
-            await roleService.seedDefaultRoles(tenant.id);
+            // Seed default roles for the new tenant within the transaction
+            await roleService.seedDefaultRoles(tenant.id, tx);
 
             // Find the 'Admin' role we just created and link user to it
             const adminRole = await tx.role.findFirst({

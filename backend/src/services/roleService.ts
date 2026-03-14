@@ -43,7 +43,7 @@ export const roleService = {
     },
 
     // Seed default roles for a new tenant
-    async seedDefaultRoles(tenantId: string) {
+    async seedDefaultRoles(tenantId: string, txClient: any = prisma) {
         const defaultRoles = [
             {
                 tenant_id: tenantId,
@@ -97,7 +97,7 @@ export const roleService = {
             }
         ];
 
-        return await prisma.role.createMany({
+        return await txClient.role.createMany({
             data: defaultRoles,
             skipDuplicates: true
         });
