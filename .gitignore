@@ -35,3 +35,5 @@ tsc_output.txt
 tsc_output_2.txt
 tsconfig.tsbuildinfo
 errors.txt
+
+tsc_output_*.txt
