@@ -1,0 +1,49 @@
+import { prisma } from '../prisma';
+
+export const keuanganService = {
+  async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
+    const where: any = {};
+    if (tenantId) where.tenant_id = tenantId;
+    if (scope) where.scope = scope;
+
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+        prisma.keuangan.findMany({
+            where,
+            orderBy: { tanggal: 'desc' },
+            take: limit,
+            skip
+        }),
+        prisma.keuangan.count({ where })
+    ]);
+
+    return { items, total, page, limit };
+  },
+
+  async getById(id: string) {
+    return await prisma.keuangan.findUnique({ where: { id } });
+  },
+
+  async create(data: any) {
+    if (data.nominal <= 0) throw new Error("Nominal harus lebih besar dari 0");
+    if (!data.tanggal || !/^\d{4}-\d{2}-\d{2}$/.test(data.tanggal)) {
+        throw new Error("Format tanggal tidak valid (YYYY-MM-DD)");
+    }
+    return await prisma.keuangan.create({ data });
+  },
+
+  async update(id: string, data: any) {
+    if (data.nominal !== undefined && data.nominal <= 0) {
+        throw new Error("Nominal harus lebih besar dari 0");
+    }
+    if (data.tanggal && !/^\d{4}-\d{2}-\d{2}$/.test(data.tanggal)) {
+        throw new Error("Format tanggal tidak valid (YYYY-MM-DD)");
+    }
+    return await prisma.keuangan.update({ where: { id }, data });
+  },
+
+  async delete(id: string) {
+    return await prisma.keuangan.delete({ where: { id } });
+  }
+};

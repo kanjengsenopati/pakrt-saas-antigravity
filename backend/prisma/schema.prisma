@@ -1,0 +1,285 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Tenant {
+  id        String   @id // [Prov].[Kab].[Kec].[Kel].[RW].[RT]
+  name      String
+  subdomain String
+  config    Json?
+  
+  users     User[]
+  wargas    Warga[]
+  roles     Role[]
+}
+
+model User {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  warga_id    String?  @unique
+  role        String   // Legacy role name ('admin' | 'staff' | 'warga')
+  role_id     String?
+  scope       String   @default("RT") // Primary operational scope
+  name        String
+  email       String   @unique
+  kontak      String?
+  password    String?
+  permissions Json?
+
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  warga       Warga?   @relation(fields: [warga_id], references: [id])
+  role_entity Role?    @relation(fields: [role_id], references: [id])
+
+  @@index([tenant_id])
+}
+
+model Warga {
+  id            String   @id @default(uuid())
+  tenant_id     String
+  scope         String   @default("RT") // 'RT' | 'PKK' | 'Dasa Wisma'
+  nik           String
+  nama          String
+  kontak        String?
+  alamat        String
+  tempat_lahir  String?
+  tanggal_lahir String?
+  pendidikan    String?
+  pekerjaan     String?
+  jenis_kelamin String?
+  agama         String?
+  status_penduduk String? @default("Tetap") // 'Tetap' | 'Kontrak'
+  status_rumah    String? @default("Dihuni") // 'Dihuni' | 'Kosong'
+  url_kk        String?
+  avatar        String?
+  status_domisili   String? @default("Aktif") // 'Aktif' | 'Pindah' | 'Meninggal Dunia'
+  alamat_pindah     String?
+  tanggal_meninggal String?
+  lokasi_makam      String?
+  pj_tipe           String? @default("Luar") // 'Warga' | 'Luar'
+  pj_warga_id       String?
+  pj_nama           String?
+  pj_kontak         String?
+
+  tenant        Tenant   @relation(fields: [tenant_id], references: [id])
+  anggota       AnggotaKeluarga[]
+  pengurus          Pengurus[]
+  kehadirans        Kehadiran[]
+  surat_pengantars  SuratPengantar[]
+  pembayaran_iurans PembayaranIuran[]
+  aset_dipinjam     Aset[] @relation("WargaPeminjam")
+  user              User?
+
+  @@unique([tenant_id, nik])
+  @@index([tenant_id, scope])
+  @@index([nik])
+}
+
+model AnggotaKeluarga {
+  id            String   @id @default(uuid())
+  tenant_id     String
+  warga_id      String
+  nik           String
+  nama          String
+  hubungan      String   // 'Istri' | 'Suami' | 'Anak' | 'Orang Tua' | 'Mertua' | 'Famili Lain'
+  tempat_lahir  String?
+  tanggal_lahir String?
+  pendidikan    String?
+  pekerjaan     String?
+
+  warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@unique([tenant_id, nik])
+  @@index([tenant_id, warga_id])
+}
+
+model Pengaturan {
+  id        String   @id @default(uuid())
+  tenant_id String
+  scope     String   @default("RT")
+  key       String
+  value     Json
+
+  @@index([tenant_id, scope, key])
+}
+
+model Pengurus {
+  id        String   @id @default(uuid())
+  tenant_id String
+  scope     String   @default("RT")
+  warga_id  String
+  jabatan   String
+  periode   String
+  status    String   @default("aktif") // 'aktif' | 'tidak aktif'
+
+  warga     Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id, scope, warga_id])
+}
+
+model Notulensi {
+  id        String   @id @default(uuid())
+  tenant_id String
+  scope     String   @default("RT")
+  judul     String
+  tanggal   String
+  tuan_rumah_id String?
+  tuan_rumah String?
+  lokasi    String?
+  url_foto  String?
+  konten    String
+
+  kehadirans Kehadiran[]
+
+  @@index([tenant_id, scope, tanggal])
+}
+
+model Kehadiran {
+  id           String    @id @default(uuid())
+  tenant_id    String
+  notulensi_id String
+  warga_id     String
+  status       String    // 'hadir' | 'izin' | 'sakit' | 'alfa'
+
+  notulensi    Notulensi @relation(fields: [notulensi_id], references: [id], onDelete: Cascade)
+  warga        Warga     @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id, notulensi_id, warga_id])
+}
+
+model Aset {
+  id             String   @id @default(uuid())
+  tenant_id      String
+  scope          String   @default("RT")
+  nama_barang    String
+  jumlah         Int
+  kondisi        String   // 'baik' | 'rusak_ringan' | 'rusak_berat'
+  foto_barang    String?
+  tanggal_beli   String?
+  harga_beli     Float?
+  vendor         String?
+  status_pinjam  String   @default("tersedia") // 'tersedia' | 'dipinjam'
+  peminjam_id    String?
+  petugas_id     String?
+  tanggal_pinjam String?
+
+  peminjam       Warga?   @relation("WargaPeminjam", fields: [peminjam_id], references: [id], onDelete: SetNull)
+
+  @@index([tenant_id, scope])
+}
+
+model SuratPengantar {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  scope       String   @default("RT")
+  warga_id    String
+  jenis_surat String
+  keperluan   String
+  tanggal     String
+  nomor_surat String?
+  status      String   // 'proses' | 'selesai' | 'ditolak'
+
+  warga       Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id, scope, warga_id, status])
+}
+
+model JadwalRonda {
+  id               String   @id @default(uuid())
+  tenant_id        String
+  scope            String   @default("RT")
+  tanggal          String
+  regu             String
+  warga_ids        String[]
+  petugas_konsumsi String[]
+  kehadiran_warga  String[]
+
+  @@index([tenant_id, scope, tanggal])
+}
+
+model Agenda {
+  id               String   @id @default(uuid())
+  tenant_id        String
+  scope            String   @default("RT")
+  judul            String
+  tanggal          String
+  deskripsi        String
+  butuh_pendanaan  Boolean  @default(false)
+  nominal_biaya    Float?
+  sumber_dana      String?  // 'Kas' | 'Iuran'
+  peserta_ids      String[]
+  is_terlaksana    Boolean  @default(false)
+  laporan_kegiatan String?
+  foto_dokumentasi String[]
+
+  @@index([tenant_id, scope, tanggal])
+}
+
+model Keuangan {
+  id         String   @id @default(uuid())
+  tenant_id  String
+  scope      String   @default("RT")
+  tipe       String   // 'pemasukan' | 'pengeluaran'
+  kategori   String
+  nominal    Float
+  tanggal    String
+  keterangan String
+  url_bukti  String?
+
+  @@index([tenant_id, scope, tipe, kategori, tanggal])
+}
+
+model PembayaranIuran {
+  id            String   @id @default(uuid())
+  tenant_id     String
+  scope         String   @default("RT")
+  warga_id      String
+  kategori      String
+  periode_bulan Int[]
+  periode_tahun Int
+  nominal       Float
+  tanggal_bayar String
+  url_bukti     String?
+
+  warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id, scope, warga_id, kategori, periode_tahun])
+}
+
+model Aktivitas {
+  id        String   @id @default(uuid())
+  tenant_id String
+  scope     String   @default("RT")
+  action    String
+  details   String
+  timestamp Float
+
+  @@index([tenant_id, scope, timestamp])
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  name        String   // 'Admin', 'Sekretaris', 'Warga', etc.
+  permissions Json?    // Standard permissions for this role: { [module]: { actions: string[], scope: 'all' | 'personal' } }
+  
+  users       User[]
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  
+  @@unique([tenant_id, name])
+  @@index([tenant_id])
+}
+
+model Wilayah {
+  id        String   @id
+  parent_id String?
+  name      String
+  level     String   // 'provinsi' | 'kabkota' | 'kecamatan' | 'keldesa'
+
+  @@index([parent_id, level])
+}
