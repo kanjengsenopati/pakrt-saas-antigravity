@@ -7,7 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { PembayaranIuran, Warga } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { ArrowLeft, CheckCircle } from '@phosphor-icons/react';
+import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { formatRupiah } from '../../utils/currency';
 

@@ -112,7 +112,7 @@ export default function AgendaList() {
         setIsLoading(true);
         try {
             const data = await agendaService.getAll(currentTenant.id, currentScope);
-            setAgendaList(Array.isArray(data) ? data : (data.items || []));
+            setAgendaList(data);
         } catch (error) {
             console.error("Failed to load agenda:", error);
         } finally {

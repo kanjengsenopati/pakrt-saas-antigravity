@@ -18,7 +18,7 @@ export default function SuratList() {
         setIsLoading(true);
         try {
             const data = await suratService.getAll(currentTenant.id, currentScope);
-            setSuratList(Array.isArray(data) ? data : (data.items || []));
+            setSuratList(data);
         } catch (error) {
             console.error("Failed to load surat:", error);
         } finally {
