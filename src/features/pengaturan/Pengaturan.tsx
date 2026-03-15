@@ -1360,7 +1360,7 @@ export default function Pengaturan() {
                                     <button 
                                         onClick={() => setActiveRoleSubTab('roles')}
                                         className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeRoleSubTab === 'roles' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                        Role / Jabatan
+                                        Role / Peran
                                     </button>
                                 </div>
                             </div>
@@ -1369,9 +1369,9 @@ export default function Pengaturan() {
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
                                             onClick={() => setIsAddUserModalOpen(true)}
-                                            className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
+                                            className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/20 hover:scale-105 active:scale-95 transition-all text-xs">
                                             <Plus weight="bold" />
-                                            <span>Tambah User</span>
+                                            <span>Tambah Pengguna</span>
                                         </button>
                                     </HasPermission>
                                 ) : (
@@ -1379,15 +1379,15 @@ export default function Pengaturan() {
                                         <div className="flex gap-2">
                                             <button 
                                                 onClick={handleSeedDefaultRoles}
-                                                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
+                                                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all text-xs">
                                                 <ShieldCheck weight="bold" />
-                                                <span>Buat Jabatan Standar</span>
+                                                <span>Buat Peran Standar</span>
                                             </button>
                                             <button 
                                                 onClick={() => setIsAddRoleModalOpen(true)}
-                                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-lg shadow-slate-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
+                                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-lg shadow-slate-500/20 hover:scale-105 active:scale-95 transition-all text-xs">
                                                 <Plus weight="bold" />
-                                                <span>Tambah Role</span>
+                                                <span>Tambah Peran</span>
                                             </button>
                                         </div>
                                     </HasPermission>
