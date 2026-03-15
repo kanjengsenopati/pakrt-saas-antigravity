@@ -196,7 +196,7 @@ export const wargaService = {
 
         if (!warga) throw new Error('Warga tidak ditemukan');
 
-        // Update Warga
+        // Update Warga status
         await prisma.warga.update({
             where: { id },
             data: { verification_status: status }
@@ -204,9 +204,22 @@ export const wargaService = {
 
         // Update User if exists
         if (warga.user) {
+            const updateData: any = { verification_status: status };
+
+            // On VERIFIED, ensure the 'Warga' role is linked if not yet assigned
+            if (status === 'VERIFIED' && !warga.user.role_id) {
+                const wargaRole = await prisma.role.findFirst({
+                    where: { tenant_id: warga.tenant_id, name: 'Warga' }
+                });
+                if (wargaRole) {
+                    updateData.role_id = wargaRole.id;
+                    updateData.permissions = wargaRole.permissions as any;
+                }
+            }
+
             await prisma.user.update({
                 where: { id: warga.user.id },
-                data: { verification_status: status }
+                data: updateData
             });
         }
 

@@ -47,6 +47,22 @@ export const roleService = {
         const defaultRoles = [
             {
                 tenant_id: tenantId,
+                name: 'Ketua',
+                permissions: {
+                    "Warga": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Pengurus": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Buku Kas / Transaksi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Iuran Warga": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Surat / Cetak": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Agenda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Aset": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Notulensi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+                    "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
+                }
+            },
+            {
+                tenant_id: tenantId,
                 name: 'Admin',
                 permissions: {
                     "Warga": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },

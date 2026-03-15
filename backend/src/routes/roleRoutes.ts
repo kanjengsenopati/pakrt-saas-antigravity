@@ -75,7 +75,7 @@ export default async function roleRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/seed', { preHandler: [requirePermission('Manajemen User / Role', 'Buat')] }, async (request, reply) => {
+    fastify.post('/seed', { preHandler: [requirePermission('Setup / Pengaturan', 'Buat')] }, async (request, reply) => {
         try {
             const user = (request as any).user;
             await roleService.seedDefaultRoles(user.tenant_id);

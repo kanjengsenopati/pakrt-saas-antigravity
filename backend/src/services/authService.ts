@@ -96,8 +96,12 @@ export const authService = {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create Warga and User with PENDING status
-        // Since we are not in a transaction, we do it sequentially
+        // Look up the 'Warga' role for this tenant to assign by default
+        const wargaRole = await prisma.role.findFirst({
+            where: { tenant_id: tenantId, name: 'Warga' }
+        });
+
+        // Create Warga record with PENDING status
         const warga = await prisma.warga.create({
             data: {
                 ...wargaData,
@@ -107,6 +111,7 @@ export const authService = {
             }
         });
 
+        // Create User with PENDING status, linked to warga and assigned the 'Warga' role
         const user = await prisma.user.create({
             data: {
                 email,
@@ -115,6 +120,8 @@ export const authService = {
                 tenant_id: tenantId,
                 warga_id: warga.id,
                 role: 'warga',
+                role_id: wargaRole?.id ?? null,
+                permissions: wargaRole ? (wargaRole.permissions as any) : {},
                 verification_status: 'PENDING'
             }
         });

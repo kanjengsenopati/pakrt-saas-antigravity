@@ -274,6 +274,22 @@ export default function Pengaturan() {
         }
     };
 
+    const handleSeedDefaultRoles = async () => {
+        if (!currentTenant?.id) return;
+        if (!confirm('Ini akan membuat role default (Ketua, Admin, Sekretaris, Bendahara, Warga) untuk tenant ini. Role yang sudah ada tidak akan digandakan. Lanjutkan?')) return;
+        try {
+            await axios.post(`${API_URL}/role/seed`, {}, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+            });
+            alert('Role default berhasil di-seed! Silakan refresh halaman.');
+            loadRoles();
+        } catch (error) {
+            console.error('Failed to seed roles', error);
+            alert('Gagal melakukan seed role default.');
+        }
+    };
+
+
     const handleSyncOfficialKop = () => {
         if (!currentTenant?.config) return;
         const { kota, kecamatan, kelurahan, rw, rt } = currentTenant.config;
@@ -1360,12 +1376,20 @@ export default function Pengaturan() {
                                     </HasPermission>
                                 ) : (
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
-                                        <button 
-                                            onClick={() => setIsAddRoleModalOpen(true)}
-                                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-lg shadow-slate-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
-                                            <Plus weight="bold" />
-                                            <span>Tambah Role</span>
-                                        </button>
+                                        <div className="flex gap-2">
+                                            <button 
+                                                onClick={handleSeedDefaultRoles}
+                                                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
+                                                <ShieldCheck weight="bold" />
+                                                <span>Seed Role Default</span>
+                                            </button>
+                                            <button 
+                                                onClick={() => setIsAddRoleModalOpen(true)}
+                                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-lg shadow-slate-500/20 hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-wider">
+                                                <Plus weight="bold" />
+                                                <span>Tambah Role</span>
+                                            </button>
+                                        </div>
                                     </HasPermission>
                                 )}
                             </div>
