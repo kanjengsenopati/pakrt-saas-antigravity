@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import * as XLSX from 'xlsx';
 
 const prepareWargaData = (data: any) => {
     const {
@@ -68,6 +69,82 @@ export const wargaService = {
     async delete(id: string) {
         return await prisma.warga.delete({
             where: { id }
+        });
+    },
+
+    async exportToXlsx(tenantId: string, scope?: string) {
+        const where: any = { tenant_id: tenantId };
+        if (scope) where.scope = scope;
+
+        const items = await prisma.warga.findMany({
+            where,
+            orderBy: { nama: 'asc' }
+        });
+
+        const data = items.map(item => ({
+            'NIK': item.nik,
+            'Nama': item.nama,
+            'Kontak': item.kontak || '',
+            'Alamat': item.alamat,
+            'Tempat Lahir': item.tempat_lahir || '',
+            'Tanggal Lahir': item.tanggal_lahir || '',
+            'Pendidikan': item.pendidikan || '',
+            'Pekerjaan': item.pekerjaan || '',
+            'Jenis Kelamin': item.jenis_kelamin || '',
+            'Agama': item.agama || '',
+            'Status Penduduk': item.status_penduduk || 'Tetap',
+            'Status Rumah': item.status_rumah || 'Dihuni',
+            'Status Domisili': item.status_domisili || 'Aktif',
+            'Scope': item.scope || 'RT'
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, 'Data Warga');
+
+        return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    },
+
+    async importFromXlsx(tenantId: string, buffer: Buffer) {
+        const wb = XLSX.read(buffer, { type: 'buffer' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws) as any[];
+
+        const mappedData = data.map(row => {
+            const nik = String(row['NIK'] || '').replace(/\D/g, '');
+            if (!nik || nik.length < 5) return null;
+
+            return {
+                tenant_id: tenantId,
+                nik: nik,
+                nama: String(row['Nama'] || ''),
+                kontak: String(row['Kontak'] || ''),
+                alamat: String(row['Alamat'] || ''),
+                tempat_lahir: String(row['Tempat Lahir'] || ''),
+                tanggal_lahir: String(row['Tanggal Lahir'] || ''),
+                pendidikan: String(row['Pendidikan'] || ''),
+                pekerjaan: String(row['Pekerjaan'] || ''),
+                jenis_kelamin: String(row['Jenis Kelamin'] || ''),
+                agama: String(row['Agama'] || ''),
+                status_penduduk: String(row['Status Penduduk'] || 'Tetap'),
+                status_rumah: String(row['Status Rumah'] || 'Dihuni'),
+                status_domisili: String(row['Status Domisili'] || 'Aktif'),
+                scope: String(row['Scope'] || 'RT')
+            };
+        }).filter(Boolean);
+
+        if (mappedData.length === 0) {
+            throw new Error('Tidak ada data valid untuk diimport (cek NIK dan Nama)');
+        }
+
+        // Use a loop or createMany. For consistency with tenant constraints, we'll do sequential creates if needed, 
+        // but since we aren't in a transaction here and it's bulk import, createMany is better for performance.
+        // Note: The prisma extension already handles tenant_id injection in createMany if context is set, 
+        // but here we are passing it explicitly for safety.
+        return await prisma.warga.createMany({
+            data: mappedData as any,
+            skipDuplicates: true
         });
     }
 };

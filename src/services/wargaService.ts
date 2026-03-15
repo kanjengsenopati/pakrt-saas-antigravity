@@ -75,5 +75,44 @@ export const wargaService = {
             console.error('Error deleting warga:', error);
             throw error;
         }
+    },
+
+    async exportWarga(scope?: string): Promise<void> {
+        try {
+            const response = await axios.get(`${API_URL}/warga/export`, {
+                params: { scope },
+                responseType: 'blob'
+            });
+            
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `data_warga_${scope || 'semua'}.xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error exporting warga:', error);
+            throw error;
+        }
+    },
+
+    async importWarga(file: File): Promise<number> {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const response = await axios.post(`${API_URL}/warga/import`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            
+            return response.data.count;
+        } catch (error) {
+            console.error('Error importing warga:', error);
+            throw error;
+        }
     }
 };

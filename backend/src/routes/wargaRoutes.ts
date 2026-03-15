@@ -100,4 +100,40 @@ export default async function wargaRoutes(fastify: FastifyInstance) {
             return reply.code(500).send({ error: 'Failed to delete warga' });
         }
     });
+
+    // Export Warga to XLSX
+    fastify.get('/export', { preHandler: [requirePermission('Warga', 'Lihat')] }, async (request, reply) => {
+        try {
+            const user = (request as any).user;
+            const { scope } = request.query as any;
+            const buffer = await wargaService.exportToXlsx(user.tenant_id, scope);
+            
+            reply
+                .header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                .header('Content-Disposition', 'attachment; filename=data_warga.xlsx')
+                .send(buffer);
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Gagal mengekspor data', details: error.message });
+        }
+    });
+
+    // Import Warga from XLSX
+    fastify.post('/import', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
+        try {
+            const user = (request as any).user;
+            const data = await request.file();
+            
+            if (!data) {
+                return reply.code(400).send({ error: 'File tidak ditemukan' });
+            }
+
+            const buffer = await data.toBuffer();
+            const result = await wargaService.importFromXlsx(user.tenant_id, buffer);
+            return { message: 'Import sukses', count: result.count };
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(400).send({ error: error.message });
+        }
+    });
 }

@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
-import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye } from '@phosphor-icons/react';
+import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function WargaList() {
@@ -17,6 +17,40 @@ export default function WargaList() {
 
     const toggleExpand = (wargaId: string) => {
         setExpandedWargaId(prev => prev === wargaId ? null : wargaId);
+    };
+
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleExport = async () => {
+        try {
+            await wargaService.exportWarga(currentScope);
+        } catch (error) {
+            console.error("Export failed:", error);
+            alert('Gagal mengekspor data');
+        }
+    };
+
+    const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!window.confirm(`Import data warga dari file ${file.name}?`)) {
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const count = await wargaService.importWarga(file);
+            alert(`Berhasil mengimport ${count} data warga baru.`);
+            loadData();
+        } catch (error: any) {
+            console.error("Import failed:", error);
+            alert(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
+        } finally {
+            setIsLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
     };
 
     const loadData = async () => {
@@ -56,17 +90,40 @@ export default function WargaList() {
                     <h1 className="text-2xl font-bold text-gray-900">Data Warga</h1>
                     <p className="text-gray-500 mt-1">Kelola data warga untuk scope <span className="font-semibold text-brand-600">{currentScope}</span></p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <HasPermission module="Warga" action="Buat">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                         <button
-                            onClick={() => navigate('/warga/new')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                            onClick={handleExport}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
                         >
-                            <Plus weight="bold" />
-                            <span>Tambah Warga</span>
+                            <DownloadSimple weight="bold" />
+                            <span>Export</span>
                         </button>
-                    </HasPermission>
-                </div>
+
+                        <HasPermission module="Warga" action="Buat">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImport}
+                                accept=".xlsx, .xls"
+                                className="hidden"
+                            />
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                            >
+                                <UploadSimple weight="bold" />
+                                <span>Import</span>
+                            </button>
+                            
+                            <button
+                                onClick={() => navigate('/warga/new')}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                            >
+                                <Plus weight="bold" />
+                                <span>Tambah Warga</span>
+                            </button>
+                        </HasPermission>
+                    </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
