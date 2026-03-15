@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { User } from '../database/db';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const authService = {
     async login(contactOrEmail: string, password: string): Promise<{ token: string; user: User }> {

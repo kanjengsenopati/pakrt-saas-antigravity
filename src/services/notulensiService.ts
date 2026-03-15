@@ -11,7 +11,7 @@ export interface NotulensiWithKehadiran extends Notulensi {
     kehadiran_list?: KehadiranWithWarga[];
 }
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
 
 export const notulensiService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Notulensi[]> {

@@ -22,7 +22,7 @@ export default function AsetList() {
     const [selectedWargaId, setSelectedWargaId] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
+    const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
     const IMAGE_BASE_URL = API_URL.replace('/api', '');
 
     const loadData = async () => {

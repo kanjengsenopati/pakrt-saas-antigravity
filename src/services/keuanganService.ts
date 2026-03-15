@@ -3,7 +3,7 @@ import { Keuangan } from '../database/db';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
 
 export const keuanganService = {
     async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 200): Promise<{ items: Keuangan[], total: number, page: number, limit: number }> {

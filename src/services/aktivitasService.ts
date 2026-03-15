@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Aktivitas } from '../database/db';
 import { ScopeType } from '../contexts/TenantContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const aktivitasService = {
     async logActivity(tenantId: string, scope: ScopeType, action: string, details: string): Promise<string> {

@@ -7,7 +7,7 @@ export interface PengurusWithWarga extends Pengurus {
     warga?: Warga;
 }
 
-const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
 
 export const pengurusService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<any[]> {
