@@ -4,8 +4,13 @@ import { requirePermission, authenticate } from '../middleware/auth';
 
 export default async function wilayahRoutes(fastify: FastifyInstance) {
   fastify.get('/', async (request, reply) => {
-    const { level, parent_id } = request.query as any;
-    return await wilayahService.getAll(undefined, level, parent_id);
+    try {
+      const { level, parent_id } = request.query as any;
+      return await wilayahService.getAll(undefined, level, parent_id);
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.code(500).send({ error: 'Database connection failed', message: (err as Error).message });
+    }
   });
 
   fastify.get('/:id', async (request, reply) => {
