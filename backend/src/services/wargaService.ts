@@ -146,5 +146,32 @@ export const wargaService = {
             data: mappedData as any,
             skipDuplicates: true
         });
+    },
+
+    async getImportTemplate() {
+        const headers = [
+            {
+                'NIK': 'Masukkan 16 digit NIK (WAJIB)',
+                'Nama': 'Masukkan Nama Lengkap (WAJIB)',
+                'Kontak': 'Nomor WhatsApp/Telepon',
+                'Alamat': 'Alamat Lengkap',
+                'Tempat Lahir': 'Kota Kelahiran',
+                'Tanggal Lahir': 'YYYY-MM-DD',
+                'Pendidikan': 'Pendidikan Terakhir',
+                'Pekerjaan': 'Pekerjaan Saat Ini',
+                'Jenis Kelamin': 'Laki-laki / Perempuan',
+                'Agama': 'Agama',
+                'Status Penduduk': 'Tetap / Kontrak',
+                'Status Rumah': 'Dihuni / Kosong',
+                'Status Domisili': 'Aktif / Pindah / Meninggal Dunia',
+                'Scope': 'RT / PKK / Dasa Wisma'
+            }
+        ];
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(headers);
+        XLSX.utils.book_append_sheet(wb, ws, 'Template Import Warga');
+
+        return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     }
 };

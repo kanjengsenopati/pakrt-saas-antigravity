@@ -136,4 +136,19 @@ export default async function wargaRoutes(fastify: FastifyInstance) {
             return reply.code(400).send({ error: error.message });
         }
     });
+
+    // Download Import Template
+    fastify.get('/template', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
+        try {
+            const buffer = await wargaService.getImportTemplate();
+            
+            reply
+                .header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                .header('Content-Disposition', 'attachment; filename=template_import_warga.xlsx')
+                .send(buffer);
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Gagal mengunduh template', details: error.message });
+        }
+    });
 }

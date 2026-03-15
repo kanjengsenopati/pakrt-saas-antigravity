@@ -114,5 +114,25 @@ export const wargaService = {
             console.error('Error importing warga:', error);
             throw error;
         }
+    },
+
+    async downloadTemplate(): Promise<void> {
+        try {
+            const response = await axios.get(`${API_URL}/warga/template`, {
+                responseType: 'blob'
+            });
+            
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'template_import_warga.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading template:', error);
+            throw error;
+        }
     }
 };

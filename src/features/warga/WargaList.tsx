@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
-import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple } from '@phosphor-icons/react';
+import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function WargaList() {
@@ -27,6 +27,15 @@ export default function WargaList() {
         } catch (error) {
             console.error("Export failed:", error);
             alert('Gagal mengekspor data');
+        }
+    };
+
+    const handleDownloadTemplate = async () => {
+        try {
+            await wargaService.downloadTemplate();
+        } catch (error) {
+            console.error("Template download failed:", error);
+            alert('Gagal mengunduh template');
         }
     };
 
@@ -91,6 +100,17 @@ export default function WargaList() {
                     <p className="text-gray-500 mt-1">Kelola data warga untuk scope <span className="font-semibold text-brand-600">{currentScope}</span></p>
                 </div>
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                        <HasPermission module="Warga" action="Buat">
+                            <button
+                                onClick={handleDownloadTemplate}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                                title="Download Template Import"
+                            >
+                                <FileArrowDown weight="bold" />
+                                <span>Template</span>
+                            </button>
+                        </HasPermission>
+
                         <button
                             onClick={handleExport}
                             className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
