@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
-import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus } from '@phosphor-icons/react';
+import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus, DotsThreeOutlineVertical } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function WargaList() {
@@ -16,6 +16,7 @@ export default function WargaList() {
     const [activeTab, setActiveTab] = useState<'Verified' | 'Pending'>('Verified');
     const [pendingWarga, setPendingWarga] = useState<Warga[]>([]);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
 
     const toggleExpand = (wargaId: string) => {
@@ -131,51 +132,22 @@ export default function WargaList() {
 
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Data Warga</h1>
-                    <p className="text-gray-500 mt-1">Kelola data warga untuk scope <span className="font-semibold text-brand-600">{currentScope}</span></p>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-tight">Data Warga</h1>
+                    <p className="text-gray-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Scope: <span className="font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    </p>
                 </div>
-                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                
+                <div className="flex flex-col w-full sm:w-auto gap-2">
+                    {/* Primary Actions Grid for Mobile */}
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                         <HasPermission module="Warga" action="Buat">
-                            <button
-                                onClick={handleDownloadTemplate}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
-                                title="Download Template Import"
-                            >
-                                <FileArrowDown weight="bold" />
-                                <span>Template</span>
-                            </button>
-                        </HasPermission>
-
-                        <button
-                            onClick={handleExport}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
-                        >
-                            <DownloadSimple weight="bold" />
-                            <span>Export</span>
-                        </button>
-
-                        <HasPermission module="Warga" action="Buat">
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleImport}
-                                accept=".xlsx, .xls"
-                                className="hidden"
-                            />
-                            <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
-                            >
-                                <UploadSimple weight="bold" />
-                                <span>Import</span>
-                            </button>
-                            
                             <button
                                 onClick={() => navigate('/warga/new')}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
                             >
                                 <Plus weight="bold" />
                                 <span>Tambah Warga</span>
@@ -185,13 +157,96 @@ export default function WargaList() {
                         <HasPermission module="Warga" action="Buat">
                             <button
                                 onClick={() => setShowShareModal(true)}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg font-medium transition-all shadow-sm active-press border border-brand-100"
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl font-bold text-sm transition-all border border-brand-100 active-press"
                             >
                                 <ShareNetwork weight="bold" />
-                                <span>Share Link</span>
+                                <span className="hidden sm:inline">Share Link</span>
+                                <span className="sm:hidden text-xs uppercase tracking-tighter">Share Link</span>
                             </button>
                         </HasPermission>
+
+                        {/* Mobile Menu Trigger */}
+                        <div className="relative sm:hidden">
+                            <button
+                                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                                className={`p-3 rounded-xl border transition-all active-press ${showMobileMenu ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-400'}`}
+                            >
+                                <DotsThreeOutlineVertical weight="fill" size={20} />
+                            </button>
+
+                            {showMobileMenu && (
+                                <>
+                                    <div className="fixed inset-0 z-[60]" onClick={() => setShowMobileMenu(false)}></div>
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[70] animate-zoom-in">
+                                        <div className="px-4 py-2 mb-1">
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi Lainnya</p>
+                                        </div>
+                                        <HasPermission module="Warga" action="Buat">
+                                            <button
+                                                onClick={() => { handleDownloadTemplate(); setShowMobileMenu(false); }}
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
+                                            >
+                                                <FileArrowDown weight="bold" className="text-brand-600" />
+                                                <span>Download Template</span>
+                                            </button>
+                                        </HasPermission>
+
+                                        <button
+                                            onClick={() => { handleExport(); setShowMobileMenu(false); }}
+                                            className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
+                                        >
+                                            <DownloadSimple weight="bold" className="text-blue-600" />
+                                            <span>Export Excel</span>
+                                        </button>
+
+                                        <HasPermission module="Warga" action="Buat">
+                                            <button
+                                                onClick={() => { fileInputRef.current?.click(); setShowMobileMenu(false); }}
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
+                                            >
+                                                <UploadSimple weight="bold" className="text-amber-600" />
+                                                <span>Import Excel</span>
+                                            </button>
+                                        </HasPermission>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
+
+                    {/* Desktop-only Secondary Actions Row */}
+                    <div className="hidden sm:flex items-center gap-2">
+                        <HasPermission module="Warga" action="Buat">
+                            <button
+                                onClick={handleDownloadTemplate}
+                                className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 rounded-lg font-bold text-xs transition-all shadow-sm active-press"
+                                title="Download Template Import"
+                            >
+                                <FileArrowDown weight="bold" />
+                                <span>Template</span>
+                            </button>
+                        </HasPermission>
+
+                        <button
+                            onClick={handleExport}
+                            className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 rounded-lg font-bold text-xs transition-all shadow-sm active-press"
+                        >
+                            <DownloadSimple weight="bold" />
+                            <span>Export</span>
+                        </button>
+
+                        <HasPermission module="Warga" action="Buat">
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 rounded-lg font-bold text-xs transition-all shadow-sm active-press"
+                            >
+                                <UploadSimple weight="bold" />
+                                <span>Import</span>
+                            </button>
+                        </HasPermission>
+                        <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx, .xls" className="hidden" />
+                    </div>
+                </div>
             </div>
 
             {/* Tabs for Admin */}
@@ -218,20 +273,20 @@ export default function WargaList() {
             </HasPermission>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
-                    <div className="relative w-full sm:w-96">
-                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                    <div className="relative flex-1">
+                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                         <input
                             type="text"
-                            placeholder="Cari berdasarkan Nama atau NIK..."
+                            placeholder="Cari Nama/NIK..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                            className="w-full pl-9 sm:pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all shadow-sm"
                         />
                     </div>
-                    <button className="w-full sm:w-auto flex justify-center items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors">
-                        <Funnel weight="fill" className="text-gray-400" />
-                        <span>Filter Tambahan</span>
+                    <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
+                        <Funnel weight="fill" className="text-brand-600 sm:text-gray-400" />
+                        <span className="hidden sm:inline">Filter Tambahan</span>
                     </button>
                 </div>
 
