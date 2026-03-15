@@ -46,8 +46,8 @@ export const authService = {
             }
         });
 
-        // Seed default roles for the new tenant sequentially
-        await roleService.seedDefaultRoles(tenant.id, prisma);
+        // Sync default roles for the new tenant sequentially
+        await roleService.syncDefaultRoles(tenant.id, prisma);
 
         // Find the 'Admin' role we just created and link user to it
         const adminRole = await prisma.role.findFirst({

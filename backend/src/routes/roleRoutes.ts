@@ -75,14 +75,4 @@ export default async function roleRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/seed', { preHandler: [requirePermission('Setup / Pengaturan', 'Buat')] }, async (request, reply) => {
-        try {
-            const user = (request as any).user;
-            await roleService.seedDefaultRoles(user.tenant_id);
-            return { message: 'Default roles seeded successfully' };
-        } catch (error: any) {
-            fastify.log.error(error);
-            return reply.code(500).send({ error: 'Failed to seed roles', details: error.message });
-        }
-    });
 }

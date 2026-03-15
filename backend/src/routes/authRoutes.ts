@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { authService } from '../services/authService';
+import { roleService } from '../services/roleService';
 import bcrypt from 'bcryptjs';
 
 export default async function authRoutes(fastify: FastifyInstance) {
@@ -41,6 +42,14 @@ export default async function authRoutes(fastify: FastifyInstance) {
                 ? 'Akun Anda sedang dalam proses verifikasi oleh Admin RT. Silakan tunggu.' 
                 : 'Akun Anda ditolak oleh Admin RT.';
             return reply.code(403).send({ error: 'Akses Ditolak', message: statusMsg });
+        }
+
+        // AUTO-SYNC RBAC: Ensure standard roles and permissions exist for this tenant
+        try {
+            await roleService.syncDefaultRoles(user.tenant_id);
+        } catch (syncError) {
+            fastify.log.error(`Failed to sync RBAC for tenant ${user.tenant_id}:`, syncError);
+            // We continue login even if sync fails to avoid locking users out
         }
 
         // Generate a real JWT token
