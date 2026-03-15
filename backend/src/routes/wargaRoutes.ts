@@ -151,4 +151,27 @@ export default async function wargaRoutes(fastify: FastifyInstance) {
             return reply.code(500).send({ error: 'Gagal mengunduh template', details: error.message });
         }
     });
+
+    // GET pending warga
+    fastify.get('/pending', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
+        const user = (request as any).user;
+        return await wargaService.getPending(user.tenant_id);
+    });
+
+    // POST verify warga
+    fastify.post('/verify/:id', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const { status } = request.body as { status: 'VERIFIED' | 'REJECTED' };
+            
+            if (!['VERIFIED', 'REJECTED'].includes(status)) {
+                return reply.code(400).send({ error: 'Status tidak valid' });
+            }
+
+            return await wargaService.updateStatus(id, status);
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Gagal memproses verifikasi', details: error.message });
+        }
+    });
 }

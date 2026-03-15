@@ -88,5 +88,37 @@ export const authService = {
             where: { id: userId },
             data: { password: hashedPassword }
         });
+    },
+
+    async joinResident(tenantId: string, residentData: any) {
+        const { email, password, name, ...wargaData } = residentData;
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create Warga and User with PENDING status
+        // Since we are not in a transaction, we do it sequentially
+        const warga = await prisma.warga.create({
+            data: {
+                ...wargaData,
+                nama: name,
+                tenant_id: tenantId,
+                verification_status: 'PENDING'
+            }
+        });
+
+        const user = await prisma.user.create({
+            data: {
+                email,
+                name,
+                password: hashedPassword,
+                tenant_id: tenantId,
+                warga_id: warga.id,
+                role: 'warga',
+                verification_status: 'PENDING'
+            }
+        });
+
+        return { warga, user };
     }
 };

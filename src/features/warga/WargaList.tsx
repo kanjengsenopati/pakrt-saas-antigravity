@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
-import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown } from '@phosphor-icons/react';
+import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function WargaList() {
@@ -13,6 +13,9 @@ export default function WargaList() {
     const [expandedWargaId, setExpandedWargaId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState<'Verified' | 'Pending'>('Verified');
+    const [pendingWarga, setPendingWarga] = useState<Warga[]>([]);
+    const [showShareModal, setShowShareModal] = useState(false);
     const navigate = useNavigate();
 
     const toggleExpand = (wargaId: string) => {
@@ -75,9 +78,44 @@ export default function WargaList() {
         }
     };
 
+    const loadPendingData = async () => {
+        if (!currentTenant) return;
+        try {
+            const data = await wargaService.getPending();
+            setPendingWarga(data || []);
+        } catch (error) {
+            console.error("Failed to load pending warga:", error);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        if (currentTenant) {
+            loadPendingData();
+        }
     }, [currentTenant, currentScope]);
+
+    const handleVerify = async (id: string, status: 'VERIFIED' | 'REJECTED', name: string) => {
+        const action = status === 'VERIFIED' ? 'Setujui' : 'Tolak';
+        if (!window.confirm(`${action} pendaftaran ${name}?`)) return;
+
+        try {
+            await wargaService.verifyWarga(id, status);
+            alert(`Pendaftaran ${name} telah ${status === 'VERIFIED' ? 'disetujui' : 'ditolak'}.`);
+            loadData();
+            loadPendingData();
+        } catch (error) {
+            console.error("Verification failed:", error);
+            alert('Gagal memproses verifikasi.');
+        }
+    };
+
+    const copyJoinLink = () => {
+        if (!currentTenant) return;
+        const link = `${window.location.origin}/join/${currentTenant.id}`;
+        navigator.clipboard.writeText(link);
+        alert('Link pendaftaran berhasil disalin!');
+    };
 
     const handleDelete = async (id: string, nama: string) => {
         if (window.confirm(`Hapus data warga ${nama}?`)) {
@@ -143,8 +181,41 @@ export default function WargaList() {
                                 <span>Tambah Warga</span>
                             </button>
                         </HasPermission>
+
+                        <HasPermission module="Warga" action="Buat">
+                            <button
+                                onClick={() => setShowShareModal(true)}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg font-medium transition-all shadow-sm active-press border border-brand-100"
+                            >
+                                <ShareNetwork weight="bold" />
+                                <span>Share Link</span>
+                            </button>
+                        </HasPermission>
                     </div>
             </div>
+
+            {/* Tabs for Admin */}
+            <HasPermission module="Warga" action="Buat">
+                <div className="flex border-b border-gray-200">
+                    <button
+                        onClick={() => setActiveTab('Verified')}
+                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'Verified' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                    >
+                        Terverifikasi ({wargaList.length})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('Pending')}
+                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 flex items-center gap-2 ${activeTab === 'Pending' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                    >
+                        Permintaan Bergabung
+                        {pendingWarga.length > 0 && (
+                            <span className="bg-brand-600 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-pulse">
+                                {pendingWarga.length}
+                            </span>
+                        )}
+                    </button>
+                </div>
+            </HasPermission>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
@@ -182,11 +253,62 @@ export default function WargaList() {
                         <tbody className="divide-y divide-gray-100">
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={4} className="p-8 text-center text-gray-500">Memuat data...</td>
+                                    <td colSpan={8} className="p-8 text-center text-gray-500">Memuat data...</td>
                                 </tr>
+                            ) : activeTab === 'Pending' ? (
+                                pendingWarga.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={8} className="p-8 text-center text-gray-500">
+                                            <div className="flex flex-col items-center justify-center space-y-3">
+                                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                                    <UserPlus weight="bold" className="w-6 h-6 text-gray-400" />
+                                                </div>
+                                                <p>Tidak ada permintaan bergabung baru.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    pendingWarga.map((warga, index) => (
+                                        <tr key={warga.id} className="hover:bg-gray-50/50 transition-colors group">
+                                            <td className="p-3 text-center text-gray-400 text-[10px] font-medium font-mono">
+                                                {(index + 1).toString().padStart(2, '0')}
+                                            </td>
+                                            <td className="p-3 text-center"></td>
+                                            <td className="p-3">
+                                                <p className="font-bold text-slate-800 leading-tight text-sm">{warga.nama}</p>
+                                                <div className="mt-1 flex items-center gap-1.5">
+                                                    <span className="text-[9px] font-black text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
+                                                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none uppercase">PENDING VERIFICATION</span>
+                                                </div>
+                                            </td>
+                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.kontak || '-'}</td>
+                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.jenis_kelamin || '-'}</td>
+                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.agama || '-'}</td>
+                                            <td className="p-3 text-gray-500 text-[11px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
+                                            <td className="p-3 px-4">
+                                                <div className="flex gap-2 justify-center">
+                                                    <button
+                                                        onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-all shadow-sm shadow-green-500/10"
+                                                    >
+                                                        <UserCheck weight="bold" />
+                                                        Setujui
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleVerify(warga.id, 'REJECTED', warga.nama)}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+                                                    >
+                                                        <XCircle weight="bold" />
+                                                        Tolak
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
                             ) : filteredWarga.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="p-8 text-center text-gray-500">
+                                    <td colSpan={8} className="p-8 text-center text-gray-500">
                                         <div className="flex flex-col items-center justify-center space-y-3">
                                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                                                 <Users className="w-6 h-6 text-gray-400" />
@@ -198,7 +320,7 @@ export default function WargaList() {
                             ) : (
                                 filteredWarga.map((warga, index) => (
                                     <React.Fragment key={warga.id}>
-                                        <tr key={warga.id} className={`hover:bg-gray-50/50 transition-colors group cursor-pointer ${expandedWargaId === warga.id ? 'bg-brand-50/30' : ''}`} onClick={() => toggleExpand(warga.id)}>
+                                        <tr className={`hover:bg-gray-50/50 transition-colors group cursor-pointer ${expandedWargaId === warga.id ? 'bg-brand-50/30' : ''}`} onClick={() => toggleExpand(warga.id)}>
                                             <td className="p-3 text-center text-gray-400 text-[10px] font-medium font-mono">
                                                 {(index + 1).toString().padStart(2, '0')}
                                             </td>
@@ -245,7 +367,7 @@ export default function WargaList() {
                                             </td>
                                         </tr>
                                         {expandedWargaId === warga.id && (
-                                            <tr>
+                                            <tr key={`expanded-${warga.id}`}>
                                                 <td colSpan={8} className="p-0 border-b border-gray-200">
                                                     <div className="bg-slate-50 p-6 border-l-4 border-brand-500 shadow-inner">
                                                         <AnggotaKeluargaPanel wargaId={warga.id} tenantId={currentTenant?.id || ''} initialData={warga.anggota} />
@@ -346,6 +468,59 @@ export default function WargaList() {
                     </div>
                 )}
             </div>
+
+            {/* Share Link Modal */}
+            {showShareModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-zoom-in">
+                        <div className="p-8">
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h3 className="text-xl font-black text-slate-900 leading-tight">Share Link Pendaftaran</h3>
+                                    <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-widestBold">Undang warga untuk isi data mandiri</p>
+                                </div>
+                                <button onClick={() => setShowShareModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                                    <XCircle size={24} className="text-slate-400" />
+                                </button>
+                            </div>
+
+                            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-6">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center shrink-0">
+                                        <Info weight="fill" className="text-brand-600 w-5 h-5" />
+                                    </div>
+                                    <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                        Kirimkan link di bawah ini ke grup WhatsApp warga. Setiap warga dapat mendaftar dan mengisi data mereka sendiri. Pendaftaran membutuhkan persetujuan Anda.
+                                    </p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Link Pendaftaran</label>
+                                    <div className="flex gap-2">
+                                        <div className="flex-1 bg-white border border-slate-200 px-4 py-3 rounded-xl text-xs font-mono text-brand-700 truncate select-all">
+                                            {`${window.location.origin}/join/${currentTenant?.id}`}
+                                        </div>
+                                        <button 
+                                            onClick={copyJoinLink}
+                                            className="bg-brand-600 hover:bg-brand-700 text-white p-3 rounded-xl transition-all active:scale-95 shadow-md shadow-brand-500/20"
+                                            title="Copy Link"
+                                        >
+                                            <Copy weight="bold" size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setShowShareModal(false)}
+                                className="w-full py-4 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em] hover:text-slate-900 transition-colors"
+                            >
+                                Tutup Panel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

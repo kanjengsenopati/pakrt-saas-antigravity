@@ -35,6 +35,14 @@ export default async function authRoutes(fastify: FastifyInstance) {
             return reply.code(401).send({ error: 'Password yang Anda masukkan salah.' });
         }
 
+        // Check verification_status
+        if (user.verification_status !== 'VERIFIED') {
+            const statusMsg = user.verification_status === 'PENDING' 
+                ? 'Akun Anda sedang dalam proses verifikasi oleh Admin RT. Silakan tunggu.' 
+                : 'Akun Anda ditolak oleh Admin RT.';
+            return reply.code(403).send({ error: 'Akses Ditolak', message: statusMsg });
+        }
+
         // Generate a real JWT token
         const token = fastify.jwt.sign({ 
             id: user.id, 
@@ -80,6 +88,26 @@ export default async function authRoutes(fastify: FastifyInstance) {
             };
         } catch (error: any) {
             return reply.code(400).send({ error: error.message || 'Registration failed' });
+        }
+    });
+
+    // Warga self-join route
+    fastify.post('/join', async (request, reply) => {
+        const { tenantId, residentData } = request.body as any;
+
+        if (!tenantId || !residentData) {
+            return reply.code(400).send({ error: 'Data tidak lengkap.' });
+        }
+
+        try {
+            const result = await authService.joinResident(tenantId, residentData);
+            return {
+                message: 'Pendaftaran berhasil. Silakan tunggu verifikasi dari Admin RT.',
+                ...result
+            };
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Pendaftaran gagal.', details: error.message });
         }
     });
 }

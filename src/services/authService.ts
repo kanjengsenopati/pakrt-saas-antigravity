@@ -28,5 +28,13 @@ export const authService = {
     logout(): void {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
+    },
+
+    async joinResident(tenantId: string, residentData: any): Promise<any> {
+        const response = await axios.post(`${API_URL}/auth/join`, {
+            tenantId,
+            residentData
+        });
+        return response.data;
     }
 };

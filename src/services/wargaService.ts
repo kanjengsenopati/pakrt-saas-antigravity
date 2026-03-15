@@ -116,6 +116,15 @@ export const wargaService = {
         }
     },
 
+    async getPending(): Promise<Warga[]> {
+        const response = await axios.get(`${API_URL}/warga/pending`);
+        return response.data;
+    },
+
+    async verifyWarga(id: string, status: 'VERIFIED' | 'REJECTED'): Promise<void> {
+        await axios.post(`${API_URL}/warga/verify/${id}`, { status });
+    },
+
     async downloadTemplate(): Promise<void> {
         try {
             const response = await axios.get(`${API_URL}/warga/template`, {

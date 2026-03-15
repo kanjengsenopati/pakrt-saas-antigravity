@@ -31,6 +31,7 @@ import IuranList from '../features/keuangan/IuranList';
 import IuranForm from '../features/keuangan/IuranForm';
 import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
+import JoinRT from '../features/auth/JoinRT';
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
     {
         path: '/setup',
         element: <SetupPage />
+    },
+    {
+        path: '/join/:tenantId',
+        element: <JoinRT />
     },
     {
         path: '/register',

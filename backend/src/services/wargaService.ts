@@ -173,5 +173,43 @@ export const wargaService = {
         XLSX.utils.book_append_sheet(wb, ws, 'Template Import Warga');
 
         return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    },
+
+    async getPending(tenantId: string) {
+        return await prisma.warga.findMany({
+            where: {
+                tenant_id: tenantId,
+                verification_status: 'PENDING'
+            },
+            include: {
+                user: true
+            },
+            orderBy: { nama: 'asc' }
+        });
+    },
+
+    async updateStatus(id: string, status: 'VERIFIED' | 'REJECTED') {
+        const warga = await prisma.warga.findUnique({
+            where: { id },
+            include: { user: true }
+        });
+
+        if (!warga) throw new Error('Warga tidak ditemukan');
+
+        // Update Warga
+        await prisma.warga.update({
+            where: { id },
+            data: { verification_status: status }
+        });
+
+        // Update User if exists
+        if (warga.user) {
+            await prisma.user.update({
+                where: { id: warga.user.id },
+                data: { verification_status: status }
+            });
+        }
+
+        return { success: true };
     }
 };
