@@ -438,7 +438,7 @@ export default function Pengaturan() {
             setTahunIuran(tahunIuran.filter(y => y !== catOrYear as number));
         } else if (type === 'jabatan') {
             // Guard: warn if any active Pengurus uses this jabatan
-            const inUse = allPengurus.filter(p => p.jabatan === catOrYear && p.status === 'aktif');
+            const inUse = (allPengurus || []).filter(p => p.jabatan === catOrYear && p.status === 'aktif');
             if (inUse.length > 0) {
                 const names = inUse.map(p => p.warga?.nama || 'Unknown').join(', ');
                 const confirm = window.confirm(
@@ -446,19 +446,19 @@ export default function Pengaturan() {
                 );
                 if (!confirm) return;
             }
-            const updated = jabatanOptions.filter(j => j !== catOrYear as string);
+            const updated = (jabatanOptions || []).filter(j => j !== catOrYear as string);
             setJabatanOptions(updated);
             persistJabatan(updated);
         } else if (type === 'periode') {
             // Guard: warn if any Pengurus uses this periode
-            const inUse = allPengurus.filter(p => p.periode === catOrYear);
+            const inUse = (allPengurus || []).filter(p => p.periode === catOrYear);
             if (inUse.length > 0) {
                 const confirm = window.confirm(
                     `Periode "${catOrYear}" masih memiliki ${inUse.length} data pengurus (termasuk riwayat).\n\nHapus periode ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun periode tersebut tidak akan muncul di pilihan baru.`
                 );
                 if (!confirm) return;
             }
-            const updated = periodeOptions.filter(p => p !== catOrYear as string);
+            const updated = (periodeOptions || []).filter(p => p !== catOrYear as string);
             setPeriodeOptions(updated);
             persistPeriode(updated);
         }

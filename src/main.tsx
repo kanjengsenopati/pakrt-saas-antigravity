@@ -12,6 +12,14 @@ axios.interceptors.request.use((config) => {
     return config;
 });
 
+axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error(`API Error [${error.config?.method?.toUpperCase()}] ${error.config?.url}:`, error.response?.status, error.response?.data);
+        return Promise.reject(error);
+    }
+);
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <MainRouter />

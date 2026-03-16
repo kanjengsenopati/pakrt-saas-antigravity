@@ -95,14 +95,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const rolePerms = user.role_entity?.permissions || {};
         
         // Helper to check in a specific permission set (can be legacy format or new object format)
-        const checkInSet = (perms: any): { granted: boolean; scope: 'all' | 'personal' } => {
-            const moduleData = perms[module];
+        const checkInSet = (perms: any, m: string = module, a: string = action): { granted: boolean; scope: 'all' | 'personal' } => {
+            const moduleData = perms[m];
             if (!moduleData) return { granted: false, scope: 'all' };
 
             // Handle legacy format: string[]
             if (Array.isArray(moduleData)) {
                 return { 
-                    granted: moduleData.includes(action) || moduleData.includes('manage'), 
+                    granted: moduleData.includes(a) || moduleData.includes('manage'), 
                     scope: 'all' 
                 };
             }
@@ -110,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Handle new format: { actions: string[], scope: 'all' | 'personal' }
             if (typeof moduleData === 'object' && Array.isArray(moduleData.actions)) {
                 return {
-                    granted: moduleData.actions.includes(action) || moduleData.actions.includes('manage'),
+                    granted: moduleData.actions.includes(a) || moduleData.actions.includes('manage'),
                     scope: moduleData.scope || 'all'
                 };
             }
@@ -137,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         // Catch-all 'manage' permission
-        if (userPerms['all']?.includes('manage') || rolePerms['all']?.includes('manage')) return true;
+        if (checkInSet(userPerms, 'all', 'manage').granted || checkInSet(rolePerms, 'all', 'manage').granted) return true;
 
         return false;
     }, [user]);

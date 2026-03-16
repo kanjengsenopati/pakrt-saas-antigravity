@@ -68,7 +68,7 @@ export default function IuranForm() {
                         setValue('tanggal_bayar', data.tanggal_bayar.split('T')[0]);
                         setValue('nominal', data.nominal);
                         setValue('url_bukti', data.url_bukti);
-                        setSelectedMonths(data.periode_bulan);
+                        setSelectedMonths(Array.isArray(data.periode_bulan) ? data.periode_bulan : []);
                     }
                 });
             }
@@ -173,11 +173,12 @@ export default function IuranForm() {
 
     const toggleMonth = (monthValue: number) => {
         setHasInteracted(true);
-        setSelectedMonths(prev =>
-            prev.includes(monthValue)
-                ? prev.filter(m => m !== monthValue)
-                : [...prev, monthValue].sort((a, b) => a - b)
-        );
+        setSelectedMonths(prev => {
+            const current = Array.isArray(prev) ? prev : [];
+            return current.includes(monthValue)
+                ? current.filter(m => m !== monthValue)
+                : [...current, monthValue].sort((a, b) => a - b);
+        });
     };
 
     const onSubmit = async (data: IuranFormData) => {

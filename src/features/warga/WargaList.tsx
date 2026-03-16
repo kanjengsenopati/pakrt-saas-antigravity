@@ -125,7 +125,7 @@ export default function WargaList() {
         }
     };
 
-    const filteredWarga = wargaList.filter(w =>
+    const filteredWarga = (wargaList || []).filter(w =>
         w.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
         w.nik.includes(searchQuery)
     );

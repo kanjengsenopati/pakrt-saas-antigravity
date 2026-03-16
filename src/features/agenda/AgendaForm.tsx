@@ -53,9 +53,10 @@ export default function AgendaForm() {
     }, [id, isEditing, reset, currentTenant, currentScope]);
 
     const toggleParticipant = (wargaId: string) => {
-        const newSelection = selectedParticipants.includes(wargaId)
-            ? selectedParticipants.filter(pid => pid !== wargaId)
-            : [...selectedParticipants, wargaId];
+        const current = Array.isArray(selectedParticipants) ? selectedParticipants : [];
+        const newSelection = current.includes(wargaId)
+            ? current.filter(pid => pid !== wargaId)
+            : [...current, wargaId];
 
         setSelectedParticipants(newSelection);
         setValue('peserta_ids', newSelection);
@@ -158,7 +159,7 @@ export default function AgendaForm() {
                                     multiple={true}
                                     existingUrls={fotoDokumentasi}
                                     onUploadSuccess={(url) => setFotoDokumentasi(prev => [...prev, url])}
-                                    onRemove={(url) => setFotoDokumentasi(prev => prev.filter(item => item !== url))}
+                                    onRemove={(url) => setFotoDokumentasi(prev => (Array.isArray(prev) ? prev : []).filter(item => item !== url))}
                                     onLoadingChange={setIsUploading}
                                 />
                             </div>

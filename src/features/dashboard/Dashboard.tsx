@@ -51,7 +51,7 @@ export default function Dashboard() {
                     aset: asetCount,
                     agenda: agendaCount,
                     saldo: finSummary.saldo,
-                    pendingSurat: allSurat.filter(s => s.status === 'proses').length
+                    pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length
                 });
             } catch (error) {
                 console.error("Dashboard: Error fetching stats:", error);
@@ -72,7 +72,7 @@ export default function Dashboard() {
                 setRecentIuran((allIuran.items || []).slice(0, 4));
                 setUpcomingAgenda(agendas);
                 const todayStr = new Date().toISOString().split('T')[0];
-                const upcoming = allRonda
+                const upcoming = (allRonda || [])
                     .filter(r => r.tanggal >= todayStr)
                     .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
                     .slice(0, 3);

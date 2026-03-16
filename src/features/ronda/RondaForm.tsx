@@ -67,7 +67,7 @@ export default function RondaForm() {
 
     const toggleWarga = (wargaId: string, field: 'warga_ids' | 'petugas_konsumsi') => {
         const currentSelected = watch(field) || [];
-        if (currentSelected.includes(wargaId)) {
+        if (Array.isArray(currentSelected) && currentSelected.includes(wargaId)) {
             setValue(field, currentSelected.filter(id => id !== wargaId), { shouldValidate: true });
         } else {
             setValue(field, [...currentSelected, wargaId], { shouldValidate: true });
@@ -112,7 +112,7 @@ export default function RondaForm() {
     const toggleDateSelection = (date: string) => {
         // Don't allow toggling dates that are already booked by other groups
         if (bookedDates.has(date)) return;
-        if (selectedDates.includes(date)) {
+        if (Array.isArray(selectedDates) && selectedDates.includes(date)) {
             setSelectedDates(selectedDates.filter(d => d !== date));
         } else {
             setSelectedDates([...selectedDates, date]);

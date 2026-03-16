@@ -158,7 +158,7 @@ export default function AgendaList() {
         }
     };
 
-    const filteredAgenda = agendaList.filter(a =>
+    const filteredAgenda = (agendaList || []).filter(a =>
         a.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.deskripsi.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -167,8 +167,8 @@ export default function AgendaList() {
 
     // Summary Analytics
     const totalAgenda = filteredAgenda.length;
-    const realizedAgenda = filteredAgenda.filter(a => a.is_terlaksana).length;
-    const pendingAgenda = filteredAgenda.filter(a => !a.is_terlaksana && isPast(a.tanggal)).length;
+    const realizedAgenda = (filteredAgenda || []).filter(a => a.is_terlaksana).length;
+    const pendingAgenda = (filteredAgenda || []).filter(a => !a.is_terlaksana && isPast(a.tanggal)).length;
     const upcomingAgenda = totalAgenda - realizedAgenda - pendingAgenda;
 
     const totalPendanaan = filteredAgenda.reduce((acc, curr) => curr.butuh_pendanaan ? acc + (curr.nominal_biaya || 0) : acc, 0);
