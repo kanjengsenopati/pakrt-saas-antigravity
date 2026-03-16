@@ -111,15 +111,70 @@ export const wargaService = {
     },
 
     async update(id: string, data: any) {
-        return await prisma.warga.update({
-            where: { id },
-            data: prepareWargaData(data)
+        return await prisma.$transaction(async (tx) => {
+            const currentWarga = await tx.warga.findUnique({
+                where: { id },
+                include: { user: true }
+            });
+
+            if (!currentWarga) {
+                throw new Error('Warga tidak ditemukan');
+            }
+
+            const isNIKChanging = data.nik && data.nik !== currentWarga.nik;
+            
+            if (isNIKChanging) {
+                const existingWarga = await tx.warga.findUnique({
+                    where: {
+                        tenant_id_nik: {
+                            tenant_id: currentWarga.tenant_id,
+                            nik: data.nik
+                        }
+                    }
+                });
+                
+                if (existingWarga && existingWarga.id !== id) {
+                    throw new Error('NIK sudah terdaftar di rt/rw atau perumahan ini.');
+                }
+            }
+            
+            const processedData = prepareWargaData(data);
+
+            const updatedWarga = await tx.warga.update({
+                where: { id },
+                data: processedData,
+            });
+
+            // True Sync: Update the associated User account if critical fields changed
+            if (currentWarga.user && (data.nama || data.email || data.kontak)) {
+                await tx.user.update({
+                    where: { id: currentWarga.user.id },
+                    data: {
+                        ...(data.nama && { name: data.nama }),
+                        ...(data.email && { email: data.email }),
+                        ...(data.kontak && { kontak: data.kontak })
+                    }
+                });
+            }
+
+            return updatedWarga;
         });
     },
 
     async delete(id: string) {
-        return await prisma.warga.delete({
-            where: { id }
+        return await prisma.$transaction(async (tx) => {
+            const warga = await tx.warga.findUnique({
+                where: { id },
+                include: { user: true }
+            });
+
+            if (warga?.user) {
+                await tx.user.delete({ where: { id: warga.user.id } });
+            }
+
+            return await tx.warga.delete({
+                where: { id },
+            });
         });
     },
 

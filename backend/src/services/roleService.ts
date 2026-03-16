@@ -123,9 +123,13 @@ export const roleService = {
             });
 
             if (existing) {
-                // Update permissions to match system core if they differ (optional, but ensures they stay in sync)
-                // For now, we only create if missing to preserve manual overrides if any
-                results.push(existing);
+                // Update permissions to ensure system roles stay in sync with latest definitions
+                // This ensures that new modules added to SYSTEM_ROLES are propagated to all tenants
+                const updated = await txClient.role.update({
+                    where: { id: existing.id },
+                    data: { permissions: roleDef.permissions }
+                });
+                results.push(updated);
             } else {
                 // Create missing role
                 const newRole = await txClient.role.create({

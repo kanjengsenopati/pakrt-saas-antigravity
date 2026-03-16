@@ -86,7 +86,7 @@ export default function Pengaturan() {
     const [userPermissions, setUserPermissions] = useState<Record<string, any>>({});
     const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
     const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
-    const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role_id: '', password: '' });
+    const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role_id: '', password: '', scope: 'RT' });
     const [newRoleForm, setNewRoleForm] = useState({ name: '' });
 
     // Keuangan Categories State
@@ -226,11 +226,12 @@ export default function Pengaturan() {
                 name: newUserForm.name,
                 email: newUserForm.email,
                 role_id: newUserForm.role_id,
+                scope: newUserForm.scope,
                 password: newUserForm.password || 'password123',
                 permissions: {} // Default to empty, inherit from role
             } as any);
             setIsAddUserModalOpen(false);
-            setNewUserForm({ name: '', email: '', role_id: '', password: '' });
+            setNewUserForm({ name: '', email: '', role_id: '', password: '', scope: 'RT' });
             loadUsers();
         } catch (error) {
             console.error('Failed to create user', error);
@@ -1386,9 +1387,14 @@ export default function Pengaturan() {
                                                 </div>
                                                 <div>
                                                     <h4 className="font-bold text-gray-900">{user.name}</h4>
-                                                    <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider">
-                                                        {(user as any).role_entity?.name || user.role}
-                                                    </span>
+                                                    <div className="flex gap-1.5 mt-1">
+                                                        <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider border border-brand-100/50">
+                                                            {(user as any).role_entity?.name || user.role}
+                                                        </span>
+                                                        <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200/50 block w-max">
+                                                            {user.scope || 'RT'}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1499,6 +1505,17 @@ export default function Pengaturan() {
                                     {roles.map(role => (
                                         <option key={role.id} value={role.id}>{role.name}</option>
                                     ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Scope / Tingkat Akses (Opsional)</label>
+                                <select 
+                                    value={newUserForm.scope} onChange={e => setNewUserForm(prev => ({...prev, scope: e.target.value}))}
+                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white font-bold text-sm"
+                                >
+                                    <option value="RT">RT (Bawaan)</option>
+                                    <option value="PKK">PKK</option>
+                                    <option value="Dasa Wisma">Dasa Wisma</option>
                                 </select>
                             </div>
                             <div className="pt-4 flex justify-end gap-3">
