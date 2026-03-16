@@ -1,5 +1,40 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
+import bcrypt from 'bcryptjs';
+
+const createDefaultUser = async (warga: any, tx: any = prisma) => {
+    // Determine placeholder email: NIK + @pakrt.id
+    const email = `${warga.nik}@pakrt.id`;
+    const hashedPassword = await bcrypt.hash('password123', 10);
+
+    // Find custom 'Warga' role for this tenant
+    const wargaRole = await tx.role.findFirst({
+        where: { tenant_id: warga.tenant_id, name: 'Warga' }
+    });
+
+    return await tx.user.upsert({
+        where: { email: email },
+        update: {
+            warga_id: warga.id,
+            name: warga.nama,
+            kontak: warga.kontak,
+            role_id: wargaRole?.id || null,
+            permissions: wargaRole?.permissions || {}
+        },
+        create: {
+            tenant_id: warga.tenant_id,
+            warga_id: warga.id,
+            name: warga.nama,
+            email: email,
+            kontak: warga.kontak,
+            password: hashedPassword,
+            role: 'warga',
+            role_id: wargaRole?.id || null,
+            permissions: wargaRole?.permissions || {},
+            verification_status: warga.verification_status || 'VERIFIED'
+        }
+    });
+};
 
 const prepareWargaData = (data: any) => {
     const {
@@ -61,9 +96,18 @@ export const wargaService = {
     },
 
     async create(data: any) {
-        return await prisma.warga.create({
+        const warga = await prisma.warga.create({
             data: prepareWargaData(data)
         });
+
+        // Automatically create User account for this Warga
+        try {
+            await createDefaultUser(warga);
+        } catch (error) {
+            console.error(`Failed to create auto-user for Warga ${warga.nik}:`, error);
+        }
+
+        return warga;
     },
 
     async update(id: string, data: any) {
@@ -237,10 +281,29 @@ export const wargaService = {
             throw new Error('Tidak ada data valid untuk diimport (cek NIK dan Nama)');
         }
 
-        return await prisma.warga.createMany({
+        const result = await prisma.warga.createMany({
             data: mappedData as any,
             skipDuplicates: true
         });
+
+        // Bulk creation of users for imported citizens
+        try {
+            const importedWargas = await prisma.warga.findMany({
+                where: {
+                    tenant_id: tenantId,
+                    nik: { in: mappedData.map((d: any) => d.nik) },
+                    user: null
+                }
+            });
+
+            for (const warga of importedWargas) {
+                await createDefaultUser(warga);
+            }
+        } catch (error) {
+            console.error('Failed to create users for imported citizens:', error);
+        }
+
+        return result;
     },
 
     async getImportTemplate() {

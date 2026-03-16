@@ -50,7 +50,8 @@ const APP_MODULES = [
     { id: 'Surat / Cetak', label: 'Surat Pengantar' },
     { id: 'Jadwal Ronda', label: 'Jadwal Ronda' },
     { id: 'Agenda', label: 'Agenda Kegiatan' },
-    { id: 'Setup / Pengaturan', label: 'Pengaturan Sistem' }
+    { id: 'Setup / Pengaturan', label: 'Pengaturan Sistem' },
+    { id: 'Manajemen User / Role', label: 'Manajemen User & Role' }
 ];
 
 const CRUD_ACTIONS = [

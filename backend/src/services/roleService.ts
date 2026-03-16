@@ -23,7 +23,8 @@ export const SYSTEM_ROLES = [
             "Aset": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Notulensi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
+            "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
         }
     },
     {
@@ -38,7 +39,8 @@ export const SYSTEM_ROLES = [
             "Aset": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Notulensi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
+            "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
         }
     },
     {

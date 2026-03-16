@@ -3,7 +3,7 @@ import { userService } from '../services/userService';
 import { requirePermission } from '../middleware/auth';
 
 export default async function userRoutes(fastify: FastifyInstance) {
-    fastify.get('/', { preHandler: [requirePermission('Setup / Pengaturan', 'Lihat')] }, async (request, reply) => {
+    fastify.get('/', { preHandler: [requirePermission('Manajemen User / Role', 'Lihat')] }, async (request, reply) => {
         const user = (request as any).user;
         const tenantId = user.tenant_id;
         const users = await userService.getAllByTenant(tenantId);
@@ -41,7 +41,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
         return user;
     });
 
-    fastify.post('/', { preHandler: [requirePermission('Setup / Pengaturan', 'Buat')] }, async (request, reply) => {
+    fastify.post('/', { preHandler: [requirePermission('Manajemen User / Role', 'Buat')] }, async (request, reply) => {
         try {
             const userSession = (request as any).user;
             const data = request.body as any;
@@ -55,7 +55,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.put('/:id', { preHandler: [requirePermission('Setup / Pengaturan', 'Ubah')] }, async (request, reply) => {
+    fastify.put('/:id', { preHandler: [requirePermission('Manajemen User / Role', 'Ubah')] }, async (request, reply) => {
         try {
             const { id } = request.params as { id: string };
             const userSession = (request as any).user;
@@ -76,7 +76,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.delete('/:id', { preHandler: [requirePermission('Setup / Pengaturan', 'Hapus')] }, async (request, reply) => {
+    fastify.delete('/:id', { preHandler: [requirePermission('Manajemen User / Role', 'Hapus')] }, async (request, reply) => {
         try {
             const { id } = request.params as { id: string };
             const userSession = (request as any).user;

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { roleService } from '../src/services/roleService';
 
 const prisma = new PrismaClient();
 
@@ -27,6 +28,12 @@ async function main() {
     });
 
     console.log('Tenant upserted successfully:', tenant.name);
+
+    // Sync default roles for this tenant
+    console.log('Syncing system roles...');
+    await roleService.syncDefaultRoles(tenantId, prisma);
+    const tenantRoles = await prisma.role.findMany({ where: { tenant_id: tenantId } });
+    const getRoleId = (name: string) => tenantRoles.find(r => r.name === name)?.id;
 
     // Seed 10 Warga for this tenant
     const wargasData = [
@@ -179,7 +186,7 @@ async function main() {
         // Destructure only valid Warga fields (exclude pekerjaan which is on AnggotaKeluarga)
         const { pekerjaan: _pekerjaan, ...wargaFields } = wargaData;
         const warga = await prisma.warga.upsert({
-            where: { nik: wargaData.nik },
+            where: { tenant_id_nik: { tenant_id: tenantId, nik: wargaData.nik } },
             update: {
                 ...wargaFields,
                 tenant_id: tenantId,
@@ -200,13 +207,14 @@ async function main() {
         const suffixNIK = wargaData.nik.substring(12); // e.g., '0001'
         const baseId = parseInt(suffixNIK, 10);
 
+        const istriNIK = `${prefixNIK}${(baseId + 1000).toString().padStart(4, '0')}`;
         await prisma.anggotaKeluarga.upsert({
-            where: { nik: `${prefixNIK}${(baseId + 1000).toString().padStart(4, '0')}` },
+            where: { tenant_id_nik: { tenant_id: tenantId, nik: istriNIK } },
             update: {},
             create: {
                 tenant_id: tenantId,
                 warga_id: warga.id,
-                nik: `${prefixNIK}${(baseId + 1000).toString().padStart(4, '0')}`,
+                nik: istriNIK,
                 nama: `Istri ${warga.nama}`,
                 hubungan: 'Istri',
                 tempat_lahir: warga.tempat_lahir,
@@ -216,13 +224,14 @@ async function main() {
             }
         });
 
+        const anakNIK = `${prefixNIK}${(baseId + 2000).toString().padStart(4, '0')}`;
         await prisma.anggotaKeluarga.upsert({
-            where: { nik: `${prefixNIK}${(baseId + 2000).toString().padStart(4, '0')}` },
+            where: { tenant_id_nik: { tenant_id: tenantId, nik: anakNIK } },
             update: {},
             create: {
                 tenant_id: tenantId,
                 warga_id: warga.id,
-                nik: `${prefixNIK}${(baseId + 2000).toString().padStart(4, '0')}`,
+                nik: anakNIK,
                 nama: `Anak ${warga.nama}`,
                 hubungan: 'Anak',
                 tempat_lahir: warga.tempat_lahir,
@@ -243,9 +252,9 @@ async function main() {
     });
 
     // Quick fix for Pengurus link: Fetch actual warga IDs
-    const eko = await prisma.warga.findUnique({ where: { nik: '3374101011100004' } });
-    const handy = await prisma.warga.findUnique({ where: { nik: '3374101011100007' } });
-    const dwi = await prisma.warga.findUnique({ where: { nik: '3374101011100006' } });
+    const eko = await prisma.warga.findFirst({ where: { tenant_id: tenantId, nik: '3374101011100004' } });
+    const handy = await prisma.warga.findFirst({ where: { tenant_id: tenantId, nik: '3374101011100007' } });
+    const dwi = await prisma.warga.findFirst({ where: { tenant_id: tenantId, nik: '3374101011100006' } });
 
     if (eko) {
         const existing = await prisma.pengurus.findFirst({ where: { tenant_id: tenantId, scope: 'RT', warga_id: eko.id, jabatan: 'Ketua RT', periode: '2024-2027' } });
@@ -267,56 +276,43 @@ async function main() {
             email: 'ketuart@pakrt.id',
             name: 'EKO WIDIYANTO',
             role: 'admin',
+            role_id: getRoleId('Ketua'),
             password: 'password123',
             kontak: '081234567893',
             tenant_id: tenantId,
-            permissions: { 'all': ['manage'] }
+            permissions: tenantRoles.find(r => r.name === 'Ketua')?.permissions as any
         },
         {
             email: 'sekretaris@pakrt.id',
             name: 'DWI HERI KARTIKO',
             role: 'staff',
+            role_id: getRoleId('Sekretaris'),
             password: 'password123',
             kontak: '081234567895',
             tenant_id: tenantId,
-            permissions: {
-                'Surat / Cetak': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Agenda': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Warga': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Notulensi': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Pengaturan Sistem': ['Lihat']
-            }
+            permissions: tenantRoles.find(r => r.name === 'Sekretaris')?.permissions as any
         },
         {
             email: 'bendahara@pakrt.id',
             name: 'HANDY TRI WALUYO',
             role: 'staff',
+            role_id: getRoleId('Bendahara'),
             password: 'password123',
             kontak: '081234567896',
             tenant_id: tenantId,
-            permissions: {
-                'Buku Kas / Transaksi': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Iuran Warga': ['Lihat', 'Buat', 'Ubah', 'Hapus'],
-                'Aset': ['Lihat', 'Buat', 'Ubah', 'Hapus']
-            }
+            permissions: tenantRoles.find(r => r.name === 'Bendahara')?.permissions as any
         },
         {
             email: 'warga@pakrt.id',
             name: 'SISWANTO',
             role: 'warga',
+            role_id: getRoleId('Warga'),
             password: 'password123',
             kontak: '081234567890',
             tenant_id: tenantId,
-            warga_id: (await prisma.warga.findUnique({ where: { nik: '3374101011100001' } }))?.id,
+            warga_id: (await prisma.warga.findFirst({ where: { tenant_id: tenantId, nik: '3374101011100001' } }))?.id,
             scope: 'RT',
-            permissions: {
-                'Warga': ['Lihat'],
-                'Iuran Warga': ['Lihat'],
-                'Surat / Cetak': ['Lihat', 'Buat'],
-                'Jadwal Ronda': ['Lihat'],
-                'Agenda': ['Lihat'],
-                'Aset': ['Lihat']
-            }
+            permissions: tenantRoles.find(r => r.name === 'Warga')?.permissions as any
         }
     ];
 
