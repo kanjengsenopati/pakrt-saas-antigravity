@@ -10,7 +10,8 @@ export const asetService = {
         const response = await axios.get(`${API_URL}/aset`, {
             params: { tenant_id: tenantId, scope }
         });
-        return response.data;
+        const data = response.data;
+        return Array.isArray(data) ? data : (data.items || []);
     },
 
     async count(tenantId: string, scope: ScopeType): Promise<number> {

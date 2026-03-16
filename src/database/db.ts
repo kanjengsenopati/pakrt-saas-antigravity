@@ -11,6 +11,7 @@ export interface User {
     role: 'Admin' | 'Ketua' | 'Sekretaris' | 'Bendahara' | 'Warga' | string;
     name: string;
     email: string;
+    scope?: string;
     kontak?: string;
     password?: string;
     permissions?: Record<string, string[]>; // e.g., { 'warga': ['create', 'read', 'update', 'delete'] }
