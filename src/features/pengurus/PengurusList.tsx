@@ -225,7 +225,7 @@ export default function PengurusList() {
                                                 </span>
                                             </td>
                                             <td className="p-4 text-right">
-                                                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="flex justify-end gap-2">
                                                     <HasPermission module="Data Pengurus" action="Ubah">
                                                         <button
                                                             onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)}
@@ -379,7 +379,7 @@ export default function PengurusList() {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <div className="flex justify-end gap-1">
                                                                 <button
                                                                     onClick={() => navigate(`/pengurus/edit/${p.id}`)}
                                                                     className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Edit">

@@ -36,30 +36,31 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     };
 
     const initializeTenant = async () => {
-        setIsLoading(true);
         try {
-            // Read the logged-in user from localStorage
             const storedUser = localStorage.getItem('auth_user');
             if (storedUser) {
                 const user = JSON.parse(storedUser);
                 setCurrentUser(user);
                 
-                // Set current scope from user data if available
                 if (user.scope) {
                     setCurrentScope(user.scope as ScopeType);
                 }
 
                 if (user.tenant_id) {
-                    const tenant = await fetchTenant(user.tenant_id);
-                    setCurrentTenant(tenant);
-                    setIsLoading(false);
+                    // Try to use a small delay or background fetch to avoid blocking the very first render if possible
+                    // However, we need the tenant object for many things, so we check if we can background fetch it
+                    fetchTenant(user.tenant_id).then(tenant => {
+                        if (tenant) setCurrentTenant(tenant);
+                        setIsLoading(false);
+                    }).catch(() => {
+                        setIsLoading(false);
+                    });
                     return;
                 }
             }
         } catch (e) {
             console.error('Failed to parse auth_user from localStorage', e);
         }
-        // Fallback: clear user state if no valid session
         setCurrentTenant(null);
         setCurrentUser(null);
         setIsLoading(false);

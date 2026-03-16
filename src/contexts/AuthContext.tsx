@@ -45,21 +45,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const parsedUser = JSON.parse(storedUser);
                 setToken(storedToken);
                 setUser(parsedUser);
+                setIsLoading(false); // Unblock UI immediately if we have local data
 
-                // Refresh user data from server to ensure RBAC and profile are up to date
-                try {
-                    console.log('AuthContext: Refreshing user data...');
-                    const latestUser = await userService.getById(parsedUser.id);
+                // Refresh user data from server in background
+                userService.getById(parsedUser.id).then(latestUser => {
                     if (latestUser) {
                         setUser(latestUser);
                         localStorage.setItem('auth_user', JSON.stringify(latestUser));
-                        console.log('AuthContext: User data refreshed');
+                        console.log('AuthContext: User data refreshed in background');
                     }
-                } catch (error) {
-                    console.error('AuthContext: Refresh failed', error);
-                }
+                }).catch(error => {
+                    console.error('AuthContext: Background refresh failed', error);
+                });
+            } else {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         };
         initializeAuth();
     }, []);
