@@ -4,7 +4,7 @@ import { requirePermission } from '../middleware/auth';
 import { wargaService } from '../services/wargaService';
 
 export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
-    fastify.get('/', { preHandler: [requirePermission('Manajemen Warga', 'Lihat')] }, async (request, reply) => {
+    fastify.get('/', { preHandler: [requirePermission('Warga', 'Lihat')] }, async (request, reply) => {
         const query = request.query as any;
         const user = (request as any).user;
 
@@ -24,7 +24,7 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         return reply.code(400).send({ error: 'warga_id is required' });
     });
 
-    fastify.post('/', { preHandler: [requirePermission('Manajemen Warga', 'Buat')] }, async (request, reply) => {
+    fastify.post('/', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
         try {
             const user = (request as any).user;
             const data = request.body as any;
@@ -46,7 +46,7 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.put('/:id', { preHandler: [requirePermission('Manajemen Warga', 'Ubah')] }, async (request, reply) => {
+    fastify.put('/:id', { preHandler: [requirePermission('Warga', 'Ubah')] }, async (request, reply) => {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
@@ -69,7 +69,7 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.delete('/:id', { preHandler: [requirePermission('Manajemen Warga', 'Hapus')] }, async (request, reply) => {
+    fastify.delete('/:id', { preHandler: [requirePermission('Warga', 'Hapus')] }, async (request, reply) => {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
