@@ -107,7 +107,14 @@ export const wargaService = {
             'Status Penduduk': ['Tetap', 'Kontrak'],
             'Status Rumah': ['Dihuni', 'Kosong'],
             'Status Domisili': ['Aktif', 'Pindah', 'Meninggal Dunia'],
-            'Scope': ['RT', 'PKK', 'Dasa Wisma']
+            'Scope': ['RT', 'PKK', 'Dasa Wisma'],
+            'Pendidikan': ['SD', 'SMP / Sederajat', 'SMA / Sederajat', 'Diploma', 'S1', 'S2', 'S3'],
+            'Pekerjaan': [
+                'Belum/Tidak Bekerja', 'Mengurus Rumah Tangga', 'Pelajar/Mahasiswa', 'Pensiunan', 
+                'PNS', 'TNI', 'POLRI', 'Karyawan Swasta', 'Karyawan BUMN', 'Wiraswasta', 
+                'Buruh Harian Lepas', 'Guru', 'Dosen', 'Dokter', 'Perawat', 'Sopir', 
+                'Pedagang', 'Arsitek', 'Pengacara', 'Seniman'
+            ]
         };
 
         items.forEach((item) => {
@@ -265,7 +272,14 @@ export const wargaService = {
             'Status Penduduk': ['Tetap', 'Kontrak'],
             'Status Rumah': ['Dihuni', 'Kosong'],
             'Status Domisili': ['Aktif', 'Pindah', 'Meninggal Dunia'],
-            'Scope': ['RT', 'PKK', 'Dasa Wisma']
+            'Scope': ['RT', 'PKK', 'Dasa Wisma'],
+            'Pendidikan': ['SD', 'SMP / Sederajat', 'SMA / Sederajat', 'Diploma', 'S1', 'S2', 'S3'],
+            'Pekerjaan': [
+                'Belum/Tidak Bekerja', 'Mengurus Rumah Tangga', 'Pelajar/Mahasiswa', 'Pensiunan', 
+                'PNS', 'TNI', 'POLRI', 'Karyawan Swasta', 'Karyawan BUMN', 'Wiraswasta', 
+                'Buruh Harian Lepas', 'Guru', 'Dosen', 'Dokter', 'Perawat', 'Sopir', 
+                'Pedagang', 'Arsitek', 'Pengacara', 'Seniman'
+            ]
         };
 
         // Apply validations for 1000 rows
