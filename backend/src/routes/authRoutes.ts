@@ -48,7 +48,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         try {
             await roleService.syncDefaultRoles(user.tenant_id);
         } catch (syncError) {
-            fastify.log.error(`Failed to sync RBAC for tenant ${user.tenant_id}:`, syncError);
+            fastify.log.error(syncError as any, `Failed to sync RBAC for tenant ${user.tenant_id}`);
             // We continue login even if sync fails to avoid locking users out
         }
 

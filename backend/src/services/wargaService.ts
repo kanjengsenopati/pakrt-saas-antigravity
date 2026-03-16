@@ -1,5 +1,4 @@
 import { prisma } from '../prisma';
-import * as XLSX from 'xlsx';
 
 const prepareWargaData = (data: any) => {
     const {
@@ -81,39 +80,129 @@ export const wargaService = {
             orderBy: { nama: 'asc' }
         });
 
-        const data = items.map(item => ({
-            'NIK': item.nik,
-            'Nama': item.nama,
-            'Kontak': item.kontak || '',
-            'Alamat': item.alamat,
-            'Tempat Lahir': item.tempat_lahir || '',
-            'Tanggal Lahir': item.tanggal_lahir || '',
-            'Pendidikan': item.pendidikan || '',
-            'Pekerjaan': item.pekerjaan || '',
-            'Jenis Kelamin': item.jenis_kelamin || '',
-            'Agama': item.agama || '',
-            'Status Penduduk': item.status_penduduk || 'Tetap',
-            'Status Rumah': item.status_rumah || 'Dihuni',
-            'Status Domisili': item.status_domisili || 'Aktif',
-            'Scope': item.scope || 'RT'
-        }));
+        const ExcelJS = await import('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Data Warga');
 
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(data);
-        XLSX.utils.book_append_sheet(wb, ws, 'Data Warga');
+        const headers = [
+            'NIK', 'Nama', 'Kontak', 'Alamat', 'Tempat Lahir', 'Tanggal Lahir',
+            'Pendidikan', 'Pekerjaan', 'Jenis Kelamin', 'Agama',
+            'Status Penduduk', 'Status Rumah', 'Status Domisili', 'Scope'
+        ];
 
-        return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        sheet.addRow(headers);
+
+        // Styling headers
+        const headerRow = sheet.getRow(1);
+        headerRow.font = { bold: true };
+        headerRow.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE0E0E0' }
+        };
+
+        const dropdowns = {
+            'Jenis Kelamin': ['Laki-laki', 'Perempuan'],
+            'Agama': ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'],
+            'Status Penduduk': ['Tetap', 'Kontrak'],
+            'Status Rumah': ['Dihuni', 'Kosong'],
+            'Status Domisili': ['Aktif', 'Pindah', 'Meninggal Dunia'],
+            'Scope': ['RT', 'PKK', 'Dasa Wisma']
+        };
+
+        items.forEach((item) => {
+            sheet.addRow([
+                item.nik,
+                item.nama,
+                item.kontak || '',
+                item.alamat,
+                item.tempat_lahir || '',
+                item.tanggal_lahir || '',
+                item.pendidikan || '',
+                item.pekerjaan || '',
+                item.jenis_kelamin || '',
+                item.agama || '',
+                item.status_penduduk || 'Tetap',
+                item.status_rumah || 'Dihuni',
+                item.status_domisili || 'Aktif',
+                item.scope || 'RT'
+            ]);
+        });
+
+        // Apply formatting and validations
+        sheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return;
+
+            // NIK as Numeric (Cell A)
+            const nikCell = row.getCell(1);
+            if (nikCell.value) {
+                nikCell.numFmt = '0'; // Numeric no decimal
+                nikCell.value = Number(nikCell.value);
+            }
+
+            // Kontak as String (Cell C)
+            row.getCell(3).numFmt = '@';
+
+            // Tanggal Lahir (Cell F) - Expected format DD-MM-YYYY if user inputs text, but Excel can handle dates
+            // For now, we keep it as text for compatibility but add validation hint if needed.
+
+            headers.forEach((header, colIdx) => {
+                const options = (dropdowns as any)[header];
+                if (options) {
+                    row.getCell(colIdx + 1).dataValidation = {
+                        type: 'list',
+                        allowBlank: true,
+                        formulae: [`"${options.join(',')}"`]
+                    };
+                }
+            });
+        });
+
+        sheet.columns.forEach(col => col.width = 20);
+
+        return await workbook.xlsx.writeBuffer();
     },
 
     async importFromXlsx(tenantId: string, buffer: Buffer) {
-        const wb = XLSX.read(buffer, { type: 'buffer' });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws) as any[];
+        const ExcelJS = await import('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer as any);
+        const sheet = workbook.getWorksheet(1);
+        
+        if (!sheet) throw new Error('Sheet tidak ditemukan');
+
+        const data: any[] = [];
+        sheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return; // Skip header
+
+            const rowData: any = {};
+            const headers = [
+                'NIK', 'Nama', 'Kontak', 'Alamat', 'Tempat Lahir', 'Tanggal Lahir',
+                'Pendidikan', 'Pekerjaan', 'Jenis Kelamin', 'Agama',
+                'Status Penduduk', 'Status Rumah', 'Status Domisili', 'Scope'
+            ];
+
+            headers.forEach((header, idx) => {
+                let value = row.getCell(idx + 1).value;
+                // Handle rich text or objects
+                if (value && typeof value === 'object' && 'result' in value) value = (value as any).result;
+                if (value && typeof value === 'object' && 'text' in value) value = (value as any).text;
+                rowData[header] = value;
+            });
+            data.push(rowData);
+        });
 
         const mappedData = data.map(row => {
             const nik = String(row['NIK'] || '').replace(/\D/g, '');
             if (!nik || nik.length < 5) return null;
+
+            // Handle Tanggal Lahir formatting if needed
+            let tanggalLahir = String(row['Tanggal Lahir'] || '');
+            // If user inputs DD-MM-YYYY we might need to convert to YYYY-MM-DD for consistency if the app expects it
+            if (tanggalLahir.includes('-') && tanggalLahir.split('-')[0].length === 2) {
+                const parts = tanggalLahir.split('-');
+                tanggalLahir = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
 
             return {
                 tenant_id: tenantId,
@@ -122,7 +211,7 @@ export const wargaService = {
                 kontak: String(row['Kontak'] || ''),
                 alamat: String(row['Alamat'] || ''),
                 tempat_lahir: String(row['Tempat Lahir'] || ''),
-                tanggal_lahir: String(row['Tanggal Lahir'] || ''),
+                tanggal_lahir: tanggalLahir,
                 pendidikan: String(row['Pendidikan'] || ''),
                 pekerjaan: String(row['Pekerjaan'] || ''),
                 jenis_kelamin: String(row['Jenis Kelamin'] || ''),
@@ -138,10 +227,6 @@ export const wargaService = {
             throw new Error('Tidak ada data valid untuk diimport (cek NIK dan Nama)');
         }
 
-        // Use a loop or createMany. For consistency with tenant constraints, we'll do sequential creates if needed, 
-        // but since we aren't in a transaction here and it's bulk import, createMany is better for performance.
-        // Note: The prisma extension already handles tenant_id injection in createMany if context is set, 
-        // but here we are passing it explicitly for safety.
         return await prisma.warga.createMany({
             data: mappedData as any,
             skipDuplicates: true
@@ -149,30 +234,71 @@ export const wargaService = {
     },
 
     async getImportTemplate() {
+        const ExcelJS = await import('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Template Import Warga');
+
         const headers = [
-            {
-                'NIK': 'Masukkan 16 digit NIK (WAJIB)',
-                'Nama': 'Masukkan Nama Lengkap (WAJIB)',
-                'Kontak': 'Nomor WhatsApp/Telepon',
-                'Alamat': 'Alamat Lengkap',
-                'Tempat Lahir': 'Kota Kelahiran',
-                'Tanggal Lahir': 'YYYY-MM-DD',
-                'Pendidikan': 'Pendidikan Terakhir',
-                'Pekerjaan': 'Pekerjaan Saat Ini',
-                'Jenis Kelamin': 'Laki-laki / Perempuan',
-                'Agama': 'Agama',
-                'Status Penduduk': 'Tetap / Kontrak',
-                'Status Rumah': 'Dihuni / Kosong',
-                'Status Domisili': 'Aktif / Pindah / Meninggal Dunia',
-                'Scope': 'RT / PKK / Dasa Wisma'
-            }
+            'NIK', 'Nama', 'Kontak', 'Alamat', 'Tempat Lahir', 'Tanggal Lahir',
+            'Pendidikan', 'Pekerjaan', 'Jenis Kelamin', 'Agama',
+            'Status Penduduk', 'Status Rumah', 'Status Domisili', 'Scope'
         ];
 
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(headers);
-        XLSX.utils.book_append_sheet(wb, ws, 'Template Import Warga');
+        sheet.addRow(headers);
+        const headerRow = sheet.getRow(1);
+        headerRow.font = { bold: true };
+        headerRow.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE0E0E0' }
+        };
 
-        return XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        const sampleRow = [
+            '3374101011100001', 'BUDI SANTOSO', '081234567890', 'Jln. Contoh No. 123', 'Semarang', '15-05-1990',
+            'S1', 'Wiraswasta', 'Laki-laki', 'Islam', 'Tetap', 'Dihuni', 'Aktif', 'RT'
+        ];
+        sheet.addRow(sampleRow);
+
+        const dropdowns = {
+            'Jenis Kelamin': ['Laki-laki', 'Perempuan'],
+            'Agama': ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'],
+            'Status Penduduk': ['Tetap', 'Kontrak'],
+            'Status Rumah': ['Dihuni', 'Kosong'],
+            'Status Domisili': ['Aktif', 'Pindah', 'Meninggal Dunia'],
+            'Scope': ['RT', 'PKK', 'Dasa Wisma']
+        };
+
+        // Apply validations for 1000 rows
+        for (let i = 2; i <= 1000; i++) {
+            const row = sheet.getRow(i);
+            
+            // NIK Formatting (A)
+            row.getCell(1).numFmt = '0';
+            
+            // Kontak Formatting (C)
+            row.getCell(3).numFmt = '@';
+
+            // Date hint/formatting in col 6 (Tanggal Lahir)
+            row.getCell(6).numFmt = 'dd-mm-yyyy';
+
+            headers.forEach((header, colIdx) => {
+                const options = (dropdowns as any)[header];
+                if (options) {
+                    row.getCell(colIdx + 1).dataValidation = {
+                        type: 'list',
+                        allowBlank: true,
+                        formulae: [`"${options.join(',')}"`],
+                        showErrorMessage: true,
+                        errorTitle: 'Pilihan Tidak Valid',
+                        error: 'Silakan pilih dari daftar yang tersedia.'
+                    };
+                }
+            });
+        }
+
+        sheet.columns.forEach(col => col.width = 20);
+
+        return await workbook.xlsx.writeBuffer();
     },
 
     async getPending(tenantId: string) {

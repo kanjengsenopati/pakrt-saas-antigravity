@@ -1,0 +1,6 @@
+(node:12292) ExperimentalWarning: CommonJS module C:\Users\asus\CONFIG~1\herd\bin\nvm\v23.3.0\node_modules\npm\node_modules\debug\src\node.js is loading ES Module C:\Users\asus\CONFIG~1\herd\bin\nvm\v23.3.0\node_modules\npm\node_modules\supports-color\index.js using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+src/services/wargaService.ts(169,34): error TS2345: Argument of type 'Buffer<ArrayBufferLike>' is not assignable to parameter of type 'Buffer'.
+  The types of 'slice(...)[Symbol.toStringTag]' are incompatible between these types.
+    Type '"Uint8Array"' is not assignable to type '"ArrayBuffer"'.
