@@ -4,6 +4,7 @@ import { getFullUrl } from '../../utils/url';
 import { Warga } from '../../database/db';
 import { wargaService } from '../../services/wargaService';
 import { ArrowLeft, PencilSimple, User, IdentificationCard, Phone, MapPin, Calendar, GraduationCap, Briefcase, FileText, X, MagnifyingGlassPlus, GenderIntersex, HandsPraying, House } from '@phosphor-icons/react';
+import { dateUtils } from '../../utils/date';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 
 export default function WargaDetail() {
@@ -133,7 +134,7 @@ export default function WargaDetail() {
                             <InfoItem
                                 icon={Calendar}
                                 label="Tempat, Tanggal Lahir"
-                                value={`${warga.tempat_lahir || '-'}, ${warga.tanggal_lahir || '-'}`}
+                                value={`${warga.tempat_lahir || '-'}, ${dateUtils.toDisplay(warga.tanggal_lahir)}`}
                             />
                             <InfoItem icon={GraduationCap} label="Pendidikan Terakhir" value={warga.pendidikan || '-'} />
                             <InfoItem icon={Briefcase} label="Pekerjaan" value={warga.pekerjaan || '-'} />

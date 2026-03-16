@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 import { aktivitasService } from './aktivitasService';
 import { pengaturanService } from './pengaturanService';
 import { wargaService } from './wargaService';
@@ -48,6 +49,7 @@ export const pembayaranIuranService = {
   },
 
   async create(data: any) {
+    if (data.tanggal_bayar) data.tanggal_bayar = dateUtils.normalize(data.tanggal_bayar);
     const isBebas = data.metadata?.mode === 'Bebas';
     const metadataMode = data.metadata?.mode;
     let processedData = { ...data };

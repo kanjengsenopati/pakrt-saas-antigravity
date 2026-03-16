@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 
 const prepareWargaData = (data: any) => {
     const {
@@ -16,6 +17,13 @@ const prepareWargaData = (data: any) => {
     if (clean.nik) {
         clean.nik = clean.nik.replace(/\D/g, '');
         if (clean.nik.length < 5) throw new Error("NIK tidak valid (minimal 5 digit)");
+    }
+    
+    if (clean.tanggal_lahir) {
+        clean.tanggal_lahir = dateUtils.normalize(clean.tanggal_lahir);
+    }
+    if (clean.tanggal_meninggal) {
+        clean.tanggal_meninggal = dateUtils.normalize(clean.tanggal_meninggal);
     }
     
     return clean;
@@ -204,12 +212,7 @@ export const wargaService = {
             if (!nik || nik.length < 5) return null;
 
             // Handle Tanggal Lahir formatting if needed
-            let tanggalLahir = String(row['Tanggal Lahir'] || '');
-            // If user inputs DD-MM-YYYY we might need to convert to YYYY-MM-DD for consistency if the app expects it
-            if (tanggalLahir.includes('-') && tanggalLahir.split('-')[0].length === 2) {
-                const parts = tanggalLahir.split('-');
-                tanggalLahir = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
+            let tanggalLahir = dateUtils.normalize(String(row['Tanggal Lahir'] || ''));
 
             return {
                 tenant_id: tenantId,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { suratService, SuratWithWarga } from '../../services/suratService';
+import { dateUtils } from '../../utils/date';
 import { CheckCircle, Warning, SealCheck, Info, FileText, User, CalendarBlank, MapPin } from '@phosphor-icons/react';
 
 export default function VerifySurat() {
@@ -122,12 +123,8 @@ export default function VerifySurat() {
                                     <CalendarBlank weight="bold" className="w-4 h-4" />
                                     <span className="text-[10px] font-black uppercase tracking-widest">Tanggal Terbit</span>
                                 </div>
-                                <p className="font-bold text-slate-900">
-                                    {new Date(surat.tanggal).toLocaleDateString('id-ID', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric'
-                                    })}
+                                <p className="font-bold text-slate-900 leading-tight">
+                                    {dateUtils.toDisplay(surat.tanggal)}
                                 </p>
                             </div>
                         </div>

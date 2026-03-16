@@ -22,6 +22,7 @@ import { agendaService } from '../../services/agendaService';
 import { keuanganService } from '../../services/keuanganService';
 import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
+import { dateUtils } from '../../utils/date';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -100,9 +101,7 @@ export default function Dashboard() {
     // Unified formatRupiah imported from utils/currency
 
     const formatDate = (timestamp: number) => {
-        const date = new Date(timestamp);
-        const pad = (n: number) => n.toString().padStart(2, '0');
-        return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        return dateUtils.toDisplay(new Date(timestamp));
     };
 
     return (
@@ -176,7 +175,6 @@ export default function Dashboard() {
                             [1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-50 animate-pulse rounded-xl" />)
                         ) : upcomingAgenda.length > 0 ? (
                             upcomingAgenda.map((agenda) => {
-                                const agendaDate = new Date(agenda.tanggal);
                                 return (
                                     <div
                                         key={agenda.id}
@@ -184,12 +182,12 @@ export default function Dashboard() {
                                         className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50/30 hover:bg-white border border-transparent hover:border-purple-100 hover:shadow-sm transition-all group cursor-pointer"
                                     >
                                         <div className="flex items-center gap-2.5 min-w-0">
-                                            <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex flex-col items-center justify-center shrink-0 border border-purple-200 shadow-sm">
-                                                <span className="text-[7px] font-black uppercase leading-none opacity-70">
-                                                    {agendaDate.toLocaleDateString('id-ID', { month: 'short' })}
+                                            <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex flex-col items-center justify-center shrink-0 border border-purple-100 shadow-sm">
+                                                <span className="text-[10px] font-black">
+                                                    {dateUtils.toDisplay(agenda.tanggal).split('-')[0]}
                                                 </span>
-                                                <span className="text-xs font-black leading-none mt-0.5">
-                                                    {agendaDate.getDate()}
+                                                <span className="text-[8px] font-bold uppercase">
+                                                    {dateUtils.toDisplay(agenda.tanggal).split('-')[1]}
                                                 </span>
                                             </div>
                                             <div className="min-w-0">
@@ -276,7 +274,7 @@ export default function Dashboard() {
                                 >
                                     <div>
                                         <p className="font-bold text-slate-900 text-xs leading-none">
-                                            {new Date(ronda.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })}
+                                            {dateUtils.toDisplay(ronda.tanggal)}
                                         </p>
                                         <p className="text-[10px] text-slate-500 mt-0.5 truncate max-w-[150px]">
                                             {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}

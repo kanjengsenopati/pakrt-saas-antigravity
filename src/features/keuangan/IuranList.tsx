@@ -16,6 +16,7 @@ import {
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
+import { dateUtils } from '../../utils/date';
 
 
 export default function IuranList() {
@@ -90,14 +91,6 @@ export default function IuranList() {
 
     // Filtered iuran data
 
-    const formatDate = (dateString: string) => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
-    };
 
     const getMonthName = (monthNumber: number) => {
         const date = new Date();
@@ -266,7 +259,7 @@ export default function IuranList() {
                                 filteredIuran.map((iuran) => (
                                     <tr key={iuran.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3">
-                                            <div className="font-bold text-slate-900 text-xs">{formatDate(iuran.tanggal_bayar)}</div>
+                                            <div className="font-bold text-slate-900 text-xs">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
                                             <div className="text-[10px] text-brand-600 font-bold uppercase tracking-tight mt-0.5">{iuran.kategori || 'Iuran Bulanan'}</div>
                                         </td>
                                         <td className="p-3">
@@ -362,7 +355,7 @@ export default function IuranList() {
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-[10px] text-slate-400 uppercase font-bold text-brand-600">{iuran.kategori || 'Iuran Bulanan'}</p>
-                                                <p className="text-xs font-bold text-slate-700">{formatDate(iuran.tanggal_bayar)}</p>
+                                                <p className="text-xs font-bold text-slate-700">{dateUtils.toDisplay(iuran.tanggal_bayar)}</p>
                                             </div>
                                         </div>
                                     </div>

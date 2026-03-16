@@ -4,6 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { rondaService, RondaWithWarga } from '../../services/rondaService';
 import { Plus, MagnifyingGlass, Funnel, Trash, ShieldCheck, PencilSimple, CheckCircle, X, CaretUp, CaretDown } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
+import { dateUtils } from '../../utils/date';
 
 export default function RondaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -260,7 +261,7 @@ export default function RondaList() {
                                                                 <div className="flex items-center gap-2">
                                                                     <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-emerald-400' : 'bg-blue-400 animate-pulse'}`}></div>
                                                                     <span className={isPast ? 'text-gray-400' : 'text-gray-600 font-medium'}>
-                                                                        {dateObj.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+                                                                        {dateUtils.toDisplay(d.tanggal)}
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex items-center gap-2">
@@ -355,7 +356,7 @@ export default function RondaList() {
                                             <tr key={ronda.id} className="hover:bg-gray-50/50 transition-colors">
                                                 <td className="p-3">
                                                     <p className="font-bold text-slate-800 text-[13px]">
-                                                        {new Date(ronda.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+                                                        {dateUtils.toDisplay(ronda.tanggal)}
                                                     </p>
                                                 </td>
                                                 <td className="p-3">
@@ -434,7 +435,7 @@ export default function RondaList() {
                                                 <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3">
                                                     <div>
                                                         <p className="font-bold text-gray-900 text-sm">
-                                                            {new Date(ronda.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                                            {dateUtils.toDisplay(ronda.tanggal)}
                                                         </p>
                                                     </div>
                                                     <div className="text-right">
@@ -507,7 +508,10 @@ export default function RondaList() {
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900">Catat Kehadiran Ronda</h2>
                                 <p className="text-sm text-gray-500 mt-1">
-                                    Tanggal: <span className="font-semibold text-gray-700">{new Date(selectedRonda.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span> ({selectedRonda.regu})
+                                    Tanggal: <span className="text-sm font-black capitalize tracking-tight text-slate-900 text-center">
+    {dateUtils.toDisplay(selectedRonda.tanggal)}
+</span>
+ ({selectedRonda.regu})
                                 </p>
                             </div>
                             <button

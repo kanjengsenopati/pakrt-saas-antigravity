@@ -9,6 +9,7 @@ import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
+import { dateUtils } from '../../utils/date';
 
 interface ReportPanelProps {
     agenda: Agenda;
@@ -388,9 +389,8 @@ export default function AgendaList() {
                                             <React.Fragment key={agenda.id}>
                                                 <tr className={`hover:bg-brand-50/20 transition-colors group ${expandedId === agenda.id ? 'bg-brand-50/40' : ''}`}>
                                                     <td className="p-4 text-center">
-                                                        <div className={`w-12 h-12 mx-auto rounded-xl flex flex-col items-center justify-center border shrink-0 ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'} shadow-sm`}>
-                                                            <span className="text-base font-black leading-none">{new Date(agenda.tanggal).getDate()}</span>
-                                                            <span className="text-[8px] font-black uppercase tracking-widest">{new Date(agenda.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                        <div className={`px-2 py-1 mx-auto rounded-lg flex flex-col items-center justify-center border shrink-0 ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'} shadow-sm`}>
+                                                            <span className="text-[11px] font-black leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                         </div>
                                                     </td>
                                                     <td className="p-4 min-w-0">
@@ -524,9 +524,8 @@ export default function AgendaList() {
                                             <div className="flex-1">
                                                 <div className="flex justify-between items-start mb-2 border-b border-slate-100 pb-2">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center shrink-0 border ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'}`}>
-                                                            <span className="text-sm font-black leading-none">{new Date(agenda.tanggal).getDate()}</span>
-                                                            <span className="text-[7px] font-black uppercase">{new Date(agenda.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                        <div className={`px-2 py-1 rounded-lg flex flex-col items-center justify-center shrink-0 border ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'}`}>
+                                                            <span className="text-[10px] font-black leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                         </div>
                                                         <div>
                                                             <h3 className="font-black text-slate-900 text-sm leading-tight line-clamp-1">{agenda.judul}</h3>
@@ -564,7 +563,7 @@ export default function AgendaList() {
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cakupan <span className="text-brand-600">Agenda {currentScope}</span></p>
-                                                        <p className="text-xs font-bold text-slate-700">{new Date(agenda.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</p>
+                                                        <p className="text-xs font-bold text-slate-700">{dateUtils.toDisplay(agenda.tanggal)}</p>
                                                     </div>
                                                 </div>
                                             </div>

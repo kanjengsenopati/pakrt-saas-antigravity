@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 
 export const keuanganService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -27,8 +28,11 @@ export const keuanganService = {
 
   async create(data: any) {
     if (data.nominal <= 0) throw new Error("Nominal harus lebih besar dari 0");
-    if (!data.tanggal || !/^\d{4}-\d{2}-\d{2}$/.test(data.tanggal)) {
-        throw new Error("Format tanggal tidak valid (YYYY-MM-DD)");
+    if (data.tanggal) {
+        data.tanggal = dateUtils.normalize(data.tanggal);
+    }
+    if (!data.tanggal) {
+        throw new Error("Tanggal tidak valid atau kosong");
     }
     return await prisma.keuangan.create({ data });
   },
@@ -37,8 +41,9 @@ export const keuanganService = {
     if (data.nominal !== undefined && data.nominal <= 0) {
         throw new Error("Nominal harus lebih besar dari 0");
     }
-    if (data.tanggal && !/^\d{4}-\d{2}-\d{2}$/.test(data.tanggal)) {
-        throw new Error("Format tanggal tidak valid (YYYY-MM-DD)");
+    if (data.tanggal) {
+        data.tanggal = dateUtils.normalize(data.tanggal);
+        if (!data.tanggal) throw new Error("Format tanggal tidak valid");
     }
     return await prisma.keuangan.update({ where: { id }, data });
   },

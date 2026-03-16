@@ -6,6 +6,7 @@ import { suratService, SuratWithWarga } from '../../services/suratService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { Printer, ArrowLeft } from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
+import { dateUtils } from '../../utils/date';
 
 export default function CetakSurat() {
     const { id } = useParams<{ id: string }>();
@@ -117,7 +118,7 @@ export default function CetakSurat() {
                     </div>
 
                     <div className="space-y-2">
-                        <p className="text-right whitespace-nowrap">{currentTenant?.config?.kota || '....................'}, {new Date(surat.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</p>
+                        <p className="text-right whitespace-nowrap">{currentTenant?.config?.kota || '....................'}, {dateUtils.toDisplay(surat.tanggal)}</p>
                         <div className="text-left leading-tight">
                             <p>Kepada Yth :</p>
                             <p className="font-bold">Kepala Kelurahan {currentTenant?.config?.kelurahan || '................'}</p>
@@ -136,7 +137,7 @@ export default function CetakSurat() {
                                 {[
                                     { n: '1.', l: 'Nama', v: surat.pemohon.nama },
                                     { n: '2.', l: 'Jenis Kelamin', v: (surat.pemohon as any).jenis_kelamin || 'Perempuan' },
-                                    { n: '3.', l: 'Tempat / Tanggal Lahir', v: `${surat.pemohon.tempat_lahir || '-'}, ${surat.pemohon.tanggal_lahir || '-'}` },
+                                    { n: '3.', l: 'Tempat / Tanggal Lahir', v: `${surat.pemohon.tempat_lahir || '-'}, ${dateUtils.toDisplay(surat.pemohon.tanggal_lahir)}` },
                                     { n: '4.', l: 'Kewarganegaraan / Agama', v: `WNI / ${(surat.pemohon as any).agama || 'Islam'}` },
                                     { n: '5.', l: 'Status', v: (surat.pemohon as any).status || 'Kawin' },
                                     { n: '6.', l: 'Pendidikan Terakhir', v: surat.pemohon.pendidikan || 'SMA / Sederajat' },

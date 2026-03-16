@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 
 export const suratPengantarService = {
   async getAll(tenantId: string, scope?: string, wargaId?: string, page: number = 1, limit: number = 20) {
@@ -30,6 +31,7 @@ export const suratPengantarService = {
   },
 
   async create(data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     // Prevent duplicate surat for same warga, jenis_surat, and date
     const existing = await prisma.suratPengantar.findFirst({
       where: {
@@ -51,6 +53,7 @@ export const suratPengantarService = {
   },
 
   async update(id: string, data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     // Generate nomor surat if status is changing to 'selesai'
     if (data.status === 'selesai') {
       const existing = await this.getById(id);

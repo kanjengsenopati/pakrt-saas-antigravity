@@ -6,6 +6,7 @@ import { Notulensi } from '../../database/db';
 import { Plus, MagnifyingGlass, Funnel, Trash, Notebook, CalendarBlank, Eye, XCircle, CheckCircle, Pencil, MagnifyingGlassPlus, X, CircleNotch, MapPin, Image as ImageIcon, CaretDown, CaretUp, UsersThree } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
+import { dateUtils } from '../../utils/date';
 
 export default function NotulensiList() {
     const { currentTenant, currentScope } = useTenant();
@@ -274,8 +275,8 @@ export default function NotulensiList() {
                                                         <CalendarBlank weight="bold" className="w-4 h-4" />
                                                     </div>
                                                     <span className="text-sm font-black capitalize tracking-tight text-slate-900">
-                                                        {new Date(notulensi.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                                    </span>
+    {dateUtils.toDisplay(notulensi.tanggal)}
+</span>
                                                 </div>
                                             </td>
                                             <td className="p-4 align-top text-center">
@@ -381,8 +382,8 @@ export default function NotulensiList() {
                                                     <CalendarBlank weight="bold" className="w-4 h-4" />
                                                 </div>
                                                 <span className="text-[11px] font-black capitalize tracking-tighter text-slate-900">
-                                                    {new Date(notulensi.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                                </span>
+    {dateUtils.toDisplay(notulensi.tanggal)}
+</span>
                                             </div>
                                         </div>
                                         <div className="flex gap-2">

@@ -7,6 +7,7 @@ import { Aset, Warga } from '../../database/db';
 import { Plus, MagnifyingGlass, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
+import { dateUtils } from '../../utils/date';
 
 export default function AsetList() {
     const { currentTenant, currentScope } = useTenant();
@@ -205,7 +206,7 @@ export default function AsetList() {
                                         <td className="p-4 align-top">
                                             <div className="space-y-1 text-sm">
                                                 <p className="text-gray-900 font-medium">{aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'}</p>
-                                                <p className="text-gray-500 text-xs">{aset.tanggal_beli ? new Date(aset.tanggal_beli).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'}</p>
+                                                <p className="text-gray-500 text-xs">{aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : '-'}</p>
                                                 {aset.vendor && <p className="text-gray-400 text-xs truncate max-w-[150px]" title={aset.vendor}>Toko: {aset.vendor}</p>}
                                             </div>
                                         </td>
@@ -216,7 +217,7 @@ export default function AsetList() {
                                                         <Handshake className="w-4 h-4" /> Dipinjam Oleh
                                                     </div>
                                                     <p className="text-sm font-bold text-gray-900 truncate max-w-[150px]">{aset.peminjam?.nama || 'Warga (ID: ' + aset.peminjam_id + ')'}</p>
-                                                    <p className="text-[10px] text-gray-500 font-medium mt-1">{aset.tanggal_pinjam ? new Date(aset.tanggal_pinjam).toLocaleDateString('id-ID') : ''}</p>
+                                                    <p className="text-[10px] text-gray-500 font-medium mt-1">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</p>
                                                 </div>
                                             ) : (
                                                 <div className="bg-emerald-50 border border-emerald-100 rounded-lg py-1.5 px-3 w-fit">
@@ -323,7 +324,7 @@ export default function AsetList() {
                                                             <Handshake className="w-3.5 h-3.5" /> Sedang Dipinjam
                                                         </div>
                                                         <p className="text-xs font-bold text-gray-900">{aset.peminjam?.nama || 'Warga (ID: ' + aset.peminjam_id + ')'}</p>
-                                                        <p className="text-[10px] text-amber-600 font-bold mt-0.5">{aset.tanggal_pinjam ? new Date(aset.tanggal_pinjam).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</p>
+                                                        <p className="text-[10px] text-amber-600 font-bold mt-0.5">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</p>
                                                     </div>
                                                     <button
                                                         onClick={() => handleReturn(aset)}
@@ -348,7 +349,7 @@ export default function AsetList() {
                                 </div>
                                 <div className="bg-gray-50 border-t border-gray-100 p-2 flex justify-between items-center px-4">
                                     <div className="text-xs text-gray-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis mr-4">
-                                        {aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'} • {aset.tanggal_beli ? new Date(aset.tanggal_beli).toLocaleDateString('id-ID') : ''}
+                                        {aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'} • {aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : ''}
                                     </div>
                                     <div className="flex gap-1">
                                         <HasPermission module="Aset" action="Ubah">

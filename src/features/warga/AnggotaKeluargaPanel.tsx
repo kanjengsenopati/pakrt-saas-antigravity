@@ -3,6 +3,7 @@ import { AnggotaKeluarga } from '../../database/db';
 import { anggotaKeluargaService } from '../../services/anggotaKeluargaService';
 import { useForm } from 'react-hook-form';
 import { Plus, PencilSimple, Trash, FloppyDisk, Users } from '@phosphor-icons/react';
+import { dateUtils } from '../../utils/date';
 
 interface Props {
     wargaId: string;
@@ -49,18 +50,12 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
     const openEditForm = (anggota: AnggotaKeluarga) => {
         setEditingId(anggota.id);
 
-        let parsedDateOut = anggota.tanggal_lahir || '';
-        if (parsedDateOut && parsedDateOut.split('-')[0].length === 2) {
-            const [d, m, y] = parsedDateOut.split('-');
-            if (y && y.length === 4) parsedDateOut = `${y}-${m}-${d}`;
-        }
-
         reset({
             nik: anggota.nik,
             nama: anggota.nama,
             hubungan: anggota.hubungan,
             tempat_lahir: anggota.tempat_lahir || '',
-            tanggal_lahir: parsedDateOut,
+            tanggal_lahir: dateUtils.toInput(anggota.tanggal_lahir),
             pendidikan: anggota.pendidikan || '',
             pekerjaan: anggota.pekerjaan || ''
         });
@@ -266,7 +261,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                             </td>
                                             <td className="p-4">
                                                 <p className="text-xs font-medium text-slate-700">{anggota.tempat_lahir || '-'}</p>
-                                                <p className="text-[10px] text-slate-400 mt-0.5">{anggota.tanggal_lahir || '-'}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5">{dateUtils.toDisplay(anggota.tanggal_lahir)}</p>
                                             </td>
                                             <td className="p-4">
                                                 <p className="text-xs font-bold text-slate-700">{anggota.pendidikan || '-'}</p>

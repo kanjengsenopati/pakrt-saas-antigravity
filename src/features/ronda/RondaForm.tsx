@@ -6,6 +6,7 @@ import { rondaService } from '../../services/rondaService';
 import { wargaService } from '../../services/wargaService';
 import { JadwalRonda, Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
+import { dateUtils } from '../../utils/date';
 
 type RondaFormData = Omit<JadwalRonda, 'id' | 'tenant_id'>;
 
@@ -121,8 +122,10 @@ export default function RondaForm() {
 
     const groupDatesByMonth = (dates: string[]) => {
         return dates.reduce((acc, dateStr) => {
-            const dateObj = new Date(dateStr);
-            const monthYear = dateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+            const dateDisplay = dateUtils.toDisplay(dateStr);
+            const [, m, y] = dateDisplay.split('-');
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthYear = `${monthNames[parseInt(m) - 1]} ${y}`;
             if (!acc[monthYear]) acc[monthYear] = [];
             acc[monthYear].push(dateStr);
             return acc;
@@ -405,7 +408,7 @@ export default function RondaForm() {
                                                                                 ? 'text-gray-900 font-medium'
                                                                                 : 'text-gray-700'
                                                                             }`}>
-                                                                            {new Date(date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                                                                             {dateUtils.toDisplay(date)}
                                                                         </span>
                                                                         <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isBooked
                                                                             ? 'bg-gray-100 border-gray-200'

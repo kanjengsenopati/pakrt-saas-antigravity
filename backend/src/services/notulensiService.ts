@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 
 export const notulensiService = {
   async getAll(tenantId: string, scope?: string) {
@@ -13,10 +14,12 @@ export const notulensiService = {
   },
 
   async create(data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     return await prisma.notulensi.create({ data });
   },
 
   async update(id: string, data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     return await prisma.notulensi.update({ where: { id }, data });
   },
 

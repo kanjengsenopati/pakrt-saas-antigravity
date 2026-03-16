@@ -6,6 +6,7 @@ import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk, UploadSimple, X, FileJs, CheckCircle, Warning } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { dateUtils } from '../../utils/date';
 
 
 const AGAMA_OPTIONS = [
@@ -121,25 +122,13 @@ export default function WargaForm() {
         if (isEditing && id) {
             wargaService.getById(id).then(data => {
                 if (data) {
-                    let parsedDateOut = data.tanggal_lahir || '';
-                    if (parsedDateOut && parsedDateOut.split('-')[0].length === 2) {
-                        const [d, m, y] = parsedDateOut.split('-');
-                        if (y && y.length === 4) parsedDateOut = `${y}-${m}-${d}`;
-                    }
-
-                    let parsedDateDeath = data.tanggal_meninggal || '';
-                    if (parsedDateDeath && parsedDateDeath.split('-')[0].length === 2) {
-                        const [d, m, y] = parsedDateDeath.split('-');
-                        if (y && y.length === 4) parsedDateDeath = `${y}-${m}-${d}`;
-                    }
-
                     reset({
                         nik: data.nik,
                         nama: data.nama,
                         kontak: data.kontak,
                         alamat: data.alamat,
                         tempat_lahir: data.tempat_lahir || '',
-                        tanggal_lahir: parsedDateOut,
+                        tanggal_lahir: dateUtils.toInput(data.tanggal_lahir),
                         pendidikan: data.pendidikan || '',
                         jenis_kelamin: data.jenis_kelamin || 'Laki-laki',
                         agama: data.agama || 'Islam',
@@ -149,7 +138,7 @@ export default function WargaForm() {
                         pekerjaan: data.pekerjaan || '',
                         status_domisili: data.status_domisili || 'Aktif',
                         alamat_pindah: data.alamat_pindah || '',
-                        tanggal_meninggal: parsedDateDeath,
+                        tanggal_meninggal: dateUtils.toInput(data.tanggal_meninggal),
                         lokasi_makam: data.lokasi_makam || '',
                         pj_tipe: data.pj_tipe || 'Luar',
                         pj_warga_id: data.pj_warga_id || '',

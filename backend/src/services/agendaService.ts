@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { dateUtils } from '../utils/date';
 
 export const agendaService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -25,10 +26,12 @@ export const agendaService = {
   },
 
   async create(data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     return await prisma.agenda.create({ data });
   },
 
   async update(id: string, data: any) {
+    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     return await prisma.agenda.update({ where: { id }, data });
   },
 

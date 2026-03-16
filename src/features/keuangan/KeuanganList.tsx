@@ -16,6 +16,7 @@ import {
 import { formatRupiah } from '../../utils/currency';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
+import { dateUtils } from '../../utils/date';
 
 export default function KeuanganList() {
     const navigate = useNavigate();
@@ -64,14 +65,6 @@ export default function KeuanganList() {
 
     // Filtered transactions data
 
-    const formatDate = (dateString: string) => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
-    };
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -192,7 +185,7 @@ export default function KeuanganList() {
                                 filteredTransactions.map((trx) => (
                                     <tr key={trx.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3 whitespace-nowrap">
-                                            <div className="font-bold text-slate-900 text-xs">{formatDate(trx.tanggal)}</div>
+                                            <div className="font-bold text-slate-900 text-xs">{dateUtils.toDisplay(trx.tanggal)}</div>
                                             <div className="text-[9px] text-slate-400 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {trx.id.substring(0, 8)}</div>
                                         </td>
                                         <td className="p-3">
@@ -281,7 +274,7 @@ export default function KeuanganList() {
                                                 <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
                                                     {trx.kategori}
                                                 </div>
-                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{formatDate(trx.tanggal)}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{dateUtils.toDisplay(trx.tanggal)}</p>
                                             </div>
                                             <div className={`text-lg font-black ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
                                                 {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}

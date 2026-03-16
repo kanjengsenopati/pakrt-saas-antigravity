@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { suratService, SuratWithWarga } from '../../services/suratService';
 import { SuratPengantar } from '../../database/db';
+import { dateUtils } from '../../utils/date';
 import { Plus, MagnifyingGlass, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCircle, Printer } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
@@ -137,7 +138,7 @@ export default function SuratList() {
                                             <p className="font-bold text-brand-700 text-xs uppercase tracking-tight">{surat.jenis_surat}</p>
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 <span className="text-[9px] text-brand-600 font-black bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</span>
-                                                <span className="text-[10px] text-gray-400 font-medium">{new Date(surat.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                                <span className="text-[10px] text-gray-400 font-medium">{dateUtils.toDisplay(surat.tanggal)}</span>
                                             </div>
                                         </td>
                                         <td className="p-3">
@@ -207,7 +208,7 @@ export default function SuratList() {
                                             <div>
                                                 <h3 className="font-bold text-gray-900 text-base">{surat.jenis_surat}</h3>
                                                 <p className="text-[11px] font-mono text-brand-600 font-medium mb-1">{surat.nomor_surat || '-'}</p>
-                                                <p className="text-xs text-gray-500">{new Date(surat.tanggal).toLocaleDateString()}</p>
+                                                <p className="text-xs text-gray-500">{dateUtils.toDisplay(surat.tanggal)}</p>
                                             </div>
                                             <div>{getStatusBadge(surat.status)}</div>
                                         </div>
