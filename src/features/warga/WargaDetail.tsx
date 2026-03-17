@@ -7,10 +7,12 @@ import { ArrowLeft, PencilSimple, User, IdentificationCard, Phone, MapPin, Calen
 import { dateUtils } from '../../utils/date';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 import { HasPermission } from '../../components/auth/HasPermission';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function WargaDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [warga, setWarga] = useState<Warga | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isZooming, setIsZooming] = useState(false);
@@ -33,7 +35,7 @@ export default function WargaDetail() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => navigate('/warga')}
+                        onClick={() => user?.role?.toLowerCase() === 'warga' ? navigate('/dashboard') : navigate('/warga')}
                         className="p-2 hover:bg-white bg-transparent text-gray-500 hover:text-gray-900 rounded-lg transition-colors border border-transparent hover:border-gray-200"
                     >
                         <ArrowLeft weight="bold" className="w-5 h-5" />

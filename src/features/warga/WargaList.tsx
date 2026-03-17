@@ -96,7 +96,12 @@ export default function WargaList() {
         if (currentTenant) {
             loadPendingData();
         }
-    }, [currentTenant, currentScope]);
+
+        // Auto-redirect Warga role to their detail profile
+        if (user?.role?.toLowerCase() === 'warga' && user?.warga_id) {
+            navigate(`/warga/${user.warga_id}`, { replace: true });
+        }
+    }, [currentTenant, currentScope, user, navigate]);
 
     const handleVerify = async (id: string, status: 'VERIFIED' | 'REJECTED', name: string) => {
         const action = status === 'VERIFIED' ? 'Setujui' : 'Tolak';

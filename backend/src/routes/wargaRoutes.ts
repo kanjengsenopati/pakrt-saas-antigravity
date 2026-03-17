@@ -63,6 +63,12 @@ export default async function wargaRoutes(fastify: FastifyInstance) {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
+            const scope = (request as any).permissionScope;
+
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengubah data diri sendiri.' });
+            }
             
             // Verify ownership before update
             const existing = await wargaService.getById(id);
@@ -86,6 +92,12 @@ export default async function wargaRoutes(fastify: FastifyInstance) {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
+            const scope = (request as any).permissionScope;
+
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat menghapus data diri sendiri.' });
+            }
 
             // Verify ownership before delete
             const existing = await wargaService.getById(id);

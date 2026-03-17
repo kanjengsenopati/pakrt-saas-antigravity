@@ -121,14 +121,15 @@ export const wargaService = {
                 throw new Error('Warga tidak ditemukan');
             }
 
-            const isNIKChanging = data.nik && data.nik !== currentWarga.nik;
+    const isNIKChanging = data.nik && String(data.nik).replace(/\D/g, '') !== currentWarga.nik;
             
             if (isNIKChanging) {
+                const cleanNIK = String(data.nik).replace(/\D/g, '');
                 const existingWarga = await tx.warga.findUnique({
                     where: {
                         tenant_id_nik: {
                             tenant_id: currentWarga.tenant_id,
-                            nik: data.nik
+                            nik: cleanNIK
                         }
                     }
                 });
@@ -146,15 +147,19 @@ export const wargaService = {
             });
 
             // True Sync: Update the associated User account if critical fields changed
-            if (currentWarga.user && (data.nama || data.email || data.kontak)) {
-                await tx.user.update({
-                    where: { id: currentWarga.user.id },
-                    data: {
-                        ...(data.nama && { name: data.nama }),
-                        ...(data.email && { email: data.email }),
-                        ...(data.kontak && { kontak: data.kontak })
-                    }
-                });
+            // Ensure we only update if the user exists and data is provided
+            if (currentWarga.user) {
+                const userUpdateData: any = {};
+                if (data.nama) userUpdateData.name = data.nama;
+                if (data.email) userUpdateData.email = data.email;
+                if (data.kontak) userUpdateData.kontak = data.kontak;
+
+                if (Object.keys(userUpdateData).length > 0) {
+                    await tx.user.update({
+                        where: { id: currentWarga.user.id },
+                        data: userUpdateData
+                    });
+                }
             }
 
             return updatedWarga;
