@@ -86,4 +86,24 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
       return reply.code(500).send({ error: 'Failed to delete' });
     }
   });
+
+  fastify.get('/billing/:wargaId', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
+    const { wargaId } = request.params as any;
+    const { tahun, kategori, scope } = request.query as any;
+    const user = (request as any).user;
+
+    // Security: Warga can only see their own billing
+    if ((request as any).permissionScope === 'personal' && user.warga_id !== wargaId) {
+      return reply.code(403).send({ error: 'Forbidden: Cannot access other citizen billing' });
+    }
+
+    const result = await pembayaranIuranService.getBillingSummary(
+      user.tenant_id,
+      wargaId,
+      tahun ? parseInt(tahun) : new Date().getFullYear(),
+      kategori || 'Iuran Warga',
+      scope || 'RT'
+    );
+    return result;
+  });
 }

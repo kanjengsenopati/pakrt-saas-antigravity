@@ -212,5 +212,30 @@ export const pembayaranIuranService = {
         });
         return result;
     });
+  },
+
+  async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori: string = 'Iuran Warga', scope: string = 'RT') {
+    const rate = await getWargaIuranRate(wargaId, tenantId, scope);
+    
+    const existing = await prisma.pembayaranIuran.findMany({
+      where: {
+        tenant_id: tenantId,
+        warga_id: wargaId,
+        kategori: kategori,
+        periode_tahun: tahun
+      }
+    });
+
+    const totalPaid = existing.reduce((sum, curr) => sum + curr.nominal, 0);
+    const expectedTotal = rate * 12;
+    const paidMonths = existing.flatMap(e => e.periode_bulan);
+
+    return {
+      rate,
+      expectedTotal,
+      totalPaid,
+      paidMonths,
+      sisa: Math.max(0, expectedTotal - totalPaid)
+    };
   }
 };

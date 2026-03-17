@@ -135,5 +135,18 @@ export const iuranService = {
                 await this.syncToKeuangan(iuran.id, iuran, scope);
             }
         }
+    },
+
+    async getBillingSummary(wargaId: string, tahun: number, kategori?: string, scope?: string): Promise<{
+        rate: number,
+        expectedTotal: number,
+        totalPaid: number,
+        paidMonths: number[],
+        sisa: number
+    }> {
+        const response = await axios.get(`${API_URL}/pembayaranIuran/billing/${wargaId}`, {
+            params: { tahun, kategori, scope }
+        });
+        return response.data;
     }
 };

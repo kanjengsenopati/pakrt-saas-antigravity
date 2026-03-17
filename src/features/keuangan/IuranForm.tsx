@@ -38,9 +38,11 @@ export default function IuranForm() {
     const [paymentMode, setPaymentMode] = useState<'Pas' | 'Bebas'>('Pas');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [hasInteracted, setHasInteracted] = useState(false);
+    const [isLoadingBilling, setIsLoadingBilling] = useState(false);
 
     // Summary Data State
     const [alreadyPaid, setAlreadyPaid] = useState(0);
+    const [paidMonthsRecord, setPaidMonthsRecord] = useState<number[]>([]);
 
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
@@ -51,6 +53,7 @@ export default function IuranForm() {
             tanggal_bayar: new Date().toISOString().split('T')[0],
             periode_tahun: new Date().getFullYear(),
             warga_id: loggedInWargaId || '',
+            kategori: 'Iuran Warga'
         }
     });
 
@@ -144,44 +147,40 @@ export default function IuranForm() {
     }, [selectedMonths, defaultNominal, setValue, isEdit, paymentMode, hasInteracted]);
 
     useEffect(() => {
-        if (watchWargaId && currentTenant) {
-            const selectedWarga = wargaList.find(w => w.id === watchWargaId);
-            if (selectedWarga) {
-                const config = (window as any)._pakrt_config;
-                if (config) {
-                    const statusKey = `${selectedWarga.status_penduduk || 'Tetap'}-${selectedWarga.status_rumah || 'Dihuni'}`;
-                    const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-                    const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
-
-                    setDefaultNominal(rate);
-                    // setValue('nominal', rate * selectedMonths.length); // Handled by next useEffect
-                }
-            }
-        }
-    }, [watchWargaId, wargaList, currentTenant]);
-
-    useEffect(() => {
         if (watchWargaId && watchTahun && watchKategori && currentTenant) {
-            const fetchExistingIuran = async () => {
+            const fetchBillingSummary = async () => {
+                setIsLoadingBilling(true);
                 try {
-                    const data = await iuranService.getAll(currentTenant.id);
-                    const allIuran = data.items || [];
-                    const filtered = allIuran.filter(i =>
-                        i.warga_id === watchWargaId &&
-                        i.periode_tahun === watchTahun &&
-                        i.kategori === watchKategori
+                    const result = await iuranService.getBillingSummary(
+                        watchWargaId, 
+                        watchTahun, 
+                        watchKategori, 
+                        currentScope
                     );
-                    const totalPaid = filtered.reduce((sum, curr) => sum + curr.nominal, 0);
-                    setAlreadyPaid(totalPaid);
-                } catch {
+                    setAlreadyPaid(result.totalPaid);
+                    setDefaultNominal(result.rate);
+                    setPaidMonthsRecord(result.paidMonths);
+
+                    // Auto-select first unpaid month if not edit and hasn't interacted
+                    if (!isEdit && !hasInteracted && result.rate > 0) {
+                        const firstUnpaid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].find(m => !result.paidMonths.includes(m));
+                        if (firstUnpaid) {
+                            setSelectedMonths([firstUnpaid]);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch billing summary:", error);
                     setAlreadyPaid(0);
+                } finally {
+                    setIsLoadingBilling(false);
                 }
             };
-            fetchExistingIuran();
+            fetchBillingSummary();
         } else {
             setAlreadyPaid(0);
+            setPaidMonthsRecord([]);
         }
-    }, [watchWargaId, watchTahun, watchKategori, currentTenant]);
+    }, [watchWargaId, watchTahun, watchKategori, currentTenant, currentScope, isEdit]);
 
     const toggleMonth = (monthValue: number) => {
         setHasInteracted(true);
@@ -252,7 +251,12 @@ export default function IuranForm() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 {/* LEFT COLUMN: SUMMARY */}
                 <div className="md:col-span-4 space-y-6 sticky top-24">
-                    {watchWargaId && watchKategori ? (
+                    {isLoadingBilling ? (
+                        <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 p-8 text-center animate-pulse">
+                            <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Memuat Data Tagihan...</p>
+                        </div>
+                    ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
                             <div className="bg-brand-600 p-4 text-white">
                                 <h3 className="text-sm font-bold flex items-center gap-2">
@@ -326,27 +330,29 @@ export default function IuranForm() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 
                                 {/* ROW 1: WARGA & KATEGORI */}
-                                <div className="space-y-1">
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                        Pilih Warga Pembayar <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        {...register('warga_id', { 
-                                            required: 'Warga wajib dipilih',
-                                            onChange: () => setHasInteracted(true)
-                                        })}
-                                        disabled={isWarga && !isEdit}
-                                        className={`w-full rounded-lg shadow-sm p-2.5 text-xs border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-slate-100 cursor-not-allowed text-slate-500' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500'}`}
-                                    >
-                                        <option value="">-- Cari atau Pilih Warga --</option>
-                                        {wargaList.map(w => (
-                                            <option key={w.id} value={w.id}>{w.nama} {w.alamat ? `- ${w.alamat}` : ''}</option>
-                                        ))}
-                                    </select>
-                                    {errors.warga_id && <p className="text-red-500 text-[9px] font-bold mt-1 px-1">{errors.warga_id.message}</p>}
-                                </div>
+                                {!isWarga && (
+                                    <div className="space-y-1">
+                                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                            Pilih Warga Pembayar <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            {...register('warga_id', { 
+                                                required: 'Warga wajib dipilih',
+                                                onChange: () => setHasInteracted(true)
+                                            })}
+                                            disabled={isWarga && !isEdit}
+                                            className={`w-full rounded-lg shadow-sm p-2.5 text-xs border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-slate-100 cursor-not-allowed text-slate-500' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500'}`}
+                                        >
+                                            <option value="">-- Cari atau Pilih Warga --</option>
+                                            {wargaList.map(w => (
+                                                <option key={w.id} value={w.id}>{w.nama} {w.alamat ? `- ${w.alamat}` : ''}</option>
+                                            ))}
+                                        </select>
+                                        {errors.warga_id && <p className="text-red-500 text-[9px] font-bold mt-1 px-1">{errors.warga_id.message}</p>}
+                                    </div>
+                                )}
 
-                                <div className="space-y-1">
+                                <div className={`${isWarga ? 'md:col-span-2' : ''} space-y-1`}>
                                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">
                                         Jenis Pembayaran <span className="text-red-500">*</span>
                                     </label>
@@ -436,14 +442,21 @@ export default function IuranForm() {
                                                 <button
                                                     key={m.value}
                                                     type="button"
+                                                    disabled={paidMonthsRecord.includes(m.value)}
                                                     onClick={() => toggleMonth(m.value)}
-                                                    className={`py-1.5 px-1 text-[9px] font-bold rounded-lg border transition-all relative ${selectedMonths.includes(m.value)
-                                                        ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                        : 'bg-white border-slate-100 text-slate-400 hover:bg-slate-50 hover:border-slate-200'
+                                                    className={`py-1.5 px-1 text-[9px] font-bold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
+                                                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
+                                                        : selectedMonths.includes(m.value)
+                                                            ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
+                                                            : 'bg-white border-slate-100 text-slate-400 hover:bg-slate-50 hover:border-slate-200'
                                                         }`}
                                                 >
                                                     {m.label.substring(0, 3)}
-                                                    {selectedMonths.includes(m.value) && (
+                                                    {paidMonthsRecord.includes(m.value) ? (
+                                                        <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5">
+                                                            <CheckCircle weight="fill" className="w-2 h-2" />
+                                                        </div>
+                                                    ) : selectedMonths.includes(m.value) && (
                                                         <div className="absolute -top-1 -right-1 bg-brand-500 text-white rounded-full p-0.5">
                                                             <CheckCircle weight="fill" className="w-2 h-2" />
                                                         </div>
