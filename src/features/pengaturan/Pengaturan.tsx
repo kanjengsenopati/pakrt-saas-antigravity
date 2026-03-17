@@ -501,18 +501,38 @@ export default function Pengaturan() {
         }
         setExpandedUserId(user.id);
         setExpandedRoleId(null);
+        
         const normalized: Record<string, any> = {};
-        const rawPerms = user.permissions || {};
+        const userPerms = (user.permissions as any) || {};
+        const rolePerms = (user as any).role_entity?.permissions || {};
+
         APP_MODULES.forEach(mod => {
-            const data = rawPerms[mod.id];
-            if (Array.isArray(data)) {
-                normalized[mod.id] = { actions: data, scope: 'all' };
-            } else if (data && typeof data === 'object') {
-                normalized[mod.id] = { actions: (data as any).actions || [], scope: (data as any).scope || 'all' };
-            } else {
-                normalized[mod.id] = { actions: [], scope: 'all' };
+            // Priority: User Override > Role Default > Empty
+            const uData = userPerms[mod.id];
+            const rData = rolePerms[mod.id];
+            
+            let actions: string[] = [];
+            let scope: 'all' | 'personal' = 'all';
+
+            // Check Role Defaults first
+            if (Array.isArray(rData)) {
+                actions = [...rData];
+            } else if (rData && typeof rData === 'object') {
+                actions = [...(rData.actions || [])];
+                scope = rData.scope || 'all';
             }
+
+            // Apply User Overrides
+            if (Array.isArray(uData)) {
+                actions = [...uData];
+            } else if (uData && typeof uData === 'object') {
+                actions = (uData.actions !== undefined) ? [...uData.actions] : actions;
+                scope = uData.scope || scope;
+            }
+
+            normalized[mod.id] = { actions, scope };
         });
+
         setUserPermissions(normalized);
     };
 
