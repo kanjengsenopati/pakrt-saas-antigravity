@@ -6,9 +6,11 @@ import { useTenant } from '../../contexts/TenantContext';
 import { pengaturanService } from '../../services/pengaturanService';
 import { userService } from '../../services/userService';
 import { pengurusService } from '../../services/pengurusService';
+import { wargaService } from '../../services/wargaService';
 import { User } from '../../database/db';
+import { Warga } from '../../types/database';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode } from '@phosphor-icons/react';
+import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
@@ -81,12 +83,14 @@ export default function Pengaturan() {
     const [users, setUsers] = useState<User[]>([]);
     const [roles, setRoles] = useState<any[]>([]);
     const [activeRoleSubTab, setActiveRoleSubTab] = useState<'users' | 'roles'>('users');
-    const [editingUser, setEditingUser] = useState<User | null>(null);
-    const [editingRole, setEditingRole] = useState<any | null>(null);
+    const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+    const [expandedRoleId, setExpandedRoleId] = useState<string | null>(null);
     const [userPermissions, setUserPermissions] = useState<Record<string, any>>({});
-    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
-    const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
-    const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role_id: '', password: '', scope: 'RT' });
+    const [showAddUserForm, setShowAddUserForm] = useState(false);
+    const [showAddRoleForm, setShowAddRoleForm] = useState(false);
+    const [wargaList, setWargaList] = useState<Warga[]>([]);
+    const [selectedWargaId, setSelectedWargaId] = useState('');
+    const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role_id: '', password: '', scope: currentScope as string });
     const [newRoleForm, setNewRoleForm] = useState({ name: '' });
 
     // Keuangan Categories State
@@ -137,7 +141,7 @@ export default function Pengaturan() {
 
                 // Auto-sync profile fields from tenant when not yet configured
                 if (!config.nama_wilayah) {
-                    // Derive RT/RW from tenant ID segments (e.g. "33.74.10.1011.50.025" → RW 50, RT 25)
+                    // Derive RT/RW from tenant ID segments (e.g. "33.74.10.1011.50.025" ΓåÆ RW 50, RT 25)
                     const idParts = currentTenant.id.split('.');
                     const rtFromId = idParts.length >= 6 ? parseInt(idParts[5], 10).toString() : '?';
                     const rwFromId = idParts.length >= 5 ? parseInt(idParts[4], 10).toString() : '?';
@@ -190,6 +194,7 @@ export default function Pengaturan() {
             loadUsers();
             loadRoles();
             loadPengurus();
+            loadWarga();
         }
     }, [currentTenant, currentScope, reset]);
 
@@ -216,6 +221,13 @@ export default function Pengaturan() {
         }
     };
 
+    const loadWarga = async () => {
+        if (currentTenant) {
+            const data = await wargaService.getAll(currentTenant.id, currentScope, 1, 500);
+            setWargaList(data.items || []);
+        }
+    };
+
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentTenant?.id || !newUserForm.name || !newUserForm.email) return;
@@ -230,12 +242,25 @@ export default function Pengaturan() {
                 password: newUserForm.password || 'password123',
                 permissions: {} // Default to empty, inherit from role
             } as any);
-            setIsAddUserModalOpen(false);
-            setNewUserForm({ name: '', email: '', role_id: '', password: '', scope: 'RT' });
+            setShowAddUserForm(false);
+            setSelectedWargaId('');
+            setNewUserForm({ name: '', email: '', role_id: '', password: '', scope: currentScope as string });
             loadUsers();
         } catch (error) {
             console.error('Failed to create user', error);
             alert('Gagal menambahkan user. Pastikan email belum terdaftar.');
+        }
+    };
+
+    // When a Warga is selected, auto-fill name and email
+    const handleWargaSelect = (wargaId: string) => {
+        setSelectedWargaId(wargaId);
+        const warga = wargaList.find(w => w.id === wargaId);
+        if (warga) {
+            const email = `${warga.nik}@pakrt.local`;
+            setNewUserForm(prev => ({ ...prev, name: warga.nama, email }));
+        } else {
+            setNewUserForm(prev => ({ ...prev, name: '', email: '' }));
         }
     };
 
@@ -251,7 +276,7 @@ export default function Pengaturan() {
             }, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });
-            setIsAddRoleModalOpen(false);
+            setShowAddRoleForm(false);
             setNewRoleForm({ name: '' });
             loadRoles();
         } catch (error) {
@@ -294,7 +319,7 @@ export default function Pengaturan() {
         const config = currentTenant.config || {};
 
         // Primary: use stored config fields
-        // Fallback: parse from Tenant ID segments (e.g. "33.74.10.1011.50.025" → RW 50, RT 25)
+        // Fallback: parse from Tenant ID segments (e.g. "33.74.10.1011.50.025" ΓåÆ RW 50, RT 25)
         const idParts = currentTenant.id.split('.');
         const rtFromId = idParts.length >= 6 ? parseInt(idParts[5], 10).toString() : '';
         const rwFromId = idParts.length >= 5 ? parseInt(idParts[4], 10).toString() : '';
@@ -467,12 +492,14 @@ export default function Pengaturan() {
     };
 
     const handleEditPermissions = (user: User) => {
-        setEditingUser(user);
-        setEditingRole(null);
-        // Normalize permissions to the new format if they are legacy or empty
+        if (expandedUserId === user.id) {
+            setExpandedUserId(null);
+            return;
+        }
+        setExpandedUserId(user.id);
+        setExpandedRoleId(null);
         const normalized: Record<string, any> = {};
         const rawPerms = user.permissions || {};
-        
         APP_MODULES.forEach(mod => {
             const data = rawPerms[mod.id];
             if (Array.isArray(data)) {
@@ -487,11 +514,14 @@ export default function Pengaturan() {
     };
 
     const handleEditRolePermissions = (role: any) => {
-        setEditingRole(role);
-        setEditingUser(null);
+        if (expandedRoleId === role.id) {
+            setExpandedRoleId(null);
+            return;
+        }
+        setExpandedRoleId(role.id);
+        setExpandedUserId(null);
         const normalized: Record<string, any> = {};
         const rawPerms = role.permissions || {};
-
         APP_MODULES.forEach(mod => {
             const data = rawPerms[mod.id];
             if (Array.isArray(data)) {
@@ -525,22 +555,24 @@ export default function Pengaturan() {
         });
     };
 
-    const savePermissions = async () => {
+    const savePermissions = async (targetUserId?: string, targetRole?: any) => {
+        const userId = targetUserId || expandedUserId;
+        const role = targetRole || (expandedRoleId ? roles.find(r => r.id === expandedRoleId) : null);
         try {
-            if (editingUser) {
-                await userService.updatePermissions(editingUser.id, userPermissions);
+            if (userId) {
+                await userService.updatePermissions(userId, userPermissions);
                 alert('Izin akses user berhasil diperbarui!');
-                setEditingUser(null);
+                setExpandedUserId(null);
                 loadUsers();
-            } else if (editingRole) {
-                await axios.put(`${API_URL}/role/${editingRole.id}`, {
-                    ...editingRole,
+            } else if (role) {
+                await axios.put(`${API_URL}/role/${role.id}`, {
+                    ...role,
                     permissions: userPermissions
                 }, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
                 });
                 alert('Izin akses Role berhasil diperbarui!');
-                setEditingRole(null);
+                setExpandedRoleId(null);
                 loadRoles();
             }
         } catch (error) {
@@ -762,8 +794,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 uppercase tracking-wider">Daftar Jabatan {currentScope}</label>
-                                            {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
-                                            {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">✓ Tersimpan</span>}
+                                            {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
+                                            {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -796,8 +828,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 uppercase tracking-wider">Periode ({currentScope})</label>
-                                            {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
-                                            {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">✓ Tersimpan</span>}
+                                            {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
+                                            {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -1043,7 +1075,7 @@ export default function Pengaturan() {
                                                         onClick={handleSyncOfficialKop}
                                                         className="text-[10px] font-bold bg-brand-50 text-brand-600 px-3 py-1 rounded-full border border-brand-100 hover:bg-brand-100 transition-colors flex items-center gap-1"
                                                     >
-                                                        ✨ Sinkron Data Resmi
+                                                        Γ£¿ Sinkron Data Resmi
                                                     </button>
                                                 </div>
                                                 <textarea
@@ -1106,7 +1138,7 @@ export default function Pengaturan() {
                                                     onClick={handleSyncOfficialSignatory}
                                                     className="text-[10px] font-bold bg-brand-50 text-brand-600 px-3 py-1 rounded-full border border-brand-100 hover:bg-brand-100 transition-colors flex items-center gap-1"
                                                 >
-                                                    👤 Ambil Pengurus
+                                                    ≡ƒæñ Ambil Pengurus
                                                 </button>
                                             </div>
                                             <div className="space-y-4">
@@ -1355,67 +1387,228 @@ export default function Pengaturan() {
                                 {activeRoleSubTab === 'users' ? (
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
-                                            onClick={() => setIsAddUserModalOpen(true)}
-                                            className="flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-lg shadow-brand-500/20 hover:scale-105 active:scale-95 transition-all text-xs">
-                                            <Plus weight="bold" />
-                                            <span>Tambah Pengguna</span>
+                                            onClick={() => { setShowAddUserForm(v => !v); setExpandedUserId(null); }}
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-xs ${showAddUserForm ? 'bg-slate-900 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
+                                            {showAddUserForm ? <X weight="bold" /> : <Plus weight="bold" />}
+                                            <span>{showAddUserForm ? 'Batal' : 'Tambah Pengguna'}</span>
                                         </button>
                                     </HasPermission>
                                 ) : (
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => setIsAddRoleModalOpen(true)}
-                                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-lg shadow-slate-500/20 hover:scale-105 active:scale-95 transition-all text-xs">
-                                                <Plus weight="bold" />
-                                                <span>Tambah Peran</span>
-                                            </button>
-                                        </div>
+                                        <button 
+                                            onClick={() => setShowAddRoleForm(v => !v)}
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-xs ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-slate-900 text-white shadow-slate-500/20 hover:scale-105 active:scale-95'}`}>
+                                            {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
+                                            <span>{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</span>
+                                        </button>
                                     </HasPermission>
                                 )}
                             </div>
                         </div>
 
+                        {/* INLINE: Add User Form */}
+                        {activeRoleSubTab === 'users' && showAddUserForm && (
+                            <div className="bg-white border border-brand-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                                <div className="px-6 py-4 bg-brand-50 border-b border-brand-100 flex items-center gap-3">
+                                    <UserIcon weight="fill" className="w-5 h-5 text-brand-600" />
+                                    <h3 className="text-sm font-black text-brand-900 uppercase tracking-widest">Tambah Pengguna Baru</h3>
+                                </div>
+                                <form onSubmit={handleAddUser} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    {/* Warga Selector */}
+                                    <div className="md:col-span-2">
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                                            Pilih dari Data Warga {currentScope}
+                                            <span className="ml-1 font-normal text-gray-300">(opsional — auto-isi nama &amp; email)</span>
+                                        </label>
+                                        <select
+                                            value={selectedWargaId}
+                                            onChange={e => handleWargaSelect(e.target.value)}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-medium text-gray-700"
+                                        >
+                                            <option value="">— Pilih Warga (opsional) —</option>
+                                            {wargaList
+                                                .filter(w => currentScope === 'RT' ? w.jenis_kelamin === 'Laki-laki' : w.jenis_kelamin === 'Perempuan')
+                                                .map(w => (
+                                                    <option key={w.id} value={w.id}>{w.nama} — {w.nik}</option>
+                                                ))
+                                            }
+                                        </select>
+                                        {wargaList.filter(w => currentScope === 'RT' ? w.jenis_kelamin === 'Laki-laki' : w.jenis_kelamin === 'Perempuan').length === 0 && (
+                                            <p className="text-[10px] text-amber-500 mt-1 italic">Tidak ada data warga {currentScope === 'RT' ? 'laki-laki' : 'perempuan'} yang tersedia.</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Nama Lengkap</label>
+                                        <input type="text" required value={newUserForm.name}
+                                            onChange={e => setNewUserForm(prev => ({...prev, name: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Email</label>
+                                        <input type="email" required value={newUserForm.email}
+                                            onChange={e => setNewUserForm(prev => ({...prev, email: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Password Default</label>
+                                        <input type="text" placeholder="Default: password123" value={newUserForm.password}
+                                            onChange={e => setNewUserForm(prev => ({...prev, password: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Role / Hak Akses</label>
+                                        <select value={newUserForm.role_id}
+                                            onChange={e => setNewUserForm(prev => ({...prev, role_id: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
+                                            <option value="">Pilih Role...</option>
+                                            {roles.map(role => <option key={role.id} value={role.id}>{role.name}</option>)}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Scope</label>
+                                        <select value={newUserForm.scope}
+                                            onChange={e => setNewUserForm(prev => ({...prev, scope: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
+                                            <option value="RT">RT</option>
+                                            <option value="PKK">PKK</option>
+                                            <option value="Dasa Wisma">Dasa Wisma</option>
+                                        </select>
+                                    </div>
+                                    <div className="md:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100">
+                                        <button type="button" onClick={() => { setShowAddUserForm(false); setSelectedWargaId(''); }}
+                                            className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all">Batal</button>
+                                        <button type="submit"
+                                            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md transition-all active:scale-95">
+                                            <UserIcon weight="bold" className="inline w-4 h-4 mr-1.5" />Simpan Pengguna
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
+
+                        {/* INLINE: Add Role Form */}
+                        {activeRoleSubTab === 'roles' && showAddRoleForm && (
+                            <div className="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                                <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+                                    <ShieldCheck weight="fill" className="w-5 h-5 text-slate-700" />
+                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Tambah Peran Baru</h3>
+                                </div>
+                                <form onSubmit={handleAddRole} className="p-6 flex gap-4 items-end">
+                                    <div className="flex-1">
+                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Nama Role</label>
+                                        <input type="text" required placeholder="Contoh: Humas, Keamanan"
+                                            value={newRoleForm.name}
+                                            onChange={e => setNewRoleForm(prev => ({...prev, name: e.target.value}))}
+                                            className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button type="button" onClick={() => setShowAddRoleForm(false)}
+                                            className="px-5 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all">Batal</button>
+                                        <button type="submit"
+                                            className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-black shadow-md transition-all active:scale-95">Simpan Role</button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
+
+
+
                         {activeRoleSubTab === 'users' ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {users.map(user => (
-                                    <div key={user.id} className="bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all overflow-hidden group">
-                                        <div className="bg-gray-50/50 p-6 border-b border-gray-100 flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-brand-600 shadow-lg shadow-brand-500/20 text-white flex items-center justify-center font-bold text-lg border border-brand-200">
-                                                    {user.name?.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900">{user.name}</h4>
-                                                    <div className="flex gap-1.5 mt-1">
-                                                        <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider border border-brand-100/50">
-                                                            {(user as any).role_entity?.name || user.role}
-                                                        </span>
-                                                        <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200/50 block w-max">
-                                                            {user.scope || 'RT'}
-                                                        </span>
+                                    <div key={user.id} className={`col-span-1 ${expandedUserId === user.id ? 'md:col-span-2 lg:col-span-3' : ''}`}>
+                                        <div className={`bg-white border rounded-3xl shadow-sm transition-all overflow-hidden ${expandedUserId === user.id ? 'border-brand-300 ring-2 ring-brand-100' : 'border-gray-100 hover:shadow-xl'}`}>
+                                            <div className="bg-gray-50/50 p-6 border-b border-gray-100 flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-brand-600 shadow-lg shadow-brand-500/20 text-white flex items-center justify-center font-bold text-lg border border-brand-200">
+                                                        {user.name?.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-gray-900">{user.name}</h4>
+                                                        <div className="flex gap-1.5 mt-1">
+                                                            <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider border border-brand-100/50">
+                                                                {(user as any).role_entity?.name || user.role}
+                                                            </span>
+                                                            <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200/50">
+                                                                {user.scope || 'RT'}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="p-4 bg-white flex justify-end gap-2">
-                                            <HasPermission module="Setup / Pengaturan" action="Hapus">
-                                                <button
-                                                    onClick={() => handleDeleteUser(user.id, user.name)}
-                                                    className="px-4 py-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100"
-                                                >
-                                                    Hapus
-                                                </button>
-                                            </HasPermission>
-                                            <HasPermission module="Setup / Pengaturan" action="Ubah">
-                                                <button
-                                                    onClick={() => handleEditPermissions(user)}
-                                                    className="flex-1 flex justify-center items-center gap-2 px-4 py-3 text-xs font-bold text-brand-600 bg-brand-50/50 hover:bg-brand-50 rounded-2xl transition-all border border-brand-100/50"
-                                                >
-                                                    <ShieldCheck weight="bold" className="w-4 h-4" />
-                                                    Khusus User
-                                                </button>
-                                            </HasPermission>
+                                            <div className="p-4 bg-white flex justify-end gap-2">
+                                                <HasPermission module="Setup / Pengaturan" action="Hapus">
+                                                    <button onClick={() => handleDeleteUser(user.id, user.name)}
+                                                        className="px-4 py-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100">
+                                                        Hapus
+                                                    </button>
+                                                </HasPermission>
+                                                <HasPermission module="Setup / Pengaturan" action="Ubah">
+                                                    <button onClick={() => handleEditPermissions(user)}
+                                                        className={`flex-1 flex justify-center items-center gap-2 px-4 py-3 text-xs font-bold rounded-2xl transition-all border ${expandedUserId === user.id ? 'bg-brand-600 text-white border-brand-600' : 'text-brand-600 bg-brand-50/50 hover:bg-brand-50 border-brand-100/50'}`}>
+                                                        <ShieldCheck weight="bold" className="w-4 h-4" />
+                                                        {expandedUserId === user.id ? 'Tutup Matrix' : 'Khusus User'}
+                                                        {expandedUserId === user.id ? <CaretUp weight="bold" className="w-3 h-3" /> : <CaretDown weight="bold" className="w-3 h-3" />}
+                                                    </button>
+                                                </HasPermission>
+                                            </div>
+                                            {expandedUserId === user.id && (
+                                                <div className="border-t border-slate-100">
+                                                    <div className="px-4 py-3 bg-brand-50/30 flex items-center gap-2">
+                                                        <UserIcon weight="fill" className="w-4 h-4 text-brand-500" />
+                                                        <span className="text-[10px] font-black text-brand-700 uppercase tracking-widest">Matrix Hak Akses Khusus: {user.name}</span>
+                                                    </div>
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full border-separate border-spacing-0">
+                                                            <thead>
+                                                                <tr className="bg-slate-50 border-b border-slate-200">
+                                                                    <th className="p-3 text-left text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] pl-5">Modul</th>
+                                                                    {CRUD_ACTIONS.map(action => (
+                                                                        <th key={action.id} className="p-3 text-center text-[10px] font-black text-slate-900 uppercase tracking-[0.15em] border-l border-slate-100">{action.label}</th>
+                                                                    ))}
+                                                                    <th className="p-3 text-center text-[10px] font-black text-brand-600 uppercase tracking-[0.15em] border-l border-slate-100 bg-brand-50/30">Cakupan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-slate-100">
+                                                                {APP_MODULES.map((module, idx) => (
+                                                                    <tr key={module.id} className={`group hover:bg-brand-50/30 transition-all ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
+                                                                        <td className="p-3 pl-5 font-bold text-slate-800 text-[11px] uppercase tracking-wide">
+                                                                            <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-500" />{module.label}</div>
+                                                                        </td>
+                                                                        {CRUD_ACTIONS.map(action => {
+                                                                            const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
+                                                                            return (
+                                                                                <td key={action.id} className="p-2 text-center border-l border-slate-100/80">
+                                                                                    <label className="flex items-center justify-center cursor-pointer group/check">
+                                                                                        <input type="checkbox" className="sr-only" checked={isChecked || false} onChange={() => togglePermission(module.id, action.id)} />
+                                                                                        <div className={`w-7 h-7 rounded-lg border-2 transition-all flex items-center justify-center ${isChecked ? 'bg-brand-600 border-brand-600 text-white shadow-sm' : 'bg-white border-slate-300 group-hover/check:border-brand-400'}`}>
+                                                                                            <CheckCircle weight="bold" className={`w-4 h-4 transition-all ${isChecked ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`} />
+                                                                                        </div>
+                                                                                    </label>
+                                                                                </td>
+                                                                            );
+                                                                        })}
+                                                                        <td className="p-2 text-center border-l border-slate-100/80 bg-brand-50/10">
+                                                                            <button onClick={() => toggleScope(module.id)}
+                                                                                className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>
+                                                                                {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div className="px-5 py-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                                                        <button onClick={() => setExpandedUserId(null)}
+                                                            className="px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white border border-transparent hover:border-slate-200 transition-all">Batal</button>
+                                                        <button onClick={() => savePermissions()}
+                                                            className="px-7 py-2.5 bg-slate-900 text-white rounded-xl text-[11px] font-black shadow-xl hover:bg-brand-600 transition-all flex items-center gap-2 uppercase tracking-[0.2em]">
+                                                            <ShieldCheck weight="fill" className="w-4 h-4" /> Simpan Hak Akses
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -1423,33 +1616,87 @@ export default function Pengaturan() {
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {roles.map(role => (
-                                    <div key={role.id} className="bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all overflow-hidden group">
-                                        <div className="bg-slate-50 p-6 border-b border-slate-100 flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-slate-900 shadow-lg shadow-slate-200 text-white flex items-center justify-center font-bold text-lg border border-slate-700">
-                                                    <ShieldCheck weight="fill" className="w-6 h-6 text-brand-400" />
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-900">{role.name}</h4>
-                                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global Role</p>
+                                    <div key={role.id} className={`col-span-1 ${expandedRoleId === role.id ? 'md:col-span-2 lg:col-span-3' : ''}`}>
+                                        <div className={`bg-white border rounded-3xl shadow-sm transition-all overflow-hidden ${expandedRoleId === role.id ? 'border-slate-400 ring-2 ring-slate-100' : 'border-gray-100 hover:shadow-xl'}`}>
+                                            <div className="bg-slate-50 p-6 border-b border-slate-100 flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-slate-900 shadow-lg shadow-slate-200 text-white flex items-center justify-center font-bold text-lg border border-slate-700">
+                                                        <ShieldCheck weight="fill" className="w-6 h-6 text-brand-400" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-gray-900">{role.name}</h4>
+                                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global Role</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="p-4 bg-white flex justify-end gap-2 text-xs font-bold">
-                                            <button
-                                                onClick={() => handleDeleteRole(role.id, role.name)}
-                                                className="px-4 py-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100 disabled:opacity-50"
-                                                disabled={role.name === 'Admin'}
-                                            >
-                                                Hapus
-                                            </button>
-                                            <button
-                                                onClick={() => handleEditRolePermissions(role)}
-                                                className="flex-1 flex justify-center items-center gap-2 px-4 py-3 text-brand-600 bg-brand-50/50 hover:bg-brand-50 rounded-2xl transition-all border border-brand-100/50"
-                                            >
-                                                <ShieldCheck weight="bold" className="w-4 h-4" />
-                                                Edit Hak Akses Role
-                                            </button>
+                                            <div className="p-4 bg-white flex justify-end gap-2 text-xs font-bold">
+                                                <button onClick={() => handleDeleteRole(role.id, role.name)}
+                                                    className="px-4 py-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100 disabled:opacity-50"
+                                                    disabled={role.name === 'Admin'}>Hapus</button>
+                                                <button onClick={() => handleEditRolePermissions(role)}
+                                                    className={`flex-1 flex justify-center items-center gap-2 px-4 py-3 rounded-2xl transition-all border ${expandedRoleId === role.id ? 'bg-slate-900 text-white border-slate-900' : 'text-brand-600 bg-brand-50/50 hover:bg-brand-50 border-brand-100/50'}`}>
+                                                    <ShieldCheck weight="bold" className="w-4 h-4" />
+                                                    {expandedRoleId === role.id ? 'Tutup Matrix' : 'Edit Hak Akses'}
+                                                    {expandedRoleId === role.id ? <CaretUp weight="bold" className="w-3 h-3" /> : <CaretDown weight="bold" className="w-3 h-3" />}
+                                                </button>
+                                            </div>
+                                            {expandedRoleId === role.id && (
+                                                <div className="border-t border-slate-100">
+                                                    <div className="px-4 py-3 bg-slate-800 flex items-center gap-2">
+                                                        <ShieldCheck weight="fill" className="w-4 h-4 text-brand-400" />
+                                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Matrix Hak Akses Role: {role.name}</span>
+                                                    </div>
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full border-separate border-spacing-0">
+                                                            <thead>
+                                                                <tr className="bg-slate-50 border-b border-slate-200">
+                                                                    <th className="p-3 text-left text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] pl-5">Modul</th>
+                                                                    {CRUD_ACTIONS.map(action => (
+                                                                        <th key={action.id} className="p-3 text-center text-[10px] font-black text-slate-900 uppercase tracking-[0.15em] border-l border-slate-100">{action.label}</th>
+                                                                    ))}
+                                                                    <th className="p-3 text-center text-[10px] font-black text-brand-600 uppercase tracking-[0.15em] border-l border-slate-100 bg-brand-50/30">Cakupan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-slate-100">
+                                                                {APP_MODULES.map((module, idx) => (
+                                                                    <tr key={module.id} className={`group hover:bg-brand-50/30 transition-all ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
+                                                                        <td className="p-3 pl-5 font-bold text-slate-800 text-[11px] uppercase tracking-wide">
+                                                                            <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-500" />{module.label}</div>
+                                                                        </td>
+                                                                        {CRUD_ACTIONS.map(action => {
+                                                                            const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
+                                                                            return (
+                                                                                <td key={action.id} className="p-2 text-center border-l border-slate-100/80">
+                                                                                    <label className="flex items-center justify-center cursor-pointer group/check">
+                                                                                        <input type="checkbox" className="sr-only" checked={isChecked || false} onChange={() => togglePermission(module.id, action.id)} />
+                                                                                        <div className={`w-7 h-7 rounded-lg border-2 transition-all flex items-center justify-center ${isChecked ? 'bg-brand-600 border-brand-600 text-white shadow-sm' : 'bg-white border-slate-300 group-hover/check:border-brand-400'}`}>
+                                                                                            <CheckCircle weight="bold" className={`w-4 h-4 transition-all ${isChecked ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`} />
+                                                                                        </div>
+                                                                                    </label>
+                                                                                </td>
+                                                                            );
+                                                                        })}
+                                                                        <td className="p-2 text-center border-l border-slate-100/80 bg-brand-50/10">
+                                                                            <button onClick={() => toggleScope(module.id)}
+                                                                                className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>
+                                                                                {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div className="px-5 py-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                                                        <button onClick={() => setExpandedRoleId(null)}
+                                                            className="px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white border border-transparent hover:border-slate-200 transition-all">Batal</button>
+                                                        <button onClick={() => savePermissions()}
+                                                            className="px-7 py-2.5 bg-slate-900 text-white rounded-xl text-[11px] font-black shadow-xl hover:bg-brand-600 transition-all flex items-center gap-2 uppercase tracking-[0.2em]">
+                                                            <ShieldCheck weight="fill" className="w-4 h-4" /> Simpan Hak Akses
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -1459,197 +1706,7 @@ export default function Pengaturan() {
                 )
             }
 
-            {/* ADD USER MODAL */}
-            {isAddUserModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[1.5rem] w-full max-w-lg flex flex-col shadow-2xl animate-scale-in border border-slate-200 overflow-hidden">
-                        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight">Tambah User Baru</h2>
-                            <button onClick={() => setIsAddUserModalOpen(false)} className="p-2 hover:bg-white rounded-xl transition-all">
-                                <X weight="bold" className="w-5 h-5 text-slate-400 hover:text-red-500" />
-                            </button>
-                        </div>
-                        <form onSubmit={handleAddUser} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Nama Lengkap</label>
-                                <input 
-                                    type="text" required 
-                                    value={newUserForm.name} onChange={e => setNewUserForm(prev => ({...prev, name: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none" 
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Email</label>
-                                <input 
-                                    type="email" required 
-                                    value={newUserForm.email} onChange={e => setNewUserForm(prev => ({...prev, email: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none" 
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Password Default</label>
-                                <input 
-                                    type="text" 
-                                    placeholder="Opsional (Default: password123)"
-                                    value={newUserForm.password} onChange={e => setNewUserForm(prev => ({...prev, password: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none" 
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Role / Hak Akses Awal</label>
-                                <select 
-                                    value={newUserForm.role_id} onChange={e => setNewUserForm(prev => ({...prev, role_id: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white font-bold text-sm"
-                                >
-                                    <option value="">Pilih Role...</option>
-                                    {roles.map(role => (
-                                        <option key={role.id} value={role.id}>{role.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Scope / Tingkat Akses (Opsional)</label>
-                                <select 
-                                    value={newUserForm.scope} onChange={e => setNewUserForm(prev => ({...prev, scope: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white font-bold text-sm"
-                                >
-                                    <option value="RT">RT (Bawaan)</option>
-                                    <option value="PKK">PKK</option>
-                                    <option value="Dasa Wisma">Dasa Wisma</option>
-                                </select>
-                            </div>
-                            <div className="pt-4 flex justify-end gap-3">
-                                <button type="button" onClick={() => setIsAddUserModalOpen(false)} className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100">Batal</button>
-                                <button type="submit" className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md">Simpan User</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* ADD ROLE MODAL */}
-            {isAddRoleModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[1.5rem] w-full max-w-md flex flex-col shadow-2xl animate-scale-in border border-slate-200 overflow-hidden">
-                        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight">Tambah Role Baru</h2>
-                            <button onClick={() => setIsAddRoleModalOpen(false)} className="p-2 hover:bg-white rounded-xl transition-all">
-                                <X weight="bold" className="w-5 h-5 text-slate-400 hover:text-red-500" />
-                            </button>
-                        </div>
-                        <form onSubmit={handleAddRole} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Nama Role</label>
-                                <input 
-                                    type="text" required 
-                                    placeholder="Contoh: Humas, Keamanan"
-                                    value={newRoleForm.name} onChange={e => setNewRoleForm(prev => ({...prev, name: e.target.value}))}
-                                    className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none" 
-                                />
-                            </div>
-                            <div className="pt-4 flex justify-end gap-3">
-                                <button type="button" onClick={() => setIsAddRoleModalOpen(false)} className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100">Batal</button>
-                                <button type="submit" className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-black shadow-md">Simpan Role</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* RBAC MODAL OVERLAY */}
-            {
-                (editingUser || editingRole) && (
-                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
-                        <div className="bg-white rounded-[1.5rem] w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-scale-in border border-slate-200 overflow-hidden">
-                            <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200">
-                                        <ShieldCheck weight="fill" className="w-6 h-6 text-brand-400" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight">Matrix Hak Akses</h2>
-                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                            {editingUser ? <UserIcon weight="fill" className="text-slate-400" /> : <ShieldCheck weight="fill" className="text-brand-400" />}
-                                            {editingUser ? editingUser.name : editingRole?.name}
-                                        </p>
-                                    </div>
-                                </div>
-                                <button onClick={() => { setEditingUser(null); setEditingRole(null); }} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-200 group">
-                                    <X weight="bold" className="w-5 h-5 text-slate-400 group-hover:text-red-500 transition-colors" />
-                                </button>
-                            </div>
-
-                            <div className="flex-1 overflow-auto p-5 bg-white">
-                                <div className="rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                                    <table className="w-full border-separate border-spacing-0">
-                                        <thead>
-                                            <tr className="bg-slate-50 border-b border-slate-200">
-                                                <th className="p-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] pl-6">Modul Aplikasi</th>
-                                                {CRUD_ACTIONS.map(action => (
-                                                    <th key={action.id} className="p-4 text-center text-[10px] font-black text-slate-900 uppercase tracking-[0.15em] border-l border-slate-100">{action.label}</th>
-                                                ))}
-                                                <th className="p-4 text-center text-[10px] font-black text-brand-600 uppercase tracking-[0.15em] border-l border-slate-100 bg-brand-50/30">Cakupan (Scope)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            {APP_MODULES.map((module, idx) => (
-                                                <tr key={module.id} className={`group hover:bg-brand-50/30 transition-all ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
-                                                    <td className="p-4 pl-6 font-bold text-slate-800 text-[12px] uppercase tracking-wide">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-2 h-2 rounded-full bg-brand-500 shadow-sm shadow-brand-200"></div>
-                                                            {module.label}
-                                                        </div>
-                                                    </td>
-                                                    {CRUD_ACTIONS.map(action => {
-                                                        const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
-                                                        return (
-                                                            <td key={action.id} className="p-3 text-center border-l border-slate-100/80">
-                                                                <label className="flex items-center justify-center cursor-pointer group/check relative">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        className="sr-only"
-                                                                        checked={isChecked || false}
-                                                                        onChange={() => togglePermission(module.id, action.id)}
-                                                                    />
-                                                                    <div className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${isChecked ? 'bg-brand-600 border-brand-600 text-white shadow-md shadow-brand-500/20' : 'bg-white border-slate-300 group-hover/check:border-brand-400 group-hover/check:bg-slate-50'}`}>
-                                                                        <CheckCircle weight="bold" className={`w-5 h-5 transition-all ${isChecked ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`} />
-                                                                    </div>
-                                                                </label>
-                                                            </td>
-                                                        );
-                                                    })}
-                                                    <td className="p-3 text-center border-l border-slate-100/80 bg-brand-50/10">
-                                                        <button 
-                                                            onClick={() => toggleScope(module.id)}
-                                                            className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>
-                                                            {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div className="px-6 py-5 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
-                                <button
-                                    onClick={() => { setEditingUser(null); setEditingRole(null); }}
-                                    className="px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white border border-transparent hover:border-slate-200 transition-all"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    onClick={savePermissions}
-                                    className="px-8 py-3 bg-slate-900 text-white rounded-xl text-[11px] font-black shadow-xl shadow-slate-200 hover:bg-brand-600 transition-all flex items-center gap-2 uppercase tracking-[0.2em]"
-                                >
-                                    <ShieldCheck weight="fill" className="w-4 h-4" />
-                                    Simpan Hak Akses
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
         </div>
     );
 }
+
