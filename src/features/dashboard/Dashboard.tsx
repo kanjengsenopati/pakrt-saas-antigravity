@@ -12,7 +12,6 @@ import {
     Wallet,
     FileText,
     HandCoins,
-    User as UserIcon,
     CreditCard
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
