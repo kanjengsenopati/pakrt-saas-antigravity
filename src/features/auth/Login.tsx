@@ -92,10 +92,10 @@ export default function Login() {
 
                     <div className="flex-1 flex flex-col justify-start max-w-sm">
                         <div className="mb-8">
-                            <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-2 leading-tight">
-                                Portal <span className="text-brand-600">PAKRT</span>
+                            <h1 className="text-[20px] font-bold tracking-tight text-slate-900 mb-2 leading-tight">
+                                Portal <span className="text-brand-600 font-bold">PAKRT</span>
                             </h1>
-                            <p className="text-slate-500 text-[12px] leading-relaxed font-bold tracking-widest uppercase">
+                            <p className="text-slate-500 text-[14px] leading-relaxed font-semibold">
                                 Sistem Manajemen RT Cerdas
                             </p>
                         </div>
@@ -123,8 +123,8 @@ export default function Login() {
                                                 {demo.icon}
                                             </div>
                                             <div className="text-left">
-                                                <div className="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">{demo.role}</div>
-                                                <div className="text-[11px] font-bold text-slate-700 leading-none">{demo.email}</div>
+                                                <div className="text-[14px] font-bold text-slate-900 leading-none mb-1">{demo.role}</div>
+                                                <div className="text-[12px] font-medium text-slate-500 leading-none">{demo.email}</div>
                                             </div>
                                         </div>
                                         <SignIn weight="bold" className="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-600 transition-colors" />
@@ -153,8 +153,8 @@ export default function Login() {
 
                 <div className="w-full max-w-[360px] animate-fade-in-up">
                     <div className="mb-10">
-                        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Login Akun</h2>
-                        <p className="text-slate-500 text-[13px] font-medium leading-relaxed">Selamat datang kembali! Silakan masuk untuk mengelola wilayah RT Anda.</p>
+                        <h2 className="text-[20px] font-bold text-slate-900 mb-2 tracking-tight">Login Akun</h2>
+                        <p className="text-slate-500 text-[14px] leading-relaxed">Selamat Datang Kembali! Silakan Masuk Untuk Mengelola Wilayah RT Anda.</p>
                     </div>
 
                     {loginError && (
@@ -164,32 +164,32 @@ export default function Login() {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
-                        <div className="space-y-1.5">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email / No Whatsapp</label>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="block text-[14px] text-slate-500 ml-1">Email / No Whatsapp</label>
                             <input
                                 {...register('contactOrEmail', { required: true })}
-                                placeholder="nama@email.com"
-                                className={`w-full rounded-xl border-slate-200 p-3.5 text-sm border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-medium text-slate-900 ${errors.contactOrEmail ? 'border-red-300 bg-red-50/30' : ''}`}
+                                placeholder="Nama@Email.Com"
+                                className={`w-full rounded-xl border-slate-200 p-3.5 text-[14px] border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-normal text-slate-900 ${errors.contactOrEmail ? 'border-red-300 bg-red-50/30' : ''}`}
                             />
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                             <div className="flex items-center justify-between ml-1">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Password</label>
-                                <a href="#" className="text-[10px] font-black text-brand-600 hover:text-brand-700 tracking-wide">Lupa?</a>
+                                <label className="block text-[14px] text-slate-500">Kata Sandi</label>
+                                <a href="#" className="text-[12px] font-semibold text-brand-600 hover:text-brand-700 tracking-wide">Lupa Kata Sandi?</a>
                             </div>
                             <div className="relative">
                                 <input
                                     {...register('password', { required: true })}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
-                                    className={`w-full rounded-xl border-slate-200 p-3.5 text-sm border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-medium text-slate-900 pr-12 ${errors.password ? 'border-red-300 bg-red-50/30' : ''}`}
+                                    className={`w-full rounded-xl border-slate-200 p-3.5 text-[14px] border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-normal text-slate-900 pr-12 ${errors.password ? 'border-red-300 bg-red-50/30' : ''}`}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                                 >
                                     {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
@@ -204,7 +204,7 @@ export default function Login() {
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                     className="w-4 h-4 border-slate-300 rounded text-brand-600 focus:ring-brand-500/20 transition-all cursor-pointer" 
                                 />
-                                <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Ingat Akun Saya</span>
+                                <span className="text-[14px] text-slate-500 group-hover:text-slate-700 transition-colors">Ingat Akun Saya</span>
                             </label>
                         </div>
 
@@ -212,10 +212,10 @@ export default function Login() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-4 px-6 bg-brand-600 text-white rounded-xl font-black text-[12px] uppercase tracking-[0.2em] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 gap-3"
+                                className="w-full py-4 px-6 bg-brand-600 text-slate-900 rounded-xl font-normal text-[14px] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 gap-3 border border-brand-500"
                             >
                                 {isLoading ? (
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin"></div>
                                 ) : (
                                     <>
                                         <span>Masuk Sekarang</span>
@@ -227,11 +227,11 @@ export default function Login() {
                     </form>
 
                     <div className="mt-12 text-center border-t border-slate-50 pt-8">
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">
-                            Belum mendaftar?{' '}
+                        <p className="text-[14px] text-slate-400">
+                            Belum Mendaftar?{' '}
                             <button
                                 onClick={() => navigate('/register')}
-                                className="text-brand-600 font-black hover:text-brand-700 px-1 ml-1"
+                                className="text-brand-600 font-bold hover:text-brand-700 px-1 ml-1"
                             >
                                 Daftar Sekarang
                             </button>
