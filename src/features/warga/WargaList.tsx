@@ -135,9 +135,9 @@ export default function WargaList() {
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-tight">Data Warga</h1>
-                    <p className="text-gray-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
-                        Scope: <span className="font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    <h1 className="page-title">Data Warga</h1>
+                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
                 
@@ -254,13 +254,13 @@ export default function WargaList() {
                 <div className="flex border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab('Verified')}
-                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'Verified' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                        className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'Verified' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                     >
                         Terverifikasi ({wargaList.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('Pending')}
-                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 flex items-center gap-2 ${activeTab === 'Pending' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                        className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 flex items-center gap-2 ${activeTab === 'Pending' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                     >
                         Permintaan Bergabung
                         {pendingWarga.length > 0 && (
@@ -284,8 +284,8 @@ export default function WargaList() {
                             className="w-full pl-9 sm:pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all shadow-sm"
                         />
                     </div>
-                    <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
-                        <Funnel weight="fill" className="text-brand-600 sm:text-gray-400" />
+                    <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-[14px] font-normal transition-all shadow-sm active-press">
+                        <Funnel weight="fill" className="text-brand-600 sm:text-slate-400" />
                         <span className="hidden sm:inline">Filter Tambahan</span>
                     </button>
                 </div>
@@ -294,15 +294,15 @@ export default function WargaList() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-wider border-b border-gray-200">
-                                <th className="p-2.5 w-8 text-center font-semibold text-gray-400">No</th>
+                            <tr className="bg-slate-50 text-slate-500 text-[14px] capitalize tracking-wider border-b border-slate-200">
+                                <th className="p-2.5 w-8 text-center font-semibold text-slate-500">No</th>
                                 <th className="p-2.5 w-8 text-center"></th>
-                                <th className="p-3 font-semibold text-gray-400">Nama & Identitas</th>
-                                <th className="p-3 font-semibold text-gray-400 text-center">Kontak</th>
-                                <th className="p-3 font-semibold text-gray-400 text-center">J. Kelamin</th>
-                                <th className="p-3 font-semibold text-gray-400 text-center">Agama</th>
-                                <th className="p-3 font-semibold text-gray-400">Alamat</th>
-                                <th className="p-3 font-semibold text-gray-400 text-center">Aksi</th>
+                                <th className="p-3 font-semibold text-slate-500">Nama & Identitas</th>
+                                <th className="p-3 font-semibold text-slate-500 text-center">Kontak</th>
+                                <th className="p-3 font-semibold text-slate-500 text-center">J. Kelamin</th>
+                                <th className="p-3 font-semibold text-slate-500 text-center">Agama</th>
+                                <th className="p-3 font-semibold text-slate-500">Alamat</th>
+                                <th className="p-3 font-semibold text-slate-500 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -330,16 +330,16 @@ export default function WargaList() {
                                             </td>
                                             <td className="p-3 text-center"></td>
                                             <td className="p-3">
-                                                <p className="font-bold text-slate-800 leading-tight text-sm">{warga.nama}</p>
+                                                <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
                                                 <div className="mt-1 flex items-center gap-1.5">
                                                     <span className="text-[9px] font-black text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none uppercase">PENDING VERIFICATION</span>
+                                                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none capitalize">Pending Verification</span>
                                                 </div>
                                             </td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.kontak || '-'}</td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.jenis_kelamin || '-'}</td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.agama || '-'}</td>
-                                            <td className="p-3 text-gray-500 text-[11px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.kontak || '-'}</td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.jenis_kelamin || '-'}</td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.agama || '-'}</td>
+                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
                                             <td className="p-3 px-4">
                                                 <div className="flex gap-2 justify-center">
                                                     <button
@@ -383,18 +383,18 @@ export default function WargaList() {
                                                 {expandedWargaId === warga.id ? <CaretDown weight="bold" size={12} /> : <CaretRight weight="bold" size={12} />}
                                             </td>
                                             <td className="p-3">
-                                                <p className="font-bold text-slate-800 leading-tight text-sm">{warga.nama}</p>
+                                                <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
                                                 <div className="mt-1 flex items-center gap-1.5 overflow-hidden">
                                                     <span className="text-[9px] font-black text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border border-slate-200 uppercase leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border border-slate-200 capitalize leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
                                                         {warga.status_penduduk || 'Tetap'}
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center whitespace-nowrap">{warga.kontak || '-'}</td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.jenis_kelamin || '-'}</td>
-                                            <td className="p-3 text-gray-600 text-[11px] font-medium text-center">{warga.agama || '-'}</td>
-                                            <td className="p-3 text-gray-500 text-[11px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center whitespace-nowrap">{warga.kontak || '-'}</td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.jenis_kelamin || '-'}</td>
+                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.agama || '-'}</td>
+                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
                                             <td className="p-3 px-4">
                                                 <div className="flex flex-col items-center gap-1" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex gap-1">

@@ -9,6 +9,8 @@ export interface User {
     id: string;
     tenant_id: string;
     role: 'Admin' | 'Ketua' | 'Sekretaris' | 'Bendahara' | 'Warga' | string;
+    role_id?: string;
+    role_entity?: any;
     name: string;
     email: string;
     scope?: string;

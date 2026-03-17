@@ -108,8 +108,8 @@ export default function Dashboard() {
         <div className="space-y-4 animate-fade-in pb-6">
             {/* Header */}
             <div className="flex items-baseline gap-3">
-                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                <span className="text-xs text-gray-400">Scope: <span className="font-semibold text-brand-600">{currentScope}</span></span>
+                <h1 className="page-title">Dashboard</h1>
+                <span className="text-[12px] text-slate-500">Scope: <span className="font-semibold text-brand-600">{currentScope}</span></span>
             </div>
 
             {/* STAT CARDS — compact horizontal layout */}
@@ -132,14 +132,14 @@ export default function Dashboard() {
                                 <div className={`p-2 rounded-lg ${card.color} shrink-0`}>
                                     <Icon weight="duotone" className="w-4 h-4" />
                                 </div>
-                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-tight">{card.title}</p>
+                                <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-tight leading-tight">{card.title}</p>
                             </div>
 
                             {/* Center-aligned big number */}
                             <div className="relative z-10 text-center py-1">
-                                <p className="text-2xl font-black text-slate-900 leading-tight">
+                                <p className="text-[24px] font-bold text-slate-800 leading-tight">
                                     {card.isCurrency ? (
-                                        <span className="text-base">{formatRupiah(card.count as number).replace('Rp', '').trim()}</span>
+                                        <span className="text-[20px]">{formatRupiah(card.count as number).replace('Rp', '').trim()}</span>
                                     ) : card.count}
                                 </p>
                             </div>
@@ -158,12 +158,12 @@ export default function Dashboard() {
                 {/* UPCOMING AGENDA */}
                 <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-                        <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-800">
+                        <h3 className="text-[14px] font-semibold flex items-center gap-1.5 text-slate-800">
                             <CalendarCheck size={16} className="text-purple-600" />
                             Agenda Mendatang
                         </h3>
                         <button
-                            className="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
+                            className="text-[12px] font-semibold text-brand-600 uppercase tracking-wider hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
                             onClick={() => navigate('/agenda')}
                         >
                             Lihat Semua
@@ -191,7 +191,7 @@ export default function Dashboard() {
                                                 </span>
                                             </div>
                                             <div className="min-w-0">
-                                                <h4 className="text-xs font-bold text-slate-900 leading-none truncate group-hover:text-purple-600 transition-colors">
+                                                <h4 className="text-[14px] font-semibold text-slate-800 leading-none truncate group-hover:text-purple-600 transition-colors">
                                                     {agenda.judul}
                                                 </h4>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -227,7 +227,7 @@ export default function Dashboard() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50">
                         <ClockCounterClockwise size={16} className="text-brand-600" />
-                        <h3 className="text-sm font-bold text-slate-800">Aktivitas</h3>
+                        <h3 className="text-[14px] font-semibold text-slate-800">Aktivitas</h3>
                     </div>
 
                     <div className="p-3">
@@ -239,9 +239,9 @@ export default function Dashboard() {
                             <div className="space-y-3">
                                 {recentActivities.map((act: Aktivitas) => (
                                     <div key={act.id} className="pl-3 border-l-2 border-brand-200 hover:border-brand-500 transition-all">
-                                        <p className="text-[10px] font-black text-brand-600 uppercase tracking-tight leading-none">{act.action}</p>
-                                        <p className="text-xs text-gray-700 leading-snug mt-0.5">{act.details}</p>
-                                        <p className="text-[9px] text-gray-400 mt-0.5 font-medium">{formatDate(act.timestamp)}</p>
+                                        <p className="text-[11px] font-bold text-brand-600 uppercase tracking-tight leading-none">{act.action}</p>
+                                        <p className="text-[14px] text-slate-700 leading-snug mt-0.5">{act.details}</p>
+                                        <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{formatDate(act.timestamp)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -260,7 +260,7 @@ export default function Dashboard() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50">
                         <ShieldCheck size={16} className="text-brand-600" />
-                        <h3 className="text-sm font-bold text-slate-800">Ronda Terdekat</h3>
+                        <h3 className="text-[14px] font-semibold text-slate-800">Ronda Terdekat</h3>
                     </div>
 
                     <div className="p-3 space-y-2">
@@ -299,7 +299,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
                         <div className="flex items-center gap-1.5">
                             <HandCoins size={16} className="text-emerald-600" />
-                            <h3 className="text-sm font-bold text-slate-800">Iuran Terakhir</h3>
+                            <h3 className="text-[14px] font-semibold text-slate-800">Iuran Terakhir</h3>
                         </div>
                         <button
                             className="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:underline"

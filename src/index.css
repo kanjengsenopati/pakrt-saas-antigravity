@@ -17,13 +17,10 @@
         --color-brand-900: 20 83 45;
 
         --bg-glow-1: rgba(16, 185, 129, 0.05);
-        /* Emerald for RT */
         --bg-glow-2: rgba(14, 165, 233, 0.05);
-        /* Blue */
     }
 
     [data-scope="PKK"] {
-        /* PKK (Rose/Pink) */
         --color-brand-50: 255 241 242;
         --color-brand-100: 255 228 232;
         --color-brand-200: 254 205 211;
@@ -38,7 +35,6 @@
     }
 
     [data-scope="Dasa Wisma"] {
-        /* Dasa Wisma (Indigo) */
         --color-brand-50: 238 242 255;
         --color-brand-100: 224 231 255;
         --color-brand-200: 199 210 254;
@@ -67,9 +63,14 @@
 }
 
 body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-slate-50 text-slate-800 antialiased;
     background-image: radial-gradient(circle at 15% 50%, var(--bg-glow-1), transparent 25%), radial-gradient(circle at 85% 30%, var(--bg-glow-2), transparent 25%);
     background-attachment: fixed;
+}
+
+/* Typography Standards */
+.page-title {
+    @apply text-[20px] font-bold text-slate-800 tracking-tight leading-tight;
 }
 
 /* Glassmorphism utilities */
@@ -78,7 +79,7 @@ body {
 }
 
 .glass-dark {
-    @apply bg-slate-900/80 backdrop-blur-lg border border-slate-700/50 shadow-lg text-slate-100;
+    @apply bg-slate-800/80 backdrop-blur-lg border border-slate-700/50 shadow-lg text-slate-100;
 }
 
 /* Micro-animations */
@@ -90,7 +91,7 @@ body {
     @apply transition-transform duration-150 ease-in-out active:scale-[0.98] active:shadow-sm;
 }
 
-/* Custom Scrollbar for sleek look */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -108,17 +109,22 @@ body {
     @apply bg-slate-400;
 }
 
-/* Table styling enhancements */
+/* Table styling standardized */
 th {
-    @apply font-semibold text-slate-600 tracking-wider text-[11px] uppercase bg-slate-50/90 backdrop-blur-sm sticky top-0 border-b border-slate-200 py-3 px-4;
+    @apply font-semibold text-slate-500 tracking-wider text-[14px] capitalize bg-slate-50/90 backdrop-blur-sm sticky top-0 border-b border-slate-200 py-3.5 px-4;
 }
 
 td {
-    @apply py-3.5 px-4 align-middle border-b border-slate-100 text-sm text-slate-700;
+    @apply py-3.5 px-4 align-middle border-b border-slate-100 text-[14px] font-normal text-slate-800;
 }
 
 tr:last-child td {
     @apply border-b-0;
+}
+
+/* Components Defaults */
+button {
+    @apply text-[14px] font-normal text-slate-800;
 }
 
 /* Input Fields Focus States */
@@ -129,7 +135,7 @@ input[type="date"],
 input[type="number"],
 textarea,
 select {
-    @apply transition-all duration-200 outline-none border border-slate-200;
+    @apply transition-all duration-200 outline-none border border-slate-200 text-[14px] text-slate-800;
 }
 
 input:focus,
@@ -138,6 +144,7 @@ select:focus {
     @apply bg-white ring-2 ring-brand-500/20 border-brand-500;
     box-shadow: 0 0 15px rgb(var(--color-brand-500) / 0.1);
 }
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }

@@ -107,13 +107,13 @@ export default function AsetList() {
         <div className="space-y-6 animate-fade-in relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Inventaris Aset</h1>
-                    <p className="text-gray-500 mt-1">Kelola barang inventaris untuk scope <span className="font-semibold text-brand-600">{currentScope}</span></p>
+                    <h1 className="page-title">Inventaris Aset</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">Kelola barang inventaris untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span></p>
                 </div>
                 <HasPermission module="Aset" action="Buat">
                     <button
                         onClick={() => navigate('/aset/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Tambah Aset</span>
@@ -136,7 +136,7 @@ export default function AsetList() {
                     <select
                         value={filterCondition}
                         onChange={e => setFilterCondition(e.target.value)}
-                        className="w-full sm:w-auto px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors outline-none focus:ring-2 focus:ring-brand-500"
+                        className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-[14px] font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-500"
                     >
                         <option value="">Semua Kondisi</option>
                         <option value="baik">Baik</option>
@@ -149,11 +149,11 @@ export default function AsetList() {
                 <div className="hidden md:block overflow-x-auto min-h-[400px]">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                                <th className="p-4 font-semibold w-1/3">Informasi Barang</th>
-                                <th className="p-4 font-semibold w-1/4">Pembelian</th>
-                                <th className="p-4 font-semibold w-1/4">Status Pinjam</th>
-                                <th className="p-4 font-semibold text-right">Aksi</th>
+                            <tr className="bg-slate-50 text-slate-500 text-[14px] capitalize tracking-wider border-b border-slate-200">
+                                <th className="p-4 font-semibold w-1/3 text-slate-500">Informasi Barang</th>
+                                <th className="p-4 font-semibold w-1/4 text-slate-500">Pembelian</th>
+                                <th className="p-4 font-semibold w-1/4 text-slate-500">Status Pinjam</th>
+                                <th className="p-4 font-semibold text-slate-500 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -185,29 +185,29 @@ export default function AsetList() {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-gray-900 leading-tight mb-1">{aset.nama_barang}</p>
+                                                    <p className="font-bold text-slate-800 leading-tight mb-1 text-[14px]">{aset.nama_barang}</p>
                                                     <div className="flex items-center gap-2">
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase 
+                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider capitalize 
                                                             ${aset.kondisi === 'baik' ? 'bg-brand-50 text-brand-700 border border-brand-200' :
                                                                 aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                                                                 aset.kondisi === 'rusak_berat' ? 'bg-red-50 text-red-700 border border-red-200' :
-                                                                'bg-gray-50 text-gray-700 border border-gray-200'}
+                                                                'bg-slate-50 text-slate-700 border border-slate-200'}
                                                         `}>
                                                             {aset.kondisi === 'baik' ? 'Baik' :
                                                                 aset.kondisi === 'rusak_ringan' ? 'Rusak Ringan' :
                                                                 aset.kondisi === 'rusak_berat' ? 'Rusak Berat' :
                                                                 (aset.kondisi || 'Baik')}
                                                         </span>
-                                                        <span className="text-xs font-semibold text-gray-500">• {aset.jumlah} Unit</span>
+                                                        <span className="text-[12px] font-semibold text-slate-500">• {aset.jumlah} Unit</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="p-4 align-top">
-                                            <div className="space-y-1 text-sm">
-                                                <p className="text-gray-900 font-medium">{aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'}</p>
-                                                <p className="text-gray-500 text-xs">{aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : '-'}</p>
-                                                {aset.vendor && <p className="text-gray-400 text-xs truncate max-w-[150px]" title={aset.vendor}>Toko: {aset.vendor}</p>}
+                                            <div className="space-y-1 text-[14px]">
+                                                <p className="text-slate-800 font-bold">{aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'}</p>
+                                                <p className="text-slate-500 text-[12px]">{aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : '-'}</p>
+                                                {aset.vendor && <p className="text-slate-500 text-[12px] truncate max-w-[150px]" title={aset.vendor}>Toko: {aset.vendor}</p>}
                                             </div>
                                         </td>
                                         <td className="p-4 align-top">

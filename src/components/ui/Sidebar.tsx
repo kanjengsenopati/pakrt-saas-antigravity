@@ -115,10 +115,10 @@ export function Sidebar() {
     return (
         <aside className="w-64 bg-white text-slate-800 flex flex-col h-screen fixed left-0 top-0 overflow-hidden shadow-sm border-r border-slate-100 z-50">
             <div className="p-6 border-b border-slate-100/80">
-                <h2 className="text-xl font-black bg-gradient-to-r from-brand-500 to-emerald-500 bg-clip-text text-transparent truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
+                <h2 className="text-[20px] font-bold text-slate-800 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
                     {getRtRwLabel()}
                 </h2>
-                <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-normal font-bold truncate">
+                <p className="text-[11px] text-slate-500 mt-1 uppercase tracking-normal font-bold truncate">
                     {kelurahanName || 'Sistem Manajemen RT'}
                 </p>
             </div>
@@ -126,7 +126,7 @@ export function Sidebar() {
             <nav className="flex-1 px-4 py-3 space-y-3 overflow-y-auto scrollbar-thin pb-6">
                 {filteredMenuGroups.map((group) => (
                     <div key={group.label} className="space-y-0.5">
-                        <h3 className="px-3 text-[10px] font-black text-slate-400 uppercase tracking-normal mb-1.5">
+                        <h3 className="px-3 text-[12px] font-semibold text-slate-500 uppercase tracking-normal mb-1.5">
                             {group.label}
                         </h3>
                         <div className="space-y-0.5">
@@ -139,19 +139,19 @@ export function Sidebar() {
                                         className={({ isActive }) =>
                                             `flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-300 group ${isActive
                                                 ? 'bg-brand-50 text-brand-700 font-bold border border-brand-100/50 shadow-sm'
-                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                                                : 'text-slate-800 hover:bg-slate-50 font-normal'
                                             }`
                                         }
                                     >
                                         {({ isActive }) => (
                                             <>
-                                                <div className={`p-1 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'group-hover:text-brand-500'}`}>
+                                                <div className={`p-1 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'text-slate-500 group-hover:text-brand-500'}`}>
                                                     <Icon
                                                         weight={isActive ? "fill" : "duotone"}
                                                         className="w-5 h-5 transition-transform group-hover:scale-110 group-active:scale-95 duration-300"
                                                     />
                                                 </div>
-                                                <span className="text-sm tracking-normal">{item.label}</span>
+                                                <span className="text-[14px] tracking-normal">{item.label}</span>
                                             </>
                                         )}
                                     </NavLink>

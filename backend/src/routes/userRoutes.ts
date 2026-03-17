@@ -50,23 +50,35 @@ export default async function userRoutes(fastify: FastifyInstance) {
             const newUser = await userService.create(data);
             return reply.code(201).send(newUser);
         } catch (error: any) {
-            fastify.log.error(error);
+            fastify.log.error('USER_CREATE_ERROR:', error);
             
             // Handle Prisma unique constraint violations (P2002)
             if (error.code === 'P2002') {
                 const target = error.meta?.target;
-                if (Array.isArray(target) && target.includes('email')) {
+                
+                // Flexible check for target as array or string
+                const checkTarget = (field: string) => {
+                    if (Array.isArray(target)) return target.includes(field);
+                    if (typeof target === 'string') return target.includes(field);
+                    return false;
+                };
+
+                if (checkTarget('email')) {
                     return reply.code(409).send({ error: 'Email sudah terdaftar. Gunakan email lain.' });
                 }
-                if (Array.isArray(target) && target.includes('warga_id')) {
+                if (checkTarget('warga_id')) {
                     return reply.code(409).send({ error: 'Warga ini sudah memiliki akun user.' });
                 }
-                return reply.code(409).send({ error: 'Data duplikat terdeteksi pada field: ' + target });
+                return reply.code(409).send({ 
+                    error: 'Data duplikat terdeteksi', 
+                    details: `Conflict on: ${target}`
+                });
             }
 
             return reply.code(500).send({ 
                 error: 'Gagal membuat user', 
-                details: error.message 
+                message: error.message,
+                code: error.code
             });
         }
     });

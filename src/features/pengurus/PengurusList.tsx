@@ -84,11 +84,11 @@ export default function PengurusList() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="page-title">
                         {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 'Riwayat Kepengurusan'}
                     </h1>
-                    <p className="text-gray-500 mt-1">
-                        Scope: <span className="font-semibold text-brand-600">{currentScope}</span>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                         {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
                     </p>
                 </div>
@@ -162,7 +162,7 @@ export default function PengurusList() {
                     <div className={`overflow-x-auto ${viewMode === 'list' ? 'hidden md:block' : 'hidden'}`}>
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                                <tr className="bg-slate-50 text-slate-500 text-[14px] uppercase tracking-wider border-b border-slate-200">
                                     <th className="p-4 font-semibold">Nama Jabatan</th>
                                     <th className="p-4 font-semibold">Dijabat Oleh</th>
                                     <th className="p-4 font-semibold">Periode</th>
@@ -191,7 +191,7 @@ export default function PengurusList() {
                                         <tr key={pengurus.id} className="hover:bg-gray-50/50 transition-colors group">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
-                                                    <p className="font-semibold text-brand-700">{pengurus.jabatan}</p>
+                                                    <p className="text-[14px] font-bold text-brand-700">{pengurus.jabatan}</p>
                                                     {!jabatanSettings.includes(pengurus.jabatan) && pengurus.status === 'aktif' && (
                                                         <span className="group relative">
                                                             <WarningCircle size={14} className="text-amber-500 animate-pulse" weight="fill" />
@@ -203,10 +203,10 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <p className="font-medium text-gray-900">{pengurus.warga?.nama || <span className="text-red-500 italic">Data warga tidak ditemukan</span>}</p>
-                                                {pengurus.warga?.kontak && <p className="text-xs text-gray-500">{pengurus.warga.kontak}</p>}
+                                                <p className="text-[14px] font-bold text-slate-800">{pengurus.warga?.nama || <span className="text-red-500 italic">Data warga tidak ditemukan</span>}</p>
+                                                {pengurus.warga?.kontak && <p className="text-[12px] text-slate-500 mt-0.5">{pengurus.warga.kontak}</p>}
                                             </td>
-                                            <td className="p-4 text-gray-600 text-sm">
+                                            <td className="p-4 text-slate-600 text-[14px]">
                                                 <div className="flex items-center gap-2">
                                                     <span>{pengurus.periode}</span>
                                                     {!periodeSettings.includes(pengurus.periode) && (

@@ -504,7 +504,14 @@ export default function Pengaturan() {
         
         const normalized: Record<string, any> = {};
         const userPerms = (user.permissions as any) || {};
-        const rolePerms = (user as any).role_entity?.permissions || {};
+
+        // Robust role permission lookup: Priority: user.role_entity > roles state fallback
+        let role = (user as any).role_entity;
+        if (!role && user.role_id) {
+            role = roles.find(r => r.id === user.role_id);
+        }
+        
+        const rolePerms = role?.permissions || {};
 
         APP_MODULES.forEach(mod => {
             // Priority: User Override > Role Default > Empty
@@ -687,8 +694,10 @@ export default function Pengaturan() {
         <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-10">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 border-l-4 border-brand-500 pl-4 py-1">Pengaturan Sistem</h1>
-                    <p className="text-gray-500 mt-1">Konfigurasi khusus untuk scope <span className="font-bold text-brand-600 uppercase">{currentScope}</span></p>
+                    <h1 className="page-title">Pengaturan Sistem</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Konfigurasi khusus untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    </p>
                 </div>
                 <div className="px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-bold border border-brand-100 uppercase tracking-widest shadow-sm">
                     {currentScope} Active
@@ -1389,19 +1398,19 @@ export default function Pengaturan() {
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white border border-gray-200 p-6 rounded-3xl shadow-sm">
                             <div className="flex items-center gap-6">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900 leading-none">Manajemen Akses</h3>
-                                    <p className="text-xs text-gray-500 mt-2 font-medium">Pengaturan RBAC & Hak Akses per tenant.</p>
+                                    <h3 className="text-[20px] font-bold text-slate-800 leading-none">Manajemen Akses</h3>
+                                    <p className="text-[12px] text-slate-500 mt-2 font-medium uppercase tracking-wider">Pengaturan RBAC & Hak Akses per tenant.</p>
                                 </div>
                                 <div className="h-10 w-[1px] bg-gray-100 hidden md:block"></div>
                                 <div className="flex bg-gray-100 p-1 rounded-xl">
                                     <button 
                                         onClick={() => setActiveRoleSubTab('users')}
-                                        className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeRoleSubTab === 'users' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                        className={`px-4 py-2 text-[14px] font-normal rounded-lg transition-all ${activeRoleSubTab === 'users' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
                                         Pengguna
                                     </button>
                                     <button 
                                         onClick={() => setActiveRoleSubTab('roles')}
-                                        className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeRoleSubTab === 'roles' ? 'bg-white text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                        className={`px-4 py-2 text-[14px] font-normal rounded-lg transition-all ${activeRoleSubTab === 'roles' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
                                         Role / Peran
                                     </button>
                                 </div>
@@ -1411,7 +1420,7 @@ export default function Pengaturan() {
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
                                             onClick={() => { setShowAddUserForm(v => !v); setExpandedUserId(null); }}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-xs ${showAddUserForm ? 'bg-slate-900 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddUserForm ? 'bg-slate-800 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddUserForm ? <X weight="bold" /> : <Plus weight="bold" />}
                                             <span>{showAddUserForm ? 'Batal' : 'Tambah Pengguna'}</span>
                                         </button>
@@ -1420,7 +1429,7 @@ export default function Pengaturan() {
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
                                             onClick={() => setShowAddRoleForm(v => !v)}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-xs ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-slate-900 text-white shadow-slate-500/20 hover:scale-105 active:scale-95'}`}>
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-slate-800 text-white shadow-slate-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
                                             <span>{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</span>
                                         </button>
@@ -1434,14 +1443,14 @@ export default function Pengaturan() {
                             <div className="bg-white border border-brand-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                                 <div className="px-6 py-4 bg-brand-50 border-b border-brand-100 flex items-center gap-3">
                                     <UserIcon weight="fill" className="w-5 h-5 text-brand-600" />
-                                    <h3 className="text-sm font-black text-brand-900 uppercase tracking-widest">Tambah Pengguna Baru</h3>
+                                    <h3 className="text-[14px] font-semibold text-slate-800 uppercase tracking-widest">Tambah Pengguna Baru</h3>
                                 </div>
                                 <form onSubmit={handleAddUser} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {/* Warga Selector */}
                                     <div className="md:col-span-2">
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
                                             Pilih dari Data Warga {currentScope}
-                                            <span className="ml-1 font-normal text-gray-300">(opsional — auto-isi nama &amp; email)</span>
+                                            <span className="ml-1 font-normal text-slate-400">(opsional — auto-isi nama &amp; email)</span>
                                         </label>
                                         <select
                                             value={selectedWargaId}
@@ -1457,29 +1466,29 @@ export default function Pengaturan() {
                                             }
                                         </select>
                                         {wargaList.filter(w => currentScope === 'RT' ? w.jenis_kelamin === 'Laki-laki' : w.jenis_kelamin === 'Perempuan').length === 0 && (
-                                            <p className="text-[10px] text-amber-500 mt-1 italic">Tidak ada data warga {currentScope === 'RT' ? 'laki-laki' : 'perempuan'} yang tersedia.</p>
+                                            <p className="text-[12px] text-amber-600 mt-1 italic">Tidak ada data warga {currentScope === 'RT' ? 'laki-laki' : 'perempuan'} yang tersedia.</p>
                                         )}
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Nama Lengkap</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap</label>
                                         <input type="text" required value={newUserForm.name}
                                             onChange={e => setNewUserForm(prev => ({...prev, name: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Email</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Email</label>
                                         <input type="email" required value={newUserForm.email}
                                             onChange={e => setNewUserForm(prev => ({...prev, email: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Password Default</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Password Default</label>
                                         <input type="text" placeholder="Default: password123" value={newUserForm.password}
                                             onChange={e => setNewUserForm(prev => ({...prev, password: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Role / Hak Akses</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Role / Hak Akses</label>
                                         <select value={newUserForm.role_id}
                                             onChange={e => setNewUserForm(prev => ({...prev, role_id: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
@@ -1488,7 +1497,7 @@ export default function Pengaturan() {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Scope</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Scope</label>
                                         <select value={newUserForm.scope}
                                             onChange={e => setNewUserForm(prev => ({...prev, scope: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
@@ -1518,7 +1527,7 @@ export default function Pengaturan() {
                                 </div>
                                 <form onSubmit={handleAddRole} className="p-6 flex gap-4 items-end">
                                     <div className="flex-1">
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Nama Role</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Nama Role</label>
                                         <input type="text" required placeholder="Contoh: Humas, Keamanan"
                                             value={newRoleForm.name}
                                             onChange={e => setNewRoleForm(prev => ({...prev, name: e.target.value}))}
@@ -1526,9 +1535,9 @@ export default function Pengaturan() {
                                     </div>
                                     <div className="flex gap-3">
                                         <button type="button" onClick={() => setShowAddRoleForm(false)}
-                                            className="px-5 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all">Batal</button>
+                                            className="px-5 py-3 rounded-xl text-[14px] font-normal text-slate-500 hover:bg-gray-100 transition-all">Batal</button>
                                         <button type="submit"
-                                            className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-black shadow-md transition-all active:scale-95">Simpan Role</button>
+                                            className="px-6 py-3 rounded-xl text-[14px] font-normal text-white bg-slate-800 hover:bg-slate-900 shadow-md transition-all active:scale-95">Simpan Role</button>
                                     </div>
                                 </form>
                             </div>
@@ -1547,12 +1556,12 @@ export default function Pengaturan() {
                                                         {user.name?.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-gray-900">{user.name}</h4>
+                                                        <h4 className="font-bold text-slate-800">{user.name}</h4>
                                                         <div className="flex gap-1.5 mt-1">
                                                             <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider border border-brand-100/50">
                                                                 {(user as any).role_entity?.name || user.role}
                                                             </span>
-                                                            <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200/50">
+                                                            <span className="inline-flex px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-wider border border-slate-200/50">
                                                                 {user.scope || 'RT'}
                                                             </span>
                                                         </div>
@@ -1562,13 +1571,13 @@ export default function Pengaturan() {
                                             <div className="p-4 bg-white flex justify-end gap-2">
                                                 <HasPermission module="Setup / Pengaturan" action="Hapus">
                                                     <button onClick={() => handleDeleteUser(user.id, user.name)}
-                                                        className="px-4 py-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100">
+                                                        className="px-4 py-3 text-[14px] font-normal text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all border border-red-100">
                                                         Hapus
                                                     </button>
                                                 </HasPermission>
                                                 <HasPermission module="Setup / Pengaturan" action="Ubah">
                                                     <button onClick={() => handleEditPermissions(user)}
-                                                        className={`flex-1 flex justify-center items-center gap-2 px-4 py-3 text-xs font-bold rounded-2xl transition-all border ${expandedUserId === user.id ? 'bg-brand-600 text-white border-brand-600' : 'text-brand-600 bg-brand-50/50 hover:bg-brand-50 border-brand-100/50'}`}>
+                                                        className={`flex-1 flex justify-center items-center gap-2 px-4 py-3 text-[14px] font-normal rounded-2xl transition-all border ${expandedUserId === user.id ? 'bg-brand-600 text-white border-brand-600' : 'text-brand-600 bg-brand-50/50 hover:bg-brand-50 border-brand-100/50'}`}>
                                                         <ShieldCheck weight="bold" className="w-4 h-4" />
                                                         {expandedUserId === user.id ? 'Tutup Matrix' : 'Khusus User'}
                                                         {expandedUserId === user.id ? <CaretUp weight="bold" className="w-3 h-3" /> : <CaretDown weight="bold" className="w-3 h-3" />}

@@ -102,16 +102,18 @@ export default function IuranList() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Pembayaran Iuran</h1>
-                    <p className="text-gray-500 mt-1">
+                <div>
+                    <h1 className="page-title">Pembayaran Iuran</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
                         Rekapitulasi pembayaran iuran wajib bulanan warga
                     </p>
+                </div>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <HasPermission module="Iuran Warga" action="Buat">
                         <button
                             onClick={() => navigate('/iuran/baru')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold transition-all shadow-md shadow-brand-600/20 active:scale-95"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                         >
                             <Plus weight="bold" />
                             <span>Catat Pembayaran</span>
@@ -130,9 +132,9 @@ export default function IuranList() {
                             <CheckCircle weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Total Kolektif {filterYear || 'Semua'}</p>
-                            <p className="text-lg font-black text-slate-900 leading-tight truncate">{formatRupiah(totalCollectedYear)}</p>
-                            <div className="flex items-center gap-1 mt-1 text-[9px] font-bold text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded-full w-fit italic">
+                            <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest leading-none">Total Kolektif {filterYear || 'Semua'}</p>
+                            <p className="text-lg font-bold text-slate-800 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
+                            <div className="flex items-center gap-1 mt-1 text-[12px] font-normal text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-full w-fit italic">
                                 * Filter tahun aktif
                             </div>
                         </div>
@@ -147,9 +149,9 @@ export default function IuranList() {
                             <Plus weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-black text-white/70 uppercase tracking-widest leading-none">Masuk Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
-                            <p className="text-lg font-black text-white leading-tight truncate">{formatRupiah(totalCollectedMonth)}</p>
-                            <div className="flex items-center gap-1 mt-1 text-[9px] font-bold text-white bg-white/10 px-1.5 py-0.5 rounded-full w-fit border border-white/10">
+                            <p className="text-[12px] font-semibold text-white/80 uppercase tracking-widest leading-none">Masuk Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
+                            <p className="text-lg font-bold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
+                            <div className="flex items-center gap-1 mt-1 text-[12px] font-normal text-white bg-white/10 px-1.5 py-0.5 rounded-full w-fit border border-white/10">
                                 <span className="w-1 h-1 rounded-full bg-emerald-300 animate-pulse" />
                                 Bulan Berjalan
                             </div>
@@ -224,7 +226,7 @@ export default function IuranList() {
                 {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                        <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold capitalize text-slate-500 tracking-wider">
                             <tr>
                                 <th className="p-3">Tanggal Bayar & Kategori</th>
                                 <th className="p-3">Warga Pembayar</th>
@@ -259,24 +261,24 @@ export default function IuranList() {
                                 filteredIuran.map((iuran) => (
                                     <tr key={iuran.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3">
-                                            <div className="font-bold text-slate-900 text-xs">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
-                                            <div className="text-[10px] text-brand-600 font-bold uppercase tracking-tight mt-0.5">{iuran.kategori || 'Iuran Bulanan'}</div>
+                                            <div className="font-bold text-slate-800 text-[14px]">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
+                                            <div className="text-[12px] text-brand-600 font-semibold uppercase tracking-tight mt-0.5">{iuran.kategori || 'Iuran Bulanan'}</div>
                                         </td>
                                         <td className="p-3">
-                                            <p className="font-bold text-slate-900 text-xs">{iuran.warga?.nama || 'Warga Terhapus'}</p>
-                                            <p className="text-[10px] text-slate-400 font-mono mt-0.5">{iuran.warga?.nik}</p>
+                                            <p className="font-bold text-slate-800 text-[14px]">{iuran.warga?.nama || 'Warga Terhapus'}</p>
+                                            <p className="text-[12px] text-slate-500 font-mono mt-0.5">{iuran.warga?.nik}</p>
                                         </td>
                                         <td className="p-3">
                                             <div className="flex flex-wrap gap-1 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
-                                                    <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-[9px] font-black bg-white text-blue-700 border border-blue-200 uppercase tracking-widest shadow-sm">
+                                                    <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-[10px] font-semibold bg-white text-blue-700 border border-blue-200 uppercase tracking-widest shadow-sm">
                                                         {getMonthName(b).substring(0, 3)} {iuran.periode_tahun}
                                                     </span>
                                                 ))}
                                             </div>
                                         </td>
                                         <td className="p-3 text-right">
-                                            <span className="text-sm font-black text-slate-900">
+                                            <span className="text-[14px] font-bold text-slate-800">
                                                 {formatRupiah(iuran.nominal)}
                                             </span>
                                         </td>

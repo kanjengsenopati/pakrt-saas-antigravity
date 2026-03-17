@@ -174,13 +174,15 @@ export default function NotulensiList() {
         <div className="space-y-6 animate-fade-in text-slate-800">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-normal text-gray-900">Notulensi Rapat</h1>
-                    <p className="text-gray-500 mt-1">Catatan rapat & absensi untuk scope <span className="font-normal text-brand-600">{currentScope}</span></p>
+                    <h1 className="page-title">Notulensi Rapat</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Catatan rapat & absensi untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    </p>
                 </div>
                 <HasPermission module="Notulensi" action="Buat">
                     <button
                         onClick={() => navigate('/notulensi/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-normal transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Notulensi Baru</span>
@@ -233,12 +235,12 @@ export default function NotulensiList() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-[10px] font-black capitalize tracking-[0.2em] border-b border-gray-200">
-                                <th className="p-4 font-black w-[15%]">Tanggal</th>
-                                <th className="p-4 font-black w-[10%] text-center">Foto</th>
-                                <th className="p-4 font-black w-[20%]">Tuan Rumah</th>
-                                <th className="p-4 font-black w-[45%]">Judul & Hasil Rapat</th>
-                                <th className="p-4 font-black text-right pr-6 capitalize tracking-widest text-[9px]">Aksi</th>
+                            <tr className="bg-slate-50 text-slate-500 text-[14px] font-semibold capitalize tracking-wider border-b border-slate-200">
+                                <th className="p-4 w-[15%]">Tanggal</th>
+                                <th className="p-4 text-center w-[10%]">Foto</th>
+                                <th className="p-4 w-[20%]">Tuan Rumah</th>
+                                <th className="p-4 w-[45%]">Judul & Hasil Rapat</th>
+                                <th className="p-4 text-right pr-6 w-24">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -307,11 +309,11 @@ export default function NotulensiList() {
                                             </td>
                                             <td className="p-4 align-top">
                                                 <div className="space-y-1.5">
-                                                    <p className="text-sm font-black capitalize tracking-tight leading-none text-slate-900">{notulensi.judul}</p>
-                                                    <p className="text-sm font-normal text-slate-700 leading-relaxed line-clamp-2 max-w-xl pr-4">{notulensi.konten}</p>
+                                                    <p className="text-[14px] font-bold capitalize tracking-tight leading-none text-slate-800">{notulensi.judul}</p>
+                                                    <p className="text-[14px] font-normal text-slate-600 leading-relaxed line-clamp-2 max-w-xl pr-4">{notulensi.konten}</p>
                                                     {notulensi.url_foto && (
                                                         <div className="flex items-center gap-1.5 pt-1">
-                                                            <div className="text-[9px] font-black capitalize tracking-widest text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100/50 flex items-center gap-1">
+                                                            <div className="text-[10px] font-semibold capitalize tracking-widest text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100/50 flex items-center gap-1">
                                                                 <CheckCircle weight="fill" className="w-3 h-3" /> Foto Dokumentasi
                                                             </div>
                                                         </div>

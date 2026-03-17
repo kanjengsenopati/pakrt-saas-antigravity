@@ -64,11 +64,14 @@ export default function SuratList() {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in pb-10">
+            {/* Header Area */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Surat Pengantar</h1>
-                    <p className="text-gray-500 mt-1">Layanan administrasi surat untuk scope <span className="font-semibold text-brand-600">{currentScope}</span></p>
+                    <h1 className="page-title">Surat Pengantar</h1>
+                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    </p>
                 </div>
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button

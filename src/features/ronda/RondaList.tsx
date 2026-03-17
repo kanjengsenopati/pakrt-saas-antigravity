@@ -138,13 +138,13 @@ export default function RondaList() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Jadwal Ronda</h1>
-                    <p className="text-gray-500 mt-1">Kelola jadwal siskamling keamanan lingkungan</p>
+                    <h1 className="page-title">Jadwal Ronda</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">Kelola jadwal siskamling keamanan lingkungan</p>
                 </div>
                 <HasPermission module="Jadwal Ronda" action="Buat">
                     <button
                         onClick={() => navigate('/ronda/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Jadwal Baru</span>
@@ -307,9 +307,9 @@ export default function RondaList() {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-wider border-b border-gray-200">
+                                    <tr className="bg-slate-50 text-slate-500 text-[14px] font-semibold capitalize tracking-wider border-b border-slate-200">
                                         <th
-                                            className="p-3 font-semibold w-1/4 cursor-pointer hover:bg-gray-100 transition-colors"
+                                            className="p-3 w-1/4 cursor-pointer hover:bg-slate-100 transition-colors"
                                             onClick={() => handleSort('tanggal')}
                                         >
                                             <div className="flex items-center gap-1.5">
@@ -320,7 +320,7 @@ export default function RondaList() {
                                             </div>
                                         </th>
                                         <th
-                                            className="p-3 font-semibold w-[15%] cursor-pointer hover:bg-gray-100 transition-colors"
+                                            className="p-3 w-[15%] cursor-pointer hover:bg-slate-100 transition-colors"
                                             onClick={() => handleSort('regu')}
                                         >
                                             <div className="flex items-center gap-1.5">
@@ -330,9 +330,9 @@ export default function RondaList() {
                                                 )}
                                             </div>
                                         </th>
-                                        <th className="p-3 font-semibold w-[30%] text-left">Petugas Piket</th>
-                                        <th className="p-3 font-semibold w-[20%] text-left">Bawa Konsumsi</th>
-                                        <th className="p-3 font-semibold text-right px-6">Aksi</th>
+                                        <th className="p-3 w-[30%] text-left">Petugas Piket</th>
+                                        <th className="p-3 w-[20%] text-left">Bawa Konsumsi</th>
+                                        <th className="p-3 text-right px-6">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
@@ -355,7 +355,7 @@ export default function RondaList() {
                                         filteredRonda.map((ronda) => (
                                             <tr key={ronda.id} className="hover:bg-gray-50/50 transition-colors">
                                                 <td className="p-3">
-                                                    <p className="font-bold text-slate-800 text-[13px]">
+                                                    <p className="font-bold text-slate-800 text-[14px]">
                                                         {dateUtils.toDisplay(ronda.tanggal)}
                                                     </p>
                                                 </td>

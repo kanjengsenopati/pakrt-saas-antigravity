@@ -70,16 +70,16 @@ export default function KeuanganList() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Kas Masuk & Keluar</h1>
-                    <p className="text-gray-500 mt-1">
-                        Pencatatan keuangan operasional untuk <span className="font-semibold text-brand-600">{currentScope}</span>
+                    <h1 className="page-title">Kas Masuk & Keluar</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                        Pencatatan keuangan operasional untuk <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <HasPermission module="Buku Kas / Transaksi" action="Buat">
                         <button
                             onClick={() => navigate('/keuangan/baru')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-colors shadow-sm hover-lift active-press"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                         >
                             <Plus weight="bold" />
                             <span>Catat Transaksi</span>
@@ -93,9 +93,9 @@ export default function KeuanganList() {
                 {/* KAS MASUK */}
                 <div className="bg-white py-3 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[11px] font-black text-gray-500 tracking-wider leading-none uppercase mb-1.5">Total Pemasukan</p>
-                        <p className="text-xl font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
-                        <div className="flex items-center gap-1 mt-1.5 text-[9px] font-semibold text-brand-600">
+                        <p className="text-[12px] font-semibold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Total Pemasukan</p>
+                        <p className="text-xl font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
+                        <div className="flex items-center gap-1 mt-1.5 text-[12px] font-normal text-brand-600">
                             <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
                             Kas Masuk
                         </div>
@@ -105,9 +105,9 @@ export default function KeuanganList() {
                 {/* KAS KELUAR */}
                 <div className="bg-white py-3 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[11px] font-black text-gray-500 tracking-wider leading-none uppercase mb-1.5">Total Pengeluaran</p>
-                        <p className="text-xl font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
-                        <div className="flex items-center gap-1 mt-1.5 text-[9px] font-semibold text-red-600">
+                        <p className="text-[12px] font-semibold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Total Pengeluaran</p>
+                        <p className="text-xl font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
+                        <div className="flex items-center gap-1 mt-1.5 text-[12px] font-normal text-red-600">
                             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                             Kas Keluar
                         </div>
@@ -149,7 +149,7 @@ export default function KeuanganList() {
                 {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                        <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold capitalize text-slate-500 tracking-wider">
                             <tr>
                                 <th className="p-3">Tanggal</th>
                                 <th className="p-3">Kategori & Keterangan</th>
@@ -185,15 +185,15 @@ export default function KeuanganList() {
                                 filteredTransactions.map((trx) => (
                                     <tr key={trx.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3 whitespace-nowrap">
-                                            <div className="font-bold text-slate-900 text-xs">{dateUtils.toDisplay(trx.tanggal)}</div>
-                                            <div className="text-[9px] text-slate-400 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {trx.id.substring(0, 8)}</div>
+                                            <div className="font-bold text-slate-800 text-[14px]">{dateUtils.toDisplay(trx.tanggal)}</div>
+                                            <div className="text-[12px] text-slate-500 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {trx.id.substring(0, 8)}</div>
                                         </td>
                                         <td className="p-3">
-                                            <div className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
+                                            <div className={`text-[12px] font-semibold uppercase tracking-widest mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
                                                 {trx.kategori}
                                             </div>
                                             <div className="flex items-center gap-2 group/tooltip">
-                                                <div className="text-sm font-bold text-slate-700 max-w-xs truncate" title={trx.keterangan}>
+                                                <div className="text-[14px] font-normal text-slate-800 max-w-xs truncate" title={trx.keterangan}>
                                                     {trx.keterangan.startsWith('[AUTO]') ? trx.keterangan.replace('[AUTO] ', '') : trx.keterangan}
                                                 </div>
                                                 {trx.keterangan.startsWith('[AUTO]') && (
@@ -208,12 +208,12 @@ export default function KeuanganList() {
                                             </div>
                                         </td>
                                         <td className="p-3 text-right whitespace-nowrap">
-                                            <span className={`text-sm font-black ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-slate-200'}`}>
+                                            <span className={`text-[14px] font-bold ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-slate-200'}`}>
                                                 {trx.tipe === 'pemasukan' ? formatRupiah(trx.nominal) : 'Rp 0'}
                                             </span>
                                         </td>
                                         <td className="p-3 text-right whitespace-nowrap">
-                                            <span className={`text-sm font-black ${trx.tipe === 'pengeluaran' ? 'text-red-600' : 'text-slate-200'}`}>
+                                            <span className={`text-[14px] font-bold ${trx.tipe === 'pengeluaran' ? 'text-red-600' : 'text-slate-200'}`}>
                                                 {trx.tipe === 'pengeluaran' ? formatRupiah(trx.nominal) : 'Rp 0'}
                                             </span>
                                         </td>
