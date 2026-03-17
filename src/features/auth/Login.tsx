@@ -212,10 +212,10 @@ export default function Login() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-4 px-6 bg-brand-600 text-slate-900 rounded-xl font-normal text-[14px] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 gap-3 border border-brand-500"
+                                className="w-full py-4 px-6 bg-brand-600 text-white rounded-xl font-normal text-[14px] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 gap-3 border border-brand-500"
                             >
                                 {isLoading ? (
-                                    <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin"></div>
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                                 ) : (
                                     <>
                                         <span>Masuk Sekarang</span>
