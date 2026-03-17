@@ -28,9 +28,9 @@ export function Header() {
                 {/* Mobile Identity */}
                 <div className="md:hidden flex items-center gap-2">
                     <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/30">
-                        <div className="w-4 h-4 text-white font-black text-[10px] italic">RT</div>
+                        <div className="w-4 h-4 text-white font-bold text-[11px] italic">RT</div>
                     </div>
-                    <span className="font-extrabold text-gray-900 tracking-tight text-sm uppercase">PAK<span className="text-brand-600">RT</span></span>
+                    <span className="font-bold text-slate-900 tracking-tight text-sm uppercase">PAK<span className="text-brand-600">RT</span></span>
                 </div>
             </div>
 
@@ -51,10 +51,10 @@ export function Header() {
                                 {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD'}
                             </div>
                             <div className="hidden md:block text-left">
-                                <p className="text-xs font-bold text-gray-900 leading-tight">{currentUser?.name || 'Admin'}</p>
-                                <p className="text-[10px] text-gray-500 font-medium uppercase tracking-tight">{currentUser?.role_entity?.name || currentUser?.role || 'Administrator'}</p>
+                                <p className="text-[13px] font-bold text-slate-900 leading-tight">{currentUser?.name || 'Admin'}</p>
+                                <p className="section-label !text-[10px] mt-0.5">{currentUser?.role_entity?.name || currentUser?.role || 'Administrator'}</p>
                             </div>
-                            <CaretDown weight="bold" className={`w-3.5 h-3.5 text-gray-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+                            <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
                         </button>
 
                         {isProfileOpen && (

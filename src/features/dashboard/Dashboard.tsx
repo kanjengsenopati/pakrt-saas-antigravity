@@ -170,7 +170,7 @@ export default function Dashboard() {
             {/* Header */}
             <div className="flex items-baseline gap-3">
                 <h1 className="page-title">Dashboard</h1>
-                <span className="text-[12px] text-slate-500">Scope: <span className="font-semibold text-brand-600">{currentScope}</span></span>
+                <span className="text-[13px] text-slate-500 font-medium">Scope: <span className="font-bold text-brand-600 tracking-wide">{currentScope}</span></span>
             </div>
 
             {/* STAT CARDS — compact horizontal layout */}
@@ -190,21 +190,21 @@ export default function Dashboard() {
 
                             {/* Icon + Title on the same row */}
                             <div className="flex items-center gap-2 mb-3 relative z-10">
-                                <div className={`p-2 rounded-lg ${card.color} shrink-0`}>
+                                <div className={`p-2 rounded-lg ${card.color} shrink-0 shadow-sm`}>
                                     <Icon weight="duotone" className="w-4 h-4" />
                                 </div>
-                                <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-tight leading-tight">{card.title}</p>
+                                <p className="section-label !text-[11px] leading-tight">{card.title}</p>
                             </div>
 
                             {/* Center-aligned big number */}
                             <div className="relative z-10 text-center py-1">
-                                <p className="text-[24px] font-bold text-slate-800 leading-tight">
+                                <div className="text-[22px] font-bold text-slate-900 leading-tight">
                                     {card.isCurrency ? (
-                                        <span className="text-[20px] font-black">{formatRupiah(card.count as number)}</span>
+                                        <span className="text-[19px] font-bold">{formatRupiah(card.count as number)}</span>
                                     ) : card.count}
-                                </p>
+                                </div>
                                 {card.subtitle && (
-                                    <p className="text-[10px] text-slate-400 font-medium mt-1">{card.subtitle}</p>
+                                    <p className="text-[11px] text-slate-400 font-semibold mt-1 italic">{card.subtitle}</p>
                                 )}
                             </div>
 
@@ -221,8 +221,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* UPCOMING AGENDA */}
                 <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-                        <h3 className="text-[14px] font-semibold flex items-center gap-1.5 text-slate-800">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50 bg-slate-50/20">
+                        <h3 className="section-label flex items-center gap-1.5">
                             <CalendarCheck size={16} className="text-purple-600" />
                             Agenda Mendatang
                         </h3>
@@ -246,20 +246,20 @@ export default function Dashboard() {
                                         className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50/30 hover:bg-white border border-transparent hover:border-purple-100 hover:shadow-sm transition-all group cursor-pointer"
                                     >
                                         <div className="flex items-center gap-2.5 min-w-0">
-                                            <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex flex-col items-center justify-center shrink-0 border border-purple-100 shadow-sm">
-                                                <span className="text-[10px] font-black">
+                                            <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex flex-col items-center justify-center shrink-0 border border-purple-100 shadow-sm">
+                                                <span className="text-[11px] font-bold">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[0]}
                                                 </span>
-                                                <span className="text-[8px] font-bold uppercase">
+                                                <span className="text-[9px] font-bold uppercase tracking-wider">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[1]}
                                                 </span>
                                             </div>
                                             <div className="min-w-0">
-                                                <h4 className="text-[14px] font-semibold text-slate-800 leading-none truncate group-hover:text-purple-600 transition-colors">
+                                                <h4 className="text-[14px] font-bold text-slate-900 leading-none truncate group-hover:text-purple-600 transition-colors">
                                                     {agenda.judul}
                                                 </h4>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-[9px] text-slate-400 truncate max-w-[120px]">
+                                                <div className="flex items-center gap-2 mt-1.5">
+                                                    <span className="text-[11px] text-slate-500 truncate max-w-[150px] font-medium">
                                                         {agenda.deskripsi}
                                                     </span>
                                                     {agenda.butuh_pendanaan && (
@@ -289,9 +289,9 @@ export default function Dashboard() {
 
                 {/* AKTIVITAS */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50">
+                    <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <ClockCounterClockwise size={16} className="text-brand-600" />
-                        <h3 className="text-[14px] font-semibold text-slate-800">Aktivitas</h3>
+                        <h3 className="section-label">Aktivitas</h3>
                     </div>
 
                     <div className="p-3">
@@ -303,9 +303,9 @@ export default function Dashboard() {
                             <div className="space-y-3">
                                 {recentActivities.map((act: Aktivitas) => (
                                     <div key={act.id} className="pl-3 border-l-2 border-brand-200 hover:border-brand-500 transition-all">
-                                        <p className="text-[11px] font-bold text-brand-600 uppercase tracking-tight leading-none">{act.action}</p>
-                                        <p className="text-[14px] text-slate-700 leading-snug mt-0.5">{act.details}</p>
-                                        <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{formatDate(act.timestamp)}</p>
+                                        <p className="text-[11px] font-bold text-brand-600 uppercase tracking-wide leading-none">{act.action}</p>
+                                        <p className="text-[14px] font-medium text-slate-700 leading-snug mt-1">{act.details}</p>
+                                        <p className="text-[11px] text-slate-400 mt-1 font-semibold italic">{formatDate(act.timestamp)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -322,9 +322,9 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* RONDA */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50">
+                    <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <ShieldCheck size={16} className="text-brand-600" />
-                        <h3 className="text-[14px] font-semibold text-slate-800">Ronda Terdekat</h3>
+                        <h3 className="section-label">Ronda Terdekat</h3>
                     </div>
 
                     <div className="p-3 space-y-2">
@@ -336,15 +336,15 @@ export default function Dashboard() {
                                     key={`dash-${ronda.id}`}
                                     className="flex items-center justify-between px-3 py-2.5 border border-slate-100 rounded-xl bg-slate-50/20 hover:border-brand-300 hover:bg-white transition-colors"
                                 >
-                                    <div>
-                                        <p className="font-bold text-slate-900 text-xs leading-none">
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-slate-900 text-[13px] leading-none">
                                             {dateUtils.toDisplay(ronda.tanggal)}
                                         </p>
-                                        <p className="text-[10px] text-slate-500 mt-0.5 truncate max-w-[150px]">
+                                        <p className="text-[11px] font-medium text-slate-500 mt-1 truncate max-w-[180px]">
                                             {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}
                                         </p>
                                     </div>
-                                    <span className="text-[9px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-black uppercase tracking-wide shrink-0">
+                                    <span className="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold uppercase tracking-wide shrink-0 shadow-sm">
                                         {ronda.regu}
                                     </span>
                                 </div>
@@ -360,10 +360,10 @@ export default function Dashboard() {
 
                 {/* IURAN */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <div className="flex items-center gap-1.5">
                             <HandCoins size={16} className="text-emerald-600" />
-                            <h3 className="text-[14px] font-semibold text-slate-800">Iuran Terakhir</h3>
+                            <h3 className="section-label">Iuran Terakhir</h3>
                         </div>
                         <button
                             className="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:underline"
@@ -382,18 +382,18 @@ export default function Dashboard() {
                                     key={iuran.id}
                                     className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50/30 hover:bg-white border border-transparent hover:border-emerald-100 hover:shadow-sm transition-all"
                                 >
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-black shrink-0">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold border border-emerald-200 shrink-0 shadow-sm">
                                             {iuran.warga?.nama.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-slate-900 leading-none">{iuran.warga?.nama}</p>
-                                            <p className="text-[9px] text-slate-400 mt-0.5 uppercase tracking-wider font-medium">
+                                            <p className="text-[13px] font-bold text-slate-900 leading-none">{iuran.warga?.nama}</p>
+                                            <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-wide font-semibold italic">
                                                 Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
                                             </p>
                                         </div>
                                     </div>
-                                    <p className="text-sm font-black text-emerald-600">{formatRupiah(iuran.nominal)}</p>
+                                    <p className="text-[14px] font-bold text-emerald-600">{formatRupiah(iuran.nominal)}</p>
                                 </div>
                             ))
                         ) : (

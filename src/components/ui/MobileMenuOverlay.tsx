@@ -75,7 +75,7 @@ export function MobileMenuOverlay({ isOpen, onClose }: MobileMenuOverlayProps) {
                         <h2 className="text-lg font-bold bg-gradient-to-r from-brand-400 to-emerald-400 bg-clip-text text-transparent truncate max-w-[180px]" title={currentTenant?.name || 'PAKRT'}>
                             {currentTenant?.name || 'PAKRT'}
                         </h2>
-                        <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-semibold">
+                        <p className="section-label !text-[11px] mt-1">
                             Sistem Manajemen RT
                         </p>
                     </div>
@@ -87,7 +87,7 @@ export function MobileMenuOverlay({ isOpen, onClose }: MobileMenuOverlayProps) {
                 <nav className="flex-1 px-3 py-6 space-y-8 overflow-y-auto scrollbar-thin pb-24">
                     {MENU_GROUPS.map((group) => (
                         <div key={group.label} className="space-y-1">
-                            <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3">
+                            <h3 className="section-label px-4 mb-3">
                                 {group.label}
                             </h3>
                             <div className="space-y-1">

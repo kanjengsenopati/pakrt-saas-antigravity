@@ -70,7 +70,27 @@ body {
 
 /* Typography Standards */
 .page-title {
-    @apply text-[20px] font-bold text-slate-800 tracking-tight leading-tight;
+    @apply text-[20px] font-bold text-slate-900 tracking-tight leading-tight;
+}
+
+.section-label {
+    @apply text-[12px] font-semibold text-slate-500 uppercase tracking-widest;
+}
+
+.input-label {
+    @apply text-[14px] font-medium text-slate-700 mb-1.5 block;
+}
+
+.text-main {
+    @apply text-[14px] font-normal text-slate-900;
+}
+
+.text-muted {
+    @apply text-[13px] font-normal text-slate-500;
+}
+
+.value-highlight {
+    @apply text-[18px] font-bold text-slate-900;
 }
 
 /* Glassmorphism utilities */

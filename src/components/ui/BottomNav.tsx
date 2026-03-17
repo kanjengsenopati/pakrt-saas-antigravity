@@ -42,7 +42,7 @@ export function BottomNav() {
                                         <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-600 rounded-full animate-in fade-in zoom-in duration-300" />
                                     )}
                                 </div>
-                                <span className={`text-[10px] mt-1 transition-all duration-300 ${isActive ? 'font-bold opacity-100 translate-y-0' : 'font-medium opacity-60 translate-y-0.5'}`}>
+                                <span className={`text-[11px] mt-1 transition-all duration-300 ${isActive ? 'font-bold opacity-100 translate-y-0' : 'font-semibold opacity-60 translate-y-0.5'}`}>
                                     {item.label}
                                 </span>
                             </NavLink>
