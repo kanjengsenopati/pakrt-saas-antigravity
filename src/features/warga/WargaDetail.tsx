@@ -6,6 +6,7 @@ import { wargaService } from '../../services/wargaService';
 import { ArrowLeft, PencilSimple, User, IdentificationCard, Phone, MapPin, Calendar, GraduationCap, Briefcase, FileText, X, MagnifyingGlassPlus, GenderIntersex, HandsPraying, House } from '@phosphor-icons/react';
 import { dateUtils } from '../../utils/date';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
+import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function WargaDetail() {
     const { id } = useParams<{ id: string }>();
@@ -37,15 +38,17 @@ export default function WargaDetail() {
                     >
                         <ArrowLeft weight="bold" className="w-5 h-5" />
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-900">Detail Profil Warga</h1>
+                    <h1 className="text-[14px] sm:text-[16px] font-bold text-gray-900 capitalize tracking-tight">Detail Profil Warga</h1>
                 </div>
-                <button
-                    onClick={() => navigate(`/warga/edit/${warga.id}`)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
-                >
-                    <PencilSimple weight="bold" />
-                    <span>Edit Profil</span>
-                </button>
+                <HasPermission module="Warga" action="Ubah" recordOwnerId={warga.id}>
+                    <button
+                        onClick={() => navigate(`/warga/edit/${warga.id}`)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-[12px] transition-all shadow-sm active-press"
+                    >
+                        <PencilSimple weight="bold" />
+                        <span>Edit Profil</span>
+                    </button>
+                </HasPermission>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

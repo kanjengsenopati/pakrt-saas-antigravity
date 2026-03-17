@@ -13,6 +13,7 @@ interface User {
         permissions: any;
     };
     tenant_id: string;
+    warga_id?: string;
     scope?: string;
     kontak?: string;
     permissions?: any; // Standard: { [module]: { actions: string[], scope: 'all' | 'personal' } }

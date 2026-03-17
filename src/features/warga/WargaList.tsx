@@ -6,9 +6,11 @@ import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus, DotsThreeOutlineVertical } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
+    const { user } = useAuth();
     const [wargaList, setWargaList] = useState<Warga[]>([]);
     const [expandedWargaId, setExpandedWargaId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -135,7 +137,7 @@ export default function WargaList() {
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">Data Warga</h1>
+                    <h1 className="page-title">{user?.role?.toLowerCase() === 'warga' ? 'Profil Warga' : 'Data Warga'}</h1>
                     <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
@@ -512,8 +514,9 @@ export default function WargaList() {
                         ))
                     )}
                 </div>
-
-                {!isLoading && filteredWarga.length > 0 && (
+                
+                {/* Pagination: Hide if only 1 data (typical for Warga role) */}
+                {!isLoading && filteredWarga.length > 1 && (
                     <div className="p-4 border-t border-gray-100 bg-gray-50/50 text-sm text-gray-500 flex justify-between items-center">
                         <span>Menampilkan {filteredWarga.length} data warga</span>
                         <div className="flex gap-1">
