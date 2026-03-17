@@ -31,6 +31,22 @@ export const userService = {
         if (createData.password) {
             createData.password = await bcrypt.hash(createData.password, 10);
         }
+
+        // Handle legacy 'role' field which is required in schema
+        if (!createData.role && createData.role_id) {
+            const roleEntity = await prisma.role.findUnique({
+                where: { id: createData.role_id }
+            });
+            if (roleEntity) {
+                createData.role = roleEntity.name.toLowerCase();
+            }
+        }
+
+        // Fallback if still missing (should not happen with role_id, but for safety)
+        if (!createData.role) {
+            createData.role = 'staff';
+        }
+
         return await prisma.user.create({
             data: sanitizeUserData(createData),
             include: { role_entity: true }
@@ -42,6 +58,16 @@ export const userService = {
         
         if (updateData.password) {
             updateData.password = await bcrypt.hash(updateData.password, 10);
+        }
+
+        // Sync legacy 'role' field if role_id is updated
+        if (updateData.role_id && !updateData.role) {
+            const roleEntity = await prisma.role.findUnique({
+                where: { id: updateData.role_id }
+            });
+            if (roleEntity) {
+                updateData.role = roleEntity.name.toLowerCase();
+            }
         }
 
         return await prisma.user.update({
