@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { iuranService } from '../../services/iuranService';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
@@ -41,10 +42,15 @@ export default function IuranForm() {
     // Summary Data State
     const [alreadyPaid, setAlreadyPaid] = useState(0);
 
+    const { user: authUser } = useAuth();
+    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const loggedInWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
+
     const { register, handleSubmit, setValue, watch, control, formState: { errors } } = useForm<IuranFormData>({
         defaultValues: {
             tanggal_bayar: new Date().toISOString().split('T')[0],
             periode_tahun: new Date().getFullYear(),
+            warga_id: loggedInWargaId || '',
         }
     });
 
@@ -52,6 +58,12 @@ export default function IuranForm() {
     const watchWargaId = watch('warga_id');
     const watchKategori = watch('kategori');
     const watchTahun = watch('periode_tahun');
+
+    useEffect(() => {
+        if (loggedInWargaId && !isEdit) {
+            setValue('warga_id', loggedInWargaId);
+        }
+    }, [loggedInWargaId, setValue, isEdit]);
 
     useEffect(() => {
         if (currentTenant) {
@@ -323,7 +335,8 @@ export default function IuranForm() {
                                             required: 'Warga wajib dipilih',
                                             onChange: () => setHasInteracted(true)
                                         })}
-                                        className={`w-full rounded-lg shadow-sm p-2.5 text-xs border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500 bg-white'}`}
+                                        disabled={isWarga && !isEdit}
+                                        className={`w-full rounded-lg shadow-sm p-2.5 text-xs border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-slate-100 cursor-not-allowed text-slate-500' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500'}`}
                                     >
                                         <option value="">-- Cari atau Pilih Warga --</option>
                                         {wargaList.map(w => (

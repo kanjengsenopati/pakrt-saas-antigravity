@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Aktivitas } from '../../database/db';
 import { 
     Users, 
@@ -10,7 +11,9 @@ import {
     ClockCounterClockwise,
     Wallet,
     FileText,
-    HandCoins
+    HandCoins,
+    User as UserIcon,
+    CreditCard
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { aktivitasService } from '../../services/aktivitasService';
@@ -22,10 +25,12 @@ import { agendaService } from '../../services/agendaService';
 import { keuanganService } from '../../services/keuanganService';
 import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
+import { pengaturanService } from '../../services/pengaturanService';
 import { dateUtils } from '../../utils/date';
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const { user: authUser } = useAuth();
     const { currentTenant, currentScope } = useTenant();
     const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0 });
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
@@ -33,27 +38,54 @@ export default function Dashboard() {
     const [upcomingRonda, setUpcomingRonda] = useState<RondaWithWarga[]>([]);
     const [recentIuran, setRecentIuran] = useState<IuranWithWarga[]>([]);
     const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
+    const [wargaIuranStats, setWargaIuranStats] = useState({ totalPaid: 0, expected: 0 });
+
+    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const wargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
     useEffect(() => {
         const fetchStats = async () => {
             if (!currentTenant) return;
             try {
-                const [wargaCount, pengurusCount, asetCount, agendaCount, finSummary, allSurat] = await Promise.all([
-                    wargaService.count(currentTenant.id, currentScope),
-                    pengurusService.count(currentTenant.id, currentScope),
-                    asetService.count(currentTenant.id, currentScope),
-                    agendaService.count(currentTenant.id, currentScope),
-                    keuanganService.getSummary(currentTenant.id, currentScope),
-                    suratService.getAll(currentTenant.id, currentScope),
-                ]);
-                setStats({
-                    warga: wargaCount,
-                    pengurus: pengurusCount,
-                    aset: asetCount,
-                    agenda: agendaCount,
-                    saldo: finSummary.saldo,
-                    pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length
-                });
+                if (!isWarga) {
+                    const [wargaCount, pengurusCount, asetCount, agendaCount, finSummary, allSurat] = await Promise.all([
+                        wargaService.count(currentTenant.id, currentScope),
+                        pengurusService.count(currentTenant.id, currentScope),
+                        asetService.count(currentTenant.id, currentScope),
+                        agendaService.count(currentTenant.id, currentScope),
+                        keuanganService.getSummary(currentTenant.id, currentScope),
+                        suratService.getAll(currentTenant.id, currentScope),
+                    ]);
+                    setStats({
+                        warga: wargaCount,
+                        pengurus: pengurusCount,
+                        aset: asetCount,
+                        agenda: agendaCount,
+                        saldo: finSummary.saldo,
+                        pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length
+                    });
+                } else if (wargaId) {
+                    // Warga specific stats
+                    const [config, allIuran] = await Promise.all([
+                        pengaturanService.getAll(currentTenant.id, currentScope),
+                        iuranService.getAll(currentTenant.id)
+                    ]);
+                    
+                    const citizen = await wargaService.getById(wargaId);
+                    if (citizen) {
+                        const statusKey = `${citizen.status_penduduk || 'Tetap'}-${citizen.status_rumah || 'Dihuni'}`;
+                        const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
+                        const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
+                        
+                        const myIuran = (allIuran.items || []).filter(i => i.warga_id === wargaId);
+                        const paidTotal = myIuran.reduce((sum, curr) => sum + curr.nominal, 0);
+                        
+                        setWargaIuranStats({
+                            totalPaid: paidTotal,
+                            expected: rate * 12
+                        });
+                    }
+                }
             } catch (error) {
                 console.error("Dashboard: Error fetching stats:", error);
             }
@@ -69,15 +101,25 @@ export default function Dashboard() {
                     iuranService.getAll(currentTenant.id, currentScope),
                     agendaService.getUpcoming(currentTenant.id, currentScope, 3)
                 ]);
+                
                 setRecentActivities(activities);
-                setRecentIuran((allIuran.items || []).slice(0, 4));
+                
+                if (isWarga && wargaId) {
+                    setRecentIuran((allIuran.items || []).filter(i => i.warga_id === wargaId).slice(0, 4));
+                    const myRonda = (allRonda || []).filter(r => r.warga_ids?.includes(wargaId));
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    setUpcomingRonda(myRonda.filter(r => r.tanggal >= todayStr).slice(0, 3));
+                } else {
+                    setRecentIuran((allIuran.items || []).slice(0, 4));
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const upcoming = (allRonda || [])
+                        .filter(r => r.tanggal >= todayStr)
+                        .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
+                        .slice(0, 3);
+                    setUpcomingRonda(upcoming);
+                }
+                
                 setUpcomingAgenda(agendas);
-                const todayStr = new Date().toISOString().split('T')[0];
-                const upcoming = (allRonda || [])
-                    .filter(r => r.tanggal >= todayStr)
-                    .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
-                    .slice(0, 3);
-                setUpcomingRonda(upcoming);
             } catch (error) {
                 console.error("Dashboard: Error fetching activities:", error);
             } finally {
@@ -89,14 +131,34 @@ export default function Dashboard() {
         fetchActivities();
         const interval = setInterval(() => { fetchStats(); fetchActivities(); }, 30000);
         return () => clearInterval(interval);
-    }, [currentTenant, currentScope]);
+    }, [currentTenant, currentScope, isWarga, wargaId]);
 
-    const cards = [
+    interface DashboardCard {
+        title: string;
+        count: string | number;
+        icon: any;
+        color: string;
+        bar: string;
+        link: string;
+        isCurrency?: boolean;
+        subtitle?: string;
+    }
+
+    const adminCards: DashboardCard[] = [
         { title: 'Total Warga', count: stats.warga, icon: Users, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/warga' },
         { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', isCurrency: true, link: '/keuangan' },
         { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', link: '/surat' },
         { title: 'Agenda', count: stats.agenda, icon: CalendarCheck, color: 'bg-purple-100 text-purple-600', bar: 'bg-purple-500', link: '/agenda' },
     ];
+
+    const wargaCards: DashboardCard[] = [
+        { title: 'Tagihan Saya', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', isCurrency: true, link: '/iuran/new', subtitle: 'Hingga akhir tahun' },
+        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/ronda' },
+        { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'bg-purple-100 text-purple-600', bar: 'bg-purple-500', link: '/agenda' },
+        { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', link: '/surat' },
+    ];
+
+    const cards = isWarga ? wargaCards : adminCards;
 
     // Unified formatRupiah imported from utils/currency
 
@@ -139,9 +201,12 @@ export default function Dashboard() {
                             <div className="relative z-10 text-center py-1">
                                 <p className="text-[24px] font-bold text-slate-800 leading-tight">
                                     {card.isCurrency ? (
-                                        <span className="text-[20px]">{formatRupiah(card.count as number).replace('Rp', '').trim()}</span>
+                                        <span className="text-[20px] font-black">{formatRupiah(card.count as number)}</span>
                                     ) : card.count}
                                 </p>
+                                {card.subtitle && (
+                                    <p className="text-[10px] text-slate-400 font-medium mt-1">{card.subtitle}</p>
+                                )}
                             </div>
 
                             {/* Progress bar accent */}

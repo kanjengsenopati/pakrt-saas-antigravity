@@ -16,6 +16,7 @@ export function Header() {
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10 glass gap-2 md:gap-4">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
+                {/* Desktop Search */}
                 <div className="relative w-full max-w-sm hidden md:block">
                     <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
@@ -23,6 +24,13 @@ export function Header() {
                         placeholder="Cari warga, aset, surat..."
                         className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-colors"
                     />
+                </div>
+                {/* Mobile Identity */}
+                <div className="md:hidden flex items-center gap-2">
+                    <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/30">
+                        <div className="w-4 h-4 text-white font-black text-[10px] italic">RT</div>
+                    </div>
+                    <span className="font-extrabold text-gray-900 tracking-tight text-sm uppercase">PAK<span className="text-brand-600">RT</span></span>
                 </div>
             </div>
 
