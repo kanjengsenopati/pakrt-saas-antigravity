@@ -240,15 +240,18 @@ export default function Pengaturan() {
                 role_id: newUserForm.role_id,
                 scope: newUserForm.scope,
                 password: newUserForm.password || 'password123',
+                warga_id: selectedWargaId || undefined,
                 permissions: {} // Default to empty, inherit from role
             } as any);
             setShowAddUserForm(false);
             setSelectedWargaId('');
             setNewUserForm({ name: '', email: '', role_id: '', password: '', scope: currentScope as string });
             loadUsers();
-        } catch (error) {
+            alert('User berhasil ditambahkan.');
+        } catch (error: any) {
             console.error('Failed to create user', error);
-            alert('Gagal menambahkan user. Pastikan email belum terdaftar.');
+            const message = error.response?.data?.error || 'Gagal menambahkan user. Silakan coba lagi.';
+            alert(message);
         }
     };
 

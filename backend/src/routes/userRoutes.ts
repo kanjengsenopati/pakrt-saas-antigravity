@@ -51,7 +51,23 @@ export default async function userRoutes(fastify: FastifyInstance) {
             return reply.code(201).send(newUser);
         } catch (error: any) {
             fastify.log.error(error);
-            return reply.code(500).send({ error: 'Failed to create user', details: error.message });
+            
+            // Handle Prisma unique constraint violations (P2002)
+            if (error.code === 'P2002') {
+                const target = error.meta?.target;
+                if (Array.isArray(target) && target.includes('email')) {
+                    return reply.code(409).send({ error: 'Email sudah terdaftar. Gunakan email lain.' });
+                }
+                if (Array.isArray(target) && target.includes('warga_id')) {
+                    return reply.code(409).send({ error: 'Warga ini sudah memiliki akun user.' });
+                }
+                return reply.code(409).send({ error: 'Data duplikat terdeteksi pada field: ' + target });
+            }
+
+            return reply.code(500).send({ 
+                error: 'Gagal membuat user', 
+                details: error.message 
+            });
         }
     });
 
