@@ -10,7 +10,7 @@ import { wargaService } from '../../services/wargaService';
 import { User } from '../../database/db';
 import { Warga } from '../../types/database';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretDown, CaretUp, Key, Trash } from '@phosphor-icons/react';
+import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretUp, Key, Trash } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
