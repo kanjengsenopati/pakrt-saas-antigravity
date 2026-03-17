@@ -16,7 +16,8 @@ export interface User {
     scope?: string;
     kontak?: string;
     password?: string;
-    permissions?: Record<string, string[]>; // e.g., { 'warga': ['create', 'read', 'update', 'delete'] }
+    permissions?: Record<string, string[]>;
+    verification_status?: 'VERIFIED' | 'PENDING' | 'UNVERIFIED' | string;
 }
 
 export interface Pengaturan {
