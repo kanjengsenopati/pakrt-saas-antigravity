@@ -33,6 +33,7 @@ export default function IuranList() {
     const [viewProofUrl, setViewProofUrl] = useState<string | null>(null);
     const [verifyingId, setVerifyingId] = useState<string | null>(null);
     const [rejectReason, setRejectReason] = useState('');
+    const [isRejecting, setIsRejecting] = useState(false);
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
 
 
@@ -523,91 +524,26 @@ export default function IuranList() {
             {/* VERIFICATION MODAL */}
             {verifyingId && (
                 <div className="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-zoom-in border border-slate-200">
-                        <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-gray-50/50">
-                            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm flex items-center gap-2">
-                                Verifikasi Pembayaran
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-[280px] w-full overflow-hidden animate-zoom-in border border-slate-200">
+                        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-gray-50/50">
+                            <h3 className="font-black text-slate-800 uppercase tracking-widest text-[10px] flex items-center gap-2">
+                                {isRejecting ? 'Alasan Penolakan' : 'Verifikasi Pembayaran'}
                             </h3>
                             <button
-                                onClick={() => { setVerifyingId(null); setRejectReason(''); }}
+                                onClick={() => { setVerifyingId(null); setRejectReason(''); setIsRejecting(false); }}
                                 className="p-1.5 hover:bg-slate-200 rounded-full transition-colors"
                             >
-                                <X weight="bold" className="w-4 h-4 text-slate-400" />
+                                <X weight="bold" className="w-3.5 h-3.5 text-slate-400" />
                             </button>
                         </div>
                         
-                        {(() => {
-                            const iuran = iuranList.find(i => i.id === verifyingId);
-                            if (!iuran) return null;
-                            return (
-                                <div className="p-6 space-y-6">
-                                    <div className="space-y-3">
-                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col gap-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Warga</span>
-                                                <span className="text-xs font-bold text-slate-800">{iuran.warga?.nama}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nominal</span>
-                                                <span className="text-sm font-bold text-brand-600">{formatRupiah(iuran.nominal)}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Periode</span>
-                                                <span className="text-[10px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded border border-blue-100">
-                                                    {iuran.periode_bulan.map(b => getMonthName(b).substring(0, 3)).join(', ')} {iuran.periode_tahun}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {iuran.url_bukti ? (
-                                            <div className="space-y-2">
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bukti Transfer</p>
-                                                <div className="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-200 aspect-video bg-slate-100" onClick={() => setViewProofUrl(iuran.url_bukti || null)}>
-                                                    <img src={getFullUrl(iuran.url_bukti)} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Bukti" />
-                                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Eye weight="bold" className="w-8 h-8 text-white shadow-sm" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 text-center">
-                                                <p className="text-[11px] font-bold text-amber-700 italic">⚠️ Tidak ada lampiran bukti transfer</p>
-                                            </div>
-                                        )}
+                        <div className="p-4">
+                            {!isRejecting ? (
+                                <div className="space-y-4">
+                                    <div className="text-center py-2">
+                                        <p className="text-xs font-bold text-slate-500">Konfirmasi status iuran ini?</p>
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[11px] font-bold text-slate-500 flex justify-between items-center">
-                                            <span>Alasan Penolakan (Hanya jika ditolak)</span>
-                                            <span className="text-[9px] text-slate-400 font-medium">Opsional</span>
-                                        </label>
-                                        <textarea
-                                            value={rejectReason}
-                                            onChange={(e) => setRejectReason(e.target.value)}
-                                            placeholder="Misal: Bukti tidak cocok, Nominal kurang, dll..."
-                                            className="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none transition-all resize-none h-20"
-                                        />
-                                    </div>
-
-                                    <div className="flex gap-3 pt-2">
-                                        <button
-                                            disabled={isSubmittingVerify}
-                                            onClick={async () => {
-                                                if (!verifyingId) return;
-                                                setIsSubmittingVerify(true);
-                                                try {
-                                                    await iuranService.verify(verifyingId, 'REJECT', rejectReason || 'Ditolak oleh Bendahara');
-                                                    setVerifyingId(null);
-                                                    setRejectReason('');
-                                                    loadData();
-                                                } finally {
-                                                    setIsSubmittingVerify(false);
-                                                }
-                                            }}
-                                            className="flex-1 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-red-50 transition-all disabled:opacity-50"
-                                        >
-                                            Tolak
-                                        </button>
+                                    <div className="grid grid-cols-1 gap-2">
                                         <button
                                             disabled={isSubmittingVerify}
                                             onClick={async () => {
@@ -621,18 +557,62 @@ export default function IuranList() {
                                                     setIsSubmittingVerify(false);
                                                 }
                                             }}
-                                            className="flex-[2] px-4 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-brand-700 transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                            className="w-full px-4 py-3 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-brand-700 transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                         >
                                             {isSubmittingVerify ? <CircleNotch className="w-4 h-4 animate-spin" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                             Diterima / Sah
                                         </button>
+                                        <button
+                                            disabled={isSubmittingVerify}
+                                            onClick={() => setIsRejecting(true)}
+                                            className="w-full px-4 py-3 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-red-50 transition-all disabled:opacity-50"
+                                        >
+                                            Tolak
+                                        </button>
                                     </div>
                                 </div>
-                            );
-                        })()}
+                            ) : (
+                                <div className="space-y-4 animate-fade-in">
+                                    <textarea
+                                        autoFocus
+                                        value={rejectReason}
+                                        onChange={(e) => setRejectReason(e.target.value)}
+                                        placeholder="Tulis alasan penolakan..."
+                                        className="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition-all resize-none h-24"
+                                    />
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => { setIsRejecting(false); setRejectReason(''); }}
+                                            className="flex-1 px-3 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-wider hover:bg-slate-200 transition-all font-bold"
+                                        >
+                                            Batal
+                                        </button>
+                                        <button
+                                            disabled={isSubmittingVerify}
+                                            onClick={async () => {
+                                                if (!verifyingId) return;
+                                                setIsSubmittingVerify(true);
+                                                try {
+                                                    await iuranService.verify(verifyingId, 'REJECT', rejectReason || 'Ditolak oleh Bendahara');
+                                                    setVerifyingId(null);
+                                                    setRejectReason('');
+                                                    setIsRejecting(false);
+                                                    loadData();
+                                                } finally {
+                                                    setIsSubmittingVerify(false);
+                                                }
+                                            }}
+                                            className="flex-[2] px-3 py-2.5 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider hover:bg-red-700 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                                        >
+                                            Konfirmasi Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
-        </div >
+        </div>
     );
 }
