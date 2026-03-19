@@ -7,8 +7,14 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
     fastify.get('/', { preHandler: [requirePermission('Warga', 'Lihat')] }, async (request, reply) => {
         const query = request.query as any;
         const user = (request as any).user;
+        const scope = (request as any).permissionScope;
 
         if (query.warga_id) {
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== query.warga_id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat melihat data keluarga sendiri.' });
+            }
+
             // Verify warga belongs to tenant
             const warga = await wargaService.getById(query.warga_id);
             if (!warga || warga.tenant_id !== user.tenant_id) {
@@ -19,16 +25,24 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         }
 
         // getAll in service should be filtered by tenant? 
-        // Let's check anggotaKeluargaService later. 
-        // For now, if no warga_id, maybe we don't want to expose ALL members of ALL tenants.
-        return reply.code(400).send({ error: 'warga_id is required' });
+        if (scope === 'personal') {
+            return await anggotaKeluargaService.getByWargaId(user.warga_id);
+        }
+
+        return reply.code(400).send({ error: 'warga_id is required for administrative view' });
     });
 
     fastify.post('/', { preHandler: [requirePermission('Warga', 'Buat')] }, async (request, reply) => {
         try {
             const user = (request as any).user;
             const data = request.body as any;
+            const scope = (request as any).permissionScope;
             
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== data.warga_id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengelola data keluarga sendiri.' });
+            }
+
             // Verify target warga belongs to tenant
             const warga = await wargaService.getById(data.warga_id);
             if (!warga || warga.tenant_id !== user.tenant_id) {
@@ -50,9 +64,15 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
+            const scope = (request as any).permissionScope;
             
             const existing = await anggotaKeluargaService.getById(id);
             if (!existing) return reply.code(404).send({ error: 'Not found' });
+
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== existing.warga_id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengelola data keluarga sendiri.' });
+            }
 
             // Verify parent warga belongs to tenant
             const warga = await wargaService.getById(existing.warga_id);
@@ -73,9 +93,15 @@ export default async function anggotaKeluargaRoutes(fastify: FastifyInstance) {
         try {
             const { id } = request.params as { id: string };
             const user = (request as any).user;
+            const scope = (request as any).permissionScope;
 
             const existing = await anggotaKeluargaService.getById(id);
             if (!existing) return reply.code(204).send();
+
+            // Restriction for 'personal' scope
+            if (scope === 'personal' && user.warga_id !== existing.warga_id) {
+                return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengelola data keluarga sendiri.' });
+            }
 
             // Verify parent warga belongs to tenant
             const warga = await wargaService.getById(existing.warga_id);

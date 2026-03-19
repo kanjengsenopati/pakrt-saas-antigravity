@@ -51,10 +51,10 @@ export function BottomNav() {
                     
                     <button
                         onClick={() => setIsMenuOpen(true)}
-                        className="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-600 transition-all active:scale-95"
+                        className="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-600 transition-all active:scale-95 group"
                     >
-                        <List weight="duotone" className="w-6 h-6" />
-                        <span className="text-[12px] font-semibold mt-1 opacity-60 text-slate-400">Menu</span>
+                        <List weight="duotone" className="w-6 h-6 transition-colors group-hover:text-slate-600" />
+                        <span className="text-[12px] font-semibold mt-1 opacity-60 text-slate-400 group-hover:text-slate-600 transition-all">Menu</span>
                     </button>
                 </div>
             </div>

@@ -22,11 +22,18 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
   fastify.get('/:id', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;
+    const scope = (request as any).permissionScope;
     
     const item = await pembayaranIuranService.getById(id);
     if (!item || item.tenant_id !== user.tenant_id) {
       return reply.code(404).send({ error: 'Not found or unauthorized' });
     }
+
+    // Restriction for 'personal' scope
+    if (scope === 'personal' && user.warga_id !== item.warga_id) {
+      return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat melihat data iuran sendiri.' });
+    }
+
     return item;
   });
 
@@ -50,11 +57,17 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     try {
       const { id } = request.params as any;
       const user = (request as any).user;
+      const scope = (request as any).permissionScope;
 
       // Verify ownership
       const existing = await pembayaranIuranService.getById(id);
       if (!existing || existing.tenant_id !== user.tenant_id) {
         return reply.code(404).send({ error: 'Not found or unauthorized' });
+      }
+
+      // Restriction for 'personal' scope
+      if (scope === 'personal' && user.warga_id !== existing.warga_id) {
+        return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengubah data iuran sendiri.' });
       }
 
       const data = request.body as any;
@@ -72,11 +85,17 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     try {
       const { id } = request.params as any;
       const user = (request as any).user;
+      const scope = (request as any).permissionScope;
 
       // Verify ownership
       const existing = await pembayaranIuranService.getById(id);
       if (!existing || existing.tenant_id !== user.tenant_id) {
         return reply.code(404).send({ error: 'Not found or unauthorized' });
+      }
+
+      // Restriction for 'personal' scope
+      if (scope === 'personal' && user.warga_id !== existing.warga_id) {
+        return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat menghapus data iuran sendiri.' });
       }
 
       await pembayaranIuranService.delete(id);

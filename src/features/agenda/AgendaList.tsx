@@ -300,7 +300,7 @@ export default function AgendaList() {
                                         </PieChart>
                                     </ResponsiveContainer>
                                 ) : (
-                                    <div className="h-full flex items-center justify-center text-slate-300 text-xs font-normal capitalize tracking-widest">Belum ada data status</div>
+                                    <div className="h-full flex items-center justify-center text-slate-300 text-[12px] font-normal tracking-wide">Belum Ada Data Status</div>
                                 )}
                             </div>
                         </div>
@@ -352,7 +352,7 @@ export default function AgendaList() {
                     {/* DESKTOP VIEW: TABLE */}
                     <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold capitalize text-slate-500 tracking-wider">
+                            <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold text-slate-500 tracking-wider">
                                 <tr>
                                     <th className="p-4 w-24 text-center">Tanggal</th>
                                     <th className="p-4">Agenda & Deskripsi</th>
@@ -364,10 +364,10 @@ export default function AgendaList() {
                             <tbody className="divide-y divide-slate-50">
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan={5} className="p-20 text-center text-slate-400 font-black text-[10px] capitalize tracking-widest animate-pulse">
+                                        <td colSpan={5} className="p-20 text-center text-slate-400 font-black text-[10px] tracking-widest animate-pulse">
                                             <div className="flex flex-col items-center gap-4">
                                                 <CircleNotch weight="bold" className="w-10 h-10 animate-spin text-brand-500" />
-                                                Sinkronisasi Informasi...
+                                                Sinkronisasi Laporan...
                                             </div>
                                         </td>
                                     </tr>
@@ -378,7 +378,7 @@ export default function AgendaList() {
                                                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center border-2 border-dashed border-slate-200">
                                                     <CalendarBlank weight="duotone" className="w-10 h-10 text-slate-300" />
                                                 </div>
-                                                <p className="text-lg font-black text-slate-900 capitalize tracking-tight">Belum Ada Informasi Kegiatan</p>
+                                                <p className="text-lg font-black text-slate-900 tracking-tight">Belum Ada Informasi Kegiatan</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -510,11 +510,11 @@ export default function AgendaList() {
                     {/* MOBILE VIEW: CARDS - 2 Column Grid */}
                     <div className="lg:hidden grid grid-cols-2 gap-3 p-3 bg-slate-50/50">
                         {isLoading ? (
-                            <div className="col-span-2 text-center py-12 text-slate-400 font-bold text-xs animate-pulse uppercase tracking-widest">Syncing Data...</div>
+                            <div className="col-span-2 text-center py-12 text-slate-400 font-bold text-[12px] animate-pulse tracking-wide">Sinkronisasi Data...</div>
                         ) : filteredAgenda.length === 0 ? (
                             <div className="col-span-2 bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center">
                                 <CalendarBlank weight="duotone" className="w-10 h-10 text-slate-200 mb-2" />
-                                <p className="text-[10px] font-black capitalize tracking-widest text-slate-400">Belum Ada Informasi Kegiatan</p>
+                                <p className="text-[12px] font-bold tracking-wide text-slate-400">Belum Ada Informasi Kegiatan</p>
                             </div>
                         ) : (
                             filteredAgenda.map((agenda) => {
@@ -562,7 +562,7 @@ export default function AgendaList() {
                                             {agenda.butuh_pendanaan && (
                                                 <div className="pt-2 border-t border-slate-50">
                                                     <p className="text-[11px] font-bold text-emerald-600 leading-none">{formatRupiah(agenda.nominal_biaya || 0)}</p>
-                                                    <p className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-0.5 mt-1">{agenda.sumber_dana}</p>
+                                                    <p className="text-[9px] font-medium text-slate-400 tracking-wide mt-1">{agenda.sumber_dana}</p>
                                                 </div>
                                             )}
 
