@@ -120,21 +120,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return { granted: false, scope: 'all' };
         };
 
+        const isOwner = recordOwnerId === user.id || recordOwnerId === (user as any).warga_id;
+
         const fromUser = checkInSet(userPerms);
         if (fromUser.granted) {
             // If user has direct permission, check scope
             if (fromUser.scope === 'all') return true;
-            if (fromUser.scope === 'personal' && recordOwnerId && recordOwnerId === user.id) return true;
+            if (fromUser.scope === 'personal' && recordOwnerId && isOwner) return true;
             if (fromUser.scope === 'personal' && !recordOwnerId) return true; // Default to allow if no owner ID to check against
         }
 
         const fromRole = checkInSet(rolePerms);
         if (fromRole.granted) {
             if (fromRole.scope === 'all') return true;
-            if (fromRole.scope === 'personal' && recordOwnerId) {
-                // If it's a Warga checking their own record
-                return recordOwnerId === user.id || recordOwnerId === (user as any).warga_id;
-            }
+            if (fromRole.scope === 'personal' && recordOwnerId && isOwner) return true;
             if (fromRole.scope === 'personal' && !recordOwnerId) return true;
         }
 
