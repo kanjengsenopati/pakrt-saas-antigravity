@@ -447,11 +447,21 @@ export default function IuranList() {
                                             <div>
                                                 <p className="text-[14px] text-slate-700 font-bold mb-2">Periode Dibayar</p>
                                                 <div className="grid grid-cols-6 gap-1 w-full mt-1">
-                                                    {iuran.periode_bulan.map(b => (
-                                                        <span key={b} className="inline-flex px-1 py-1 rounded-md text-[14px] font-bold bg-blue-50 text-blue-700 border border-blue-100 items-center justify-center min-w-[50px] shadow-sm">
-                                                            {getMonthName(b).substring(0, 3)}
-                                                        </span>
-                                                    ))}
+                                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
+                                                        const isPaid = iuran.periode_bulan.includes(month);
+                                                        return (
+                                                            <span 
+                                                                key={month} 
+                                                                className={`inline-flex px-1 py-1 rounded-md text-[14px] font-bold border items-center justify-center shadow-sm transition-all duration-300
+                                                                    ${isPaid 
+                                                                        ? 'bg-brand-600 text-white border-brand-700 ring-1 ring-brand-500/20' 
+                                                                        : 'bg-slate-50 text-slate-400 border-slate-100/50'
+                                                                    }`}
+                                                            >
+                                                                {getMonthName(month).substring(0, 3)}
+                                                            </span>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-end gap-1">
