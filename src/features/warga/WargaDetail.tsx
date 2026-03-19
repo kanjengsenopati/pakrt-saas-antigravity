@@ -83,44 +83,34 @@ export default function WargaDetail() {
                     </div>
 
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-                        <h3 className="font-semibold text-gray-900 border-b border-gray-50 pb-2">Dokumen</h3>
+                        <div className="flex items-center justify-between border-b border-gray-50 pb-2">
+                            <h3 className="font-semibold text-gray-900">Dokumen Warga</h3>
+                        </div>
                         {warga.url_kk ? (
-                            <a
-                                href={getFullUrl(warga.url_kk)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-3 p-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors group"
-                            >
-                                <FileText weight="duotone" className="w-5 h-5" />
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium truncate">Kartu Keluarga (KK)</p>
-                                    <p className="text-xs text-blue-500">Klik untuk melihat file asli</p>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="p-2 bg-blue-100 text-blue-600 rounded-lg flex-shrink-0">
+                                            <FileText weight="fill" className="w-6 h-6" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold text-gray-900 truncate">Kartu Keluarga (KK)</p>
+                                            <p className="text-[10px] text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full inline-block mt-1">Dokumen Resmi</p>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => setIsZooming(true)}
+                                        className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white text-[11px] sm:text-xs font-bold rounded-lg transition-all shadow-sm hover:shadow active-press"
+                                    >
+                                        <MagnifyingGlassPlus weight="bold" className="w-4 h-4" />
+                                        <span className="hidden sm:inline">Lihat Dokumen</span>
+                                        <span className="sm:hidden">Lihat</span>
+                                    </button>
                                 </div>
-                            </a>
+                            </div>
                         ) : (
                             <div className="p-4 border-2 border-dashed border-gray-100 rounded-lg text-center">
                                 <p className="text-xs text-gray-400">Belum ada dokumen KK terunggah</p>
-                            </div>
-                        )}
-
-                        {warga.url_kk && (warga.url_kk.startsWith('data:image') || warga.url_kk.match(/\.(jpeg|jpg|gif|png|svg)$/i) || warga.url_kk.includes('placeholder') || warga.url_kk.includes('placehold.co') || warga.url_kk.length > 50) && (
-                            <div
-                                className="mt-4 border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow relative group cursor-pointer"
-                                onClick={() => setIsZooming(true)}
-                            >
-                                <img
-                                    src={getFullUrl(warga.url_kk)}
-                                    alt="Preview Dokumen"
-                                    className="w-full h-auto object-cover max-h-48 group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                    <div className="bg-white/90 p-2 rounded-full opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all">
-                                        <MagnifyingGlassPlus className="w-6 h-6 text-brand-600" />
-                                    </div>
-                                </div>
-                                <div className="p-2 bg-gray-50 text-[10px] text-gray-400 text-center border-t border-gray-50 absolute bottom-0 w-full">
-                                    Klik untuk perbesar dokumen
-                                </div>
                             </div>
                         )}
                     </div>
@@ -154,30 +144,50 @@ export default function WargaDetail() {
                 </div>
             </div>
 
-            {/* Image Zoom Modal */}
+            {/* Document Zoom Modal */}
             {isZooming && warga.url_kk && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-4 sm:p-8"
                     onClick={() => setIsZooming(false)}
                 >
-                    <button
-                        className="absolute top-4 right-4 sm:top-8 sm:right-8 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition-colors backdrop-blur-md"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsZooming(false);
-                        }}
-                    >
-                        <X weight="bold" className="w-6 h-6" />
-                    </button>
                     <div
-                        className="relative max-w-full max-h-full rounded-xl overflow-hidden shadow-2xl animate-scale-up"
+                        className="relative w-full max-w-4xl max-h-full rounded-2xl overflow-hidden shadow-2xl animate-scale-up bg-white flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <img
-                            src={getFullUrl(warga.url_kk)}
-                            alt="Kartu Keluarga Zoom"
-                            className="max-w-full max-h-[90vh] object-contain rounded-xl"
-                        />
+                        {/* Header */}
+                        <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 className="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
+                                <FileText weight="duotone" className="text-brand-600 w-5 h-5"/> Dokumen Kartu Keluarga
+                            </h3>
+                            <div className="flex items-center gap-2 sm:gap-4">
+                                <a 
+                                    href={getFullUrl(warga.url_kk)} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] sm:text-xs font-bold text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition-colors border border-brand-100"
+                                >
+                                    Buka di Tab Baru
+                                </a>
+                                <button
+                                    className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 p-1.5 sm:p-2 rounded-full transition-colors"
+                                    onClick={() => setIsZooming(false)}
+                                >
+                                    <X weight="bold" className="w-4 h-4 sm:w-5 sm:h-5" />
+                                </button>
+                            </div>
+                        </div>
+                        {/* Content */}
+                        <div className="p-4 overflow-auto bg-gray-100 flex justify-center items-center min-h-[50vh] max-h-[80vh]">
+                            {warga.url_kk.toLowerCase().includes('.pdf') || warga.url_kk.includes('application/pdf') ? (
+                                <iframe src={getFullUrl(warga.url_kk)} className="w-full h-[70vh] rounded-xl border border-gray-200 shadow-sm" />
+                            ) : (
+                                <img
+                                    src={getFullUrl(warga.url_kk)}
+                                    alt="Kartu Keluarga Zoom"
+                                    className="max-w-full object-contain rounded-xl shadow-sm max-h-[75vh]"
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

@@ -88,8 +88,8 @@ export default function WargaForm() {
         setUploadError(null);
 
         // Validation: Size (pre-compression check for non-images or very large files)
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit for raw input
-            setUploadError("File asli terlalu besar (maksimal 5MB).");
+        if (file.size > 1 * 1024 * 1024) { // 1MB limit for raw input
+            setUploadError("File asli terlalu besar (maksimal 1MB).");
             return;
         }
 
@@ -99,8 +99,8 @@ export default function WargaForm() {
                 const compressedBase64 = await compressImage(file);
                 setValue('url_kk', compressedBase64);
             } else if (file.type === 'application/pdf') {
-                if (file.size > 300 * 1024) {
-                    setUploadError("File PDF melebihi 300KB (PDF tidak dapat dikompresi otomatis).");
+                if (file.size > 1 * 1024 * 1024) {
+                    setUploadError("File PDF melebihi 1MB (PDF tidak dapat dikompresi otomatis).");
                 } else {
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
@@ -109,7 +109,7 @@ export default function WargaForm() {
                     };
                 }
             } else {
-                setUploadError("Format file tidak didukung (Gunakan JPG/PNG atau PDF < 300KB).");
+                setUploadError("Format file tidak didukung (Gunakan JPG/PNG atau PDF maksimal 1MB).");
             }
         } catch (err: any) {
             setUploadError(err.toString());
@@ -489,7 +489,7 @@ export default function WargaForm() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <p className="text-xs text-gray-400">Upload File (Auto Compress &lt; 300KB)</p>
+                                    <p className="text-xs text-gray-400">Upload File (Maksimal 1MB, Auto Compress JPG/PNG)</p>
                                     <div className={`relative border-2 border-dashed rounded-xl p-4 transition-all flex flex-col items-center justify-center gap-2 ${isCompressing ? 'border-brand-200 bg-brand-50' : 'border-gray-200 hover:border-brand-400 hover:bg-gray-50'}`}>
                                         <input
                                             type="file"
