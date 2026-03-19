@@ -88,9 +88,15 @@ export default function IuranList() {
         .reduce((sum, item) => sum + item.nominal, 0);
 
     const transactionCount = filteredIuran.length;
-
     // Filtered iuran data
-
+    const formatFormalId = (dateString: string, itemId: string) => {
+        const d = new Date(dateString);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const shortId = itemId.substring(0, 4).toUpperCase();
+        return `${yyyy}${mm}${dd}-${shortId}`;
+    };
 
     const getMonthName = (monthNumber: number) => {
         const date = new Date();
@@ -262,7 +268,8 @@ export default function IuranList() {
                                     <tr key={iuran.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3">
                                             <div className="font-bold text-slate-800 text-[14px]">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
-                                            <div className="text-[12px] text-brand-600 font-semibold uppercase tracking-tight mt-0.5">{iuran.kategori || 'Iuran Bulanan'}</div>
+                                            <div className="text-[10px] text-slate-500 font-mono mt-0.5 whitespace-nowrap tracking-wider">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</div>
+                                            <div className="text-[12px] text-brand-600 font-semibold uppercase tracking-tight mt-1">{iuran.kategori || 'Iuran Bulanan'}</div>
                                         </td>
                                         <td className="p-3">
                                             <p className="font-bold text-slate-800 text-[14px]">{iuran.warga?.nama || 'Warga Terhapus'}</p>
@@ -337,7 +344,12 @@ export default function IuranList() {
                                         <div className="flex justify-between items-start mb-2 border-b border-slate-100 pb-2">
                                             <div>
                                                 <h3 className="font-black text-slate-900 text-base">{iuran.warga?.nama || 'Warga Terhapus'}</h3>
-                                                <p className="text-[10px] text-slate-400 tracking-widest font-mono mt-0.5">{iuran.warga?.nik}</p>
+                                                <div className="flex items-center gap-1.5 mt-0.5">
+                                                    <p className="text-[10px] text-slate-400 tracking-widest font-mono shrink-0">{iuran.warga?.nik}</p>
+                                                    <span className="text-[8px] sm:text-[9px] px-1.5 py-0.5 bg-slate-100/80 text-slate-500 rounded font-mono font-bold tracking-widest leading-none truncate border border-slate-200">
+                                                        {formatFormalId(iuran.tanggal_bayar, iuran.id)}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="text-lg font-black text-brand-600">
                                                 {formatRupiah(iuran.nominal)}

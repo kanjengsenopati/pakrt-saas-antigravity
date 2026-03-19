@@ -64,7 +64,14 @@ export default function KeuanganList() {
     );
 
     // Filtered transactions data
-
+    const formatFormalId = (dateString: string, itemId: string) => {
+        const d = new Date(dateString);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const shortId = itemId.substring(0, 4).toUpperCase();
+        return `${yyyy}${mm}${dd}-${shortId}`;
+    };
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -89,41 +96,29 @@ export default function KeuanganList() {
             </div>
 
             {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 {/* KAS MASUK */}
-                <div className="bg-white py-3 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[12px] font-semibold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Total Pemasukan</p>
-                        <p className="text-xl font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
-                        <div className="flex items-center gap-1 mt-1.5 text-[12px] font-normal text-brand-600">
-                            <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-                            Kas Masuk
-                        </div>
+                        <p className="text-[9px] sm:text-[12px] font-bold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Kas Masuk</p>
+                        <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
                     </div>
                 </div>
 
                 {/* KAS KELUAR */}
-                <div className="bg-white py-3 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
+                <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[12px] font-semibold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Total Pengeluaran</p>
-                        <p className="text-xl font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
-                        <div className="flex items-center gap-1 mt-1.5 text-[12px] font-normal text-red-600">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                            Kas Keluar
-                        </div>
+                        <p className="text-[9px] sm:text-[12px] font-bold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Kas Keluar</p>
+                        <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
                     </div>
                 </div>
 
                 {/* SALDO AKHIR */}
-                <div className={`py-3 px-4 rounded-xl border shadow-md relative overflow-hidden group transition-all duration-300 hover:shadow-lg ${summary.saldo >= 0 ? 'bg-emerald-600 border-emerald-500 hover:bg-emerald-700' : 'bg-red-600 border-red-500 hover:bg-red-700'}`}>
+                <div className={`py-2 px-2 sm:py-3 sm:px-4 rounded-xl border shadow-md relative overflow-hidden group transition-all duration-300 hover:shadow-lg ${summary.saldo >= 0 ? 'bg-emerald-600 border-emerald-500 hover:bg-emerald-700' : 'bg-red-600 border-red-500 hover:bg-red-700'}`}>
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[11px] font-black text-white/80 tracking-wider leading-none uppercase mb-1.5">Saldo Saat Ini</p>
-                        <p className="text-xl font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
-                        <div className="flex items-center gap-1 mt-1.5 text-[9px] font-semibold text-white/70">
-                            <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${summary.saldo >= 0 ? 'bg-emerald-300' : 'bg-red-300'}`} />
-                            {summary.saldo >= 0 ? 'Kondisi Aman' : 'Defisit'}
-                        </div>
+                        <p className="text-[9px] sm:text-[11px] font-black text-white/90 tracking-wider leading-none uppercase mb-1.5">Saldo</p>
+                        <p className="text-sm sm:text-xl font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
                     </div>
                 </div>
             </div>
@@ -186,7 +181,7 @@ export default function KeuanganList() {
                                     <tr key={trx.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3 whitespace-nowrap">
                                             <div className="font-bold text-slate-800 text-[14px]">{dateUtils.toDisplay(trx.tanggal)}</div>
-                                            <div className="text-[12px] text-slate-500 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {trx.id.substring(0, 8)}</div>
+                                            <div className="text-[12px] text-slate-500 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {formatFormalId(trx.tanggal, trx.id)}</div>
                                         </td>
                                         <td className="p-3">
                                             <div className={`text-[12px] font-semibold uppercase tracking-widest mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
@@ -274,7 +269,9 @@ export default function KeuanganList() {
                                                 <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
                                                     {trx.kategori}
                                                 </div>
-                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{dateUtils.toDisplay(trx.tanggal)}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                                                    {dateUtils.toDisplay(trx.tanggal)} &bull; <span className="font-mono text-[9px] bg-slate-100 px-1 py-0.5 rounded ml-1 tracking-wider inline-block">ID:{formatFormalId(trx.tanggal, trx.id)}</span>
+                                                </p>
                                             </div>
                                             <div className={`text-lg font-black ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
                                                 {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
