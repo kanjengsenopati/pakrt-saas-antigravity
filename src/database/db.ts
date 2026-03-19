@@ -185,6 +185,8 @@ export interface PembayaranIuran {
     nominal: number;
     tanggal_bayar: string;
     url_bukti?: string;
+    status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+    alasan_penolakan?: string;
     // Relationships
     warga?: Warga;
 }

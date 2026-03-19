@@ -31,13 +31,13 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
     const { currentTenant, currentScope } = useTenant();
-    const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0 });
+    const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0, pendingIuran: 0 });
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
     const [loadingActivities, setLoadingActivities] = useState(true);
     const [upcomingRonda, setUpcomingRonda] = useState<RondaWithWarga[]>([]);
     const [recentIuran, setRecentIuran] = useState<IuranWithWarga[]>([]);
     const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
-    const [wargaIuranStats, setWargaIuranStats] = useState({ totalPaid: 0, expected: 0 });
+    const [wargaIuranStats, setWargaIuranStats] = useState({ totalPaid: 0, expected: 0, rate: 0, paidMonths: [] as number[] });
 
     // Memoize role-derived values to prevent useEffect from looping on every background auth refresh
     const isWarga = useMemo(() =>
@@ -53,13 +53,14 @@ export default function Dashboard() {
             if (!currentTenant) return;
             try {
                 if (!isWarga) {
-                    const [wargaCount, pengurusCount, asetCount, agendaCount, finSummary, allSurat] = await Promise.all([
+                    const [wargaCount, pengurusCount, asetCount, agendaCount, finSummary, allSurat, allIuran] = await Promise.all([
                         wargaService.count(currentTenant.id, currentScope),
                         pengurusService.count(currentTenant.id, currentScope),
                         asetService.count(currentTenant.id, currentScope),
                         agendaService.count(currentTenant.id, currentScope),
                         keuanganService.getSummary(currentTenant.id, currentScope),
                         suratService.getAll(currentTenant.id, currentScope),
+                        iuranService.getAll(currentTenant.id),
                     ]);
                     setStats({
                         warga: wargaCount,
@@ -67,29 +68,25 @@ export default function Dashboard() {
                         aset: asetCount,
                         agenda: agendaCount,
                         saldo: finSummary.saldo,
-                        pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length
+                        pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length,
+                        pendingIuran: (allIuran.items || []).filter(i => i.status === 'PENDING').length
                     });
                 } else if (wargaId) {
-                    // Warga specific stats
-                    const [config, allIuran] = await Promise.all([
-                        pengaturanService.getAll(currentTenant.id, currentScope),
-                        iuranService.getAll(currentTenant.id)
-                    ]);
+                    // Warga specific stats using getBillingSummary
+                    const summary = await iuranService.getBillingSummary(wargaId, new Date().getFullYear(), undefined, currentScope);
+                    setWargaIuranStats({
+                        totalPaid: summary.totalPaid,
+                        expected: summary.expectedTotal,
+                        rate: summary.rate,
+                        paidMonths: summary.paidMonths
+                    });
                     
-                    const citizen = await wargaService.getById(wargaId);
-                    if (citizen) {
-                        const statusKey = `${citizen.status_penduduk || 'Tetap'}-${citizen.status_rumah || 'Dihuni'}`;
-                        const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-                        const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
-                        
-                        const myIuran = (allIuran.items || []).filter(i => i.warga_id === wargaId);
-                        const paidTotal = myIuran.reduce((sum, curr) => sum + curr.nominal, 0);
-                        
-                        setWargaIuranStats({
-                            totalPaid: paidTotal,
-                            expected: rate * 12
-                        });
-                    }
+                    // Also fetch pending surat for warga
+                    const allSurat = await suratService.getAll(currentTenant.id, currentScope);
+                    setStats(prev => ({
+                        ...prev,
+                        pendingSurat: (allSurat || []).filter(s => s.warga_id === wargaId && s.status === 'proses').length
+                    }));
                 }
             } catch (error) {
                 console.error("Dashboard: Error fetching stats:", error);
@@ -161,11 +158,11 @@ export default function Dashboard() {
         { title: 'Total Warga', count: stats.warga, icon: Users, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/warga' },
         { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', isCurrency: true, link: '/keuangan' },
         { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', link: '/surat' },
-        { title: 'Agenda', count: stats.agenda, icon: CalendarCheck, color: 'bg-purple-100 text-purple-600', bar: 'bg-purple-500', link: '/agenda' },
+        { title: 'Verifikasi Iuran', count: stats.pendingIuran, icon: HandCoins, color: 'bg-amber-100 text-amber-600', bar: 'bg-amber-500', link: '/iuran' },
     ];
 
     const wargaCards: DashboardCard[] = [
-        { title: 'Tagihan Saya', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', isCurrency: true, link: '/iuran/new', subtitle: 'Hingga akhir tahun' },
+        { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
         { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/ronda' },
         { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'bg-purple-100 text-purple-600', bar: 'bg-purple-500', link: '/agenda' },
         { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', link: '/surat' },
@@ -372,46 +369,100 @@ export default function Dashboard() {
                             </div>
                         )}
                     </div>
-                </div>
-
-                {/* IURAN */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                </div>                {/* IURAN / BILLING SUMMARY for Warga */}
+                <div className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${isWarga ? 'md:col-span-1' : ''}`}>
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <div className="flex items-center gap-1.5">
                             <HandCoins size={16} className="text-emerald-600" />
-                            <h3 className="section-label">Iuran Terakhir</h3>
+                            <h3 className="section-label">{isWarga ? 'Data Tagihan Iuran' : 'Iuran Terakhir'}</h3>
                         </div>
-                        <button
-                            className="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:underline"
-                            onClick={() => navigate('/iuran')}
-                        >
-                            Lihat Semua
-                        </button>
+                        {!isWarga ? (
+                            <button
+                                className="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:underline"
+                                onClick={() => navigate('/iuran')}
+                            >
+                                Lihat Semua
+                            </button>
+                        ) : (
+                            <button
+                                className="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                                onClick={() => navigate('/iuran/baru')}
+                            >
+                                Bayar Iuran
+                            </button>
+                        )}
                     </div>
 
-                    <div className="p-3 space-y-1.5">
+                    <div className="p-3">
                         {loadingActivities ? (
-                            [1, 2, 3].map(i => <div key={i} className="h-10 bg-slate-50 animate-pulse rounded-lg" />)
-                        ) : recentIuran.length > 0 ? (
-                            recentIuran.map((iuran: IuranWithWarga) => (
-                                <div
-                                    key={iuran.id}
-                                    className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50/30 hover:bg-white border border-transparent hover:border-emerald-100 hover:shadow-sm transition-all"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold border border-emerald-200 shrink-0 shadow-sm">
-                                            {iuran.warga?.nama.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p className="text-[13px] font-bold text-slate-900 leading-none">{iuran.warga?.nama}</p>
-                                            <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-wide font-semibold italic">
-                                                Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
-                                            </p>
-                                        </div>
+                            <div className="space-y-2">
+                                {[1, 2, 3].map(i => <div key={i} className="h-10 bg-slate-50 animate-pulse rounded-lg" />)}
+                            </div>
+                        ) : isWarga ? (
+                            <div className="space-y-4 py-1">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-center">
+                                        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Terbayar</p>
+                                        <p className="text-sm font-black text-emerald-700">{formatRupiah(wargaIuranStats.totalPaid)}</p>
                                     </div>
-                                    <p className="text-[14px] font-bold text-emerald-600">{formatRupiah(iuran.nominal)}</p>
+                                    <div className="p-3 bg-amber-50 rounded-xl border border-amber-100 text-center">
+                                        <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">Sisa Tagihan</p>
+                                        <p className="text-sm font-black text-amber-700">{formatRupiah(Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid))}</p>
+                                    </div>
                                 </div>
-                            ))
+                                
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center px-1">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress Pembayaran {new Date().getFullYear()}</span>
+                                        <span className="text-[10px] font-bold text-brand-600">{wargaIuranStats.paidMonths.length} / 12 Bln</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1.5 justify-between">
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => (
+                                            <div 
+                                                key={m} 
+                                                className={`w-[22px] h-[22px] rounded-lg flex items-center justify-center text-[9px] font-black transition-all border ${
+                                                    wargaIuranStats.paidMonths.includes(m) 
+                                                        ? 'bg-brand-600 text-white border-brand-500 shadow-sm' 
+                                                        : 'bg-white text-slate-300 border-slate-100 hover:border-slate-300'
+                                                }`}
+                                                title={wargaIuranStats.paidMonths.includes(m) ? 'Sudah Lunas' : 'Belum Bayar'}
+                                            >
+                                                {m}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                <div className="p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <CreditCard className="w-4 h-4 text-slate-400" />
+                                        <span className="text-[11px] font-bold text-slate-500 italic">Tarif Bulanan:</span>
+                                    </div>
+                                    <span className="text-[12px] font-black text-slate-700">{formatRupiah(wargaIuranStats.rate)}</span>
+                                </div>
+                            </div>
+                        ) : recentIuran.length > 0 ? (
+                            <div className="space-y-1.5">
+                                {recentIuran.map((iuran: IuranWithWarga) => (
+                                    <div
+                                        key={iuran.id}
+                                        className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50/30 hover:bg-white border border-transparent hover:border-emerald-100 hover:shadow-sm transition-all"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold border border-emerald-200 shrink-0 shadow-sm">
+                                                {iuran.warga?.nama.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="text-[13px] font-bold text-slate-900 leading-none">{iuran.warga?.nama}</p>
+                                                <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-wide font-semibold italic">
+                                                    Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p className="text-[14px] font-bold text-emerald-600">{formatRupiah(iuran.nominal)}</p>
+                                    </div>
+                                ))}
+                            </div>
                         ) : (
                             <div className="text-center py-8 text-slate-400 text-xs italic bg-slate-50/50 rounded-xl border border-dashed border-slate-200 flex flex-col items-center justify-center">
                                 <HandCoins size={28} weight="duotone" className="text-slate-300 mb-1" />
@@ -422,5 +473,6 @@ export default function Dashboard() {
                 </div>
             </div>
         </div>
+
     );
 }

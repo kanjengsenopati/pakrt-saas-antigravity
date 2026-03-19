@@ -78,11 +78,13 @@ export const pembayaranIuranService = {
 
     return await prisma.$transaction(async (tx) => {
         // CONCURRENCY CHECK: Prevent double payment for same period
+        // Only check against PENDING or VERIFIED payments. REJECTED ones are ignored.
         const existing = await tx.pembayaranIuran.findMany({
             where: {
                 warga_id: processedData.warga_id,
                 kategori: processedData.kategori,
-                periode_tahun: processedData.periode_tahun
+                periode_tahun: processedData.periode_tahun,
+                status: { in: ['PENDING', 'VERIFIED'] }
             }
         });
 
@@ -90,32 +92,87 @@ export const pembayaranIuranService = {
         const overlappingMonths = processedData.periode_bulan.filter((m: number) => alreadyPaidMonths.includes(m));
 
         if (overlappingMonths.length > 0) {
-            throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dibayar untuk tahun ${processedData.periode_tahun}`);
+            throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dalam proses pembayaran atau sudah lunas untuk tahun ${processedData.periode_tahun}`);
         }
 
-        const result = await tx.pembayaranIuran.create({ data: processedData });
-        
-        // Sync to Keuangan
-        await tx.keuangan.create({
+        // Default status is PENDING (from schema), but explicit here for clarity
+        const result = await tx.pembayaranIuran.create({ 
             data: {
-                tenant_id: result.tenant_id,
-                scope: result.scope || 'RT',
-                tipe: 'pemasukan',
-                kategori: 'Iuran Warga',
-                nominal: result.nominal,
-                tanggal: result.tanggal_bayar,
-                keterangan: `[IURAN_ID:${result.id}] Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
-            }
+                ...processedData,
+                status: 'PENDING'
+            } 
         });
+        
+        // DO NOT Sync to Keuangan yet. Only after verification.
 
         await aktivitasService.create({
             tenant_id: processedData.tenant_id,
             scope: processedData.scope || 'RT',
             action: 'Bayar Iuran',
-            details: `Pembayaran iuran dari warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}]`,
+            details: `Pembayaran iuran dari warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
             timestamp: Date.now()
         });
         return result;
+    });
+  },
+
+  async verify(id: string, action: 'VERIFY' | 'REJECT', alasan?: string) {
+    return await prisma.$transaction(async (tx) => {
+        const iuran = await tx.pembayaranIuran.findUnique({
+            where: { id },
+            include: { warga: true }
+        });
+
+        if (!iuran) throw new Error("Data iuran tidak ditemukan");
+        if (iuran.status !== 'PENDING') throw new Error(`Status iuran sudah ${iuran.status}`);
+
+        if (action === 'VERIFY') {
+            const result = await tx.pembayaranIuran.update({
+                where: { id },
+                data: { status: 'VERIFIED' }
+            });
+
+            // Sync to Keuangan ONLY now
+            await tx.keuangan.create({
+                data: {
+                    tenant_id: result.tenant_id,
+                    scope: result.scope || 'RT',
+                    tipe: 'pemasukan',
+                    kategori: 'Iuran Warga',
+                    nominal: result.nominal,
+                    tanggal: result.tanggal_bayar,
+                    keterangan: `[IURAN_ID:${result.id}] Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                }
+            });
+
+            await aktivitasService.create({
+                tenant_id: result.tenant_id,
+                scope: result.scope || 'RT',
+                action: 'Verifikasi Iuran',
+                details: `Verifikasi pembayaran iuran ID ${id} [DITERIMA]`,
+                timestamp: Date.now()
+            });
+
+            return result;
+        } else {
+            const result = await tx.pembayaranIuran.update({
+                where: { id },
+                data: { 
+                    status: 'REJECTED',
+                    alasan_penolakan: alasan
+                }
+            });
+
+            await aktivitasService.create({
+                tenant_id: result.tenant_id,
+                scope: result.scope || 'RT',
+                action: 'Verifikasi Iuran',
+                details: `Verifikasi pembayaran iuran ID ${id} [DITOLAK]: ${alasan}`,
+                timestamp: Date.now()
+            });
+
+            return result;
+        }
     });
   },
 
@@ -160,6 +217,13 @@ export const pembayaranIuranService = {
     }
 
     return await prisma.$transaction(async (tx) => {
+        // If not specified, reset status to PENDING on update to require re-verification
+        // Unless it's already VERIFIED, we might want to keep it VERIFIED if it's an admin edit?
+        // But the safest is to re-verify if data changes.
+        if (!processedData.status) {
+            processedData.status = 'PENDING';
+        }
+
         const result = await tx.pembayaranIuran.update({ 
             where: { id }, 
             data: processedData 
@@ -172,12 +236,30 @@ export const pembayaranIuranService = {
         });
 
         if (existingKeuangan) {
-            await tx.keuangan.update({
-                where: { id: existingKeuangan.id },
+            if (result.status === 'VERIFIED') {
+                await tx.keuangan.update({
+                    where: { id: existingKeuangan.id },
+                    data: {
+                        nominal: result.nominal,
+                        tanggal: result.tanggal_bayar,
+                        keterangan: `${tag} Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                    }
+                });
+            } else {
+                // If it was VERIFIED but now PENDING/REJECTED, "Rollback" Keuangan by deleting the entry
+                await tx.keuangan.delete({ where: { id: existingKeuangan.id } });
+            }
+        } else if (result.status === 'VERIFIED') {
+            // If it became VERIFIED during update but no Keuangan entry existed
+            await tx.keuangan.create({
                 data: {
+                    tenant_id: result.tenant_id,
+                    scope: result.scope || 'RT',
+                    tipe: 'pemasukan',
+                    kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `${tag} Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                    keterangan: `[IURAN_ID:${result.id}] Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
                 }
             });
         }
@@ -222,7 +304,8 @@ export const pembayaranIuranService = {
         tenant_id: tenantId,
         warga_id: wargaId,
         kategori: kategori,
-        periode_tahun: tahun
+        periode_tahun: tahun,
+        status: 'VERIFIED'
       }
     });
 

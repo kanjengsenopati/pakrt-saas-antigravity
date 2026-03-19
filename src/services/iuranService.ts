@@ -31,12 +31,9 @@ export const iuranService = {
     },
 
     async create(data: Omit<PembayaranIuran, 'id'>, scope: ScopeType = 'RT'): Promise<string> {
-        // 1. Save the iuran entry
+        // 1. Save the iuran entry (Backend handles Keuangan sync on verification)
         const response = await axios.post(`${API_URL}/pembayaranIuran`, data);
         const iuranId: string = response.data.id;
-
-        // 2. Auto-create a matching Kas Masuk in Keuangan
-        await this.syncToKeuangan(iuranId, data, scope);
 
         await aktivitasService.logActivity(
             data.tenant_id,
@@ -51,14 +48,12 @@ export const iuranService = {
     async update(id: string, data: Partial<Omit<PembayaranIuran, 'id' | 'tenant_id'>>, scope: ScopeType = 'RT'): Promise<number> {
         // 1. Update the iuran entry
         await axios.put(`${API_URL}/pembayaranIuran/${id}`, data);
-
-        // 2. Fetch the full iuran to sync the complete state to Keuangan
-        const updatedIuran = await this.getById(id);
-        if (updatedIuran) {
-            await this.syncToKeuangan(id, updatedIuran, scope);
-        }
-
         return 1;
+    },
+
+    async verify(id: string, action: 'VERIFY' | 'REJECT', alasan?: string): Promise<IuranWithWarga> {
+        const response = await axios.post(`${API_URL}/pembayaranIuran/${id}/verify`, { action, alasan });
+        return response.data;
     },
 
     async delete(id: string, tenantId: string, scope: ScopeType = 'RT'): Promise<void> {

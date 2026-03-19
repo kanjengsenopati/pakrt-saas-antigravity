@@ -39,6 +39,8 @@ export default function IuranForm() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [hasInteracted, setHasInteracted] = useState(false);
     const [isLoadingBilling, setIsLoadingBilling] = useState(false);
+    const [currentStatus, setCurrentStatus] = useState<'PENDING' | 'VERIFIED' | 'REJECTED' | null>(null);
+    const [rejectionReason, setRejectionReason] = useState<string | null>(null);
 
     // Summary Data State
     const [alreadyPaid, setAlreadyPaid] = useState(0);
@@ -84,6 +86,8 @@ export default function IuranForm() {
                         setValue('nominal', data.nominal);
                         setValue('url_bukti', data.url_bukti);
                         setSelectedMonths(Array.isArray(data.periode_bulan) ? data.periode_bulan : []);
+                        setCurrentStatus(data.status);
+                        setRejectionReason(data.alasan_penolakan);
                     }
                 });
             }
@@ -239,11 +243,43 @@ export default function IuranForm() {
             </div>
 
             {errorMessage && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm text-sm font-medium animate-fade-in flex items-start gap-3">
-                    <span className="shrink-0 leading-none">⚠️</span>
-                    <div>
-                        <strong className="block mb-1">Terjadi Kesalahan</strong>
-                        <span>{errorMessage}</span>
+                    </div>
+                </div>
+            )}
+
+            {currentStatus && (
+                <div className={`px-4 py-3 rounded-xl border flex items-center gap-3 animate-fade-in ${
+                    currentStatus === 'VERIFIED' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                    currentStatus === 'REJECTED' ? 'bg-red-50 border-red-200 text-red-700' :
+                    'bg-amber-50 border-amber-200 text-amber-700'
+                }`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                         currentStatus === 'VERIFIED' ? 'bg-emerald-100 text-emerald-600' :
+                         currentStatus === 'REJECTED' ? 'bg-red-100 text-red-600' :
+                         'bg-amber-100 text-amber-600'
+                    }`}>
+                        {currentStatus === 'VERIFIED' ? <CheckCircle weight="fill" className="w-6 h-6" /> :
+                         currentStatus === 'REJECTED' ? <X weight="bold" className="w-6 h-6" /> :
+                         <CircleNotch weight="bold" className="w-6 h-6 animate-spin" />}
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Status Pembayaran:</span>
+                            <span className="text-xs font-black uppercase tracking-widest">
+                                {currentStatus === 'VERIFIED' ? 'SAH / DITERIMA' :
+                                 currentStatus === 'REJECTED' ? 'DITOLAK' :
+                                 'MENUNGGU VERIFIKASI'}
+                            </span>
+                        </div>
+                        {currentStatus === 'REJECTED' && rejectionReason && (
+                            <p className="text-[14px] font-bold mt-1">Alasan: {rejectionReason}</p>
+                        )}
+                        {currentStatus === 'VERIFIED' && (
+                            <p className="text-[11px] opacity-80 mt-0.5 font-medium italic">Data ini sudah diverifikasi oleh Bendahara dan tidak dapat diubah lagi.</p>
+                        )}
+                        {currentStatus === 'PENDING' && (
+                            <p className="text-[11px] opacity-80 mt-0.5 font-medium">Pembayaran Anda sedang dalam antrian verifikasi Bendahara.</p>
+                        )}
                     </div>
                 </div>
             )}
@@ -531,8 +567,8 @@ export default function IuranForm() {
                                     </button>
                                     <button
                                         type="submit"
-                                        disabled={isUploading}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-xs font-black transition-all shadow-md active:scale-95 ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={isUploading || currentStatus === 'VERIFIED'}
+                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-xs font-black transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                         <span>{isEdit ? 'Simpan' : 'Bayar'}</span>

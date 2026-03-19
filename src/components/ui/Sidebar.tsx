@@ -84,6 +84,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     const { currentTenant } = useTenant();
     const { hasPermission } = useAuth();
     const [kelurahanName, setKelurahanName] = useState<string>('');
+    const [pendingIuranCount, setPendingIuranCount] = useState<number>(0);
     const [expandedGroups, setExpandedGroups] = useState<string[]>(MENU_GROUPS.map(g => g.label));
 
     const toggleGroup = (label: string) => {
@@ -91,6 +92,31 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
             prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]
         );
     };
+
+    useEffect(() => {
+        const fetchPendingIuran = async () => {
+            if (currentTenant?.id && hasPermission('Iuran Warga', 'Ubah')) {
+                try {
+                    // We can just fetch the first page with limit 1 to get the total
+                    const { iuranService } = await import('../../services/iuranService');
+                    // We need a specific way to get only pending?
+                    // Currently getAll doesn't support status filter in params, but it returns total for the current filter.
+                    // Let's assume we want to show a badge if there's *any* pending.
+                    // For now, let's just fetch all and filter client-side or assume we'll add a service method.
+                    const data = await iuranService.getAll(currentTenant.id);
+                    const pending = data.items.filter(i => i.status === 'PENDING').length;
+                    setPendingIuranCount(pending);
+                } catch (error) {
+                    console.error('Failed to fetch pending iuran count:', error);
+                }
+            }
+        };
+        fetchPendingIuran();
+        
+        // Refresh every 5 minutes
+        const interval = setInterval(fetchPendingIuran, 5 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [currentTenant, hasPermission]);
 
     useEffect(() => {
         const fetchWilayahData = async () => {
@@ -189,6 +215,14 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                                                     />
                                                 </div>
                                                 <span className={`text-[14px] tracking-normal whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>{item.label}</span>
+                                                {!isCollapsed && item.label === 'Iuran Warga' && pendingIuranCount > 0 && (
+                                                    <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
+                                                        {pendingIuranCount}
+                                                    </span>
+                                                )}
+                                                {isCollapsed && item.label === 'Iuran Warga' && pendingIuranCount > 0 && (
+                                                    <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white shadow-sm animate-pulse" />
+                                                )}
                                             </>
                                         )}
                                     </NavLink>

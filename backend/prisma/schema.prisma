@@ -247,6 +247,8 @@ model PembayaranIuran {
   nominal       Float
   tanggal_bayar String
   url_bukti     String?
+  status        String   @default("PENDING") // 'PENDING' | 'VERIFIED' | 'REJECTED'
+  alasan_penolakan String?
 
   warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
 

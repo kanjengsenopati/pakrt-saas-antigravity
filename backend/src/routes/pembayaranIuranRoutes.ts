@@ -106,6 +106,26 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     }
   });
 
+  fastify.post('/:id/verify', { preHandler: [requirePermission('Iuran Warga', 'Ubah')] }, async (request, reply) => {
+    try {
+      const { id } = request.params as any;
+      const { action, alasan } = request.body as any;
+      const user = (request as any).user;
+
+      // Verify ownership & tenant
+      const existing = await pembayaranIuranService.getById(id);
+      if (!existing || existing.tenant_id !== user.tenant_id) {
+        return reply.code(404).send({ error: 'Not found or unauthorized' });
+      }
+
+      const item = await pembayaranIuranService.verify(id, action, alasan);
+      return item;
+    } catch (err: any) {
+      fastify.log.error(err);
+      return reply.code(500).send({ error: err.message || 'Failed to verify' });
+    }
+  });
+
   fastify.get('/billing/:wargaId', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
     const { wargaId } = request.params as any;
     const { tahun, kategori, scope } = request.query as any;

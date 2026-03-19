@@ -27,8 +27,12 @@ export default function IuranList() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterYear, setFilterYear] = useState<string>(new Date().getFullYear().toString());
+    const [filterStatus, setFilterStatus] = useState<string>('');
     const [availableYears, setAvailableYears] = useState<number[]>([]);
     const [viewProofUrl, setViewProofUrl] = useState<string | null>(null);
+    const [verifyingId, setVerifyingId] = useState<string | null>(null);
+    const [rejectReason, setRejectReason] = useState('');
+    const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
 
 
     useEffect(() => {
@@ -71,7 +75,8 @@ export default function IuranList() {
         const matchesSearch = i.warga?.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
             i.warga?.nik.includes(searchQuery);
         const matchesYear = filterYear === '' || i.periode_tahun.toString() === filterYear;
-        return matchesSearch && matchesYear;
+        const matchesStatus = filterStatus === '' || i.status === filterStatus;
+        return matchesSearch && matchesYear && matchesStatus;
     });
 
     // Stats calculations
@@ -206,6 +211,16 @@ export default function IuranList() {
                                 <option key={year} value={year}>Tahun {year}</option>
                             ))}
                         </select>
+                        <select
+                            value={filterStatus}
+                            onChange={e => setFilterStatus(e.target.value)}
+                            className="px-4 py-2 text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 w-full sm:w-auto cursor-pointer shadow-sm"
+                        >
+                            <option value="">Semua Status</option>
+                            <option value="PENDING">Menunggu Verifikasi</option>
+                            <option value="VERIFIED">Diterima (Selesai)</option>
+                            <option value="REJECTED">Ditolak</option>
+                        </select>
                         <HasPermission module="Buku Kas / Transaksi" action="Buat">
                             <button
                                 onClick={async () => {
@@ -238,6 +253,7 @@ export default function IuranList() {
                                 <th className="p-3">Warga Pembayar</th>
                                 <th className="p-3">Periode Terbayar</th>
                                 <th className="p-3 text-right">Nominal (Rp)</th>
+                                <th className="p-3 text-center">Status</th>
                                 <th className="p-3 text-center px-6">Aksi</th>
                             </tr>
                         </thead>
@@ -289,8 +305,44 @@ export default function IuranList() {
                                                 {formatRupiah(iuran.nominal)}
                                             </span>
                                         </td>
+                                        <td className="p-3">
+                                            <div className="flex flex-col items-center gap-1">
+                                                {iuran.status === 'VERIFIED' ? (
+                                                    <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1">
+                                                        <CheckCircle weight="fill" className="w-3 h-3" />
+                                                        Diterima
+                                                    </span>
+                                                ) : iuran.status === 'REJECTED' ? (
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1">
+                                                            <X weight="bold" className="w-3 h-3" />
+                                                            Ditolak
+                                                        </span>
+                                                        {iuran.alasan_penolakan && (
+                                                            <p className="text-[9px] text-red-400 mt-1 max-w-[120px] text-center italic">{iuran.alasan_penolakan}</p>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1 animate-pulse">
+                                                        <CircleNotch weight="bold" className="w-3 h-3 animate-spin" />
+                                                        Pending
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="p-3 px-6">
                                             <div className="flex items-center justify-center gap-2">
+                                                {iuran.status === 'PENDING' && (
+                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                        <button
+                                                            onClick={() => setVerifyingId(iuran.id)}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm"
+                                                            title="Verifikasi Pembayaran"
+                                                        >
+                                                            Verifikasi
+                                                        </button>
+                                                    </HasPermission>
+                                                )}
                                                 <HasPermission module="Iuran Warga" action="Ubah">
                                                     <button
                                                         onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
@@ -355,6 +407,29 @@ export default function IuranList() {
                                                 {formatRupiah(iuran.nominal)}
                                             </div>
                                         </div>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            {iuran.status === 'VERIFIED' ? (
+                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1">
+                                                    <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                    Diterima
+                                                </span>
+                                            ) : iuran.status === 'REJECTED' ? (
+                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1">
+                                                    <X weight="bold" className="w-2.5 h-2.5" />
+                                                    Ditolak
+                                                </span>
+                                            ) : (
+                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1">
+                                                    <CircleNotch weight="bold" className="w-2.5 h-2.5 animate-spin" />
+                                                    Pending
+                                                </span>
+                                            )}
+                                            {iuran.status === 'REJECTED' && iuran.alasan_penolakan && (
+                                                <span className="text-[9px] text-red-400 italic font-medium truncate max-w-[150px]">
+                                                    {iuran.alasan_penolakan}
+                                                </span>
+                                            )}
+                                        </div>
 
                                         <div className="flex justify-between items-end mt-3">
                                             <div>
@@ -375,6 +450,16 @@ export default function IuranList() {
                                     </div>
                                 </div>
                                 <div className="bg-slate-50 border-t border-slate-100 p-2 flex justify-end items-center gap-2">
+                                    {iuran.status === 'PENDING' && (
+                                        <HasPermission module="Iuran Warga" action="Ubah">
+                                            <button
+                                                onClick={() => setVerifyingId(iuran.id)}
+                                                className="p-2 bg-brand-600 text-white rounded-lg transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm"
+                                            >
+                                                Verifikasi
+                                            </button>
+                                        </HasPermission>
+                                    )}
                                     <HasPermission module="Iuran Warga" action="Ubah">
                                         <button
                                             onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
@@ -433,6 +518,120 @@ export default function IuranList() {
                     </div>
                 )
             }
+
+            {/* VERIFICATION MODAL */}
+            {verifyingId && (
+                <div className="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-zoom-in border border-slate-200">
+                        <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-gray-50/50">
+                            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm flex items-center gap-2">
+                                Verifikasi Pembayaran
+                            </h3>
+                            <button
+                                onClick={() => { setVerifyingId(null); setRejectReason(''); }}
+                                className="p-1.5 hover:bg-slate-200 rounded-full transition-colors"
+                            >
+                                <X weight="bold" className="w-4 h-4 text-slate-400" />
+                            </button>
+                        </div>
+                        
+                        {(() => {
+                            const iuran = iuranList.find(i => i.id === verifyingId);
+                            if (!iuran) return null;
+                            return (
+                                <div className="p-6 space-y-6">
+                                    <div className="space-y-3">
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col gap-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Warga</span>
+                                                <span className="text-xs font-bold text-slate-800">{iuran.warga?.nama}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nominal</span>
+                                                <span className="text-sm font-bold text-brand-600">{formatRupiah(iuran.nominal)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Periode</span>
+                                                <span className="text-[10px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded border border-blue-100">
+                                                    {iuran.periode_bulan.map(b => getMonthName(b).substring(0, 3)).join(', ')} {iuran.periode_tahun}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {iuran.url_bukti ? (
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bukti Transfer</p>
+                                                <div className="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-200 aspect-video bg-slate-100" onClick={() => setViewProofUrl(iuran.url_bukti || null)}>
+                                                    <img src={getFullUrl(iuran.url_bukti)} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Bukti" />
+                                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <Eye weight="bold" className="w-8 h-8 text-white shadow-sm" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 text-center">
+                                                <p className="text-[11px] font-bold text-amber-700 italic">⚠️ Tidak ada lampiran bukti transfer</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-bold text-slate-500 flex justify-between items-center">
+                                            <span>Alasan Penolakan (Hanya jika ditolak)</span>
+                                            <span className="text-[9px] text-slate-400 font-medium">Opsional</span>
+                                        </label>
+                                        <textarea
+                                            value={rejectReason}
+                                            onChange={(e) => setRejectReason(e.target.value)}
+                                            placeholder="Misal: Bukti tidak cocok, Nominal kurang, dll..."
+                                            className="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none transition-all resize-none h-20"
+                                        />
+                                    </div>
+
+                                    <div className="flex gap-3 pt-2">
+                                        <button
+                                            disabled={isSubmittingVerify}
+                                            onClick={async () => {
+                                                if (!verifyingId) return;
+                                                setIsSubmittingVerify(true);
+                                                try {
+                                                    await iuranService.verify(verifyingId, 'REJECT', rejectReason || 'Ditolak oleh Bendahara');
+                                                    setVerifyingId(null);
+                                                    setRejectReason('');
+                                                    loadData();
+                                                } finally {
+                                                    setIsSubmittingVerify(false);
+                                                }
+                                            }}
+                                            className="flex-1 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-red-50 transition-all disabled:opacity-50"
+                                        >
+                                            Tolak
+                                        </button>
+                                        <button
+                                            disabled={isSubmittingVerify}
+                                            onClick={async () => {
+                                                if (!verifyingId) return;
+                                                setIsSubmittingVerify(true);
+                                                try {
+                                                    await iuranService.verify(verifyingId, 'VERIFY');
+                                                    setVerifyingId(null);
+                                                    loadData();
+                                                } finally {
+                                                    setIsSubmittingVerify(false);
+                                                }
+                                            }}
+                                            className="flex-[2] px-4 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-brand-700 transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                        >
+                                            {isSubmittingVerify ? <CircleNotch className="w-4 h-4 animate-spin" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
+                                            Diterima / Sah
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </div>
+            )}
         </div >
     );
 }
