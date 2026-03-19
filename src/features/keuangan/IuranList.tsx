@@ -140,8 +140,8 @@ export default function IuranList() {
                 <div className="bg-white p-2 sm:p-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute -right-4 -top-4 w-12 h-12 sm:w-20 sm:h-20 bg-brand-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500" />
                     <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <CheckCircle weight="bold" className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <div className="hidden sm:flex w-10 h-10 bg-brand-50 text-brand-600 rounded-lg items-center justify-center flex-shrink-0">
+                            <CheckCircle weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 tracking-normal leading-none">Total Kolektif {filterYear || 'Semua'}</p>
@@ -157,8 +157,8 @@ export default function IuranList() {
                 <div className="bg-brand-600 p-2 sm:p-4 rounded-xl border border-brand-500 shadow-md relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-white">
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 bg-white/20 text-white rounded-lg flex items-center justify-center flex-shrink-0 backdrop-blur-md border border-white/20">
-                            <Plus weight="bold" className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <div className="hidden sm:flex w-10 h-10 bg-white/20 text-white rounded-lg items-center justify-center flex-shrink-0 backdrop-blur-md border border-white/20">
+                            <Plus weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-[9px] sm:text-[10px] font-bold text-white/80 tracking-normal leading-none">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
@@ -175,8 +175,8 @@ export default function IuranList() {
                 <div className="bg-white p-2 sm:p-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute -right-4 -top-4 w-12 h-12 sm:w-20 sm:h-20 bg-brand-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500" />
                     <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                        <div className="w-7 h-7 sm:w-10 sm:h-10 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <MagnifyingGlass weight="bold" className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <div className="hidden sm:flex w-10 h-10 bg-brand-50 text-brand-600 rounded-lg items-center justify-center flex-shrink-0">
+                            <MagnifyingGlass weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-[9px] sm:text-[10px] font-bold text-slate-500 tracking-normal leading-none">Jumlah Transaksi</p>
@@ -441,10 +441,10 @@ export default function IuranList() {
                                         <div className="flex justify-between items-start mt-4 pt-4 border-t border-slate-50">
                                             <div>
                                                 <p className="text-[10px] text-slate-400 font-bold mb-1.5">Periode Dibayar</p>
-                                                <div className="grid grid-cols-3 gap-1">
+                                                <div className="grid grid-cols-6 gap-1 w-full mt-1">
                                                     {iuran.periode_bulan.map(b => (
-                                                        <span key={b} className="inline-flex px-1.5 py-1 rounded-lg text-[10px] font-bold bg-blue-50/50 text-blue-700 border border-blue-100 items-center justify-center">
-                                                            {getMonthName(b).substring(0, 3)} '{iuran.periode_tahun.toString().substring(2)}
+                                                        <span key={b} className="inline-flex px-1 py-1 rounded-md text-[9px] font-bold bg-blue-50/50 text-blue-700 border border-blue-100 items-center justify-center min-w-[40px]">
+                                                            {getMonthName(b).substring(0, 3)}
                                                         </span>
                                                     ))}
                                                 </div>
