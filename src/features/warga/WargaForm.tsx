@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
-import { ArrowLeft, FloppyDisk, UploadSimple, X, FileJs, CheckCircle, Warning } from '@phosphor-icons/react';
+import { ArrowLeft, FloppyDisk, UploadSimple, X, FileJs, CheckCircle, Warning, GoogleDriveLogo, Link } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { dateUtils } from '../../utils/date';
 
@@ -25,6 +25,8 @@ export default function WargaForm() {
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [wargasList, setWargasList] = useState<Warga[]>([]);
+    const [docInputMode, setDocInputMode] = useState<'upload' | 'link'>('upload');
+    const [driveLink, setDriveLink] = useState('');
 
     const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<WargaFormData>();
     const urlKk = watch('url_kk');
@@ -118,6 +120,22 @@ export default function WargaForm() {
         }
     };
 
+    // Convert any Google Drive share URL to a direct embed preview URL
+    const normalizeGDriveUrl = (url: string): string => {
+        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (match) {
+            return `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+        return url;
+    };
+
+    const handleDriveLinkSave = () => {
+        if (!driveLink.trim()) return;
+        const normalized = normalizeGDriveUrl(driveLink.trim());
+        setValue('url_kk', normalized);
+        setDriveLink(normalized);
+    };
+
     useEffect(() => {
         if (isEditing && id) {
             wargaService.getById(id).then(data => {
@@ -145,6 +163,11 @@ export default function WargaForm() {
                         pj_nama: data.pj_nama || '',
                         pj_kontak: data.pj_kontak || ''
                     });
+                    // Restore drive link state
+                    if (data.url_kk && !data.url_kk.startsWith('data:')) {
+                        setDriveLink(data.url_kk);
+                        setDocInputMode('link');
+                    }
                 }
             });
         }
@@ -485,12 +508,31 @@ export default function WargaForm() {
                         )}
 
                         <div className="md:col-span-2 space-y-3">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Dokumen Kartu Keluarga (KK)</label>
+                            <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700">Dokumen KK / KTP / Identitas</label>
+                                {/* Tab toggle */}
+                                <div className="flex gap-1 p-0.5 bg-gray-100 rounded-lg">
+                                    <button type="button" onClick={() => setDocInputMode('upload')}
+                                        className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                                            docInputMode === 'upload' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
+                                        }`}>
+                                        <UploadSimple className="w-3.5 h-3.5" /> Upload File
+                                    </button>
+                                    <button type="button" onClick={() => setDocInputMode('link')}
+                                        className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                                            docInputMode === 'link' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
+                                        }`}>
+                                        <GoogleDriveLogo className="w-3.5 h-3.5" /> Google Drive
+                                    </button>
+                                </div>
+                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {docInputMode === 'upload' ? (
                                 <div className="space-y-2">
-                                    <p className="text-xs text-gray-400">Upload File (Maksimal 1MB, Auto Compress JPG/PNG)</p>
-                                    <div className={`relative border-2 border-dashed rounded-xl p-4 transition-all flex flex-col items-center justify-center gap-2 ${isCompressing ? 'border-brand-200 bg-brand-50' : 'border-gray-200 hover:border-brand-400 hover:bg-gray-50'}`}>
+                                    <p className="text-xs text-gray-400">Upload file lokal (Maksimal 1MB, gambar akan dikompres otomatis)</p>
+                                    <div className={`relative border-2 border-dashed rounded-xl p-4 transition-all flex flex-col items-center justify-center gap-2 ${
+                                        isCompressing ? 'border-brand-200 bg-brand-50' : 'border-gray-200 hover:border-brand-400 hover:bg-gray-50'
+                                    }`}>
                                         <input
                                             type="file"
                                             accept="image/*,application/pdf"
@@ -506,23 +548,53 @@ export default function WargaForm() {
                                         ) : (
                                             <>
                                                 <UploadSimple className="w-6 h-6 text-gray-400" />
-                                                <span className="text-xs text-gray-500">Klik atau Taruh File</span>
+                                                <span className="text-xs text-gray-500">Klik atau seret file ke sini</span>
+                                                <span className="text-[10px] text-gray-300">JPG, PNG, PDF • Maks 1MB</span>
                                             </>
                                         )}
                                     </div>
                                     {uploadError && <p className="text-red-500 text-[10px] italic">{uploadError}</p>}
                                 </div>
-
+                            ) : (
                                 <div className="space-y-2">
-                                    <p className="text-xs text-gray-400">Atau Gunakan URL (Drive/Lainnya)</p>
-                                    <input
-                                        type="text"
-                                        {...register('url_kk')}
-                                        className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors text-sm"
-                                        placeholder="Contoh: https://drive.google.com/..."
-                                    />
+                                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-[11px] text-blue-700 leading-relaxed">
+                                        <p className="font-bold flex items-center gap-1.5 mb-1"><GoogleDriveLogo className="w-3.5 h-3.5" /> Cara berbagi dari Google Drive:</p>
+                                        <ol className="list-decimal pl-4 space-y-0.5 text-blue-600">
+                                            <li>Buka file di Google Drive, klik kanan → <strong>Dapatkan link</strong></li>
+                                            <li>Atur akses: <strong>Siapa saja yang memiliki link → Penampil</strong></li>
+                                            <li>Salin link dan tempel di kolom di bawah</li>
+                                        </ol>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                            <input
+                                                type="text"
+                                                value={driveLink}
+                                                onChange={e => setDriveLink(e.target.value)}
+                                                className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
+                                                placeholder="https://drive.google.com/file/d/..."
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleDriveLinkSave}
+                                            disabled={!driveLink.trim()}
+                                            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-40 text-white text-xs font-bold rounded-lg transition-all shadow-sm"
+                                        >Simpan Link</button>
+                                    </div>
+                                    {urlKk && !urlKk.startsWith('data:') && (
+                                        <div className="flex items-center gap-2 p-2.5 bg-emerald-50 border border-emerald-100 rounded-lg text-xs">
+                                            <CheckCircle weight="fill" className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <span className="text-emerald-700 font-medium flex-1 truncate">{urlKk}</span>
+                                            <button type="button" onClick={() => { setValue('url_kk', ''); setDriveLink(''); }}
+                                                className="p-1 hover:bg-emerald-100 rounded-full text-emerald-400">
+                                                <X weight="bold" className="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
+                            )}
 
                             {urlKk && urlKk.startsWith('data:') && (
                                 <div className="flex items-center gap-3 p-3 bg-brand-50 border border-brand-100 rounded-lg animate-fade-in">
@@ -533,11 +605,7 @@ export default function WargaForm() {
                                         <p className="text-xs font-bold text-brand-800">File Berhasil Dimuat</p>
                                         <p className="text-[10px] text-brand-600">Terkompresi (~{Math.round(urlKk.length * 0.75 / 1024)} KB)</p>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setValue('url_kk', '')}
-                                        className="p-1 hover:bg-brand-100 rounded-full text-brand-400 transition-colors"
-                                    >
+                                    <button type="button" onClick={() => setValue('url_kk', '')} className="p-1 hover:bg-brand-100 rounded-full text-brand-400">
                                         <X weight="bold" />
                                     </button>
                                 </div>
