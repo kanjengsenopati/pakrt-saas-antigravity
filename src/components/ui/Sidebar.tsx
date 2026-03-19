@@ -15,6 +15,7 @@ import {
     Gear,
     Wallet,
     Money,
+    CaretDown
 } from '@phosphor-icons/react';
 
 interface MenuItem {
@@ -75,6 +76,13 @@ export function Sidebar() {
     const { currentTenant } = useTenant();
     const { hasPermission } = useAuth();
     const [kelurahanName, setKelurahanName] = useState<string>('');
+    const [expandedGroups, setExpandedGroups] = useState<string[]>(MENU_GROUPS.map(g => g.label));
+
+    const toggleGroup = (label: string) => {
+        setExpandedGroups(prev => 
+            prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label]
+        );
+    };
 
     useEffect(() => {
         const fetchWilayahData = async () => {
@@ -124,12 +132,19 @@ export function Sidebar() {
             </div>
 
             <nav className="flex-1 px-4 py-3 space-y-3 overflow-y-auto scrollbar-thin pb-6">
-                {filteredMenuGroups.map((group) => (
-                    <div key={group.label} className="space-y-0.5">
-                        <h3 className="px-3 text-[12px] font-semibold text-slate-500 uppercase tracking-normal mb-1.5">
-                            {group.label}
-                        </h3>
-                        <div className="space-y-0.5">
+                {filteredMenuGroups.map((group) => {
+                    const isExpanded = expandedGroups.includes(group.label);
+                    return (
+                    <div key={group.label} className="space-y-0.5 mb-2">
+                        <button 
+                            onClick={() => toggleGroup(group.label)}
+                            className="w-full flex items-center justify-between px-3 py-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 uppercase tracking-normal rounded-lg transition-colors group/header"
+                        >
+                            <span>{group.label}</span>
+                            <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 group-hover/header:text-slate-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
+                        </button>
+                        
+                        <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                             {group.items.map((item) => {
                                 const Icon = item.icon;
                                 return (
@@ -159,7 +174,7 @@ export function Sidebar() {
                             })}
                         </div>
                     </div>
-                ))}
+                )})}
             </nav>
         </aside>
     );
