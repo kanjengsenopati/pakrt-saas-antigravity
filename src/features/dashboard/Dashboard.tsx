@@ -94,12 +94,20 @@ export default function Dashboard() {
             if (!currentTenant) return;
             setLoadingActivities(true);
             try {
-                const [activities, allRonda, allIuran, agendas] = await Promise.all([
-                    aktivitasService.getRecent(currentTenant.id, currentScope, 5),
+                const [allRonda, allIuran, agendas] = await Promise.all([
                     rondaService.getAll(currentTenant.id, currentScope),
                     iuranService.getAll(currentTenant.id, currentScope),
                     agendaService.getUpcoming(currentTenant.id, currentScope, 3)
                 ]);
+                
+                let activities: Aktivitas[] = [];
+                if (!isWarga) {
+                    try {
+                        activities = await aktivitasService.getRecent(currentTenant.id, currentScope, 5);
+                    } catch(e) {
+                         console.warn("Dashboard: Skipping aktivitas API due to permissions");
+                    }
+                }
                 
                 setRecentActivities(activities);
                 
@@ -220,7 +228,7 @@ export default function Dashboard() {
             {/* MAIN CONTENT GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* UPCOMING AGENDA */}
-                <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className={`${isWarga ? 'lg:col-span-3' : 'lg:col-span-2'} bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden`}>
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <h3 className="section-label flex items-center gap-1.5">
                             <CalendarCheck size={16} className="text-purple-600" />
@@ -287,7 +295,8 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* AKTIVITAS */}
+                {/* AKTIVITAS (Hidden for Warga) */}
+                {!isWarga && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-50 bg-slate-50/20">
                         <ClockCounterClockwise size={16} className="text-brand-600" />
@@ -316,6 +325,7 @@ export default function Dashboard() {
                         )}
                     </div>
                 </div>
+                )}
             </div>
 
             {/* RONDA + IURAN ROW */}

@@ -3,14 +3,14 @@ import { pengaturanService } from '../services/pengaturanService';
 import { requirePermission } from '../middleware/auth';
 
 export default async function pengaturanRoutes(fastify: FastifyInstance) {
-  fastify.get('/', { preHandler: [requirePermission('Setup / Pengaturan', 'Lihat')] }, async (request, reply) => {
+  fastify.get('/', async (request, reply) => {
     const { scope } = request.query as any;
     const user = (request as any).user;
     const tenantId = user.tenant_id;
     return await pengaturanService.getAll(tenantId, scope);
   });
 
-  fastify.get('/:id', { preHandler: [requirePermission('Setup / Pengaturan', 'Lihat')] }, async (request, reply) => {
+  fastify.get('/:id', async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;
     const item = await pengaturanService.getById(id);
