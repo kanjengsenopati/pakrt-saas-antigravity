@@ -210,6 +210,7 @@ export default function IuranForm() {
                 ...data,
                 periode_bulan: selectedMonths,
                 tenant_id: currentTenant.id,
+                scope: currentScope,
                 metadata: { mode: paymentMode }
             };
 

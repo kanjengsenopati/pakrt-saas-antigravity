@@ -24,7 +24,6 @@ import { agendaService } from '../../services/agendaService';
 import { keuanganService } from '../../services/keuanganService';
 import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
-import { pengaturanService } from '../../services/pengaturanService';
 import { dateUtils } from '../../utils/date';
 
 export default function Dashboard() {

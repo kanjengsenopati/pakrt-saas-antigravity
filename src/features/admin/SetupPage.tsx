@@ -219,7 +219,9 @@ export default function SetupPage() {
                     periode_bulan: [new Date().getMonth() + 1],
                     periode_tahun: new Date().getFullYear(),
                     nominal: 150000,
-                    tanggal_bayar: new Date().toISOString().split('T')[0]
+                    tanggal_bayar: new Date().toISOString().split('T')[0],
+                    status: 'VERIFIED',
+                    scope: currentScope
                 }, currentScope);
             }
 

@@ -178,6 +178,7 @@ export interface Keuangan {
 export interface PembayaranIuran {
     id: string;
     tenant_id: string;
+    scope: 'RT' | 'PKK' | 'Dasa Wisma';
     warga_id: string; // Foreign key ke tabel Warga
     kategori: string; // Kategori pembayaran (dinamis dari pengaturan)
     periode_bulan: number[]; // Array of months (1-12)
