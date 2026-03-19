@@ -8,7 +8,7 @@ import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { PembayaranIuran, Warga } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch } from '@phosphor-icons/react';
+import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch, Warning, X } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { formatRupiah } from '../../utils/currency';
 
@@ -86,8 +86,8 @@ export default function IuranForm() {
                         setValue('nominal', data.nominal);
                         setValue('url_bukti', data.url_bukti);
                         setSelectedMonths(Array.isArray(data.periode_bulan) ? data.periode_bulan : []);
-                        setCurrentStatus(data.status);
-                        setRejectionReason(data.alasan_penolakan);
+                        setCurrentStatus(data.status || 'PENDING');
+                        setRejectionReason(data.alasan_penolakan || null);
                     }
                 });
             }
@@ -243,7 +243,9 @@ export default function IuranForm() {
             </div>
 
             {errorMessage && (
-                    </div>
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
+                    <Warning className="w-5 h-5 shrink-0 mt-0.5" />
+                    <div className="text-xs font-bold">{errorMessage}</div>
                 </div>
             )}
 
