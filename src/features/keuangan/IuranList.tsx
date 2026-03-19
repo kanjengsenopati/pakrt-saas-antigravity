@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
 import { 
     Plus, 
@@ -23,6 +24,8 @@ import { dateUtils } from '../../utils/date';
 export default function IuranList() {
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
+    const { user: authUser } = useAuth();
+    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
 
     const [iuranList, setIuranList] = useState<IuranWithWarga[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -125,7 +128,7 @@ export default function IuranList() {
                     <HasPermission module="Iuran Warga" action="Buat">
                         <button
                             onClick={() => navigate('/iuran/baru')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-bold transition-all shadow-sm hover-lift active-press"
                         >
                             <Plus weight="bold" />
                             <span>Catat Pembayaran</span>
@@ -191,16 +194,18 @@ export default function IuranList() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50">
-                    <div className="relative w-full md:w-80">
-                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                            type="text"
-                            placeholder="Cari nama warga atau NIK..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
-                        />
-                    </div>
+                    {!isWarga && (
+                        <div className="relative w-full md:w-80">
+                            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="Cari nama warga atau NIK..."
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
+                            />
+                        </div>
+                    )}
                     <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                         <select
                             value={filterYear}
@@ -416,18 +421,18 @@ export default function IuranList() {
                                         </div>
                                         <div className="flex items-center gap-2 mb-3">
                                             {iuran.status === 'VERIFIED' ? (
-                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1">
-                                                    <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                <span className="px-3 py-1 rounded-full text-[14px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+                                                    <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                     Diterima
                                                 </span>
                                             ) : iuran.status === 'REJECTED' ? (
-                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1">
-                                                    <X weight="bold" className="w-2.5 h-2.5" />
+                                                <span className="px-3 py-1 rounded-full text-[14px] font-bold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1.5 shadow-sm">
+                                                    <X weight="bold" className="w-3.5 h-3.5" />
                                                     Ditolak
                                                 </span>
                                             ) : (
-                                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1">
-                                                    <CircleNotch weight="bold" className="w-2.5 h-2.5 animate-spin" />
+                                                <span className="px-3 py-1 rounded-full text-[14px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
+                                                    <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
                                                     Pending
                                                 </span>
                                             )}
@@ -440,10 +445,10 @@ export default function IuranList() {
 
                                         <div className="flex justify-between items-start mt-4 pt-4 border-t border-slate-50">
                                             <div>
-                                                <p className="text-[10px] text-slate-400 font-bold mb-1.5">Periode Dibayar</p>
+                                                <p className="text-[14px] text-slate-700 font-bold mb-2">Periode Dibayar</p>
                                                 <div className="grid grid-cols-6 gap-1 w-full mt-1">
                                                     {iuran.periode_bulan.map(b => (
-                                                        <span key={b} className="inline-flex px-1 py-1 rounded-md text-[9px] font-bold bg-blue-50/50 text-blue-700 border border-blue-100 items-center justify-center min-w-[40px]">
+                                                        <span key={b} className="inline-flex px-1 py-1 rounded-md text-[14px] font-bold bg-blue-50 text-blue-700 border border-blue-100 items-center justify-center min-w-[50px] shadow-sm">
                                                             {getMonthName(b).substring(0, 3)}
                                                         </span>
                                                     ))}

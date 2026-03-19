@@ -473,7 +473,7 @@ export default function IuranForm() {
                                 {/* ROW 4: MONTHS & NOMINAL */}
                                 <div className="md:col-span-2 space-y-3">
                                     <div>
-                                        <label className="input-label mb-2">
+                                        <label className="text-[14px] font-bold text-slate-700 mb-2 block">
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
@@ -483,7 +483,7 @@ export default function IuranForm() {
                                                     type="button"
                                                     disabled={paidMonthsRecord.includes(m.value)}
                                                     onClick={() => toggleMonth(m.value)}
-                                                    className={`py-2 px-1 text-[11px] font-bold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
+                                                    className={`py-2 px-1 text-[14px] font-bold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
                                                         ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
                                                         : selectedMonths.includes(m.value)
                                                             ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
