@@ -155,18 +155,18 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     })).filter(group => group.items.length > 0);
 
     return (
-        <aside className={`bg-white text-slate-800 flex flex-col h-screen fixed left-0 top-0 overflow-y-auto overflow-x-hidden shadow-sm border-r border-slate-100 z-50 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'}`}>
-            <div className={`p-4 sm:p-6 border-b border-slate-100/80 flex items-center h-[88px] ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <aside className={`bg-white text-gray-900 flex flex-col h-screen fixed left-0 top-0 overflow-y-auto overflow-x-hidden shadow-sm border-r border-gray-100 z-50 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'}`}>
+            <div className={`p-4 sm:p-6 border-b border-gray-100/80 flex items-center h-[88px] ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                 <div className={`overflow-hidden transition-all duration-300 whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'}`}>
-                    <h2 className="text-[20px] font-bold text-slate-800 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
+                    <h2 className="text-[20px] font-semibold text-gray-900 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
                         {getRtRwLabel()}
                     </h2>
-                    <p className="text-[11px] text-slate-500 mt-1 uppercase tracking-normal font-bold truncate">
+                    <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider font-medium truncate">
                         {kelurahanName || 'Sistem Manajemen RT'}
                     </p>
                 </div>
                 {onToggle && (
-                    <button onClick={onToggle} className="shrink-0 p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors" title={isCollapsed ? "Buka Sidebar" : "Kecilkan Sidebar"}>
+                    <button onClick={onToggle} className="shrink-0 p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors" title={isCollapsed ? "Buka Sidebar" : "Kecilkan Sidebar"}>
                         {isCollapsed ? <CaretRight weight="bold" className="w-5 h-5" /> : <CaretLeft weight="bold" className="w-5 h-5"/>}
                     </button>
                 )}
@@ -178,16 +178,16 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     return (
                     <div key={group.label} className="space-y-0.5 mb-2">
                         {isCollapsed ? (
-                            <div className="flex justify-center py-2 text-slate-300">
+                            <div className="flex justify-center py-2 text-gray-300">
                                 <DotsThree weight="bold" className="w-5 h-5" />
                             </div>
                         ) : (
                             <button 
                                 onClick={() => toggleGroup(group.label)}
-                                className="w-full flex items-center justify-between px-3 py-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 uppercase tracking-normal rounded-lg transition-colors group/header"
+                                className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 uppercase tracking-wider rounded-lg transition-colors group/header"
                             >
                                 <span>{group.label}</span>
-                                <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 group-hover/header:text-slate-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
+                                <CaretDown weight="bold" className={`w-3.5 h-3.5 text-gray-400 group-hover/header:text-gray-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
                             </button>
                         )}
                         
@@ -200,21 +200,21 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                                         to={item.path}
                                         title={isCollapsed ? item.label : undefined}
                                         className={({ isActive }) =>
-                                            `flex items-center rounded-xl transition-all duration-300 group overflow-hidden ${isCollapsed ? 'justify-center p-2 mx-1' : 'gap-3 px-3 py-2.5'} ${isActive
-                                                ? 'bg-brand-50 text-brand-700 font-bold border border-brand-100/50 shadow-sm'
-                                                : 'text-slate-800 hover:bg-slate-50 font-normal'
+                                            `flex items-center rounded-xl transition-all duration-200 group overflow-hidden ${isCollapsed ? 'justify-center p-2 mx-1' : 'gap-3 px-3 py-2.5'} ${isActive
+                                                ? 'bg-gray-50 text-gray-900 font-semibold border border-gray-100 shadow-sm'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'
                                             }`
                                         }
                                     >
                                         {({ isActive }) => (
                                             <>
-                                                <div className={`shrink-0 p-1.5 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'text-slate-500 group-hover:text-brand-500'}`}>
+                                                <div className={`shrink-0 p-1.5 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'text-gray-400 group-hover:text-brand-500'}`}>
                                                     <Icon
                                                         weight={isActive ? "fill" : "duotone"}
                                                         className="w-5 h-5 transition-transform group-hover:scale-110 group-active:scale-95 duration-300"
                                                     />
                                                 </div>
-                                                <span className={`text-[14px] tracking-normal whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>{item.label}</span>
+                                                <span className={`text-sm tracking-normal whitespace-nowrap transition-all duration-200 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>{item.label}</span>
                                                 {!isCollapsed && item.label === 'Iuran Warga' && pendingIuranCount > 0 && (
                                                     <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
                                                         {pendingIuranCount}

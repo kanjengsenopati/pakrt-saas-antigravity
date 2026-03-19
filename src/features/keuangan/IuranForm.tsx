@@ -246,7 +246,7 @@ export default function IuranForm() {
             {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
                     <Warning className="w-5 h-5 shrink-0 mt-0.5" />
-                    <div className="text-xs font-bold">{errorMessage}</div>
+                    <div className="text-xs font-semibold">{errorMessage}</div>
                 </div>
             )}
 
@@ -267,15 +267,15 @@ export default function IuranForm() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Status Pembayaran:</span>
-                            <span className="text-xs font-black uppercase tracking-widest">
+                            <span className="text-xs font-semibold uppercase tracking-widest opacity-60">Status Pembayaran:</span>
+                            <span className="text-xs font-semibold uppercase tracking-widest">
                                 {currentStatus === 'VERIFIED' ? 'SAH / DITERIMA' :
                                  currentStatus === 'REJECTED' ? 'DITOLAK' :
                                  'MENUNGGU VERIFIKASI'}
                             </span>
                         </div>
                         {currentStatus === 'REJECTED' && rejectionReason && (
-                            <p className="text-[14px] font-bold mt-1">Alasan: {rejectionReason}</p>
+                            <p className="text-sm font-semibold mt-1">Alasan: {rejectionReason}</p>
                         )}
                         {currentStatus === 'VERIFIED' && (
                             <p className="text-[11px] opacity-80 mt-0.5 font-medium italic">Data ini sudah diverifikasi oleh Bendahara dan tidak dapat diubah lagi.</p>
@@ -293,54 +293,54 @@ export default function IuranForm() {
                     {isLoadingBilling ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Memuat Data Tagihan...</p>
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Memuat Data Tagihan...</p>
                         </div>
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
                             <div className="bg-brand-600 p-4 text-white">
-                                <h3 className="text-[14px] font-bold flex items-center gap-2">
+                                <h3 className="text-sm font-semibold flex items-center gap-2">
                                     <ChartPieSlice weight="fill" className="w-5 h-5" />
                                     Ringkasan Kewajiban
                                 </h3>
-                                <p className="text-[11px] text-brand-100 mt-0.5 tracking-normal font-semibold">Tahun {watchTahun || new Date().getFullYear()}</p>
+                                <p className="text-xs text-brand-100 mt-0.5 tracking-normal font-medium">Tahun {watchTahun || new Date().getFullYear()}</p>
                             </div>
                             
-                            <div className="p-5 space-y-5 bg-gradient-to-b from-white to-slate-50">
-                                <div className="space-y-1 pb-4 border-b border-slate-100">
-                                    <p className="section-label !text-[10px] text-slate-400">Total Tagihan 12 Bulan</p>
+                            <div className="p-5 space-y-5 bg-gradient-to-b from-white to-gray-50">
+                                <div className="space-y-1 pb-4 border-b border-gray-100">
+                                    <p className="section-label !text-xs text-gray-400">Total Tagihan 12 Bulan</p>
                                     <p className="value-highlight">
                                         {formatRupiah(defaultNominal * 12)}
                                     </p>
-                                    <p className="text-[11px] text-slate-400 italic font-medium">Tarif: {formatRupiah(defaultNominal)} / bln</p>
+                                    <p className="text-xs text-gray-400 italic font-medium">Tarif: {formatRupiah(defaultNominal)} / bln</p>
                                 </div>
 
-                                <div className="space-y-1 pb-4 border-b border-slate-100">
-                                    <p className="section-label !text-[10px] text-emerald-600">Sudah Dibayar (Sistem)</p>
+                                <div className="space-y-1 pb-4 border-b border-gray-100">
+                                    <p className="section-label !text-xs text-emerald-600">Sudah Dibayar (Sistem)</p>
                                     <p className="value-highlight !text-emerald-600">
                                         {formatRupiah(alreadyPaid)}
                                     </p>
-                                    <p className="text-[11px] text-emerald-500/70 italic font-medium">Hingga periode saat ini</p>
+                                    <p className="text-xs text-emerald-500/70 italic font-medium">Hingga periode saat ini</p>
                                 </div>
 
                                 <div className="p-4 bg-brand-50 rounded-xl border border-brand-100 shadow-inner">
-                                    <p className="section-label !text-[10px] text-brand-600 mb-1">Sisa Kewajiban</p>
-                                    <p className="text-[22px] font-bold text-brand-700 tabular-nums leading-none">
+                                    <p className="section-label !text-xs text-brand-600 mb-1">Sisa Kewajiban</p>
+                                    <p className="text-[22px] font-semibold text-brand-700 tabular-nums leading-none">
                                         {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
                                     </p>
-                                    <p className="text-[11px] text-brand-500 mt-2 font-semibold italic">
+                                    <p className="text-xs text-brand-500 mt-2 font-medium italic">
                                         {paymentMode === 'Pas' ? '*(Otomatis Mode Pas)' : '*(Setelah nominal ini lunas)'}
                                     </p>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center space-y-3">
+                        <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center space-y-3">
                             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                                <Users weight="duotone" className="w-6 h-6 text-slate-300" />
+                                <Users weight="duotone" className="w-6 h-6 text-gray-300" />
                             </div>
                             <div>
-                                <p className="text-xs font-bold text-slate-500">Menunggu Data Warga</p>
-                                <p className="text-[10px] text-slate-400 mt-1">Pilih warga dan kategori untuk melihat ringkasan kewajiban</p>
+                                <p className="text-xs font-semibold text-gray-500">Menunggu Data Warga</p>
+                                <p className="text-xs text-gray-400 mt-1">Pilih warga dan kategori untuk melihat ringkasan kewajiban</p>
                             </div>
                         </div>
                     )}
@@ -358,8 +358,8 @@ export default function IuranForm() {
                 </div>
 
                 {/* RIGHT COLUMN: FORM */}
-                <div className="md:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div className="border-b border-slate-50 p-4 bg-slate-50/30 flex items-center gap-2">
+                <div className="md:col-span-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="border-b border-gray-50 p-4 bg-gray-50/30 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-brand-500" />
                         <span className="section-label">Input Transaksi Pembayaran</span>
                     </div>
@@ -380,7 +380,7 @@ export default function IuranForm() {
                                                 onChange: () => setHasInteracted(true)
                                             })}
                                             disabled={isWarga && !isEdit}
-                                            className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-slate-100 cursor-not-allowed text-slate-500' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500'}`}
+                                            className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-gray-100 cursor-not-allowed text-gray-400' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500'}`}
                                         >
                                             <option value="">-- Cari atau Pilih Warga --</option>
                                             {wargaList.map(w => (
@@ -397,7 +397,7 @@ export default function IuranForm() {
                                     </label>
                                     <select
                                         {...register('kategori', { required: 'Kategori wajib dipilih' })}
-                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500 bg-white'}`}
+                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
                                     >
                                         <option value="">-- Pilih Jenis Pembayaran --</option>
                                         {kategoriOptions.map(cat => (
@@ -413,7 +413,7 @@ export default function IuranForm() {
                                         Mode Pembayaran <span className="text-red-500">*</span>
                                     </label>
                                     <div className="flex gap-2">
-                                        <label className={`flex-1 flex items-center gap-2 p-2 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Pas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                                        <label className={`flex-1 flex items-center gap-2 p-2 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Pas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                             <input 
                                                 type="radio" 
                                                 name="paymentMode" 
@@ -423,11 +423,11 @@ export default function IuranForm() {
                                                 className="w-3.5 h-3.5 text-brand-600 focus:ring-brand-500"
                                             />
                                             <div className="flex-1">
-                                                <p className="font-bold text-slate-900 text-[13px] leading-tight">Mode Pas</p>
-                                                <p className="text-[11px] text-slate-500">Sesuai tarif</p>
+                                                <p className="font-semibold text-gray-900 text-sm leading-tight">Mode Pas</p>
+                                                <p className="text-xs text-gray-500">Sesuai tarif</p>
                                             </div>
                                         </label>
-                                        <label className={`flex-1 flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Bebas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}`}>
+                                        <label className={`flex-1 flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Bebas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                             <input 
                                                 type="radio" 
                                                 name="paymentMode" 
@@ -437,8 +437,8 @@ export default function IuranForm() {
                                                 className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                                             />
                                             <div className="flex-1">
-                                                <p className="font-bold text-slate-900 text-[13px] leading-tight">Mode Bebas</p>
-                                                <p className="text-[11px] text-slate-500">Input manual</p>
+                                                <p className="font-semibold text-gray-900 text-sm leading-tight">Mode Bebas</p>
+                                                <p className="text-xs text-gray-500">Input manual</p>
                                             </div>
                                         </label>
                                     </div>
@@ -451,7 +451,7 @@ export default function IuranForm() {
                                     </label>
                                     <select
                                         {...register('periode_tahun', { required: true, valueAsNumber: true })}
-                                        className="w-full rounded-lg shadow-sm p-3 text-main border border-slate-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none"
+                                        className="w-full rounded-lg shadow-sm p-3 text-main border border-gray-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none"
                                     >
                                         {tahunOptions.map(tahun => (
                                             <option key={tahun} value={tahun}>{tahun}</option>
@@ -466,14 +466,14 @@ export default function IuranForm() {
                                     <input
                                         type="date"
                                         {...register('tanggal_bayar', { required: 'Tanggal wajib diisi' })}
-                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.tanggal_bayar ? 'border-red-500 bg-red-50' : 'border-slate-200 focus:border-brand-500 bg-white'}`}
+                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.tanggal_bayar ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
                                     />
                                 </div>
 
                                 {/* ROW 4: MONTHS & NOMINAL */}
                                 <div className="md:col-span-2 space-y-3">
                                     <div>
-                                        <label className="text-[14px] font-bold text-slate-700 mb-2 block">
+                                        <label className="text-sm font-semibold text-gray-700 mb-2 block">
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
@@ -483,11 +483,11 @@ export default function IuranForm() {
                                                     type="button"
                                                     disabled={paidMonthsRecord.includes(m.value)}
                                                     onClick={() => toggleMonth(m.value)}
-                                                    className={`py-2 px-1 text-[14px] font-bold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
+                                                    className={`py-2 px-1 text-sm font-semibold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
                                                         ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
                                                         : selectedMonths.includes(m.value)
                                                             ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                            : 'bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:border-slate-200'
+                                                            : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50 hover:border-gray-200'
                                                         }`}
                                                 >
                                                     {m.label.substring(0, 3)}
@@ -503,20 +503,20 @@ export default function IuranForm() {
                                                 </button>
                                             ))}
                                         </div>
-                                        {selectedMonths.length === 0 && <p className="text-red-500 text-[11px] font-bold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
+                                        {selectedMonths.length === 0 && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
                                     </div>
 
-                                    <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 space-y-3">
+                                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-3">
                                         <div className="flex justify-between items-center">
                                             <label className="section-label">
                                                 Nominal Transaksi (Rp)
                                             </label>
                                             {paymentMode === 'Pas' && (
-                                                <span className="text-[10px] font-bold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
+                                                <span className="text-xs font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
                                             )}
                                         </div>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[17px] font-bold text-slate-400 z-10">Rp</span>
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-gray-400 z-10">Rp</span>
                                             <Controller
                                                 name="nominal"
                                                 control={control}
@@ -524,7 +524,7 @@ export default function IuranForm() {
                                                 render={({ field }) => (
                                                     <CurrencyInput
                                                         {...field}
-                                                        className={`w-full pl-11 py-3 text-lg font-bold ${paymentMode === 'Pas' ? 'bg-slate-100 text-slate-500 border-slate-200 cursor-not-allowed' : 'bg-white border-slate-200 text-slate-900 focus:ring-brand-500'}`}
+                                                        className={`w-full pl-11 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
                                                         error={!!errors.nominal}
                                                         disabled={paymentMode === 'Pas'}
                                                     />
@@ -532,20 +532,20 @@ export default function IuranForm() {
                                             />
                                         </div>
                                         <div className="flex justify-between items-end">
-                                            <p className="text-[11px] text-slate-400 italic font-medium">
+                                            <p className="text-xs text-gray-400 italic font-medium">
                                                 {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
                                             </p>
-                                            {errors.nominal && <p className="text-red-500 text-[11px] font-bold">{errors.nominal.message}</p>}
+                                            {errors.nominal && <p className="text-red-500 text-xs font-semibold">{errors.nominal.message}</p>}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* ROW 5: BUKTI */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-[10px] font-black text-slate-400 mb-2">
+                                    <label className="block text-xs font-semibold text-gray-400 mb-2">
                                         Lampiran Bukti (Opsional)
                                     </label>
-                                    <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors">
+                                    <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
                                         <FileUpload
                                             onUploadSuccess={(url) => setValue('url_bukti', url)}
                                             existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
@@ -558,20 +558,20 @@ export default function IuranForm() {
                                 </div>
                             </div>
 
-                            <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
-                                <p className="text-[9px] text-slate-400 font-medium">* Pastikan data warga dan nominal sudah benar.</p>
+                            <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                                <p className="text-xs text-gray-400 font-medium">* Pastikan data warga dan nominal sudah benar.</p>
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
                                         onClick={() => navigate('/iuran')}
-                                        className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-all"
+                                        className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isUploading || currentStatus === 'VERIFIED'}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-xs font-black transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-xs font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                         <span>{isEdit ? 'Simpan' : 'Bayar'}</span>
