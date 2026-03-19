@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -39,8 +39,14 @@ export default function Dashboard() {
     const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
     const [wargaIuranStats, setWargaIuranStats] = useState({ totalPaid: 0, expected: 0 });
 
-    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
-    const wargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
+    // Memoize role-derived values to prevent useEffect from looping on every background auth refresh
+    const isWarga = useMemo(() =>
+        authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
+    [authUser?.role, authUser?.role_entity?.name]);
+
+    const wargaId = useMemo(() =>
+        authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null,
+    [authUser?.id, isWarga]);
 
     useEffect(() => {
         const fetchStats = async () => {
