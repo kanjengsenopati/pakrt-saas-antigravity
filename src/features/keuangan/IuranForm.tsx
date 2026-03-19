@@ -509,16 +509,12 @@ export default function IuranForm() {
                                     <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors">
                                         <FileUpload
                                             onUploadSuccess={(url) => setValue('url_bukti', url)}
-                                            label="Klik untuk unggah"
-                                            helperText="Maksimal 2MB (JPG, PNG)"
+                                            existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
+                                            onRemove={() => setValue('url_bukti', '')}
+                                            label=""
+                                            helperText="JPG, PNG maksimal 2MB · Dikompres otomatis"
                                             onLoadingChange={setIsUploading}
                                         />
-                                        {watch('url_bukti') && (
-                                            <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-white w-fit px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm animate-in zoom-in-95">
-                                                <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                <span>File terunggah</span>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             </div>

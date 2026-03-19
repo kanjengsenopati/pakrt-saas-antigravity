@@ -4,9 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
-import { ArrowLeft, FloppyDisk, UploadSimple, X, FileJs, CheckCircle, Warning, GoogleDriveLogo, Link } from '@phosphor-icons/react';
+import { ArrowLeft, FloppyDisk, X, CheckCircle, Warning } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { dateUtils } from '../../utils/date';
+import { FileUpload } from '../../components/ui/FileUpload';
 
 
 const AGAMA_OPTIONS = [
@@ -20,121 +21,13 @@ export default function WargaForm() {
     const isEditing = Boolean(id);
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
-    const [isCompressing, setIsCompressing] = useState(false);
-    const [uploadError, setUploadError] = useState<string | null>(null);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [wargasList, setWargasList] = useState<Warga[]>([]);
-    const [docInputMode, setDocInputMode] = useState<'upload' | 'link'>('upload');
-    const [driveLink, setDriveLink] = useState('');
 
     const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<WargaFormData>();
     const urlKk = watch('url_kk');
 
-    const compressImage = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target?.result as string;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-
-                    // Initial scale if very large
-                    const max_size = 1200;
-                    if (width > height) {
-                        if (width > max_size) {
-                            height *= max_size / width;
-                            width = max_size;
-                        }
-                    } else {
-                        if (height > max_size) {
-                            width *= max_size / height;
-                            height = max_size;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, width, height);
-
-                    // Recursive compression to hit < 300KB
-                    let quality = 0.8;
-                    let dataUrl = canvas.toDataURL('image/jpeg', quality);
-
-                    // Simple iterative approach for quality adjustment
-                    while (dataUrl.length > 400000 && quality > 0.1) { // 400k chars ~ 300KB
-                        quality -= 0.1;
-                        dataUrl = canvas.toDataURL('image/jpeg', quality);
-                    }
-
-                    if (dataUrl.length > 400000) {
-                        reject('File tetap terlalu besar setelah kompresi (> 300KB).');
-                    } else {
-                        resolve(dataUrl);
-                    }
-                };
-            };
-            reader.onerror = error => reject(error);
-        });
-    };
-
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setUploadError(null);
-
-        // Validation: Size (pre-compression check for non-images or very large files)
-        if (file.size > 1 * 1024 * 1024) { // 1MB limit for raw input
-            setUploadError("File asli terlalu besar (maksimal 1MB).");
-            return;
-        }
-
-        setIsCompressing(true);
-        try {
-            if (file.type.startsWith('image/')) {
-                const compressedBase64 = await compressImage(file);
-                setValue('url_kk', compressedBase64);
-            } else if (file.type === 'application/pdf') {
-                if (file.size > 1 * 1024 * 1024) {
-                    setUploadError("File PDF melebihi 1MB (PDF tidak dapat dikompresi otomatis).");
-                } else {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => {
-                        setValue('url_kk', reader.result as string);
-                    };
-                }
-            } else {
-                setUploadError("Format file tidak didukung (Gunakan JPG/PNG atau PDF maksimal 1MB).");
-            }
-        } catch (err: any) {
-            setUploadError(err.toString());
-        } finally {
-            setIsCompressing(false);
-        }
-    };
-
-    // Convert any Google Drive share URL to a direct embed preview URL
-    const normalizeGDriveUrl = (url: string): string => {
-        const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-        if (match) {
-            return `https://drive.google.com/file/d/${match[1]}/preview`;
-        }
-        return url;
-    };
-
-    const handleDriveLinkSave = () => {
-        if (!driveLink.trim()) return;
-        const normalized = normalizeGDriveUrl(driveLink.trim());
-        setValue('url_kk', normalized);
-        setDriveLink(normalized);
-    };
 
     useEffect(() => {
         if (isEditing && id) {
@@ -163,11 +56,6 @@ export default function WargaForm() {
                         pj_nama: data.pj_nama || '',
                         pj_kontak: data.pj_kontak || ''
                     });
-                    // Restore drive link state
-                    if (data.url_kk && !data.url_kk.startsWith('data:')) {
-                        setDriveLink(data.url_kk);
-                        setDocInputMode('link');
-                    }
                 }
             });
         }
@@ -508,108 +396,13 @@ export default function WargaForm() {
                         )}
 
                         <div className="md:col-span-2 space-y-3">
-                            <div className="flex items-center justify-between">
-                                <label className="block text-sm font-medium text-gray-700">Dokumen KK / KTP / Identitas</label>
-                                {/* Tab toggle */}
-                                <div className="flex gap-1 p-0.5 bg-gray-100 rounded-lg">
-                                    <button type="button" onClick={() => setDocInputMode('upload')}
-                                        className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-md transition-all ${
-                                            docInputMode === 'upload' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
-                                        }`}>
-                                        <UploadSimple className="w-3.5 h-3.5" /> Upload File
-                                    </button>
-                                    <button type="button" onClick={() => setDocInputMode('link')}
-                                        className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-md transition-all ${
-                                            docInputMode === 'link' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
-                                        }`}>
-                                        <GoogleDriveLogo className="w-3.5 h-3.5" /> Google Drive
-                                    </button>
-                                </div>
-                            </div>
-
-                            {docInputMode === 'upload' ? (
-                                <div className="space-y-2">
-                                    <p className="text-xs text-gray-400">Upload file lokal (Maksimal 1MB, gambar akan dikompres otomatis)</p>
-                                    <div className={`relative border-2 border-dashed rounded-xl p-4 transition-all flex flex-col items-center justify-center gap-2 ${
-                                        isCompressing ? 'border-brand-200 bg-brand-50' : 'border-gray-200 hover:border-brand-400 hover:bg-gray-50'
-                                    }`}>
-                                        <input
-                                            type="file"
-                                            accept="image/*,application/pdf"
-                                            onChange={handleFileUpload}
-                                            className="absolute inset-0 opacity-0 cursor-pointer"
-                                            disabled={isCompressing}
-                                        />
-                                        {isCompressing ? (
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-                                                <span className="text-xs font-medium text-brand-600">Mengompresi...</span>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <UploadSimple className="w-6 h-6 text-gray-400" />
-                                                <span className="text-xs text-gray-500">Klik atau seret file ke sini</span>
-                                                <span className="text-[10px] text-gray-300">JPG, PNG, PDF • Maks 1MB</span>
-                                            </>
-                                        )}
-                                    </div>
-                                    {uploadError && <p className="text-red-500 text-[10px] italic">{uploadError}</p>}
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-[11px] text-blue-700 leading-relaxed">
-                                        <p className="font-bold flex items-center gap-1.5 mb-1"><GoogleDriveLogo className="w-3.5 h-3.5" /> Cara berbagi dari Google Drive:</p>
-                                        <ol className="list-decimal pl-4 space-y-0.5 text-blue-600">
-                                            <li>Buka file di Google Drive, klik kanan → <strong>Dapatkan link</strong></li>
-                                            <li>Atur akses: <strong>Siapa saja yang memiliki link → Penampil</strong></li>
-                                            <li>Salin link dan tempel di kolom di bawah</li>
-                                        </ol>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <div className="relative flex-1">
-                                            <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                            <input
-                                                type="text"
-                                                value={driveLink}
-                                                onChange={e => setDriveLink(e.target.value)}
-                                                className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
-                                                placeholder="https://drive.google.com/file/d/..."
-                                            />
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={handleDriveLinkSave}
-                                            disabled={!driveLink.trim()}
-                                            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-40 text-white text-xs font-bold rounded-lg transition-all shadow-sm"
-                                        >Simpan Link</button>
-                                    </div>
-                                    {urlKk && !urlKk.startsWith('data:') && (
-                                        <div className="flex items-center gap-2 p-2.5 bg-emerald-50 border border-emerald-100 rounded-lg text-xs">
-                                            <CheckCircle weight="fill" className="w-4 h-4 text-emerald-500 shrink-0" />
-                                            <span className="text-emerald-700 font-medium flex-1 truncate">{urlKk}</span>
-                                            <button type="button" onClick={() => { setValue('url_kk', ''); setDriveLink(''); }}
-                                                className="p-1 hover:bg-emerald-100 rounded-full text-emerald-400">
-                                                <X weight="bold" className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {urlKk && urlKk.startsWith('data:') && (
-                                <div className="flex items-center gap-3 p-3 bg-brand-50 border border-brand-100 rounded-lg animate-fade-in">
-                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-brand-600 shadow-sm">
-                                        {urlKk.includes('pdf') ? <FileJs weight="duotone" className="w-6 h-6" /> : <CheckCircle weight="duotone" className="w-6 h-6" />}
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-xs font-bold text-brand-800">File Berhasil Dimuat</p>
-                                        <p className="text-[10px] text-brand-600">Terkompresi (~{Math.round(urlKk.length * 0.75 / 1024)} KB)</p>
-                                    </div>
-                                    <button type="button" onClick={() => setValue('url_kk', '')} className="p-1 hover:bg-brand-100 rounded-full text-brand-400">
-                                        <X weight="bold" />
-                                    </button>
-                                </div>
-                            )}
+                            <FileUpload
+                                existingUrls={urlKk ? [urlKk] : []}
+                                onUploadSuccess={(url) => setValue('url_kk', url)}
+                                onRemove={() => setValue('url_kk', '')}
+                                label="Dokumen KK / KTP / Identitas"
+                                helperText="JPG, PNG maksimal 1MB · Dioptimalkan otomatis"
+                            />
                         </div>
 
                         <div className="md:col-span-2">
