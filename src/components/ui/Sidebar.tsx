@@ -15,7 +15,10 @@ import {
     Gear,
     Wallet,
     Money,
-    CaretDown
+    CaretDown,
+    CaretLeft,
+    CaretRight,
+    DotsThree
 } from '@phosphor-icons/react';
 
 interface MenuItem {
@@ -72,7 +75,12 @@ const MENU_GROUPS: MenuGroup[] = [
     }
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+    isCollapsed?: boolean;
+    onToggle?: () => void;
+}
+
+export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     const { currentTenant } = useTenant();
     const { hasPermission } = useAuth();
     const [kelurahanName, setKelurahanName] = useState<string>('');
@@ -121,38 +129,52 @@ export function Sidebar() {
     })).filter(group => group.items.length > 0);
 
     return (
-        <aside className="w-64 bg-white text-slate-800 flex flex-col h-screen fixed left-0 top-0 overflow-hidden shadow-sm border-r border-slate-100 z-50">
-            <div className="p-6 border-b border-slate-100/80">
-                <h2 className="text-[20px] font-bold text-slate-800 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
-                    {getRtRwLabel()}
-                </h2>
-                <p className="text-[11px] text-slate-500 mt-1 uppercase tracking-normal font-bold truncate">
-                    {kelurahanName || 'Sistem Manajemen RT'}
-                </p>
+        <aside className={`bg-white text-slate-800 flex flex-col h-screen fixed left-0 top-0 overflow-y-auto overflow-x-hidden shadow-sm border-r border-slate-100 z-50 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'}`}>
+            <div className={`p-4 sm:p-6 border-b border-slate-100/80 flex items-center h-[88px] ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                <div className={`overflow-hidden transition-all duration-300 whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'}`}>
+                    <h2 className="text-[20px] font-bold text-slate-800 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
+                        {getRtRwLabel()}
+                    </h2>
+                    <p className="text-[11px] text-slate-500 mt-1 uppercase tracking-normal font-bold truncate">
+                        {kelurahanName || 'Sistem Manajemen RT'}
+                    </p>
+                </div>
+                {onToggle && (
+                    <button onClick={onToggle} className="shrink-0 p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors" title={isCollapsed ? "Buka Sidebar" : "Kecilkan Sidebar"}>
+                        {isCollapsed ? <CaretRight weight="bold" className="w-5 h-5" /> : <CaretLeft weight="bold" className="w-5 h-5"/>}
+                    </button>
+                )}
             </div>
 
-            <nav className="flex-1 px-4 py-3 space-y-3 overflow-y-auto scrollbar-thin pb-6">
+            <nav className="flex-1 px-3 sm:px-4 py-3 space-y-3 pb-6">
                 {filteredMenuGroups.map((group) => {
-                    const isExpanded = expandedGroups.includes(group.label);
+                    const isExpanded = isCollapsed || expandedGroups.includes(group.label);
                     return (
                     <div key={group.label} className="space-y-0.5 mb-2">
-                        <button 
-                            onClick={() => toggleGroup(group.label)}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 uppercase tracking-normal rounded-lg transition-colors group/header"
-                        >
-                            <span>{group.label}</span>
-                            <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 group-hover/header:text-slate-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
-                        </button>
+                        {isCollapsed ? (
+                            <div className="flex justify-center py-2 text-slate-300">
+                                <DotsThree weight="bold" className="w-5 h-5" />
+                            </div>
+                        ) : (
+                            <button 
+                                onClick={() => toggleGroup(group.label)}
+                                className="w-full flex items-center justify-between px-3 py-1.5 text-[12px] font-semibold text-slate-500 hover:text-slate-800 uppercase tracking-normal rounded-lg transition-colors group/header"
+                            >
+                                <span>{group.label}</span>
+                                <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 group-hover/header:text-slate-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />
+                            </button>
+                        )}
                         
-                        <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
+                        <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[1000px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                             {group.items.map((item) => {
                                 const Icon = item.icon;
                                 return (
                                     <NavLink
                                         key={item.path}
                                         to={item.path}
+                                        title={isCollapsed ? item.label : undefined}
                                         className={({ isActive }) =>
-                                            `flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-300 group ${isActive
+                                            `flex items-center rounded-xl transition-all duration-300 group overflow-hidden ${isCollapsed ? 'justify-center p-2 mx-1' : 'gap-3 px-3 py-2.5'} ${isActive
                                                 ? 'bg-brand-50 text-brand-700 font-bold border border-brand-100/50 shadow-sm'
                                                 : 'text-slate-800 hover:bg-slate-50 font-normal'
                                             }`
@@ -160,13 +182,13 @@ export function Sidebar() {
                                     >
                                         {({ isActive }) => (
                                             <>
-                                                <div className={`p-1 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'text-slate-500 group-hover:text-brand-500'}`}>
+                                                <div className={`shrink-0 p-1.5 rounded-lg transition-all ${isActive ? 'bg-white text-brand-600 shadow-sm ring-1 ring-brand-100' : 'text-slate-500 group-hover:text-brand-500'}`}>
                                                     <Icon
                                                         weight={isActive ? "fill" : "duotone"}
                                                         className="w-5 h-5 transition-transform group-hover:scale-110 group-active:scale-95 duration-300"
                                                     />
                                                 </div>
-                                                <span className="text-[14px] tracking-normal">{item.label}</span>
+                                                <span className={`text-[14px] tracking-normal whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>{item.label}</span>
                                             </>
                                         )}
                                     </NavLink>
