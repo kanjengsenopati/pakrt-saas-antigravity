@@ -147,7 +147,7 @@ export default function WargaDetail() {
             {/* Document Zoom Modal */}
             {isZooming && warga.url_kk && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-4 sm:p-8"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-4 sm:p-8"
                     onClick={() => setIsZooming(false)}
                 >
                     <div
