@@ -94,7 +94,6 @@ export default function IuranList() {
         })
         .reduce((sum, item) => sum + item.nominal, 0);
 
-    const transactionCount = filteredIuran.length;
     // Filtered iuran data
     const formatFormalId = (dateString: string, itemId: string) => {
         const d = new Date(dateString);
@@ -136,7 +135,7 @@ export default function IuranList() {
             </div>
 
             {/* STATS WIDGETS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-2">
                 {/* TOTAL KOLEKTIF */}
                 <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute -right-4 -top-4 w-20 h-20 bg-brand-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500" />
@@ -145,8 +144,8 @@ export default function IuranList() {
                             <CheckCircle weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-widest leading-none">Total Kolektif {filterYear || 'Semua'}</p>
-                            <p className="text-lg font-bold text-slate-800 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
+                            <p className="text-[10px] font-bold text-slate-500 tracking-normal leading-none">Total Kolektif {filterYear || 'Semua'}</p>
+                            <p className="text-sm font-bold text-slate-800 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
                             <div className="flex items-center gap-1 mt-1 text-[12px] font-normal text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-full w-fit italic">
                                 * Filter tahun aktif
                             </div>
@@ -162,8 +161,8 @@ export default function IuranList() {
                             <Plus weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[12px] font-semibold text-white/80 uppercase tracking-widest leading-none">Masuk Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
-                            <p className="text-lg font-bold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
+                            <p className="text-[10px] font-bold text-white/80 tracking-normal leading-none">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
+                            <p className="text-sm font-bold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
                             <div className="flex items-center gap-1 mt-1 text-[12px] font-normal text-white bg-white/10 px-1.5 py-0.5 rounded-full w-fit border border-white/10">
                                 <span className="w-1 h-1 rounded-full bg-emerald-300 animate-pulse" />
                                 Bulan Berjalan
@@ -180,8 +179,8 @@ export default function IuranList() {
                             <MagnifyingGlass weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Jumlah Transaksi</p>
-                            <p className="text-lg font-black text-slate-900 leading-tight">{transactionCount}</p>
+                            <p className="text-[10px] font-bold text-slate-500 tracking-normal leading-none">Jumlah Transaksi</p>
+                            <p className="text-sm font-bold text-slate-800 leading-tight truncate mt-1">{filteredIuran.length} Transaksi</p>
                             <div className="flex items-center gap-1 mt-1 text-[9px] font-bold text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded-full w-fit italic">
                                 * Frekuensi pembayaran
                             </div>
@@ -384,11 +383,11 @@ export default function IuranList() {
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-gray-50">
                     {isLoading ? (
-                        <div className="text-center text-gray-500 py-8 font-bold text-xs uppercase animate-pulse">Memuat data...</div>
+                        <div className="text-center text-gray-500 py-8 font-bold text-xs animate-pulse">Memuat data...</div>
                     ) : filteredIuran.length === 0 ? (
                         <div className="text-center text-gray-500 py-12 flex flex-col items-center">
                             <CheckCircle weight="duotone" className="w-12 h-12 text-gray-300 mb-2" />
-                            <p className="font-bold text-slate-900 uppercase tracking-tight">Data Kosong</p>
+                            <p className="font-bold text-slate-900 tracking-tight">Data Kosong</p>
                         </div>
                     ) : (
                         filteredIuran.map((iuran) => (
@@ -433,20 +432,20 @@ export default function IuranList() {
                                             )}
                                         </div>
 
-                                        <div className="flex justify-between items-end mt-3">
+                                        <div className="flex justify-between items-end mt-4 pt-1 border-t border-slate-50">
                                             <div>
-                                                <p className="text-[10px] text-slate-400 uppercase font-black mb-1">Periode Dibayar</p>
-                                                <div className="flex flex-wrap gap-1">
+                                                <p className="text-[10px] text-slate-400 font-bold mb-1.5">Periode Dibayar</p>
+                                                <div className="grid grid-cols-3 gap-1">
                                                     {iuran.periode_bulan.map(b => (
-                                                        <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-[10px] font-black bg-slate-50 text-blue-700 border border-slate-200 uppercase tracking-widest">
+                                                        <span key={b} className="inline-flex px-1.5 py-1 rounded-lg text-[10px] font-bold bg-blue-50/50 text-blue-700 border border-blue-100 items-center justify-center">
                                                             {getMonthName(b).substring(0, 3)} '{iuran.periode_tahun.toString().substring(2)}
                                                         </span>
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-[10px] text-slate-400 uppercase font-bold text-brand-600">{iuran.kategori || 'Iuran Bulanan'}</p>
-                                                <p className="text-xs font-bold text-slate-700">{dateUtils.toDisplay(iuran.tanggal_bayar)}</p>
+                                            <div className="text-right min-w-[100px]">
+                                                <p className="text-[10px] text-brand-600 font-bold mb-1">{iuran.kategori || 'Iuran Bulanan'}</p>
+                                                <p className="text-[14px] font-semibold text-slate-700 tracking-tight">{dateUtils.toDisplay(iuran.tanggal_bayar)}</p>
                                             </div>
                                         </div>
                                     </div>

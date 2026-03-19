@@ -302,7 +302,7 @@ export default function IuranForm() {
                                     <ChartPieSlice weight="fill" className="w-5 h-5" />
                                     Ringkasan Kewajiban
                                 </h3>
-                                <p className="text-[11px] text-brand-100 mt-0.5 uppercase tracking-wider font-semibold">Tahun {watchTahun || new Date().getFullYear()}</p>
+                                <p className="text-[11px] text-brand-100 mt-0.5 tracking-normal font-semibold">Tahun {watchTahun || new Date().getFullYear()}</p>
                             </div>
                             
                             <div className="p-5 space-y-5 bg-gradient-to-b from-white to-slate-50">
@@ -476,7 +476,7 @@ export default function IuranForm() {
                                         <label className="input-label mb-2">
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
                                         </label>
-                                        <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
+                                        <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
                                             {MONTHS.map(m => (
                                                 <button
                                                     key={m.value}
@@ -512,7 +512,7 @@ export default function IuranForm() {
                                                 Nominal Transaksi (Rp)
                                             </label>
                                             {paymentMode === 'Pas' && (
-                                                <span className="text-[10px] font-bold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">MODE PAS</span>
+                                                <span className="text-[10px] font-bold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
                                             )}
                                         </div>
                                         <div className="relative">
@@ -535,14 +535,14 @@ export default function IuranForm() {
                                             <p className="text-[11px] text-slate-400 italic font-medium">
                                                 {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
                                             </p>
-                                            {errors.nominal && <p className="text-red-500 text-[11px] font-bold uppercase">{errors.nominal.message}</p>}
+                                            {errors.nominal && <p className="text-red-500 text-[11px] font-bold">{errors.nominal.message}</p>}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* ROW 5: BUKTI */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    <label className="block text-[10px] font-black text-slate-400 mb-2">
                                         Lampiran Bukti (Opsional)
                                     </label>
                                     <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors">
