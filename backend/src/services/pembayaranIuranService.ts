@@ -150,7 +150,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[ID: ${formatFormalId(result.tanggal_bayar, result.id)}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
+                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
                 }
             });
 
@@ -235,7 +235,8 @@ export const pembayaranIuranService = {
 
         const result = await tx.pembayaranIuran.update({ 
             where: { id }, 
-            data: processedData 
+            data: processedData,
+            include: { warga: true }
         });
 
         // Sync to Keuangan: Find existing record by tag
@@ -251,7 +252,7 @@ export const pembayaranIuranService = {
                     data: {
                         nominal: result.nominal,
                         tanggal: result.tanggal_bayar,
-                        keterangan: `${tag} Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
+                        keterangan: `${tag} [${iuran.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
                     }
                 });
             } else {
@@ -268,7 +269,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[ID: ${formatFormalId(result.tanggal_bayar, result.id)}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
+                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
                 }
             });
         }

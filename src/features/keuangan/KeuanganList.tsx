@@ -194,7 +194,9 @@ export default function KeuanganList() {
                                             </div>
                                             <div className="flex items-center gap-2 group/tooltip">
                                                 <div className="text-[14px] font-normal text-slate-800 max-w-xs truncate" title={trx.keterangan}>
-                                                    {trx.keterangan.startsWith('[AUTO]') ? toTitleCase(trx.keterangan.replace('[AUTO] ', '')) : toTitleCase(trx.keterangan)}
+                                                    {trx.keterangan.startsWith('[AUTO]') 
+                                                        ? toTitleCase(trx.keterangan.replace('[AUTO] ', '').split('|')[0].trim()) 
+                                                        : toTitleCase(trx.keterangan.split('|')[0].trim())}
                                                 </div>
                                                 {trx.keterangan.startsWith('[AUTO]') && (
                                                     <div className="relative cursor-help">

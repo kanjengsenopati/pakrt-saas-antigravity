@@ -13,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 /** Helper: Build a keterangan tag that encodes the iuran ID, Warga name, and months */
 const buildKeteranganTag = (iuranId: string, kategori: string, months: string, tahun: number, wargaNama?: string) =>
-    `[Otomatis] Iuran ${kategori} — ${months} ${tahun} (${wargaNama || 'Warga'}) | ref:${iuranId.substring(0, 8)}`;
+    `[${wargaNama || 'Warga'}] Iuran ${kategori} — ${months} ${tahun} | ref:${iuranId.substring(0, 8)}`;
 
 export const iuranService = {
     async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
