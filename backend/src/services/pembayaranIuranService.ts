@@ -16,14 +16,21 @@ async function getWargaIuranRate(wargaId: string, tenantId: string, scope: strin
   return Number(config[rateField] || config.iuran_per_bulan || 0);
 }
 
-const formatFormalId = (dateString: string, itemId: string) => {
-  const d = new Date(dateString);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  const shortId = itemId.substring(0, 3).toLowerCase();
-  return `${yyyy}${mm}${dd}-${shortId}`;
-};
+const MONTH_NAMES_ID = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
+/**
+ * Builds a human-readable keterangan for keuangan entries.
+ * Format: "[Nama Warga] Kategori — Bulan1, Bulan2/Tahun | ref:id"
+ */
+function buildKeterangan(wargaNama: string, kategori: string, periodeBulan: number[], periodeTahun: number, refId: string): string {
+  const monthNames = periodeBulan
+    .map(m => MONTH_NAMES_ID[m - 1] || String(m))
+    .join(', ');
+  return `[${wargaNama}] ${kategori} — ${monthNames} ${periodeTahun} | ref:${refId}`;
+}
 
 export const pembayaranIuranService = {
   async getAll(tenantId: string, scope?: string, wargaId?: string, page: number = 1, limit: number = 20) {
@@ -150,7 +157,13 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
+                    keterangan: buildKeterangan(
+                        (iuran?.warga?.nama || (result as any).warga?.nama) || 'Warga',
+                        result.kategori,
+                        result.periode_bulan as number[],
+                        result.periode_tahun,
+                        result.id
+                    )
                 }
             });
 
@@ -252,7 +265,13 @@ export const pembayaranIuranService = {
                     data: {
                         nominal: result.nominal,
                         tanggal: result.tanggal_bayar,
-                        keterangan: `[${result.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
+                        keterangan: buildKeterangan(
+                            (result as any).warga?.nama || 'Warga',
+                            result.kategori,
+                            result.periode_bulan as number[],
+                            result.periode_tahun,
+                            result.id
+                        )
                     }
                 });
             } else {
@@ -266,10 +285,16 @@ export const pembayaranIuranService = {
                     tenant_id: result.tenant_id,
                     scope: result.scope || 'RT',
                     tipe: 'pemasukan',
-                    kategori: 'Iuran Warga',
+                    kategori: result.kategori,
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[${result.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
+                    keterangan: buildKeterangan(
+                        (result as any).warga?.nama || 'Warga',
+                        result.kategori,
+                        result.periode_bulan as number[],
+                        result.periode_tahun,
+                        result.id
+                    )
                 }
             });
         }

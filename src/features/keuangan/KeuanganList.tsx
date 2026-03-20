@@ -10,8 +10,7 @@ import {
     ArrowDownRight,
     MagnifyingGlass,
     Image as ImageIcon,
-    X,
-    Info
+    X
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { HasPermission } from '../../components/auth/HasPermission';
@@ -35,12 +34,17 @@ export default function KeuanganList() {
 
 
     useEffect(() => {
-        const CACHE_VERSION = 'pakrt_finance_v1.1';
+        const CACHE_VERSION = 'pakrt_finance_v1.2';
         if (!localStorage.getItem(CACHE_VERSION)) {
-            // Optional: clear specific older keys if needed
-            // localStorage.removeItem('some_old_key');
+            // Clear all older finance cache keys
+            const keysToRemove: string[] = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('pakrt_finance_v')) keysToRemove.push(key);
+            }
+            keysToRemove.forEach(k => localStorage.removeItem(k));
             localStorage.setItem(CACHE_VERSION, 'true');
-            console.log("Finance module updated. Clearing cache and reloading...");
+            console.log("Finance cache updated to v1.2. Reloading...");
             window.location.reload();
         }
     }, []);
@@ -87,6 +91,48 @@ export default function KeuanganList() {
         const dd = String(d.getDate()).padStart(2, '0');
         const shortId = itemId.substring(0, 3).toLowerCase();
         return `${yyyy}${mm}${dd}-${shortId}`;
+    };
+
+    /**
+     * Parses the keterangan field into a display-ready object.
+     * Handles both new format: "[Nama Warga] Kategori — Bulan Tahun | ref:id"
+     * and legacy formats gracefully.
+     */
+    const parseKeterangan = (keterangan: string) => {
+        // Strip backend ref tag first
+        const cleaned = keterangan.replace(/\s*\|\s*ref:[a-f0-9-]+$/i, '').trim();
+
+        // New format: "[Nama Warga] Kategori — Period"
+        const newFormatMatch = cleaned.match(/^\[([^\]]+)\]\s+(.+?)\s+—\s+(.+)$/);
+        if (newFormatMatch) {
+            return {
+                wargaNama: newFormatMatch[1],
+                label: newFormatMatch[2],
+                period: newFormatMatch[3],
+                isIuran: true,
+                raw: cleaned
+            };
+        }
+
+        // [AUTO] format
+        if (cleaned.startsWith('[AUTO]')) {
+            return {
+                wargaNama: null,
+                label: toTitleCase(cleaned.replace('[AUTO] ', '').split('|')[0].trim()),
+                period: null,
+                isIuran: false,
+                raw: cleaned
+            };
+        }
+
+        // Plain text fallback
+        return {
+            wargaNama: null,
+            label: toTitleCase(cleaned.split('|')[0].trim()),
+            period: null,
+            isIuran: false,
+            raw: cleaned
+        };
     };
 
     return (
@@ -203,22 +249,29 @@ export default function KeuanganList() {
                                             <div className={`text-sm font-semibold tracking-normal mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
                                                 {toTitleCase(trx.kategori)}
                                             </div>
-                                            <div className="flex items-center gap-2 group/tooltip">
-                                                <div className="text-[14px] font-normal text-slate-800 max-w-xs truncate" title={trx.keterangan}>
-                                                    {trx.keterangan.startsWith('[AUTO]') 
-                                                        ? toTitleCase(trx.keterangan.replace('[AUTO] ', '').split('|')[0].trim()) 
-                                                        : toTitleCase(trx.keterangan.split('|')[0].trim())}
-                                                </div>
-                                                {trx.keterangan.startsWith('[AUTO]') && (
-                                                    <div className="relative cursor-help">
-                                                        <Info weight="fill" className="w-3.5 h-3.5 text-brand-400 hover:text-brand-600 transition-colors" />
-                                                        <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block w-64 p-3 bg-slate-900 text-white text-sm font-medium leading-relaxed rounded-xl shadow-xl z-50 animate-fade-in border border-slate-700 backdrop-blur-sm">
-                                                            <div className="font-bold tracking-normal text-brand-400 mb-1">Detail Sync Otomatis</div>
-                                                            {trx.keterangan.split('|')[0].replace('[AUTO] ', '')}
-                                                        </div>
+                                            {(() => {
+                                                const parsed = parseKeterangan(trx.keterangan);
+                                                return (
+                                                    <div className="space-y-0.5">
+                                                        {parsed.isIuran && parsed.wargaNama ? (
+                                                            <>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-brand-50 text-brand-700 border border-brand-100">
+                                                                        {parsed.wargaNama}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="text-[12px] font-medium text-slate-500">
+                                                                    {parsed.period}
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <div className="text-[14px] font-normal text-slate-800 max-w-xs truncate" title={trx.keterangan}>
+                                                                {parsed.label}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="p-3 text-right whitespace-nowrap">
                                             <span className={`text-[14px] font-bold ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-slate-200'}`}>
@@ -296,9 +349,23 @@ export default function KeuanganList() {
                                             </div>
                                         </div>
 
-                                        <div className="text-sm font-bold text-slate-700 leading-relaxed flex items-center gap-2">
-                                            {trx.keterangan.startsWith('[AUTO]') ? toTitleCase(trx.keterangan.replace('[AUTO] ', '')) : (toTitleCase(trx.keterangan) || <span className="text-slate-300 italic font-medium tracking-normal text-sm">Tanpa Uraian</span>)}
-                                            {trx.keterangan.startsWith('[AUTO]') && <Info className="w-3.5 h-3.5 text-brand-400 hover:text-brand-600 transition-colors" />}
+                                        <div className="text-sm font-bold text-slate-700 leading-relaxed">
+                                            {(() => {
+                                                const parsed = parseKeterangan(trx.keterangan);
+                                                if (parsed.isIuran && parsed.wargaNama) {
+                                                    return (
+                                                        <div className="space-y-1">
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-brand-50 text-brand-700 border border-brand-100">
+                                                                {parsed.wargaNama}
+                                                            </span>
+                                                            <div className="text-[12px] font-medium text-slate-500">
+                                                                {parsed.period}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                                return parsed.label || <span className="text-slate-300 italic font-medium tracking-normal text-sm">Tanpa Uraian</span>;
+                                            })()}
                                         </div>
                                     </div>
                                 </div>
