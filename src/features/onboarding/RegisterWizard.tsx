@@ -6,6 +6,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { locationService } from '../../services/locationService';
 import { authService } from '../../services/authService';
 import { Eye, EyeSlash, CheckCircle, ArrowLeft, ArrowRight, UserFocus, MapPin } from '@phosphor-icons/react';
+import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
 
 type WizardFormData = {
     provinsi: string;
@@ -186,6 +187,7 @@ export default function RegisterWizard() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+            <PWAInstallBanner show={true} />
             {/* Top Navigation */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-10 px-6 py-4">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">

@@ -5,6 +5,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { Eye, EyeSlash, SignIn, ArrowLeft, Flashlight, House, Article, Wallet, Users } from '@phosphor-icons/react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
+import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
 
 type LoginFormData = {
     contactOrEmail: string;
@@ -75,6 +76,7 @@ export default function Login() {
 
     return (
         <div className="h-screen w-screen bg-white flex flex-col md:flex-row font-sans selection:bg-brand-500 selection:text-white overflow-hidden">
+            <PWAInstallBanner show={true} />
             {/* Left Panel - Brand Display */}
             <div className="hidden md:flex flex-col justify-between w-[45%] bg-slate-50 p-10 lg:p-14 text-slate-900 relative overflow-hidden shrink-0 border-r border-slate-100">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[30rem] h-[30rem] bg-brand-50 rounded-full blur-[120px] opacity-60"></div>
