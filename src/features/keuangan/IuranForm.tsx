@@ -246,7 +246,7 @@ export default function IuranForm() {
             {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
                     <Warning className="w-5 h-5 shrink-0 mt-0.5" />
-                    <div className="text-xs font-semibold">{errorMessage}</div>
+                    <div className="text-sm font-semibold">{errorMessage}</div>
                 </div>
             )}
 
@@ -267,8 +267,8 @@ export default function IuranForm() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold tracking-normal opacity-60">Status Pembayaran:</span>
-                            <span className="text-xs font-semibold tracking-normal">
+                            <span className="text-sm font-semibold tracking-normal opacity-60">Status Pembayaran:</span>
+                            <span className="text-sm font-semibold tracking-normal">
                                 {currentStatus === 'VERIFIED' ? 'Sah / Diterima' :
                                  currentStatus === 'REJECTED' ? 'Ditolak' :
                                  'Menunggu Verifikasi'}
@@ -293,7 +293,7 @@ export default function IuranForm() {
                     {isLoadingBilling ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <p className="text-xs font-semibold text-gray-500 tracking-normal">Memuat Data Tagihan...</p>
+                            <p className="text-sm font-semibold text-gray-500 tracking-normal">Memuat Data Tagihan...</p>
                         </div>
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
@@ -302,12 +302,12 @@ export default function IuranForm() {
                                     <ChartPieSlice weight="fill" className="w-5 h-5" />
                                     Ringkasan Kewajiban
                                 </h3>
-                                <p className="text-xs text-brand-100 mt-0.5 tracking-normal font-medium">Tahun {watchTahun || new Date().getFullYear()}</p>
+                                <p className="text-sm text-brand-100 mt-0.5 tracking-normal font-medium">Tahun {watchTahun || new Date().getFullYear()}</p>
                             </div>
                             
                             <div className="p-5 space-y-5 bg-gradient-to-b from-white to-gray-50">
                                 <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <p className="section-label !text-xs text-gray-400">Total Tagihan 12 Bulan</p>
+                                    <p className="section-label !text-sm text-gray-400">Total Tagihan 12 Bulan</p>
                                     <p className="value-highlight">
                                         {formatRupiah(defaultNominal * 12)}
                                     </p>
@@ -315,7 +315,7 @@ export default function IuranForm() {
                                 </div>
 
                                 <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <p className="section-label !text-xs text-emerald-600">Sudah Dibayar (Sistem)</p>
+                                    <p className="section-label !text-sm text-emerald-600">Sudah Dibayar (Sistem)</p>
                                     <p className="value-highlight !text-emerald-600">
                                         {formatRupiah(alreadyPaid)}
                                     </p>
@@ -323,7 +323,7 @@ export default function IuranForm() {
                                 </div>
 
                                 <div className="p-4 bg-brand-50 rounded-xl border border-brand-100 shadow-inner">
-                                    <p className="section-label !text-xs text-brand-600 mb-1">Sisa Kewajiban</p>
+                                    <p className="section-label !text-sm text-brand-600 mb-1">Sisa Kewajiban</p>
                                     <p className="text-[22px] font-semibold text-brand-700 tabular-nums leading-none">
                                         {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
                                     </p>
@@ -351,8 +351,8 @@ export default function IuranForm() {
                             <CalendarBlank weight="fill" className="w-4 h-4" />
                         </div>
                         <div>
-                            <p className="text-[11px] font-bold text-blue-900 leading-tight">Info Periode</p>
-                            <p className="text-[10px] text-blue-700 mt-0.5 leading-relaxed">Pastikan periode tahun sesuai dengan iuran yang sedang berjalan.</p>
+                            <p className="text-sm font-bold text-blue-900 leading-tight">Info Periode</p>
+                            <p className="text-sm text-blue-700 mt-0.5 leading-relaxed">Pastikan periode tahun sesuai dengan iuran yang sedang berjalan.</p>
                         </div>
                     </div>
                 </div>
@@ -387,7 +387,7 @@ export default function IuranForm() {
                                                 <option key={w.id} value={w.id}>{w.nama} {w.alamat ? `- ${w.alamat}` : ''}</option>
                                             ))}
                                         </select>
-                                        {errors.warga_id && <p className="text-red-500 text-[11px] font-semibold mt-1 px-1">{errors.warga_id.message}</p>}
+                                        {errors.warga_id && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.warga_id.message}</p>}
                                     </div>
                                 )}
 
@@ -404,7 +404,7 @@ export default function IuranForm() {
                                             <option key={cat} value={cat}>{cat}</option>
                                         ))}
                                     </select>
-                                    {errors.kategori && <p className="text-red-500 text-[11px] font-semibold mt-1 px-1">{errors.kategori.message}</p>}
+                                    {errors.kategori && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.kategori.message}</p>}
                                 </div>
 
                                 {/* ROW 2: PAYMENT MODE */}
@@ -438,7 +438,7 @@ export default function IuranForm() {
                                             />
                                             <div className="flex-1">
                                                 <p className="font-semibold text-gray-900 text-sm leading-tight">Mode Bebas</p>
-                                                <p className="text-xs text-gray-500">Input manual</p>
+                                                <p className="text-sm text-gray-500">Input manual</p>
                                             </div>
                                         </label>
                                     </div>
@@ -512,7 +512,7 @@ export default function IuranForm() {
                                                 Nominal Transaksi (Rp)
                                             </label>
                                             {paymentMode === 'Pas' && (
-                                                <span className="text-xs font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
+                                                <span className="text-sm font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
                                             )}
                                         </div>
                                         <div className="relative">
@@ -532,17 +532,17 @@ export default function IuranForm() {
                                             />
                                         </div>
                                         <div className="flex justify-between items-end">
-                                            <p className="text-xs text-gray-400 italic font-medium">
+                                            <p className="text-sm text-gray-400 italic font-medium">
                                                 {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
                                             </p>
-                                            {errors.nominal && <p className="text-red-500 text-xs font-semibold">{errors.nominal.message}</p>}
+                                            {errors.nominal && <p className="text-red-500 text-sm font-semibold">{errors.nominal.message}</p>}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* ROW 5: BUKTI */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-xs font-semibold text-gray-400 mb-2">
+                                    <label className="block text-sm font-semibold text-gray-400 mb-2">
                                         Lampiran Bukti (Opsional)
                                     </label>
                                     <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
@@ -551,7 +551,7 @@ export default function IuranForm() {
                                             existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
                                             onRemove={() => setValue('url_bukti', '')}
                                             label=""
-                                            helperText="JPG, PNG maksimal 2MB · Dikompres otomatis"
+                                            helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
                                             onLoadingChange={setIsUploading}
                                         />
                                     </div>
@@ -559,19 +559,19 @@ export default function IuranForm() {
                             </div>
 
                             <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
-                                <p className="text-xs text-gray-400 font-medium">* Pastikan data warga dan nominal sudah benar.</p>
+                                <p className="text-sm text-gray-400 font-medium">* Pastikan data warga dan nominal sudah benar.</p>
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
                                         onClick={() => navigate('/iuran')}
-                                        className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
+                                        className="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
                                     >
                                         Batal
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isUploading || currentStatus === 'VERIFIED'}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-xs font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                         <span>{isEdit ? 'Simpan' : 'Bayar'}</span>

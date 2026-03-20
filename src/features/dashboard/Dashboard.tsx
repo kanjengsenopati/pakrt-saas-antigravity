@@ -26,6 +26,11 @@ import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
 import { dateUtils } from '../../utils/date';
 
+const toTitleCase = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
+
 export default function Dashboard() {
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
@@ -315,7 +320,7 @@ export default function Dashboard() {
                                 {recentActivities.map((act: Aktivitas) => (
                                     <div key={act.id} className="pl-3 border-l-2 border-brand-200 hover:border-brand-500 transition-all">
                                         <p className="text-sm font-semibold text-brand-600 tracking-normal leading-none capitalize">{act.action.toLowerCase()}</p>
-                                        <p className="text-sm font-medium text-gray-700 leading-snug mt-1">{act.details}</p>
+                                        <p className="text-sm font-medium text-gray-700 leading-snug mt-1">{toTitleCase(act.details)}</p>
                                         <p className="text-sm text-gray-400 mt-1 font-medium italic">{formatDate(act.timestamp)}</p>
                                     </div>
                                 ))}
@@ -453,7 +458,7 @@ export default function Dashboard() {
                                             </div>
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900 leading-none">
-                                                    {iuran.warga?.nama?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
+                                                    {toTitleCase(iuran.warga?.nama)}
                                                 </p>
                                                 <p className="text-sm text-gray-400 mt-1 tracking-normal font-medium italic">
                                                     Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}

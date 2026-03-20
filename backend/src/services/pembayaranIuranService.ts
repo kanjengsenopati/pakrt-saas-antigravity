@@ -16,6 +16,15 @@ async function getWargaIuranRate(wargaId: string, tenantId: string, scope: strin
   return Number(config[rateField] || config.iuran_per_bulan || 0);
 }
 
+const formatFormalId = (dateString: string, itemId: string) => {
+  const d = new Date(dateString);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const shortId = itemId.substring(0, 3).toLowerCase();
+  return `${yyyy}${mm}${dd}-${shortId}`;
+};
+
 export const pembayaranIuranService = {
   async getAll(tenantId: string, scope?: string, wargaId?: string, page: number = 1, limit: number = 20) {
     const where: any = {};
@@ -141,7 +150,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[IURAN_ID:${result.id}] Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                    keterangan: `[ID: ${formatFormalId(result.tanggal_bayar, result.id)}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
                 }
             });
 
@@ -230,7 +239,7 @@ export const pembayaranIuranService = {
         });
 
         // Sync to Keuangan: Find existing record by tag
-        const tag = `[IURAN_ID:${id}]`;
+        const tag = `[ID: ${formatFormalId(result.tanggal_bayar, id)}]`;
         const existingKeuangan = await tx.keuangan.findFirst({
             where: { keterangan: { contains: tag } }
         });
@@ -242,7 +251,7 @@ export const pembayaranIuranService = {
                     data: {
                         nominal: result.nominal,
                         tanggal: result.tanggal_bayar,
-                        keterangan: `${tag} Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                        keterangan: `${tag} Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
                     }
                 });
             } else {
@@ -259,7 +268,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[IURAN_ID:${result.id}] Pembayaran ${result.kategori} - ${result.periode_bulan.join(',')}/${result.periode_tahun}`
+                    keterangan: `[ID: ${formatFormalId(result.tanggal_bayar, result.id)}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun}`
                 }
             });
         }
@@ -280,7 +289,8 @@ export const pembayaranIuranService = {
         const result = await tx.pembayaranIuran.delete({ where: { id } });
         
         // Sync to Keuangan: Delete existing record by tag
-        const tag = `[IURAN_ID:${id}]`;
+        const record = await tx.pembayaranIuran.findUnique({ where: { id } });
+        const tag = record ? `[ID: ${formatFormalId(record.tanggal_bayar, id)}]` : `[IURAN_ID:${id}]`;
         await tx.keuangan.deleteMany({
             where: { keterangan: { contains: tag } }
         });

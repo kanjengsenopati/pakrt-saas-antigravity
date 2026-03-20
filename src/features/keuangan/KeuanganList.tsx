@@ -18,6 +18,11 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 
+const toTitleCase = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
+
 export default function KeuanganList() {
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
@@ -69,7 +74,7 @@ export default function KeuanganList() {
         const yyyy = d.getFullYear();
         const mm = String(d.getMonth() + 1).padStart(2, '0');
         const dd = String(d.getDate()).padStart(2, '0');
-        const shortId = itemId.substring(0, 4).toUpperCase();
+        const shortId = itemId.substring(0, 3).toLowerCase();
         return `${yyyy}${mm}${dd}-${shortId}`;
     };
 
@@ -78,7 +83,7 @@ export default function KeuanganList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Kas Masuk & Keluar</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-sm mt-1 font-medium flex items-center gap-1.5 tracking-normal">
                         Pencatatan keuangan operasional untuk <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
@@ -100,7 +105,7 @@ export default function KeuanganList() {
                 {/* KAS MASUK */}
                 <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[9px] sm:text-[12px] font-bold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Kas Masuk</p>
+                        <p className="text-sm font-semibold text-slate-500 tracking-normal leading-none mb-1.5">Kas Masuk</p>
                         <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
                     </div>
                 </div>
@@ -108,7 +113,7 @@ export default function KeuanganList() {
                 {/* KAS KELUAR */}
                 <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[9px] sm:text-[12px] font-bold text-slate-500 tracking-wider leading-none uppercase mb-1.5">Kas Keluar</p>
+                        <p className="text-sm font-semibold text-slate-500 tracking-normal leading-none mb-1.5">Kas Keluar</p>
                         <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
                     </div>
                 </div>
@@ -117,7 +122,7 @@ export default function KeuanganList() {
                 <div className={`py-2 px-2 sm:py-3 sm:px-4 rounded-xl border shadow-md relative overflow-hidden group transition-all duration-300 hover:shadow-lg ${summary.saldo >= 0 ? 'bg-emerald-600 border-emerald-500 hover:bg-emerald-700' : 'bg-red-600 border-red-500 hover:bg-red-700'}`}>
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[9px] sm:text-[11px] font-black text-white/90 tracking-wider leading-none uppercase mb-1.5">Saldo</p>
+                        <p className="text-sm font-semibold text-white/90 tracking-normal leading-none mb-1.5">Saldo</p>
                         <p className="text-sm sm:text-xl font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
                     </div>
                 </div>
@@ -144,7 +149,7 @@ export default function KeuanganList() {
                 {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold capitalize text-slate-500 tracking-wider">
+                        <thead className="bg-slate-50 border-b border-slate-100 text-sm font-semibold text-slate-500 tracking-normal">
                             <tr>
                                 <th className="p-3">Tanggal</th>
                                 <th className="p-3">Kategori & Keterangan</th>
@@ -173,7 +178,7 @@ export default function KeuanganList() {
                                             </div>
                                         </div>
                                         <p className="text-lg font-black text-slate-900">Data Tidak Ditemukan</p>
-                                        <p className="text-xs text-slate-400 mt-1 uppercase tracking-tight">Belum ada riwayat transaksi yang cocok dengan filter aktif.</p>
+                                        <p className="text-sm text-slate-400 mt-1 tracking-normal">Belum ada riwayat transaksi yang cocok dengan filter aktif.</p>
                                     </td>
                                 </tr>
                             ) : (
@@ -181,21 +186,21 @@ export default function KeuanganList() {
                                     <tr key={trx.id} className="hover:bg-brand-50/20 transition-colors group border-b border-slate-50 last:border-0">
                                         <td className="p-3 whitespace-nowrap">
                                             <div className="font-bold text-slate-800 text-[14px]">{dateUtils.toDisplay(trx.tanggal)}</div>
-                                            <div className="text-[12px] text-slate-500 font-medium uppercase tracking-tight mt-0.5 font-mono">ID: {formatFormalId(trx.tanggal, trx.id)}</div>
+                                            <div className="text-sm text-slate-500 font-medium tracking-normal mt-0.5 font-mono italic">ID: {formatFormalId(trx.tanggal, trx.id)}</div>
                                         </td>
                                         <td className="p-3">
-                                            <div className={`text-[12px] font-semibold uppercase tracking-widest mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
-                                                {trx.kategori}
+                                            <div className={`text-sm font-semibold tracking-normal mb-0.5 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
+                                                {toTitleCase(trx.kategori)}
                                             </div>
                                             <div className="flex items-center gap-2 group/tooltip">
                                                 <div className="text-[14px] font-normal text-slate-800 max-w-xs truncate" title={trx.keterangan}>
-                                                    {trx.keterangan.startsWith('[AUTO]') ? trx.keterangan.replace('[AUTO] ', '') : trx.keterangan}
+                                                    {trx.keterangan.startsWith('[AUTO]') ? toTitleCase(trx.keterangan.replace('[AUTO] ', '')) : toTitleCase(trx.keterangan)}
                                                 </div>
                                                 {trx.keterangan.startsWith('[AUTO]') && (
                                                     <div className="relative cursor-help">
                                                         <Info weight="fill" className="w-3.5 h-3.5 text-brand-400 hover:text-brand-600 transition-colors" />
-                                                        <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block w-64 p-3 bg-slate-900 text-white text-[10px] font-medium leading-relaxed rounded-xl shadow-xl z-50 animate-fade-in border border-slate-700 backdrop-blur-sm">
-                                                            <div className="font-black uppercase tracking-widest text-brand-400 mb-1">Detail Auto-Sync</div>
+                                                        <div className="absolute left-0 bottom-full mb-2 hidden group-hover/tooltip:block w-64 p-3 bg-slate-900 text-white text-sm font-medium leading-relaxed rounded-xl shadow-xl z-50 animate-fade-in border border-slate-700 backdrop-blur-sm">
+                                                            <div className="font-bold tracking-normal text-brand-400 mb-1">Detail Sync Otomatis</div>
                                                             {trx.keterangan.split('|')[0].replace('[AUTO] ', '')}
                                                         </div>
                                                     </div>
@@ -250,14 +255,14 @@ export default function KeuanganList() {
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-gray-50">
                     {isLoading ? (
-                        <div className="text-center text-gray-500 py-12 font-black text-[10px] uppercase tracking-widest animate-pulse">Memuat riwayat transaksi...</div>
+                        <div className="text-center text-gray-500 py-12 font-semibold text-sm tracking-normal animate-pulse">Memuat riwayat transaksi...</div>
                     ) : filteredTransactions.length === 0 ? (
                         <div className="text-center py-20 px-6 bg-white border border-slate-100 rounded-2xl flex flex-col items-center">
                             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border-2 border-dashed border-slate-200 mb-4">
                                 <ArrowDownRight weight="duotone" className="w-8 h-8 text-slate-300" />
                             </div>
-                            <p className="text-base font-black text-slate-900 uppercase tracking-tight">Data Kosong</p>
-                            <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Belum ada transaksi tercatat</p>
+                            <p className="text-sm font-bold text-slate-900 tracking-normal">Data Kosong</p>
+                            <p className="text-sm text-slate-400 mt-1 tracking-normal font-medium">Belum ada transaksi tercatat</p>
                         </div>
                     ) : (
                         filteredTransactions.map((trx) => (
@@ -266,11 +271,11 @@ export default function KeuanganList() {
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start mb-3 border-b border-slate-50 pb-3">
                                             <div>
-                                                <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
-                                                    {trx.kategori}
+                                                <div className={`text-sm font-semibold tracking-normal mb-1 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
+                                                    {toTitleCase(trx.kategori)}
                                                 </div>
-                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
-                                                    {dateUtils.toDisplay(trx.tanggal)} &bull; <span className="font-mono text-[9px] bg-slate-100 px-1 py-0.5 rounded ml-1 tracking-wider inline-block">ID:{formatFormalId(trx.tanggal, trx.id)}</span>
+                                                <p className="text-sm text-slate-400 font-medium tracking-normal">
+                                                    {dateUtils.toDisplay(trx.tanggal)} &bull; <span className="font-mono text-[11px] bg-slate-100 px-1 py-0.5 rounded ml-1 tracking-normal inline-block">ID:{formatFormalId(trx.tanggal, trx.id)}</span>
                                                 </p>
                                             </div>
                                             <div className={`text-lg font-black ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
@@ -279,7 +284,7 @@ export default function KeuanganList() {
                                         </div>
 
                                         <div className="text-sm font-bold text-slate-700 leading-relaxed flex items-center gap-2">
-                                            {trx.keterangan.startsWith('[AUTO]') ? trx.keterangan.replace('[AUTO] ', '') : (trx.keterangan || <span className="text-slate-300 italic font-medium tracking-tight uppercase text-[10px]">Tanpa Uraian</span>)}
+                                            {trx.keterangan.startsWith('[AUTO]') ? toTitleCase(trx.keterangan.replace('[AUTO] ', '')) : (toTitleCase(trx.keterangan) || <span className="text-slate-300 italic font-medium tracking-normal text-sm">Tanpa Uraian</span>)}
                                             {trx.keterangan.startsWith('[AUTO]') && <Info className="w-3.5 h-3.5 text-brand-400 hover:text-brand-600 transition-colors" />}
                                         </div>
                                     </div>
@@ -288,7 +293,7 @@ export default function KeuanganList() {
                                     {trx.url_bukti && (
                                         <button
                                             onClick={() => setSelectedProof(trx.url_bukti || null)}
-                                            className="p-2 text-brand-600 bg-white border border-brand-100 hover:bg-brand-50 rounded-lg transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest"
+                                            className="p-2 text-brand-600 bg-white border border-brand-100 hover:bg-brand-50 rounded-lg transition-all flex items-center gap-1.5 text-sm font-semibold tracking-normal"
                                         >
                                             <ImageIcon weight="bold" className="w-3.5 h-3.5" /> Bukti
                                         </button>
@@ -296,7 +301,7 @@ export default function KeuanganList() {
                                     <HasPermission module="Buku Kas / Transaksi" action="Hapus">
                                         <button
                                             onClick={() => handleDelete(trx.id)}
-                                            className="p-2 text-red-600 bg-white border border-red-100 hover:bg-red-50 rounded-lg transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest"
+                                            className="p-2 text-red-600 bg-white border border-red-100 hover:bg-red-50 rounded-lg transition-all flex items-center gap-1.5 text-sm font-semibold tracking-normal"
                                             title="Hapus"
                                         >
                                             <Trash weight="bold" className="w-3.5 h-3.5" /> Hapus

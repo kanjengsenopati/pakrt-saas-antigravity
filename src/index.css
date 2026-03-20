@@ -104,7 +104,7 @@ body {
 
 /* Table styling standardized */
 th {
-    @apply font-medium text-gray-600 tracking-normal text-sm capitalize bg-gray-50/90 backdrop-blur-sm sticky top-0 border-b border-gray-200 py-3.5 px-4 text-left;
+    @apply font-medium text-gray-600 tracking-normal text-sm bg-gray-50/90 backdrop-blur-sm sticky top-0 border-b border-gray-200 py-3.5 px-4 text-left;
 }
 
 td {

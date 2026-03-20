@@ -113,7 +113,7 @@ export default function KeuanganForm() {
                                 {...register('tanggal', { required: 'Tanggal wajib diisi' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.tanggal ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                             />
-                            {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal.message}</p>}
+                            {errors.tanggal && <p className="text-red-500 text-sm mt-1">{errors.tanggal.message}</p>}
                         </div>
 
                         <div>
@@ -129,8 +129,8 @@ export default function KeuanganForm() {
                                     <option key={cat} value={cat}>{cat}</option>
                                 ))}
                             </select>
-                            {errors.kategori && <p className="text-red-500 text-xs mt-1">{errors.kategori.message}</p>}
-                            <p className="text-xs text-gray-400 mt-1">Kategori dapat diatur di menu Pengaturan.</p>
+                            {errors.kategori && <p className="text-red-500 text-sm mt-1">{errors.kategori.message}</p>}
+                            <p className="text-sm text-gray-400 mt-1">Kategori dapat diatur di menu Pengaturan.</p>
                         </div>
 
                         <div className="md:col-span-2">
@@ -152,7 +152,7 @@ export default function KeuanganForm() {
                                     )}
                                 />
                             </div>
-                            {errors.nominal && <p className="text-red-500 text-xs mt-1">{errors.nominal.message}</p>}
+                            {errors.nominal && <p className="text-red-500 text-sm mt-1">{errors.nominal.message}</p>}
                         </div>
 
                         <div className="md:col-span-2">
@@ -165,7 +165,7 @@ export default function KeuanganForm() {
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.keterangan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                                 placeholder="Contoh: Pembelian lampu pos ronda..."
                             />
-                            {errors.keterangan && <p className="text-red-500 text-xs mt-1">{errors.keterangan.message}</p>}
+                            {errors.keterangan && <p className="text-red-500 text-sm mt-1">{errors.keterangan.message}</p>}
                         </div>
 
                         <div className="md:col-span-2">
