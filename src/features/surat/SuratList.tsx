@@ -69,7 +69,7 @@ export default function SuratList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Surat Pengantar</h1>
-                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 tracking-normal">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
@@ -106,7 +106,7 @@ export default function SuratList() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-[10px] uppercase tracking-wider border-b border-gray-200">
+                            <tr className="bg-gray-50 text-gray-500 text-[10px] font-bold border-b border-gray-200">
                                 <th className="p-3 font-semibold">Pemohon</th>
                                 <th className="p-3 font-semibold">Jenis / Tanggal</th>
                                 <th className="p-3 font-semibold">Keperluan</th>
@@ -135,10 +135,10 @@ export default function SuratList() {
                                     <tr key={surat.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="p-3">
                                             <p className="font-bold text-slate-800 text-sm">{surat.pemohon?.nama}</p>
-                                            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tight">NIK: {surat.pemohon?.nik || '-'}</p>
+                                            <p className="text-[10px] text-gray-400 font-medium">NIK: {surat.pemohon?.nik || '-'}</p>
                                         </td>
                                         <td className="p-3">
-                                            <p className="font-bold text-brand-700 text-xs uppercase tracking-tight">{surat.jenis_surat}</p>
+                                            <p className="font-bold text-brand-700 text-xs tracking-normal">{surat.jenis_surat}</p>
                                             <div className="flex items-center gap-1.5 mt-0.5">
                                                 <span className="text-[9px] text-brand-600 font-black bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</span>
                                                 <span className="text-[10px] text-gray-400 font-medium">{dateUtils.toDisplay(surat.tanggal)}</span>
@@ -217,7 +217,7 @@ export default function SuratList() {
                                         </div>
 
                                         <div className="bg-gray-50 rounded-lg p-3 my-3">
-                                            <p className="text-[10px] text-gray-400 uppercase font-semibold">Pemohon</p>
+                                            <p className="text-[10px] text-gray-400 font-semibold">Pemohon</p>
                                             <p className="font-semibold text-gray-900">{surat.pemohon?.nama}</p>
                                             <p className="text-xs text-gray-500">NIK: {surat.pemohon?.nik || '-'}</p>
                                         </div>

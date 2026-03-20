@@ -161,7 +161,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     <h2 className="text-[20px] font-semibold text-gray-900 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
                         {getRtRwLabel()}
                     </h2>
-                    <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider font-medium truncate">
+                    <p className="text-xs text-gray-400 mt-1 tracking-normal font-medium truncate">
                         {kelurahanName || 'Sistem Manajemen RT'}
                     </p>
                 </div>
@@ -182,9 +182,9 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                                 <DotsThree weight="bold" className="w-5 h-5" />
                             </div>
                         ) : (
-                            <button 
+                             <button 
                                 onClick={() => toggleGroup(group.label)}
-                                className="w-full flex items-center justify-between px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-900 uppercase tracking-wider rounded-lg transition-colors group/header"
+                                className="w-full flex items-center justify-between px-3 py-1 text-xs font-semibold text-gray-500 hover:text-gray-900 tracking-normal rounded-lg transition-colors group/header"
                             >
                                 <span>{group.label}</span>
                                 <CaretDown weight="bold" className={`w-3 h-3 text-gray-400 group-hover/header:text-gray-600 transition-transform duration-300 ${isExpanded ? 'rotate-0' : '-rotate-90'}`} />

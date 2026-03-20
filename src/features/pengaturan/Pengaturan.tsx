@@ -708,11 +708,11 @@ export default function Pengaturan() {
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="page-title">Pengaturan Sistem</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-normal">
                         Konfigurasi khusus untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
-                <div className="px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-bold border border-brand-100 uppercase tracking-widest shadow-sm">
+                <div className="px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-bold border border-brand-100 tracking-normal shadow-sm">
                     {currentScope} Active
                 </div>
             </div>
@@ -786,7 +786,7 @@ export default function Pengaturan() {
                                 <div className="pt-6 border-t border-gray-100">
                                     <div className="flex items-center gap-2 mb-4">
                                         <Palette weight="fill" className="text-brand-500 w-5 h-5" />
-                                        <label className="block text-sm font-bold text-gray-900 uppercase tracking-wider">Aksen Warna Tema Sistem</label>
+                                        <label className="block text-sm font-bold text-gray-900 tracking-normal">Aksen Warna Tema Sistem</label>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-gray-50/50 p-6 rounded-2xl border border-gray-200/50">
                                         <div>
@@ -838,7 +838,7 @@ export default function Pengaturan() {
                                     {/* JABATAN */}
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
-                                            <label className="block text-sm font-bold text-gray-900 uppercase tracking-wider">Daftar Jabatan {currentScope}</label>
+                                            <label className="block text-sm font-bold text-gray-900 tracking-normal">Daftar Jabatan {currentScope}</label>
                                             {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
                                             {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
                                         </div>
@@ -872,7 +872,7 @@ export default function Pengaturan() {
                                     {/* PERIODE */}
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
-                                            <label className="block text-sm font-bold text-gray-900 uppercase tracking-wider">Periode ({currentScope})</label>
+                                            <label className="block text-sm font-bold text-gray-900 tracking-normal">Periode ({currentScope})</label>
                                             {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
                                             {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
                                         </div>
@@ -916,7 +916,7 @@ export default function Pengaturan() {
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Money weight="fill" className="text-emerald-500 w-5 h-5" />
-                                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Kategori Pemasukan</h3>
+                                                <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pemasukan</h3>
                                             </div>
                                             <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
                                                 <div className="flex gap-2">
@@ -957,7 +957,7 @@ export default function Pengaturan() {
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Money weight="fill" className="text-rose-500 w-5 h-5" />
-                                                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Kategori Pengeluaran</h3>
+                                                <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pengeluaran</h3>
                                             </div>
                                             <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
                                                 <div className="flex gap-2">
@@ -1005,7 +1005,7 @@ export default function Pengaturan() {
                                             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">Tetap - Dihuni</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Tetap - Dihuni</label>
                                                         <Controller
                                                             name="iuran_tetap_dihuni"
                                                             control={control}
@@ -1015,7 +1015,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">Tetap - Kosong</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Tetap - Kosong</label>
                                                         <Controller
                                                             name="iuran_tetap_kosong"
                                                             control={control}
@@ -1025,7 +1025,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">Kontrak - Dihuni</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Kontrak - Dihuni</label>
                                                         <Controller
                                                             name="iuran_kontrak_dihuni"
                                                             control={control}
@@ -1035,7 +1035,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">Kontrak - Kosong</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Kontrak - Kosong</label>
                                                         <Controller
                                                             name="iuran_kontrak_kosong"
                                                             control={control}
@@ -1047,7 +1047,7 @@ export default function Pengaturan() {
                                                 </div>
 
                                                 <div className="pt-4 border-t border-gray-100">
-                                                    <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Opsi Tahun Pembayaran</label>
+                                                    <label className="block text-sm font-bold text-gray-700 mb-3 tracking-normal">Opsi Tahun Pembayaran</label>
                                                     <div className="flex gap-2 mb-4">
                                                         <input
                                                             type="number"
@@ -1057,7 +1057,7 @@ export default function Pengaturan() {
                                                             className="flex-1 rounded-xl border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all shadow-sm"
                                                             placeholder="2026"
                                                         />
-                                                        <button type="button" onClick={() => addCategory('tahun')} className="p-3 bg-brand-100 text-brand-700 rounded-xl hover:bg-brand-200 transition-all font-bold text-xs uppercase shadow-sm">Tambah</button>
+                                                        <button type="button" onClick={() => addCategory('tahun')} className="p-3 bg-brand-100 text-brand-700 rounded-xl hover:bg-brand-200 transition-all font-bold text-xs shadow-sm">Tambah</button>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
                                                         {tahunIuran.map(tahun => (
@@ -1085,7 +1085,7 @@ export default function Pengaturan() {
 
                                             {dendaRondaAktif && (
                                                 <div className="animate-fade-in pt-4 border-t border-slate-700">
-                                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Nominal Denda Per Ketidakhadiran</label>
+                                                    <label className="block text-[10px] font-bold text-slate-400 mb-2 tracking-normal">Nominal Denda Per Ketidakhadiran</label>
                                                     <Controller
                                                         name="denda_ronda_nominal"
                                                         control={control}
@@ -1412,7 +1412,7 @@ export default function Pengaturan() {
                             <div className="flex items-center gap-6">
                                 <div>
                                     <h3 className="text-[20px] font-bold text-slate-800 leading-none">Manajemen Akses</h3>
-                                    <p className="text-[12px] text-slate-500 mt-2 font-medium uppercase tracking-wider">Pengaturan RBAC & Hak Akses per tenant.</p>
+                                    <p className="text-[12px] text-slate-500 mt-2 font-medium tracking-normal">Pengaturan RBAC & Hak Akses per tenant.</p>
                                 </div>
                                 <div className="h-10 w-[1px] bg-gray-100 hidden md:block"></div>
                                 <div className="flex bg-gray-100 p-1 rounded-xl">
@@ -1456,12 +1456,12 @@ export default function Pengaturan() {
                             <div className="bg-white border border-brand-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                                 <div className="px-6 py-4 bg-brand-50 border-b border-brand-100 flex items-center gap-3">
                                     <UserIcon weight="fill" className="w-5 h-5 text-brand-600" />
-                                    <h3 className="text-[14px] font-semibold text-slate-800 uppercase tracking-widest">Tambah Pengguna Baru</h3>
+                                    <h3 className="text-[14px] font-semibold text-slate-800 tracking-normal">Tambah Pengguna Baru</h3>
                                 </div>
                                 <form onSubmit={handleAddUser} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {/* Warga Selector */}
                                     <div className="md:col-span-2">
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">
                                             Pilih dari Data Warga {currentScope}
                                             <span className="ml-1 font-normal text-slate-400">(opsional — auto-isi nama &amp; email)</span>
                                         </label>
@@ -1483,25 +1483,25 @@ export default function Pengaturan() {
                                         )}
                                     </div>
                                     <div>
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Nama Lengkap</label>
                                         <input type="text" required value={newUserForm.name}
                                             onChange={e => setNewUserForm(prev => ({...prev, name: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Email</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Email</label>
                                         <input type="email" required value={newUserForm.email}
                                             onChange={e => setNewUserForm(prev => ({...prev, email: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Password Default</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Password Default</label>
                                         <input type="text" placeholder="Default: password123" value={newUserForm.password}
                                             onChange={e => setNewUserForm(prev => ({...prev, password: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm" />
                                     </div>
                                     <div>
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Role / Hak Akses</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Role / Hak Akses</label>
                                         <select value={newUserForm.role_id}
                                             onChange={e => setNewUserForm(prev => ({...prev, role_id: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
@@ -1510,7 +1510,7 @@ export default function Pengaturan() {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Scope</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Scope</label>
                                         <select value={newUserForm.scope}
                                             onChange={e => setNewUserForm(prev => ({...prev, scope: e.target.value}))}
                                             className="w-full rounded-xl p-3 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-white text-sm font-bold">
@@ -1536,11 +1536,11 @@ export default function Pengaturan() {
                             <div className="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                                 <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
                                     <ShieldCheck weight="fill" className="w-5 h-5 text-slate-700" />
-                                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Tambah Peran Baru</h3>
+                                    <h3 className="text-sm font-bold text-slate-900 tracking-normal">Tambah Peran Baru</h3>
                                 </div>
                                 <form onSubmit={handleAddRole} className="p-6 flex gap-4 items-end">
                                     <div className="flex-1">
-                                        <label className="block text-[12px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Nama Role</label>
+                                        <label className="block text-[12px] font-semibold text-slate-500 tracking-normal mb-2">Nama Role</label>
                                         <input type="text" required placeholder="Contoh: Humas, Keamanan"
                                             value={newRoleForm.name}
                                             onChange={e => setNewRoleForm(prev => ({...prev, name: e.target.value}))}
@@ -1582,14 +1582,14 @@ export default function Pengaturan() {
                                                         </td>
                                                         <td className="p-4">
                                                             <p className="text-[14px] font-bold text-slate-800 leading-tight">{user.name}</p>
-                                                            <p className="text-[12px] text-brand-600 font-medium mt-0.5 uppercase tracking-tighter">{(user as any).role_entity?.name || user.role}</p>
+                                                            <p className="text-[12px] text-brand-600 font-medium mt-0.5 tracking-normal">{(user as any).role_entity?.name || user.role}</p>
                                                         </td>
                                                         <td className="p-4 text-slate-500 text-[14px]">
                                                             <p className="font-medium text-slate-700">{user.email}</p>
-                                                            <p className="text-[12px] mt-0.5 flex items-center gap-1 uppercase font-bold tracking-widest text-slate-400">{user.scope || 'RT'}</p>
+                                                            <p className="text-[12px] mt-0.5 flex items-center gap-1 font-bold tracking-normal text-slate-400">{user.scope || 'RT'}</p>
                                                         </td>
                                                         <td className="p-4 text-center">
-                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${user.verification_status === 'VERIFIED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-normal border ${user.verification_status === 'VERIFIED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                                                                 {user.verification_status || 'Unverified'}
                                                             </span>
                                                         </td>
@@ -1622,7 +1622,7 @@ export default function Pengaturan() {
                                                                 <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
                                                                     <div className="lg:col-span-1 space-y-4">
                                                                         <div className="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm">
-                                                                            <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-50 pb-2">Detil Profil</h4>
+                                                                            <h4 className="text-[12px] font-bold text-slate-400 tracking-normal mb-4 border-b border-slate-50 pb-2">Detil Profil</h4>
                                                                             <div className="space-y-4">
                                                                                 <div>
                                                                                     <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Nama</label>

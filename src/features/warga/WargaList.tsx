@@ -143,7 +143,7 @@ export default function WargaList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">{user?.role?.toLowerCase() === 'warga' ? 'Profil Warga' : 'Data Warga'}</h1>
-                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 tracking-normal">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
@@ -168,7 +168,7 @@ export default function WargaList() {
                             >
                                 <ShareNetwork weight="bold" />
                                 <span className="hidden sm:inline">Share Link</span>
-                                <span className="sm:hidden text-xs uppercase tracking-tighter">Share Link</span>
+                                <span className="sm:hidden text-xs tracking-normal">Share Link</span>
                             </button>
                         </HasPermission>
 
@@ -186,7 +186,7 @@ export default function WargaList() {
                                     <div className="fixed inset-0 z-[60]" onClick={() => setShowMobileMenu(false)}></div>
                                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[70] animate-zoom-in">
                                         <div className="px-4 py-2 mb-1">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi Lainnya</p>
+                                            <p className="text-[10px] font-bold text-slate-400 tracking-normal">Aksi Lainnya</p>
                                         </div>
                                         <HasPermission module="Warga" action="Buat">
                                             <button
@@ -351,14 +351,14 @@ export default function WargaList() {
                                                 <div className="flex gap-2 justify-center">
                                                     <button
                                                         onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-all shadow-sm shadow-green-500/10"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-bold tracking-normal transition-all shadow-sm shadow-green-500/10"
                                                     >
                                                         <UserCheck weight="bold" />
                                                         Setujui
                                                     </button>
                                                     <button
                                                         onClick={() => handleVerify(warga.id, 'REJECTED', warga.nama)}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-[10px] font-bold tracking-normal transition-all"
                                                     >
                                                         <XCircle weight="bold" />
                                                         Tolak
@@ -463,22 +463,22 @@ export default function WargaList() {
                                                 <h3 className="font-bold text-gray-900 text-lg">{warga.nama}</h3>
                                                 <div className="flex items-center gap-2 mt-0.5">
                                                     <p className="text-sm font-medium text-brand-600 tracking-wide">{warga.nik}</p>
-                                                    {warga.status_penduduk === 'Kontrak' && <span className="text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 px-1.5 rounded uppercase">Kontrak</span>}
-                                                    {warga.status_rumah === 'Kosong' && <span className="text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 px-1.5 rounded uppercase">Kosong</span>}
+                                                    {warga.status_penduduk === 'Kontrak' && <span className="text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 px-1.5 rounded">Kontrak</span>}
+                                                    {warga.status_rumah === 'Kosong' && <span className="text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 px-1.5 rounded">Kosong</span>}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="mt-3 grid grid-cols-2 gap-y-3 gap-x-2 text-sm text-gray-600">
                                             <div className="flex flex-col">
-                                                <span className="text-[9px] text-gray-400 uppercase font-bold tracking-tight">J. Kelamin</span>
+                                                <span className="text-[9px] text-gray-400 font-bold tracking-tight">Jenis Kelamin</span>
                                                 <span className="text-xs truncate">{warga.jenis_kelamin || '-'}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[9px] text-gray-400 uppercase font-bold tracking-tight">Agama</span>
+                                                <span className="text-[9px] text-gray-400 font-bold tracking-tight">Agama</span>
                                                 <span className="text-xs truncate">{warga.agama || '-'}</span>
                                             </div>
                                             <div className="flex flex-col col-span-2">
-                                                <span className="text-[10px] text-gray-400 uppercase font-semibold">Kontak</span>
+                                                <span className="text-[10px] text-gray-400 font-semibold">Kontak</span>
                                                 <span className="text-xs truncate">{warga.kontak || '-'}</span>
                                             </div>
                                         </div>
@@ -540,7 +540,7 @@ export default function WargaList() {
                             <div className="flex justify-between items-start mb-6">
                                 <div>
                                     <h3 className="text-xl font-black text-slate-900 leading-tight">Share Link Pendaftaran</h3>
-                                    <p className="text-slate-500 text-xs font-medium mt-1 uppercase tracking-widestBold">Undang warga untuk isi data mandiri</p>
+                                    <p className="text-slate-500 text-xs font-medium mt-1 tracking-normal">Undang warga untuk isi data mandiri</p>
                                 </div>
                                 <button onClick={() => setShowShareModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                     <XCircle size={24} className="text-slate-400" />
@@ -558,7 +558,7 @@ export default function WargaList() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Link Pendaftaran</label>
+                                    <label className="text-[10px] font-bold text-slate-400 tracking-normal pl-1">Link Pendaftaran</label>
                                     <div className="flex gap-2">
                                         <div className="flex-1 bg-white border border-slate-200 px-4 py-3 rounded-xl text-xs font-mono text-brand-700 truncate select-all">
                                             {`${window.location.origin}/join/${currentTenant?.id}`}
@@ -576,7 +576,7 @@ export default function WargaList() {
 
                             <button
                                 onClick={() => setShowShareModal(false)}
-                                className="w-full py-4 text-slate-500 font-black text-[10px] uppercase tracking-[0.2em] hover:text-slate-900 transition-colors"
+                                className="w-full py-4 text-slate-500 font-bold text-[10px] tracking-normal hover:text-slate-900 transition-colors"
                             >
                                 Tutup Panel
                             </button>

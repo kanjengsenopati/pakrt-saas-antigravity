@@ -87,7 +87,7 @@ export default function PengurusList() {
                     <h1 className="page-title">
                         {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 'Riwayat Kepengurusan'}
                     </h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-normal">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                         {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
                     </p>
@@ -162,7 +162,7 @@ export default function PengurusList() {
                     <div className={`overflow-x-auto ${viewMode === 'list' ? 'hidden md:block' : 'hidden'}`}>
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50 text-slate-500 text-[14px] uppercase tracking-wider border-b border-slate-200">
+                                <tr className="bg-slate-50 text-slate-500 text-[14px] font-bold border-b border-slate-200">
                                     <th className="p-4 font-semibold">Nama Jabatan</th>
                                     <th className="p-4 font-semibold">Dijabat Oleh</th>
                                     <th className="p-4 font-semibold">Periode</th>
@@ -220,7 +220,7 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4 text-center">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
                                                     {pengurus.status || 'aktif'}
                                                 </span>
                                             </td>
@@ -270,7 +270,7 @@ export default function PengurusList() {
                                                         <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">
                                                             Periode {pengurus.periode}
                                                         </span>
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
                                                             {pengurus.status || 'aktif'}
                                                         </span>
                                                     </div>
@@ -345,7 +345,7 @@ export default function PengurusList() {
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left border-collapse">
                                             <thead>
-                                                <tr className="text-gray-500 text-[10px] uppercase tracking-wider border-b border-gray-100 bg-white">
+                                                <tr className="text-gray-500 text-[10px] font-bold border-b border-gray-100 bg-white">
                                                     <th className="px-6 py-3 font-semibold">Nama Jabatan</th>
                                                     <th className="px-6 py-3 font-semibold">Pejabat</th>
                                                     <th className="px-6 py-3 font-semibold text-right">Aksi</th>

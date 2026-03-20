@@ -270,7 +270,7 @@ export default function RondaForm() {
                                                     <p className={`text-sm font-medium ${isAssigned ? 'text-orange-700' : isSelected ? 'text-brand-900' : 'text-gray-700'
                                                         }`}>{warga.nama}</p>
                                                     {isAssigned && (
-                                                        <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wide text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded">
+                                                        <span className="inline-block mt-1 text-[10px] font-semibold tracking-normal text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded">
                                                             Sudah di Regu
                                                         </span>
                                                     )}

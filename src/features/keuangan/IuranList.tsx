@@ -118,7 +118,7 @@ export default function IuranList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Pembayaran Iuran</h1>
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-widest mt-1">
+                    <p className="text-xs font-semibold text-gray-400 tracking-normal mt-1 italic">
                         Rekapitulasi pembayaran iuran wajib bulanan warga
                     </p>
                 </div>
@@ -145,7 +145,7 @@ export default function IuranList() {
                             <CheckCircle weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 tracking-normal leading-none uppercase">Total Kolektif {filterYear || 'Semua'}</p>
+                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 tracking-normal leading-none">Total Kolektif {filterYear || 'Semua'}</p>
                             <p className="text-base sm:text-lg font-semibold text-gray-900 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
                             <div className="hidden sm:flex items-center gap-1 mt-1 text-xs font-medium text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded-full w-fit italic">
                                 * Filter tahun aktif
@@ -162,7 +162,7 @@ export default function IuranList() {
                             <Plus weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-[10px] sm:text-xs font-semibold text-white/80 tracking-normal leading-none uppercase">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
+                            <p className="text-[10px] sm:text-xs font-semibold text-white/80 tracking-normal leading-none">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
                             <p className="text-base sm:text-lg font-semibold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
                             <div className="hidden sm:flex items-center gap-1 mt-1 text-xs font-medium text-white bg-white/10 px-1.5 py-0.5 rounded-full w-fit border border-white/10">
                                 <span className="w-1 h-1 rounded-full bg-emerald-300 animate-pulse" />
@@ -234,7 +234,7 @@ export default function IuranList() {
                 {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50 border-b border-gray-100 text-sm font-medium uppercase text-gray-600 tracking-wider">
+                        <thead className="bg-gray-50 border-b border-gray-100 text-[11px] font-semibold text-gray-500 tracking-normal">
                             <tr>
                                 <th className="p-3">Tanggal Bayar & Kategori</th>
                                 <th className="p-3">Warga Pembayar</th>
@@ -250,7 +250,7 @@ export default function IuranList() {
                                     <td colSpan={5} className="text-center py-20 text-gray-500">
                                         <div className="flex flex-col items-center gap-2">
                                             <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-                                            <span className="text-xs font-bold text-brand-600 uppercase tracking-widest">Memuat database...</span>
+                                            <span className="text-xs font-bold text-brand-600 tracking-normal">Memuat database...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -263,7 +263,7 @@ export default function IuranList() {
                                             </div>
                                         </div>
                                         <p className="text-lg font-semibold text-gray-900">Data Tidak Ditemukan</p>
-                                        <p className="text-xs text-gray-400 mt-1 uppercase tracking-tight">Belum ada riwayat pembayaran yang cocok dengan filter aktif.</p>
+                                        <p className="text-xs text-gray-400 mt-1 tracking-normal italic">Belum ada riwayat pembayaran yang cocok dengan filter aktif.</p>
                                     </td>
                                 </tr>
                             ) : (
@@ -272,7 +272,7 @@ export default function IuranList() {
                                         <td className="p-3">
                                             <div className="font-semibold text-gray-900">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
                                             <div className="text-[10px] text-gray-400 font-mono mt-0.5 whitespace-nowrap tracking-wider">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</div>
-                                            <div className="text-xs text-brand-600 font-semibold uppercase tracking-tight mt-1">{iuran.kategori || 'Iuran Bulanan'}</div>
+                                            <div className="text-xs text-brand-600 font-bold tracking-normal mt-1">{iuran.kategori || 'Iuran Bulanan'}</div>
                                         </td>
                                         <td className="p-3">
                                             <p className="font-semibold text-gray-900">{iuran.warga?.nama || 'Warga Terhapus'}</p>
@@ -281,7 +281,7 @@ export default function IuranList() {
                                         <td className="p-3">
                                             <div className="flex flex-wrap gap-1 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
-                                                    <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-[10px] font-semibold bg-white text-blue-700 border border-blue-200 uppercase tracking-widest shadow-sm">
+                                                    <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-[10px] font-semibold bg-white text-blue-700 border border-blue-200 tracking-normal shadow-sm">
                                                         {getMonthName(b).substring(0, 3)} {iuran.periode_tahun}
                                                     </span>
                                                 ))}
@@ -397,7 +397,7 @@ export default function IuranList() {
                                                 <div className="text-[10px] font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100 leading-none">
                                                     {dateUtils.toDisplay(iuran.tanggal_bayar)}
                                                 </div>
-                                                <p className="text-[10px] text-brand-600 font-semibold mt-0.5 uppercase tracking-tight">{iuran.kategori || 'Iuran Bulanan'}</p>
+                                                <p className="text-[10px] text-brand-600 font-semibold mt-0.5 tracking-normal">{iuran.kategori || 'Iuran Bulanan'}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 mb-3">
@@ -451,7 +451,7 @@ export default function IuranList() {
                                                         title="Lihat Bukti"
                                                     >
                                                         <Eye weight="bold" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                                        <span className="text-[9px] font-black uppercase tracking-tighter">Bukti</span>
+                                                        <span className="text-[9px] font-black tracking-normal">Bukti</span>
                                                     </button>
                                                 )}
                                             </div>
@@ -489,7 +489,7 @@ export default function IuranList() {
                                     <HasPermission module="Iuran Warga" action="Hapus">
                                         <button
                                             onClick={() => handleDelete(iuran.id)}
-                                            className="p-2 text-red-600 bg-white border border-red-100 hover:bg-red-50 rounded-lg transition-all flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide" title="Hapus / Batalkan Bayar">
+                                            className="p-2 text-red-600 bg-white border border-red-100 hover:bg-red-50 rounded-lg transition-all flex items-center gap-1.5 text-xs font-semibold tracking-normal" title="Hapus / Batalkan Bayar">
                                             <Trash weight="bold" className="w-3.5 h-3.5" /> Batal Bayar
                                         </button>
                                     </HasPermission>
@@ -565,7 +565,7 @@ export default function IuranList() {
                                                     setIsSubmittingVerify(false);
                                                 }
                                             }}
-                                            className="w-full px-4 py-3 bg-brand-600 text-white rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-brand-700 transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                            className="w-full px-4 py-3 bg-brand-600 text-white rounded-xl text-xs font-semibold tracking-normal hover:bg-brand-700 transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                         >
                                             {isSubmittingVerify ? <CircleNotch className="w-4 h-4 animate-spin" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                             Diterima / Sah
@@ -573,7 +573,7 @@ export default function IuranList() {
                                         <button
                                             disabled={isSubmittingVerify}
                                             onClick={() => setIsRejecting(true)}
-                                            className="w-full px-4 py-3 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-red-50 transition-all disabled:opacity-50"
+                                            className="w-full px-4 py-3 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-semibold tracking-normal hover:bg-red-50 transition-all disabled:opacity-50"
                                         >
                                             Tolak
                                         </button>
@@ -591,7 +591,7 @@ export default function IuranList() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => { setIsRejecting(false); setRejectReason(''); }}
-                                            className="flex-1 px-3 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-gray-200 transition-all"
+                                            className="flex-1 px-3 py-2.5 bg-gray-100 text-gray-600 rounded-xl text-xs font-semibold tracking-normal hover:bg-gray-200 transition-all"
                                         >
                                             Batal
                                         </button>
@@ -610,7 +610,7 @@ export default function IuranList() {
                                                     setIsSubmittingVerify(false);
                                                 }
                                             }}
-                                            className="flex-[2] px-3 py-2.5 bg-red-600 text-white rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-red-700 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                                            className="flex-[2] px-3 py-2.5 bg-red-600 text-white rounded-xl text-xs font-semibold tracking-normal hover:bg-red-700 transition-all shadow-md active:scale-95 disabled:opacity-50"
                                         >
                                             Konfirmasi Tolak
                                         </button>

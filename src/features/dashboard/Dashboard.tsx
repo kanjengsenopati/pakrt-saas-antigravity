@@ -237,7 +237,7 @@ export default function Dashboard() {
                             Agenda Mendatang
                         </h3>
                         <button
-                            className="text-[12px] font-semibold text-brand-600 uppercase tracking-wider hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
+                            className="text-[12px] font-semibold text-brand-600 tracking-normal hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
                             onClick={() => navigate('/agenda')}
                         >
                             Lihat Semua
@@ -260,7 +260,7 @@ export default function Dashboard() {
                                                 <span className="text-[11px] font-bold">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[0]}
                                                 </span>
-                                                <span className="text-[9px] font-bold uppercase tracking-wider">
+                                                <span className="text-[9px] font-bold tracking-normal">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[1]}
                                                 </span>
                                             </div>
@@ -314,7 +314,7 @@ export default function Dashboard() {
                             <div className="space-y-3">
                                 {recentActivities.map((act: Aktivitas) => (
                                     <div key={act.id} className="pl-3 border-l-2 border-brand-200 hover:border-brand-500 transition-all">
-                                        <p className="text-xs font-semibold text-brand-600 uppercase tracking-wide leading-none">{act.action}</p>
+                                        <p className="text-xs font-semibold text-brand-600 tracking-normal leading-none capitalize">{act.action.toLowerCase()}</p>
                                         <p className="text-sm font-medium text-gray-700 leading-snug mt-1">{act.details}</p>
                                         <p className="text-xs text-gray-400 mt-1 font-medium italic">{formatDate(act.timestamp)}</p>
                                     </div>
@@ -356,7 +356,7 @@ export default function Dashboard() {
                                             {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}
                                         </p>
                                     </div>
-                                    <span className="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold uppercase tracking-wide shrink-0 shadow-sm">
+                                    <span className="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold tracking-normal shrink-0 shadow-sm">
                                         {ronda.regu}
                                     </span>
                                 </div>
@@ -401,18 +401,18 @@ export default function Dashboard() {
                             <div className="space-y-4 py-1">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-center">
-                                        <p className="text-xs font-semibold text-emerald-600 uppercase tracking-widest mb-1">Terbayar</p>
+                                        <p className="text-xs font-semibold text-emerald-600 tracking-normal mb-1">Terbayar</p>
                                         <p className="text-sm font-bold text-emerald-700">{formatRupiah(wargaIuranStats.totalPaid)}</p>
                                     </div>
                                     <div className="p-3 bg-amber-50 rounded-xl border border-amber-100 text-center">
-                                        <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1">Sisa Tagihan</p>
+                                        <p className="text-xs font-semibold text-amber-600 tracking-normal mb-1">Sisa Tagihan</p>
                                         <p className="text-sm font-bold text-amber-700">{formatRupiah(Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid))}</p>
                                     </div>
                                 </div>
                                 
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center px-1">
-                                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Progress Pembayaran {new Date().getFullYear()}</span>
+                                        <span className="text-xs font-semibold text-gray-400 tracking-normal">Progress Pembayaran {new Date().getFullYear()}</span>
                                         <span className="text-xs font-semibold text-brand-600">{wargaIuranStats.paidMonths.length} / 12 Bln</span>
                                     </div>
                                     <div className="flex flex-wrap gap-1.5 justify-between">
@@ -453,7 +453,7 @@ export default function Dashboard() {
                                             </div>
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900 leading-none">{iuran.warga?.nama}</p>
-                                                <p className="text-xs text-gray-400 mt-1 uppercase tracking-wide font-medium italic">
+                                                <p className="text-xs text-gray-400 mt-1 tracking-normal font-medium italic">
                                                     Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
                                                 </p>
                                             </div>

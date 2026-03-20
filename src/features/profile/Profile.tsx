@@ -104,7 +104,7 @@ export default function Profile() {
                         <div className="px-5 pb-6 -mt-10 text-center">
                             <div className="inline-flex relative">
                                 <div className="w-20 h-20 rounded-[1.5rem] bg-white p-1 shadow-xl ring-1 ring-slate-100">
-                                    <div className="w-full h-full rounded-[1.2rem] bg-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-inner uppercase">
+                                    <div className="w-full h-full rounded-[1.2rem] bg-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-inner">
                                         {user?.name ? user.name.substring(0, 2) : '??'}
                                     </div>
                                 </div>

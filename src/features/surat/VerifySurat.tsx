@@ -49,9 +49,9 @@ export default function VerifySurat() {
                     <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-red-500">
                         <Warning weight="fill" className="w-12 h-12" />
                     </div>
-                    <h1 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">Verifikasi Gagal</h1>
+                    <h1 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Verifikasi Gagal</h1>
                     <p className="text-slate-500 mb-8">{error || "Dokumen ini tidak terdaftar dalam sistem kami."}</p>
-                    <div className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-700 text-xs font-bold uppercase tracking-widest">
+                    <div className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-700 text-xs font-bold tracking-normal">
                         Peringatan: Dokumen Tidak Sah
                     </div>
                 </div>
@@ -75,8 +75,8 @@ export default function VerifySurat() {
                                 <SealCheck weight="fill" className="w-14 h-14 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-black text-white uppercase tracking-tight">Dokumen Sah</h1>
-                                <p className="text-emerald-50 font-bold uppercase tracking-[0.2em] text-xs">Terkonfirmasi Sistem PakRT</p>
+                                <h1 className="text-3xl font-black text-white tracking-tight">Dokumen Sah</h1>
+                                <p className="text-emerald-50 font-bold tracking-normal text-xs">Terkonfirmasi Sistem PakRT</p>
                             </div>
                         </div>
                     </div>
@@ -97,15 +97,15 @@ export default function VerifySurat() {
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <FileText weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Jenis Dokumen</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Jenis Dokumen</span>
                                 </div>
-                                <p className="font-bold text-slate-900 text-lg leading-tight uppercase">{surat.jenis_surat}</p>
+                                <p className="font-bold text-slate-900 text-lg leading-tight">{surat.jenis_surat}</p>
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <Info weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Nomor Surat</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Nomor Surat</span>
                                 </div>
                                 <p className="font-mono font-bold text-slate-900">{surat.nomor_surat || 'DALAM PROSES'}</p>
                             </div>
@@ -113,15 +113,15 @@ export default function VerifySurat() {
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <User weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Nama Pemohon</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Nama Pemohon</span>
                                 </div>
-                                <p className="font-bold text-slate-900 text-lg uppercase">{surat.pemohon?.nama}</p>
+                                <p className="font-bold text-slate-900 text-lg">{surat.pemohon?.nama}</p>
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <CalendarBlank weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Tanggal Terbit</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Tanggal Terbit</span>
                                 </div>
                                 <p className="font-bold text-slate-900 leading-tight">
                                     {dateUtils.toDisplay(surat.tanggal)}
@@ -132,14 +132,14 @@ export default function VerifySurat() {
                         <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                             <div className="flex items-center gap-2 text-slate-400">
                                 <MapPin weight="bold" className="w-4 h-4" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Keterangan / Keperluan</span>
+                                <span className="text-[10px] font-bold text-slate-400 tracking-normal">Keterangan / Keperluan</span>
                             </div>
                             <p className="text-slate-700 font-medium leading-relaxed">{surat.keperluan}</p>
                         </div>
                     </div>
 
                     <div className="p-8 border-t border-slate-100 bg-slate-50/50 text-center">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Hak Cipta © PakRT Digital System</p>
+                        <p className="text-[10px] font-bold text-slate-400 tracking-normal">Hak Cipta © PakRT Digital System</p>
                     </div>
                 </div>
 

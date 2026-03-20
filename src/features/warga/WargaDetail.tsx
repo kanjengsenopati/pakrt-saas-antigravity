@@ -66,16 +66,16 @@ export default function WargaDetail() {
                         <h2 className="text-xl font-bold text-gray-900 leading-tight">{warga.nama}</h2>
                         <p className="text-gray-500 text-sm mt-1">{warga.nik}</p>
                         <div className="mt-4 flex flex-wrap justify-center gap-2">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200 uppercase">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200">
                                 Kepala Keluarga
                             </span>
                             {warga.status_penduduk && (
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase ${warga.status_penduduk === 'Tetap' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}>
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${warga.status_penduduk === 'Tetap' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}>
                                     {warga.status_penduduk}
                                 </span>
                             )}
                             {warga.status_rumah && (
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase ${warga.status_rumah === 'Dihuni' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-rose-50 text-rose-700 border-rose-100'}`}>
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${warga.status_rumah === 'Dihuni' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-rose-50 text-rose-700 border-rose-100'}`}>
                                     {warga.status_rumah === 'Dihuni' ? 'Rumah Dihuni' : 'Rumah Kosong'}
                                 </span>
                             )}
@@ -202,7 +202,7 @@ function InfoItem({ icon: Icon, label, value, className = "" }: { icon: any, lab
                 <Icon weight="duotone" className="w-5 h-5 text-gray-400" />
             </div>
             <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">{label}</p>
+                <p className="text-xs text-gray-400 font-medium tracking-normal">{label}</p>
                 <p className="text-gray-800 font-medium mt-0.5">{value}</p>
             </div>
         </div>

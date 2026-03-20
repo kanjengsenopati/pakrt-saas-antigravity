@@ -267,11 +267,11 @@ export default function IuranForm() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold uppercase tracking-widest opacity-60">Status Pembayaran:</span>
-                            <span className="text-xs font-semibold uppercase tracking-widest">
-                                {currentStatus === 'VERIFIED' ? 'SAH / DITERIMA' :
-                                 currentStatus === 'REJECTED' ? 'DITOLAK' :
-                                 'MENUNGGU VERIFIKASI'}
+                            <span className="text-xs font-semibold tracking-normal opacity-60">Status Pembayaran:</span>
+                            <span className="text-xs font-semibold tracking-normal">
+                                {currentStatus === 'VERIFIED' ? 'Sah / Diterima' :
+                                 currentStatus === 'REJECTED' ? 'Ditolak' :
+                                 'Menunggu Verifikasi'}
                             </span>
                         </div>
                         {currentStatus === 'REJECTED' && rejectionReason && (
@@ -293,7 +293,7 @@ export default function IuranForm() {
                     {isLoadingBilling ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Memuat Data Tagihan...</p>
+                            <p className="text-xs font-semibold text-gray-500 tracking-normal">Memuat Data Tagihan...</p>
                         </div>
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">

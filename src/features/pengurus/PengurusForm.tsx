@@ -179,21 +179,21 @@ export default function PengurusForm() {
                                 <div className="mt-2 p-4 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs flex flex-col gap-3 shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="p-1 bg-brand-600 rounded text-white"><FloppyDisk size={12} weight="bold" /></div>
-                                        <p className="font-bold uppercase tracking-wider text-[10px]">Data Jabatan Belum Diatur</p>
+                                        <p className="font-bold tracking-normal text-[10px]">Data Jabatan Belum Diatur</p>
                                     </div>
                                     <p className="text-gray-600 leading-relaxed">System mendeteksi belum ada daftar jabatan dan periode yang diatur untuk <span className="font-bold">{currentScope}</span> ini.</p>
                                     <div className="flex gap-2">
                                         <button
                                             type="button"
                                             onClick={handleQuickSetup}
-                                            className="px-3 py-1.5 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 transition-all text-[10px] uppercase tracking-wide shadow-sm active-press"
+                                            className="px-3 py-1.5 bg-brand-600 text-white rounded-lg font-bold hover:bg-brand-700 transition-all text-[10px] tracking-normal shadow-sm active-press"
                                         >
                                             🚀 Jalankan Pengaturan Cepat
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => navigate('/pengaturan')}
-                                            className="px-3 py-1.5 bg-white border border-brand-200 text-brand-700 rounded-lg font-bold hover:bg-brand-50 transition-all text-[10px] uppercase tracking-wide"
+                                            className="px-3 py-1.5 bg-white border border-brand-200 text-brand-700 rounded-lg font-bold hover:bg-brand-50 transition-all text-[10px] tracking-normal"
                                         >
                                             ⚙️ Atur Manual
                                         </button>
@@ -235,7 +235,7 @@ export default function PengurusForm() {
                         {/* Keep consistency but hide second prompt if first one handles both */}
                         {periodeOptions.length === 0 && jabatanOptions.length > 0 && (
                             <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs flex flex-col gap-1">
-                                <p className="font-bold uppercase tracking-wider text-[10px]">Data Periode Kosong!</p>
+                                <p className="font-bold tracking-normal text-[10px]">Data Periode Kosong!</p>
                                 <p>Opsi periode belum diatur di Pengaturan Sistem.</p>
                                 <button
                                     type="button"
