@@ -296,22 +296,37 @@ export const pembayaranIuranService = {
     });
   },
 
-  async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori: string = 'Iuran Warga', scope: string = 'RT') {
+  async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori?: string, scope: string = 'RT') {
     const rate = await getWargaIuranRate(wargaId, tenantId, scope);
     
-    const existing = await prisma.pembayaranIuran.findMany({
+    // Normalize target category if provided
+    const targetKat = kategori?.trim().replace(/\s+/g, ' ').toLowerCase();
+
+    const allPayments = await prisma.pembayaranIuran.findMany({
       where: {
         tenant_id: tenantId,
         warga_id: wargaId,
-        kategori: kategori,
         periode_tahun: tahun,
         status: 'VERIFIED'
       }
     });
 
+    // Filter payments flexibly
+    const existing = allPayments.filter(p => {
+      const pKat = p.kategori.trim().replace(/\s+/g, ' ').toLowerCase();
+      
+      // If a specific category was requested (not the default 'Iuran Warga' or 'Semua')
+      if (targetKat && targetKat !== 'iuran warga' && targetKat !== 'semua') {
+        return pKat === targetKat;
+      }
+      
+      // Default behavior: match anything that contains 'iuran'
+      return pKat.includes('iuran');
+    });
+
     const totalPaid = existing.reduce((sum, curr) => sum + curr.nominal, 0);
     const expectedTotal = rate * 12;
-    const paidMonths = existing.flatMap(e => e.periode_bulan);
+    const paidMonths = [...new Set(existing.flatMap(e => e.periode_bulan))].sort((a, b) => a - b);
 
     return {
       rate,
