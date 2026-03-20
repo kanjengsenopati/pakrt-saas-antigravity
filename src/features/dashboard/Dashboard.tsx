@@ -458,7 +458,7 @@ export default function Dashboard() {
                                             </div>
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900 leading-none">
-                                                    {toTitleCase(iuran.warga?.nama)}
+                                                    {toTitleCase(iuran.warga?.nama || 'Warga')}
                                                 </p>
                                                 <p className="text-sm text-gray-400 mt-1 tracking-normal font-medium italic">
                                                     Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
