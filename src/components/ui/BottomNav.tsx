@@ -42,7 +42,7 @@ export function BottomNav() {
                                         <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-600 rounded-full animate-in fade-in zoom-in duration-300" />
                                     )}
                                 </div>
-                                <span className={`text-[12px] mt-1 transition-all duration-300 ${isActive ? 'font-bold opacity-100 text-slate-900' : 'font-semibold opacity-60 text-slate-400'}`}>
+                                <span className={`text-sm mt-1 transition-all duration-300 ${isActive ? 'font-bold opacity-100 text-slate-900' : 'font-semibold opacity-60 text-slate-400'}`}>
                                     {item.label}
                                 </span>
                             </NavLink>
@@ -54,7 +54,7 @@ export function BottomNav() {
                         className="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-600 transition-all active:scale-95 group"
                     >
                         <List weight="duotone" className="w-6 h-6 transition-colors group-hover:text-slate-600" />
-                        <span className="text-[12px] font-semibold mt-1 opacity-60 text-slate-400 group-hover:text-slate-600 transition-all">Menu</span>
+                        <span className="text-sm font-semibold mt-1 opacity-60 text-slate-400 group-hover:text-slate-600 transition-all">Menu</span>
                     </button>
                 </div>
             </div>

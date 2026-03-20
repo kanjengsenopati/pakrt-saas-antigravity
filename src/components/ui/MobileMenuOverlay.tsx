@@ -72,10 +72,10 @@ export function MobileMenuOverlay({ isOpen, onClose }: MobileMenuOverlayProps) {
             >
                 <div className="p-5 border-b border-white/5 flex items-center justify-between">
                     <div>
-                        <h2 className="text-lg font-bold bg-gradient-to-r from-brand-400 to-emerald-400 bg-clip-text text-transparent truncate max-w-[180px]" title={currentTenant?.name || 'PAKRT'}>
-                            {currentTenant?.name || 'PAKRT'}
+                        <h2 className="text-lg font-bold bg-gradient-to-r from-brand-400 to-emerald-400 bg-clip-text text-transparent truncate max-w-[180px]" title={currentTenant?.name || 'PakRT'}>
+                            {currentTenant?.name?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || 'PakRT'}
                         </h2>
-                        <p className="section-label !text-[11px] mt-1">
+                        <p className="section-label !text-sm mt-1">
                             Sistem Manajemen RT
                         </p>
                     </div>
