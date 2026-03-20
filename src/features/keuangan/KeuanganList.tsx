@@ -35,6 +35,17 @@ export default function KeuanganList() {
 
 
     useEffect(() => {
+        const CACHE_VERSION = 'pakrt_finance_v1.1';
+        if (!localStorage.getItem(CACHE_VERSION)) {
+            // Optional: clear specific older keys if needed
+            // localStorage.removeItem('some_old_key');
+            localStorage.setItem(CACHE_VERSION, 'true');
+            console.log("Finance module updated. Clearing cache and reloading...");
+            window.location.reload();
+        }
+    }, []);
+
+    useEffect(() => {
         if (currentTenant) {
             loadData();
         }
@@ -105,16 +116,16 @@ export default function KeuanganList() {
                 {/* KAS MASUK */}
                 <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-sm font-semibold text-slate-500 tracking-normal leading-none mb-1.5">Kas Masuk</p>
-                        <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
+                        <p className="text-sm font-medium text-slate-500 tracking-normal leading-none mb-1.5">Kas Masuk</p>
+                        <p className="text-sm sm:text-xl font-medium text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
                     </div>
                 </div>
 
                 {/* KAS KELUAR */}
                 <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-sm font-semibold text-slate-500 tracking-normal leading-none mb-1.5">Kas Keluar</p>
-                        <p className="text-sm sm:text-xl font-black text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
+                        <p className="text-sm font-medium text-slate-500 tracking-normal leading-none mb-1.5">Kas Keluar</p>
+                        <p className="text-sm sm:text-xl font-medium text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
                     </div>
                 </div>
 
@@ -122,8 +133,8 @@ export default function KeuanganList() {
                 <div className={`py-2 px-2 sm:py-3 sm:px-4 rounded-xl border shadow-md relative overflow-hidden group transition-all duration-300 hover:shadow-lg ${summary.saldo >= 0 ? 'bg-emerald-600 border-emerald-500 hover:bg-emerald-700' : 'bg-red-600 border-red-500 hover:bg-red-700'}`}>
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-sm font-semibold text-white/90 tracking-normal leading-none mb-1.5">Saldo</p>
-                        <p className="text-sm sm:text-xl font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
+                        <p className="text-sm font-medium text-white/90 tracking-normal leading-none mb-1.5">Saldo</p>
+                        <p className="text-sm sm:text-xl font-medium text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
                     </div>
                 </div>
             </div>

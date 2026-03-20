@@ -150,7 +150,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
+                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
                 }
             });
 
@@ -239,10 +239,10 @@ export const pembayaranIuranService = {
             include: { warga: true }
         });
 
-        // Sync to Keuangan: Find existing record by tag
-        const tag = `[ID: ${formatFormalId(result.tanggal_bayar, id)}]`;
+        // Sync to Keuangan: Find existing record by ref tag
+        const refTag = `| ref:${id}`;
         const existingKeuangan = await tx.keuangan.findFirst({
-            where: { keterangan: { contains: tag } }
+            where: { keterangan: { contains: refTag } }
         });
 
         if (existingKeuangan) {
@@ -252,7 +252,7 @@ export const pembayaranIuranService = {
                     data: {
                         nominal: result.nominal,
                         tanggal: result.tanggal_bayar,
-                        keterangan: `${tag} [${iuran.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
+                        keterangan: `[${result.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
                     }
                 });
             } else {
@@ -269,7 +269,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
-                    keterangan: `[${(iuran?.warga?.nama || result.warga?.nama) || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id.substring(0, 8)}`
+                    keterangan: `[${result.warga?.nama || 'Warga'}] Pembayaran ${result.kategori} — ${result.periode_bulan.join(', ')}/${result.periode_tahun} | ref:${result.id}`
                 }
             });
         }
@@ -289,11 +289,10 @@ export const pembayaranIuranService = {
     return await prisma.$transaction(async (tx) => {
         const result = await tx.pembayaranIuran.delete({ where: { id } });
         
-        // Sync to Keuangan: Delete existing record by tag
-        const record = await tx.pembayaranIuran.findUnique({ where: { id } });
-        const tag = record ? `[ID: ${formatFormalId(record.tanggal_bayar, id)}]` : `[IURAN_ID:${id}]`;
+        // Sync to Keuangan: Delete existing record by ref tag
+        const refTag = `| ref:${id}`;
         await tx.keuangan.deleteMany({
-            where: { keterangan: { contains: tag } }
+            where: { keterangan: { contains: refTag } }
         });
 
         await aktivitasService.create({

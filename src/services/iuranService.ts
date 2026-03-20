@@ -12,8 +12,9 @@ export interface IuranWithWarga extends PembayaranIuran {
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 /** Helper: Build a keterangan tag that encodes the iuran ID, Warga name, and months */
+/** Helper: Build a keterangan tag that encodes the iuran ID, Warga name, and months */
 const buildKeteranganTag = (iuranId: string, kategori: string, months: string, tahun: number, wargaNama?: string) =>
-    `[${wargaNama || 'Warga'}] Iuran ${kategori} — ${months} ${tahun} | ref:${iuranId.substring(0, 8)}`;
+    `[${wargaNama || 'Warga'}] Pembayaran ${kategori} — ${months}/${tahun} | ref:${iuranId}`;
 
 export const iuranService = {
     async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
@@ -60,7 +61,8 @@ export const iuranService = {
         // 1. Find & delete the linked Kas Masuk entry first
         try {
             const data = await keuanganService.getAll(tenantId, scope, 1, 1000);
-            const linked = data.items.find(k => k.keterangan?.includes(`ref:${id}`));
+            const refTag = `| ref:${id}`;
+            const linked = data.items.find(k => k.keterangan?.includes(refTag));
             if (linked) {
                 await keuanganService.delete(linked.id);
             }
@@ -91,9 +93,10 @@ export const iuranService = {
             }
 
             let existingLinked: any = undefined;
+            const refTag = `| ref:${iuranId}`;
             try {
                 const data = await keuanganService.getAll(iuranData.tenant_id, scope, 1, 1000);
-                existingLinked = data.items.find(k => k.keterangan?.includes(`ref:${iuranId}`));
+                existingLinked = data.items.find(k => k.keterangan?.includes(refTag));
             } catch (e) {
                 console.warn('[iuranService] Gagal fetch info keuangan untuk sync:', e);
             }
