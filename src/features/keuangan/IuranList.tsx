@@ -300,13 +300,13 @@ export default function IuranList() {
                                         <td className="p-3">
                                             <div className="flex flex-col items-center gap-1">
                                                 {iuran.status === 'VERIFIED' ? (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1">
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white border border-emerald-600 flex items-center gap-1 shadow-sm">
                                                         <CheckCircle weight="fill" className="w-3 h-3" />
                                                         Diterima
                                                     </span>
                                                 ) : iuran.status === 'REJECTED' ? (
                                                     <div className="flex flex-col items-center">
-                                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1">
+                                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1 shadow-sm">
                                                             <X weight="bold" className="w-3 h-3" />
                                                             Ditolak
                                                         </span>
@@ -315,7 +315,7 @@ export default function IuranList() {
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1 animate-pulse">
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-black border border-yellow-500 flex items-center gap-1 shadow-sm animate-pulse">
                                                         <CircleNotch weight="bold" className="w-3 h-3 animate-spin" />
                                                         Pending
                                                     </span>
@@ -399,15 +399,13 @@ export default function IuranList() {
                                                 <div className="text-sm font-semibold text-brand-600">
                                                     {formatRupiah(iuran.nominal)}
                                                 </div>
-                                                <div className="text-sm font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100 leading-none">
-                                                    {dateUtils.toDisplay(iuran.tanggal_bayar)}
-                                                </div>
+
                                                 <p className="text-[10px] text-brand-600 font-semibold mt-0.5 tracking-normal">{toTitleCase(iuran.kategori || 'Iuran Bulanan')}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 mb-3">
                                             {iuran.status === 'VERIFIED' ? (
-                                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+                                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white border border-emerald-600 flex items-center gap-1.5 shadow-sm">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                     Diterima
                                                 </span>
@@ -417,7 +415,7 @@ export default function IuranList() {
                                                     Ditolak
                                                 </span>
                                             ) : (
-                                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
+                                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-black border border-yellow-500 flex items-center gap-1.5 shadow-sm animate-pulse">
                                                     <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
                                                     Pending
                                                 </span>
@@ -430,7 +428,12 @@ export default function IuranList() {
                                         </div>
 
                                         <div className="flex flex-col mt-4 pt-4 border-t border-gray-50">
-                                            <p className="text-sm text-gray-900 font-semibold mb-2">Periode Dibayar</p>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <p className="text-sm text-gray-900 font-semibold">Periode Dibayar</p>
+                                                <div className="text-[12px] font-semibold text-gray-700 bg-white border border-gray-200 px-2 py-0.5 rounded shadow-sm leading-tight border-b-2">
+                                                    {dateUtils.toDisplay(iuran.tanggal_bayar)}
+                                                </div>
+                                            </div>
                                             <div className="flex gap-2 items-center w-full">
                                                 <div className="grid grid-cols-6 gap-1 flex-1 mt-1">
                                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
@@ -441,7 +444,7 @@ export default function IuranList() {
                                                                 className={`inline-flex px-1 py-1 rounded-md text-[13px] font-semibold border items-center justify-center shadow-sm transition-all duration-300
                                                                     ${isPaid 
                                                                         ? 'bg-brand-600 text-white border-brand-700 ring-1 ring-brand-500/20' 
-                                                                        : 'bg-gray-50 text-gray-400 border-gray-100/50'
+                                                                        : 'bg-red-500 text-white border-red-600 shadow-sm border-b-2'
                                                                     }`}
                                                             >
                                                                 {getMonthName(month).substring(0, 3)}
