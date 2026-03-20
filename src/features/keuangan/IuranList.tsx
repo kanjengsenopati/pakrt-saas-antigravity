@@ -136,17 +136,17 @@ export default function IuranList() {
             </div>
 
             {/* STATS WIDGETS */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-2">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2">
                 {/* TOTAL KOLEKTIF */}
                 <div className="bg-white p-2 sm:p-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute -right-4 -top-4 w-12 h-12 sm:w-20 sm:h-20 bg-brand-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500" />
-                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                         <div className="hidden sm:flex w-10 h-10 bg-brand-50 text-brand-600 rounded-lg items-center justify-center flex-shrink-0">
                             <CheckCircle weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-xs font-semibold text-gray-500 tracking-normal leading-none uppercase">Total Kolektif {filterYear || 'Semua'}</p>
-                            <p className="text-lg font-semibold text-gray-900 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
+                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 tracking-normal leading-none uppercase">Total Kolektif {filterYear || 'Semua'}</p>
+                            <p className="text-base sm:text-lg font-semibold text-gray-900 leading-tight truncate mt-1">{formatRupiah(totalCollectedYear)}</p>
                             <div className="hidden sm:flex items-center gap-1 mt-1 text-xs font-medium text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded-full w-fit italic">
                                 * Filter tahun aktif
                             </div>
@@ -157,33 +157,16 @@ export default function IuranList() {
                 {/* MASUK BULAN INI */}
                 <div className="bg-brand-600 p-2 sm:p-4 rounded-xl border border-brand-500 shadow-md relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-white">
+                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-white">
                         <div className="hidden sm:flex w-10 h-10 bg-white/20 text-white rounded-lg items-center justify-center flex-shrink-0 backdrop-blur-md border border-white/20">
                             <Plus weight="bold" className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-xs font-semibold text-white/80 tracking-normal leading-none uppercase">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
-                            <p className="text-lg font-semibold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
+                            <p className="text-[10px] sm:text-xs font-semibold text-white/80 tracking-normal leading-none uppercase">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</p>
+                            <p className="text-base sm:text-lg font-semibold text-white leading-tight truncate mt-1">{formatRupiah(totalCollectedMonth)}</p>
                             <div className="hidden sm:flex items-center gap-1 mt-1 text-xs font-medium text-white bg-white/10 px-1.5 py-0.5 rounded-full w-fit border border-white/10">
                                 <span className="w-1 h-1 rounded-full bg-emerald-300 animate-pulse" />
                                 Bulan Berjalan
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* JUMLAH TRANSAKSI */}
-                <div className="bg-white p-2 sm:p-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
-                    <div className="absolute -right-4 -top-4 w-12 h-12 sm:w-20 sm:h-20 bg-brand-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500" />
-                    <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
-                        <div className="hidden sm:flex w-10 h-10 bg-brand-50 text-brand-600 rounded-lg items-center justify-center flex-shrink-0">
-                            <MagnifyingGlass weight="bold" className="w-5 h-5" />
-                        </div>
-                        <div className="min-w-0 w-full">
-                            <p className="text-xs font-semibold text-gray-500 tracking-normal leading-none uppercase">Jumlah Transaksi</p>
-                            <p className="text-lg font-semibold text-gray-900 leading-tight truncate mt-1">{filteredIuran.length} Trx</p>
-                            <div className="hidden sm:flex items-center gap-1 mt-1 text-[9px] font-medium text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-full w-fit italic mx-auto sm:mx-0">
-                                * Frekuensi pembayaran
                             </div>
                         </div>
                     </div>
