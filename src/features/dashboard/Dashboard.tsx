@@ -452,7 +452,9 @@ export default function Dashboard() {
                                                 {iuran.warga?.nama.charAt(0)}
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-900 leading-none">{iuran.warga?.nama}</p>
+                                                <p className="text-sm font-semibold text-gray-900 leading-none">
+                                                    {iuran.warga?.nama?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
+                                                </p>
                                                 <p className="text-sm text-gray-400 mt-1 tracking-normal font-medium italic">
                                                     Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
                                                 </p>
