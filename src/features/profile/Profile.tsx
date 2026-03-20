@@ -112,7 +112,9 @@ export default function Profile() {
                                     <ShieldCheck weight="fill" className="w-3.5 h-3.5" />
                                 </div>
                             </div>
-                            <h2 className="mt-3 text-lg font-black text-slate-900 normal-case tracking-tight">{user?.name || 'User'}</h2>
+                            <h2 className="mt-3 text-lg font-black text-slate-900 normal-case tracking-tight">
+                                {user?.name?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
+                            </h2>
                             <p className="text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full inline-block mt-1.5 text-[10px] font-bold tracking-wide border border-brand-100/50">
                                 {user?.role_entity?.name || user?.role || 'Member'}
                             </p>

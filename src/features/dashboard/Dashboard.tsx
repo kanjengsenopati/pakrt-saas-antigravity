@@ -203,7 +203,7 @@ export default function Dashboard() {
                                 <div className={`p-2 rounded-lg ${card.color} shrink-0 shadow-sm`}>
                                     <Icon weight="duotone" className="w-4 h-4" />
                                 </div>
-                                <p className="section-label !text-[11px] leading-tight">{card.title}</p>
+                                <p className="section-label !text-sm leading-tight">{card.title}</p>
                             </div>
 
                             {/* Center-aligned big number */}
@@ -214,7 +214,7 @@ export default function Dashboard() {
                                     ) : card.count}
                                 </div>
                                 {card.subtitle && (
-                                    <p className="text-xs text-gray-400 font-medium mt-1 italic">{card.subtitle}</p>
+                                    <p className="text-sm text-gray-400 font-medium mt-1 italic">{card.subtitle}</p>
                                 )}
                             </div>
 
@@ -237,7 +237,7 @@ export default function Dashboard() {
                             Agenda Mendatang
                         </h3>
                         <button
-                            className="text-[12px] font-semibold text-brand-600 tracking-normal hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
+                            className="text-sm font-semibold text-brand-600 tracking-normal hover:bg-brand-50 px-2 py-1 rounded-lg transition-all"
                             onClick={() => navigate('/agenda')}
                         >
                             Lihat Semua
@@ -257,10 +257,10 @@ export default function Dashboard() {
                                     >
                                         <div className="flex items-center gap-2.5 min-w-0">
                                             <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex flex-col items-center justify-center shrink-0 border border-purple-100 shadow-sm">
-                                                <span className="text-[11px] font-bold">
+                                                <span className="text-sm font-bold">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[0]}
                                                 </span>
-                                                <span className="text-[9px] font-bold tracking-normal">
+                                                <span className="text-[10px] font-bold tracking-normal">
                                                     {dateUtils.toDisplay(agenda.tanggal).split('-')[1]}
                                                 </span>
                                             </div>
@@ -269,11 +269,11 @@ export default function Dashboard() {
                                                     {agenda.judul}
                                                 </h4>
                                                 <div className="flex items-center gap-2 mt-1.5">
-                                                    <span className="text-xs text-gray-500 truncate max-w-[150px] font-medium">
+                                                    <span className="text-sm text-gray-500 truncate max-w-[150px] font-medium">
                                                         {agenda.deskripsi}
                                                     </span>
                                                     {agenda.butuh_pendanaan && (
-                                                        <span className="flex items-center gap-0.5 text-[8px] font-black text-amber-600 bg-amber-50 px-1 rounded-sm border border-amber-100">
+                                                        <span className="flex items-center gap-0.5 text-[10px] font-black text-amber-600 bg-amber-50 px-1 rounded-sm border border-amber-100">
                                                             {formatRupiah(agenda.nominal_biaya || 0)}
                                                         </span>
                                                     )}
@@ -281,7 +281,7 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                         <div className="flex gap-1 items-center shrink-0 ml-2">
-                                            <span className="text-[9px] font-black bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full border border-blue-100">
+                                            <span className="text-sm font-black bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full border border-blue-100">
                                                 {agenda.peserta_ids?.length || 0}
                                             </span>
                                         </div>
@@ -291,7 +291,7 @@ export default function Dashboard() {
                         ) : (
                             <div className="col-span-full text-center py-8 text-gray-400 border border-dashed border-gray-200 bg-gray-50/50 rounded-xl flex flex-col items-center justify-center">
                                 <CalendarBlank size={28} weight="duotone" className="mb-1 opacity-20" />
-                                <p className="text-xs">Belum ada agenda mendatang.</p>
+                                <p className="text-sm">Belum ada agenda mendatang.</p>
                             </div>
                         )}
                     </div>
@@ -314,15 +314,15 @@ export default function Dashboard() {
                             <div className="space-y-3">
                                 {recentActivities.map((act: Aktivitas) => (
                                     <div key={act.id} className="pl-3 border-l-2 border-brand-200 hover:border-brand-500 transition-all">
-                                        <p className="text-xs font-semibold text-brand-600 tracking-normal leading-none capitalize">{act.action.toLowerCase()}</p>
+                                        <p className="text-sm font-semibold text-brand-600 tracking-normal leading-none capitalize">{act.action.toLowerCase()}</p>
                                         <p className="text-sm font-medium text-gray-700 leading-snug mt-1">{act.details}</p>
-                                        <p className="text-xs text-gray-400 mt-1 font-medium italic">{formatDate(act.timestamp)}</p>
+                                        <p className="text-sm text-gray-400 mt-1 font-medium italic">{formatDate(act.timestamp)}</p>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="text-center py-8 text-gray-400">
-                                <p className="text-xs italic">Belum ada aktivitas.</p>
+                                <p className="text-sm italic">Belum ada aktivitas.</p>
                             </div>
                         )}
                     </div>
@@ -349,14 +349,14 @@ export default function Dashboard() {
                                     className="flex items-center justify-between px-3 py-2.5 border border-gray-100 rounded-xl bg-gray-50/20 hover:border-brand-300 hover:bg-white transition-colors"
                                 >
                                     <div className="min-w-0">
-                                        <p className="font-semibold text-gray-900 text-[13px] leading-none">
+                                        <p className="font-semibold text-gray-900 text-sm leading-none">
                                             {dateUtils.toDisplay(ronda.tanggal)}
                                         </p>
-                                        <p className="text-xs font-medium text-gray-500 mt-1 truncate max-w-[180px]">
+                                        <p className="text-sm font-medium text-gray-500 mt-1 truncate max-w-[180px]">
                                             {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}
                                         </p>
                                     </div>
-                                    <span className="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold tracking-normal shrink-0 shadow-sm">
+                                    <span className="text-sm bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold tracking-normal shrink-0 shadow-sm">
                                         {ronda.regu}
                                     </span>
                                 </div>
@@ -364,7 +364,7 @@ export default function Dashboard() {
                         ) : (
                             <div className="text-center py-8 text-gray-400 flex flex-col items-center bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
                                 <ShieldCheck size={28} weight="duotone" className="text-gray-300 mb-1" />
-                                <p className="text-xs">Tidak ada jadwal ronda.</p>
+                                <p className="text-sm">Tidak ada jadwal ronda.</p>
                             </div>
                         )}
                     </div>
@@ -377,14 +377,14 @@ export default function Dashboard() {
                         </div>
                         {!isWarga ? (
                             <button
-                                className="text-xs font-semibold text-brand-600 uppercase tracking-widest hover:underline"
+                                className="text-sm font-semibold text-brand-600 tracking-normal hover:underline"
                                 onClick={() => navigate('/iuran')}
                             >
                                 Lihat Semua
                             </button>
                         ) : (
                             <button
-                                className="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                                className="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold tracking-normal transition-all shadow-sm active:scale-95"
                                 onClick={() => navigate('/iuran/baru')}
                             >
                                 Bayar Iuran
@@ -401,25 +401,25 @@ export default function Dashboard() {
                             <div className="space-y-4 py-1">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-center">
-                                        <p className="text-xs font-semibold text-emerald-600 tracking-normal mb-1">Terbayar</p>
+                                        <p className="text-sm font-semibold text-emerald-600 tracking-normal mb-1">Terbayar</p>
                                         <p className="text-sm font-bold text-emerald-700">{formatRupiah(wargaIuranStats.totalPaid)}</p>
                                     </div>
                                     <div className="p-3 bg-amber-50 rounded-xl border border-amber-100 text-center">
-                                        <p className="text-xs font-semibold text-amber-600 tracking-normal mb-1">Sisa Tagihan</p>
+                                        <p className="text-sm font-semibold text-amber-600 tracking-normal mb-1">Sisa Tagihan</p>
                                         <p className="text-sm font-bold text-amber-700">{formatRupiah(Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid))}</p>
                                     </div>
                                 </div>
                                 
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center px-1">
-                                        <span className="text-xs font-semibold text-gray-400 tracking-normal">Progress Pembayaran {new Date().getFullYear()}</span>
-                                        <span className="text-xs font-semibold text-brand-600">{wargaIuranStats.paidMonths.length} / 12 Bln</span>
+                                        <span className="text-sm font-semibold text-gray-400 tracking-normal">Progress Pembayaran {new Date().getFullYear()}</span>
+                                        <span className="text-sm font-semibold text-brand-600">{wargaIuranStats.paidMonths.length} / 12 Bln</span>
                                     </div>
                                     <div className="flex flex-wrap gap-1.5 justify-between">
                                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => (
                                             <div 
                                                 key={m} 
-                                                className={`w-[22px] h-[22px] rounded-lg flex items-center justify-center text-[10px] font-semibold transition-all border ${
+                                                className={`w-[26px] h-[26px] rounded-lg flex items-center justify-center text-xs font-semibold transition-all border ${
                                                     wargaIuranStats.paidMonths.includes(m) 
                                                         ? 'bg-brand-600 text-white border-brand-500 shadow-sm' 
                                                         : 'bg-white text-gray-300 border-gray-100 hover:border-gray-300'
@@ -435,7 +435,7 @@ export default function Dashboard() {
                                 <div className="p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <CreditCard className="w-4 h-4 text-gray-400" />
-                                        <span className="text-xs font-semibold text-gray-500 italic">Tarif Bulanan:</span>
+                                        <span className="text-sm font-semibold text-gray-500 italic">Tarif Bulanan:</span>
                                     </div>
                                     <span className="text-sm font-semibold text-gray-900">{formatRupiah(wargaIuranStats.rate)}</span>
                                 </div>
@@ -448,12 +448,12 @@ export default function Dashboard() {
                                         className="flex justify-between items-center px-3 py-2 rounded-xl bg-gray-50/30 hover:bg-white border border-transparent hover:border-emerald-100 hover:shadow-sm transition-all"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold border border-emerald-200 shrink-0 shadow-sm">
+                                            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold border border-emerald-200 shrink-0 shadow-sm">
                                                 {iuran.warga?.nama.charAt(0)}
                                             </div>
                                             <div>
                                                 <p className="text-sm font-semibold text-gray-900 leading-none">{iuran.warga?.nama}</p>
-                                                <p className="text-xs text-gray-400 mt-1 tracking-normal font-medium italic">
+                                                <p className="text-sm text-gray-400 mt-1 tracking-normal font-medium italic">
                                                     Bln {iuran.periode_bulan.join(',')} '{iuran.periode_tahun.toString().substring(2)}
                                                 </p>
                                             </div>
@@ -463,7 +463,7 @@ export default function Dashboard() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-8 text-gray-400 text-xs italic bg-gray-50/50 rounded-xl border border-dashed border-gray-200 flex flex-col items-center justify-center">
+                            <div className="text-center py-8 text-gray-400 text-sm italic bg-gray-50/50 rounded-xl border border-dashed border-gray-200 flex flex-col items-center justify-center">
                                 <HandCoins size={28} weight="duotone" className="text-gray-300 mb-1" />
                                 <p>Belum ada iuran.</p>
                             </div>

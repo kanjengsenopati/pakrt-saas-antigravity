@@ -126,7 +126,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     if (ids.length >= 4) {
                         const kelId = ids.slice(0, 4).join('.');
                         const kel = await locationService.getWilayahById(kelId);
-                        if (kel) setKelurahanName(kel.name);
+                        if (kel) setKelurahanName(kel.name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '));
                     }
                 } catch (error) {
                     console.error('Failed to fetch wilayah name for sidebar:', error);
