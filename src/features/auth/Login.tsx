@@ -82,7 +82,7 @@ export default function Login() {
 
                 <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center justify-between mb-10">
-                        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-400 hover:text-brand-600 transition-colors cursor-pointer text-[10px] font-black uppercase tracking-[0.2em]">
+                        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-400 hover:text-brand-600 transition-colors cursor-pointer text-[10px] font-bold uppercase tracking-[0.2em]">
                             <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Beranda
                         </button>
                         <div className="inline-flex items-center justify-center w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100">
@@ -102,7 +102,7 @@ export default function Login() {
 
                         {/* Compact Demo Box */}
                         <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-slate-100 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 text-slate-400 uppercase text-[9px] font-black tracking-widest">
+                            <div className="flex items-center gap-2 mb-4 text-slate-400 uppercase text-[9px] font-bold tracking-widest">
                                 <Flashlight weight="fill" className="w-3.5 h-3.5 text-yellow-500" /> Quick Access Login
                             </div>
 
@@ -147,7 +147,7 @@ export default function Login() {
 
             {/* Right Panel - Login Form */}
             <div className="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-20 relative h-full bg-white">
-                <button onClick={() => navigate('/')} className="md:hidden absolute top-6 left-6 flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-colors text-[10px] font-black uppercase tracking-widest">
+                <button onClick={() => navigate('/')} className="md:hidden absolute top-6 left-6 flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-colors text-[10px] font-bold uppercase tracking-widest">
                     <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Kembali
                 </button>
 

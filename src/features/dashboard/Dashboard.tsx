@@ -278,7 +278,7 @@ export default function Dashboard() {
                                                         {agenda.deskripsi}
                                                     </span>
                                                     {agenda.butuh_pendanaan && (
-                                                        <span className="flex items-center gap-0.5 text-[10px] font-black text-amber-600 bg-amber-50 px-1 rounded-sm border border-amber-100">
+                                                        <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 px-1 rounded-sm border border-amber-100">
                                                             {formatRupiah(agenda.nominal_biaya || 0)}
                                                         </span>
                                                     )}
@@ -286,7 +286,7 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                         <div className="flex gap-1 items-center shrink-0 ml-2">
-                                            <span className="text-sm font-black bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full border border-blue-100">
+                                            <span className="text-sm font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full border border-blue-100">
                                                 {agenda.peserta_ids?.length || 0}
                                             </span>
                                         </div>

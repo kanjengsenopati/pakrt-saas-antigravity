@@ -205,7 +205,7 @@ export default function RondaList() {
                                         <div className="p-5 bg-gradient-to-br from-brand-50 to-white border-b border-gray-100">
                                             <div className="flex justify-between items-center mb-4">
                                                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                                    <span className="w-8 h-8 bg-brand-600 text-white rounded-lg flex items-center justify-center text-sm font-black">
+                                                    <span className="w-8 h-8 bg-brand-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">
                                                         {group.name.charAt(0)}
                                                     </span>
                                                     {group.name}
@@ -508,7 +508,7 @@ export default function RondaList() {
                             <div>
                                 <h2 className="text-xl font-bold text-gray-900">Catat Kehadiran Ronda</h2>
                                 <p className="text-sm text-gray-500 mt-1">
-                                    Tanggal: <span className="text-sm font-black capitalize tracking-tight text-slate-900 text-center">
+                                    Tanggal: <span className="text-sm font-bold capitalize tracking-tight text-slate-900 text-center">
     {dateUtils.toDisplay(selectedRonda.tanggal)}
 </span>
  ({selectedRonda.regu})

@@ -861,7 +861,7 @@ export default function Pengaturan() {
                                                     <span key={jab} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${usageCount > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-white text-gray-700 border-gray-200'
                                                         }`}>
                                                         {jab}
-                                                        {usageCount > 0 && <span className="ml-1 text-[9px] bg-emerald-200 text-emerald-800 rounded-full px-1 font-black">{usageCount}</span>}
+                                                        {usageCount > 0 && <span className="ml-1 text-[9px] bg-emerald-200 text-emerald-800 rounded-full px-1 font-bold">{usageCount}</span>}
                                                         <button type="button" onClick={() => removeCategory('jabatan', jab)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
                                                     </span>
                                                 );
@@ -896,7 +896,7 @@ export default function Pengaturan() {
                                                     <span key={per} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${aktif > 0 ? 'bg-blue-50 text-blue-700 border-blue-200' : total > 0 ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-white text-gray-700 border-gray-200'
                                                         }`}>
                                                         {per}
-                                                        {total > 0 && <span className={`ml-1 text-[9px] rounded-full px-1 font-black ${aktif > 0 ? 'bg-blue-200 text-blue-800' : 'bg-gray-200 text-gray-600'
+                                                        {total > 0 && <span className={`ml-1 text-[9px] rounded-full px-1 font-bold ${aktif > 0 ? 'bg-blue-200 text-blue-800' : 'bg-gray-200 text-gray-600'
                                                             }`}>{aktif > 0 ? `${aktif} aktif` : `${total} riwayat`}</span>}
                                                         <button type="button" onClick={() => removeCategory('periode', per)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
                                                     </span>
@@ -1061,7 +1061,7 @@ export default function Pengaturan() {
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
                                                         {tahunIuran.map(tahun => (
-                                                            <div key={tahun} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-black border border-brand-200">
+                                                            <div key={tahun} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-200">
                                                                 {tahun}
                                                                 <button type="button" onClick={() => removeCategory('tahun', tahun)} className="text-brand-300 hover:text-red-500 transition-colors">&times;</button>
                                                             </div>
@@ -1285,7 +1285,7 @@ export default function Pengaturan() {
                                         {/* Preview Surat */}
                                         <div className="bg-gray-100/50 p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden border border-gray-200 shadow-inner">
                                             <div className="absolute top-4 right-4 z-30">
-                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur rounded-full text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
+                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur rounded-full text-[9px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
                                                     <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
                                                     Live Preview
                                                 </span>
@@ -1625,20 +1625,20 @@ export default function Pengaturan() {
                                                                             <h4 className="text-[12px] font-bold text-slate-400 tracking-normal mb-4 border-b border-slate-50 pb-2">Detil Profil</h4>
                                                                             <div className="space-y-4">
                                                                                 <div>
-                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Nama</label>
+                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Nama</label>
                                                                                     <p className="text-[14px] font-bold text-slate-800">{user.name}</p>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Email</label>
+                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Email</label>
                                                                                     <p className="text-[14px] font-medium text-slate-600">{user.email}</p>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Status Verifikasi</label>
+                                                                                    <label className="block text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Status Verifikasi</label>
                                                                                     <p className={`text-[12px] font-bold uppercase ${user.verification_status === 'VERIFIED' ? 'text-emerald-600' : 'text-amber-600'}`}>{user.verification_status || 'PENDING'}</p>
                                                                                 </div>
                                                                                 {user.kontak && (
                                                                                     <div>
-                                                                                        <label className="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Kontak</label>
+                                                                                        <label className="block text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Kontak</label>
                                                                                         <p className="text-[14px] font-medium text-slate-600">{user.kontak}</p>
                                                                                     </div>
                                                                                 )}
@@ -1650,7 +1650,7 @@ export default function Pengaturan() {
                                                                             <div className="px-5 py-3 bg-brand-600 flex items-center justify-between">
                                                                                 <div className="flex items-center gap-2">
                                                                                     <ShieldCheck weight="fill" className="w-4 h-4 text-brand-200" />
-                                                                                    <span className="text-[11px] font-black text-white uppercase tracking-widest">Matrix Hak Akses Khusus</span>
+                                                                                    <span className="text-[11px] font-bold text-white uppercase tracking-widest">Matrix Hak Akses Khusus</span>
                                                                                 </div>
                                                                                 <div className="flex gap-2">
                                                                                     <button onClick={() => setExpandedUserId(null)} className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[10px] uppercase font-bold transition-colors">Batal</button>
@@ -1661,11 +1661,11 @@ export default function Pengaturan() {
                                                                                 <table className="w-full text-left">
                                                                                     <thead>
                                                                                         <tr className="bg-slate-50 border-b border-slate-100">
-                                                                                            <th className="p-3 pl-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Modul</th>
+                                                                                            <th className="p-3 pl-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Modul</th>
                                                                                             {CRUD_ACTIONS.map(action => (
-                                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">{action.label}</th>
+                                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">{action.label}</th>
                                                                                             ))}
-                                                                                            <th className="p-3 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Cakupan</th>
+                                                                                            <th className="p-3 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cakupan</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody className="divide-y divide-slate-50">
@@ -1683,7 +1683,7 @@ export default function Pengaturan() {
                                                                                                     );
                                                                                                 })}
                                                                                                 <td className="p-2 text-center">
-                                                                                                    <button onClick={() => toggleScope(module.id)} className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-600 border-amber-200' : 'bg-emerald-100 text-emerald-600 border-emerald-200'}`}>
+                                                                                                    <button onClick={() => toggleScope(module.id)} className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-600 border-amber-200' : 'bg-emerald-100 text-emerald-600 border-emerald-200'}`}>
                                                                                                         {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
                                                                                                     </button>
                                                                                                 </td>
@@ -1755,7 +1755,7 @@ export default function Pengaturan() {
                                                                             <div className="px-5 py-3 bg-slate-900 flex items-center justify-between">
                                                                                 <div className="flex items-center gap-2">
                                                                                     <ShieldCheck weight="fill" className="w-4 h-4 text-brand-400" />
-                                                                                    <span className="text-[11px] font-black text-white uppercase tracking-widest">Matrix Hak Akses Role: {role.name}</span>
+                                                                                    <span className="text-[11px] font-bold text-white uppercase tracking-widest">Matrix Hak Akses Role: {role.name}</span>
                                                                                 </div>
                                                                                 <div className="flex gap-2">
                                                                                     <button onClick={() => setExpandedRoleId(null)} className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[10px] uppercase font-bold transition-colors">Batal</button>
@@ -1766,11 +1766,11 @@ export default function Pengaturan() {
                                                                                 <table className="w-full text-left">
                                                                                     <thead>
                                                                                         <tr className="bg-slate-50 border-b border-slate-100">
-                                                                                            <th className="p-3 pl-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Modul</th>
+                                                                                            <th className="p-3 pl-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Modul</th>
                                                                                             {CRUD_ACTIONS.map(action => (
-                                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">{action.label}</th>
+                                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">{action.label}</th>
                                                                                             ))}
-                                                                                            <th className="p-3 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Cakupan</th>
+                                                                                            <th className="p-3 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cakupan</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody className="divide-y divide-slate-50">
@@ -1788,7 +1788,7 @@ export default function Pengaturan() {
                                                                                                     );
                                                                                                 })}
                                                                                                 <td className="p-2 text-center">
-                                                                                                    <button onClick={() => toggleScope(module.id)} className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-600 border-amber-200' : 'bg-emerald-100 text-emerald-600 border-emerald-200'}`}>
+                                                                                                    <button onClick={() => toggleScope(module.id)} className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border transition-all ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-600 border-amber-200' : 'bg-emerald-100 text-emerald-600 border-emerald-200'}`}>
                                                                                                         {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
                                                                                                     </button>
                                                                                                 </td>

@@ -140,7 +140,7 @@ export default function SuratList() {
                                         <td className="p-3">
                                             <p className="font-bold text-brand-700 text-xs tracking-normal">{surat.jenis_surat}</p>
                                             <div className="flex items-center gap-1.5 mt-0.5">
-                                                <span className="text-[9px] text-brand-600 font-black bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</span>
+                                                <span className="text-[9px] text-brand-600 font-bold bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</span>
                                                 <span className="text-[10px] text-gray-400 font-medium">{dateUtils.toDisplay(surat.tanggal)}</span>
                                             </div>
                                         </td>

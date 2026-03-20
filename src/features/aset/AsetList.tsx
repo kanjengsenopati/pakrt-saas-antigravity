@@ -299,7 +299,7 @@ export default function AsetList() {
                                                 <div>
                                                     <h3 className="font-bold text-gray-900 text-base">{aset.nama_barang}</h3>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase 
+                                                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight 
                                                             ${aset.kondisi === 'baik' ? 'bg-brand-50 text-brand-700 border border-brand-200' :
                                                                 aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                                                                 aset.kondisi === 'rusak_berat' ? 'bg-red-50 text-red-700 border border-red-200' :

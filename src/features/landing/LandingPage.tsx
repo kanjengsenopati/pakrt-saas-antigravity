@@ -167,11 +167,11 @@ export default function LandingPage() {
                                         <div className="grid grid-cols-3 gap-4 mb-6 relative z-0">
                                             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                                                 <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider uppercase">Total Warga</div>
-                                                <div className="text-xl font-black text-gray-900 flex items-center gap-2">124 <span className="text-emerald-500 text-[10px] font-bold flex items-center bg-emerald-50 px-1.5 py-0.5 rounded-md"><ChartLineUp weight="bold" className="inline w-3 h-3 mr-0.5" /> 2 Baru</span></div>
+                                                <div className="text-xl font-bold text-gray-900 flex items-center gap-2">124 <span className="text-emerald-500 text-[10px] font-bold flex items-center bg-emerald-50 px-1.5 py-0.5 rounded-md"><ChartLineUp weight="bold" className="inline w-3 h-3 mr-0.5" /> 2 Baru</span></div>
                                             </div>
                                             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                                                 <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider uppercase">Saldo Kas Utama</div>
-                                                <div className="text-xl font-black text-gray-900">Rp 4.520.000</div>
+                                                <div className="text-xl font-bold text-gray-900">Rp 4.520.000</div>
                                             </div>
                                             <div className="bg-white p-4 rounded-xl shadow-sm border border-brand-100/50 relative overflow-hidden">
                                                 <div className="absolute right-[-10px] bottom-[-10px] opacity-10"><CurrencyCircleDollar weight="fill" className="w-16 h-16 text-brand-500" /></div>
@@ -190,7 +190,7 @@ export default function LandingPage() {
                                                             <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center"><Wallet weight="duotone" className="w-3.5 h-3.5" /></div>
                                                             <div className="text-[11px] font-bold text-gray-700">Pembayaran Iuran Bpk. Budi</div>
                                                         </div>
-                                                        <div className="text-[11px] font-black text-emerald-600">+ Rp 50.000</div>
+                                                        <div className="text-[11px] font-bold text-emerald-600">+ Rp 50.000</div>
                                                     </div>
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-2.5">
@@ -243,7 +243,7 @@ export default function LandingPage() {
                                         <div className="bg-white/10 p-3 rounded-xl border border-white/20 backdrop-blur-sm">
                                             <div className="text-[10px] text-brand-100 mb-1 opacity-90">Tagihan Iuran Anda Bulan Ini</div>
                                             <div className="flex justify-between items-center">
-                                                <div className="text-lg font-black">Rp 50.000</div>
+                                                <div className="text-lg font-bold">Rp 50.000</div>
                                                 <div className="text-[9px] font-bold bg-white text-brand-700 px-2 py-1 rounded-full shadow-sm hover:bg-gray-50 flex items-center gap-1">Bayar <ArrowRight weight="bold" className="w-2.5 h-2.5" /></div>
                                             </div>
                                         </div>
@@ -287,7 +287,7 @@ export default function LandingPage() {
                                             <div className="absolute right-[-10px] top-[-10px] opacity-10"><Flashlight weight="fill" className="w-16 h-16 text-slate-400" /></div>
                                             <div className="w-10 h-10 bg-slate-700 rounded-xl flex flex-col items-center justify-center shrink-0 border border-slate-600">
                                                 <div className="text-[8px] uppercase tracking-wider text-brand-300">Sab</div>
-                                                <div className="text-sm font-black text-white">24</div>
+                                                <div className="text-sm font-bold text-white">24</div>
                                             </div>
                                             <div className="relative z-10">
                                                 <div className="font-bold text-xs mb-0.5 text-white">Malam Minggu Ini</div>
@@ -538,15 +538,15 @@ export default function LandingPage() {
                                             <div className="grid grid-cols-3 gap-3 mb-5">
                                                 <div className="bg-gray-900 rounded-xl p-3.5 border border-gray-700 shadow-inner">
                                                     <div className="text-[10px] text-gray-500 font-bold uppercase mb-1.5 tracking-wider">Total RT</div>
-                                                    <div className="text-2xl font-black text-white">12</div>
+                                                    <div className="text-2xl font-bold text-white">12</div>
                                                 </div>
                                                 <div className="bg-gray-900 rounded-xl p-3.5 border border-gray-700 shadow-inner">
                                                     <div className="text-[10px] text-gray-500 font-bold uppercase mb-1.5 tracking-wider">Total Warga</div>
-                                                    <div className="text-2xl font-black text-white">1.840</div>
+                                                    <div className="text-2xl font-bold text-white">1.840</div>
                                                 </div>
                                                 <div className="bg-brand-900/20 rounded-xl p-3.5 border border-brand-800/30 relative overflow-hidden shadow-inner">
                                                     <div className="text-[10px] text-brand-400 font-bold uppercase mb-1.5 tracking-wider">Total Kas</div>
-                                                    <div className="text-lg font-black text-brand-300">Rp 45.2M</div>
+                                                    <div className="text-lg font-bold text-brand-300">Rp 45.2M</div>
                                                 </div>
                                             </div>
 

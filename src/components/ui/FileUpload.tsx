@@ -212,7 +212,7 @@ export const FileUpload = ({
                                 {isProcessing ? (
                                     <div className="flex flex-col items-center gap-2 animate-in fade-in zoom-in duration-300">
                                         <CircleNotch className="w-7 h-7 text-brand-500 animate-spin" />
-                                        <span className="text-[9px] font-black text-brand-600 uppercase tracking-widest animate-pulse">Memproses</span>
+                                        <span className="text-[9px] font-bold text-brand-600 uppercase tracking-widest animate-pulse">Memproses</span>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center gap-1.5 transition-all duration-300 transform group-hover/trigger:-translate-y-1">
@@ -223,7 +223,7 @@ export const FileUpload = ({
                                                 <Camera weight="duotone" className="w-5 h-5 text-slate-400 group-hover/trigger:text-brand-500" />
                                             </div>
                                         )}
-                                        <span className={`text-[9px] font-black uppercase tracking-wider ${isDragging ? 'text-brand-700' : 'text-slate-400 group-hover/trigger:text-brand-600'}`}>
+                                        <span className={`text-[9px] font-bold uppercase tracking-wider ${isDragging ? 'text-brand-700' : 'text-slate-400 group-hover/trigger:text-brand-600'}`}>
                                             {isDragging ? 'Lepas' : 'Pilih Foto'}
                                         </span>
                                     </div>
@@ -237,7 +237,7 @@ export const FileUpload = ({
                     {error && (
                         <div className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg animate-in slide-in-from-left duration-300">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
-                            <p className="text-[10px] text-red-600 font-black uppercase tracking-widest">{error}</p>
+                            <p className="text-[10px] text-red-600 font-bold uppercase tracking-widest">{error}</p>
                         </div>
                     )}
                     {helperText && !isDragging && !error && (
@@ -247,7 +247,7 @@ export const FileUpload = ({
                         </p>
                     )}
                     {existingUrls.length > 0 && !error && (
-                        <div className="flex items-center gap-2 text-[10px] text-brand-600/70 font-black uppercase tracking-widest pl-1">
+                        <div className="flex items-center gap-2 text-[10px] text-brand-600/70 font-bold uppercase tracking-widest pl-1">
                             <ImageIcon weight="bold" className="w-3.5 h-3.5" />
                             Hover foto untuk kontrol
                         </div>

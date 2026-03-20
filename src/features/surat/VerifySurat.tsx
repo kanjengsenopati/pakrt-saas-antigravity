@@ -49,7 +49,7 @@ export default function VerifySurat() {
                     <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-red-500">
                         <Warning weight="fill" className="w-12 h-12" />
                     </div>
-                    <h1 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Verifikasi Gagal</h1>
+                    <h1 className="text-2xl font-bold text-slate-900 mb-2 tracking-tight">Verifikasi Gagal</h1>
                     <p className="text-slate-500 mb-8">{error || "Dokumen ini tidak terdaftar dalam sistem kami."}</p>
                     <div className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-700 text-xs font-bold tracking-normal">
                         Peringatan: Dokumen Tidak Sah
@@ -75,7 +75,7 @@ export default function VerifySurat() {
                                 <SealCheck weight="fill" className="w-14 h-14 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-black text-white tracking-tight">Dokumen Sah</h1>
+                                <h1 className="text-3xl font-bold text-white tracking-tight">Dokumen Sah</h1>
                                 <p className="text-emerald-50 font-bold tracking-normal text-xs">Terkonfirmasi Sistem PakRT</p>
                             </div>
                         </div>

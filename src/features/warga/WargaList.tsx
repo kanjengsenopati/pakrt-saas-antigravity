@@ -339,8 +339,8 @@ export default function WargaList() {
                                             <td className="p-3">
                                                 <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
                                                 <div className="mt-1 flex items-center gap-1.5">
-                                                    <span className="text-[9px] font-black text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none capitalize">Pending Verification</span>
+                                                    <span className="text-[9px] font-bold text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
+                                                    <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none capitalize">Pending Verification</span>
                                                 </div>
                                             </td>
                                             <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.kontak || '-'}</td>
@@ -392,8 +392,8 @@ export default function WargaList() {
                                             <td className="p-3">
                                                 <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
                                                 <div className="mt-1 flex items-center gap-1.5 overflow-hidden">
-                                                    <span className="text-[9px] font-black text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border border-slate-200 capitalize leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                                                    <span className="text-[9px] font-bold text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
+                                                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border border-slate-200 capitalize leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
                                                         {warga.status_penduduk || 'Tetap'}
                                                     </span>
                                                 </div>
@@ -539,7 +539,7 @@ export default function WargaList() {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h3 className="text-xl font-black text-slate-900 leading-tight">Share Link Pendaftaran</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">Share Link Pendaftaran</h3>
                                     <p className="text-slate-500 text-xs font-medium mt-1 tracking-normal">Undang warga untuk isi data mandiri</p>
                                 </div>
                                 <button onClick={() => setShowShareModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">

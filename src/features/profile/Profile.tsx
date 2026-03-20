@@ -74,7 +74,7 @@ export default function Profile() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-2">
-                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Profil Pengguna</h3>
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">Profil Pengguna</h3>
                     <p className="text-slate-500 font-medium">Kelola informasi pribadi dan keamanan akun Anda.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export default function Profile() {
                         <div className="px-5 pb-6 -mt-10 text-center">
                             <div className="inline-flex relative">
                                 <div className="w-20 h-20 rounded-[1.5rem] bg-white p-1 shadow-xl ring-1 ring-slate-100">
-                                    <div className="w-full h-full rounded-[1.2rem] bg-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-inner">
+                                    <div className="w-full h-full rounded-[1.2rem] bg-slate-900 flex items-center justify-center text-white font-bold text-2xl shadow-inner">
                                         {user?.name ? user.name.substring(0, 2) : '??'}
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@ export default function Profile() {
                                     <ShieldCheck weight="fill" className="w-3.5 h-3.5" />
                                 </div>
                             </div>
-                            <h2 className="mt-3 text-lg font-black text-slate-900 normal-case tracking-tight">
+                            <h2 className="mt-3 text-lg font-bold text-slate-900 normal-case tracking-tight">
                                 {user?.name?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
                             </h2>
                             <p className="text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full inline-block mt-1.5 text-[10px] font-bold tracking-wide border border-brand-100/50">
@@ -256,7 +256,7 @@ export default function Profile() {
                                 <button 
                                     type="submit"
                                     disabled={isLoading}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 text-white font-black hover:bg-brand-600 shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 text-sm"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-brand-600 shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 text-sm"
                                 >
                                     {isLoading ? 'Menyimpan...' : (
                                         <>

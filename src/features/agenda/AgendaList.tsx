@@ -295,7 +295,7 @@ export default function AgendaList() {
                                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip formatter={(value: any) => [`${value} Agenda`, 'Total']} />
+                                            <Tooltip formatter={(value: any) => [`${value ?? 0} Agenda`, 'Total']} />
                                             <Legend verticalAlign="bottom" height={36} iconType="circle" />
                                         </PieChart>
                                     </ResponsiveContainer>
@@ -320,7 +320,7 @@ export default function AgendaList() {
                                             <Tooltip
                                                 cursor={{ fill: '#f8fafc' }}
                                                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
-                                                formatter={(value: any) => [formatRupiah(Number(value)), 'Total Dana']}
+                                                formatter={(value: any) => [formatRupiah(Number(value ?? 0)), 'Total Dana']}
                                             />
                                             <Bar dataKey="Total" fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
                                         </BarChart>

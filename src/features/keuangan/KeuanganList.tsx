@@ -188,7 +188,7 @@ export default function KeuanganList() {
                                                 <ArrowDownRight weight="duotone" className="w-8 h-8 text-slate-300" />
                                             </div>
                                         </div>
-                                        <p className="text-lg font-black text-slate-900">Data Tidak Ditemukan</p>
+                                        <p className="text-lg font-bold text-slate-900">Data Tidak Ditemukan</p>
                                         <p className="text-sm text-slate-400 mt-1 tracking-normal">Belum ada riwayat transaksi yang cocok dengan filter aktif.</p>
                                     </td>
                                 </tr>
@@ -291,7 +291,7 @@ export default function KeuanganList() {
                                                     {dateUtils.toDisplay(trx.tanggal)} &bull; <span className="font-mono text-[11px] bg-slate-100 px-1 py-0.5 rounded ml-1 tracking-normal inline-block">ID:{formatFormalId(trx.tanggal, trx.id)}</span>
                                                 </p>
                                             </div>
-                                            <div className={`text-lg font-black ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
+                                            <div className={`text-lg font-bold ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
                                                 {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
                                             </div>
                                         </div>

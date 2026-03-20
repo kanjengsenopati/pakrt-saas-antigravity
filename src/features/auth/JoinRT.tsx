@@ -80,14 +80,14 @@ export default function JoinRT() {
                     <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle weight="fill" className="text-green-500 w-12 h-12" />
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 mb-2">Pendaftaran Terkirim!</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Pendaftaran Terkirim!</h2>
                     <p className="text-slate-500 text-sm leading-relaxed mb-8">
                         Data Anda berhasil didaftarkan ke <span className="font-bold text-brand-600">{tenantName}</span>. 
                         Silakan tunggu Admin RT melakukan verifikasi sebelum Anda dapat login.
                     </p>
                     <button
                         onClick={() => navigate('/login')}
-                        className="w-full py-4 bg-brand-600 text-white rounded-xl font-black text-[12px] uppercase tracking-[0.2em] hover:bg-brand-700 transition-all"
+                        className="w-full py-4 bg-brand-600 text-white rounded-xl font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-brand-700 transition-all"
                     >
                         Ke Halaman Login
                     </button>
@@ -102,7 +102,7 @@ export default function JoinRT() {
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[30rem] h-[30rem] bg-brand-400 rounded-full blur-[120px] opacity-30"></div>
                 
                 <div className="relative z-10">
-                    <button onClick={() => navigate('/')} className="flex items-center gap-2 text-brand-200 hover:text-white transition-colors cursor-pointer text-[10px] font-black uppercase tracking-[0.2em]">
+                    <button onClick={() => navigate('/')} className="flex items-center gap-2 text-brand-200 hover:text-white transition-colors cursor-pointer text-[10px] font-bold uppercase tracking-[0.2em]">
                         <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Beranda
                     </button>
                     
@@ -110,7 +110,7 @@ export default function JoinRT() {
                         <div className="inline-flex items-center justify-center w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl mb-6">
                             <UserPlus weight="bold" className="w-6 h-6 text-white" />
                         </div>
-                        <h1 className="text-3xl lg:text-4xl font-black tracking-tight mb-4 leading-tight">
+                        <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight mb-4 leading-tight">
                             Gabung dengan <br />
                             <span className="text-brand-200">{tenantName || 'Lingkungan RT'}</span>
                         </h1>
@@ -130,7 +130,7 @@ export default function JoinRT() {
             <div className="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-20 bg-white">
                 <div className="w-full max-w-[480px]">
                     <div className="mb-8">
-                        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Formulir Pendaftaran</h2>
+                        <h2 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Formulir Pendaftaran</h2>
                         <p className="text-slate-500 text-[13px] font-medium leading-relaxed">Pastikan NIK dan Nama sesuai dengan KTP Anda.</p>
                     </div>
 
@@ -143,7 +143,7 @@ export default function JoinRT() {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">NIK (KTP)</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">NIK (KTP)</label>
                                 <input
                                     {...register('nik', { required: true, minLength: 5 })}
                                     placeholder="16 Digit NIK"
@@ -151,7 +151,7 @@ export default function JoinRT() {
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Nama Lengkap</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Nama Lengkap</label>
                                 <input
                                     {...register('nama', { required: true })}
                                     placeholder="Sesuai KTP"
@@ -162,7 +162,7 @@ export default function JoinRT() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Email</label>
                                 <input
                                     {...register('email', { required: true })}
                                     type="email"
@@ -171,7 +171,7 @@ export default function JoinRT() {
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">No. WhatsApp</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">No. WhatsApp</label>
                                 <input
                                     {...register('kontak', { required: true })}
                                     placeholder="0812..."
@@ -181,7 +181,7 @@ export default function JoinRT() {
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Alamat Domisili</label>
+                            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Alamat Domisili</label>
                             <textarea
                                 {...register('alamat', { required: true })}
                                 placeholder="Alamat lengkap saat ini"
@@ -192,7 +192,7 @@ export default function JoinRT() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Password</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Password</label>
                                 <div className="relative">
                                     <input
                                         {...register('password', { required: true, minLength: 6 })}
@@ -209,7 +209,7 @@ export default function JoinRT() {
                                 </div>
                             </div>
                             <div className="space-y-1.5">
-                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Konfirmasi</label>
+                                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Konfirmasi</label>
                                 <input
                                     {...register('confirmPassword', { required: true })}
                                     type="password"
@@ -222,7 +222,7 @@ export default function JoinRT() {
                             <button
                                 type="submit"
                                 disabled={isLoading || !tenantName}
-                                className="w-full py-4 px-6 bg-brand-600 text-white rounded-xl font-black text-[12px] uppercase tracking-[0.2em] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-50 gap-3"
+                                className="w-full py-4 px-6 bg-brand-600 text-white rounded-xl font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-50 gap-3"
                             >
                                 {isLoading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

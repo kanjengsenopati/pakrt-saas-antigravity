@@ -213,7 +213,7 @@ export default function NotulensiForm() {
                     </button>
                     <div>
                         <div className="flex items-center gap-2 mb-1.5">
-                            <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-none">
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
                                 {isEditing ? 'Ubah Notulensi' : 'Notulensi Baru'}
                             </h1>
                             <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[10px] font-bold tracking-tight rounded-md border border-brand-100">
@@ -301,11 +301,11 @@ export default function NotulensiForm() {
                                                             className={`w-full text-left p-4 hover:bg-brand-50/50 flex items-center justify-between border-b border-slate-50 last:border-0 transition-all group ${selectedHostId === w.id ? 'bg-brand-50' : ''}`}
                                                         >
                                                             <div className="flex items-center gap-3">
-                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm transition-all ${selectedHostId === w.id ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-brand-100 group-hover:text-brand-600'}`}>
+                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all ${selectedHostId === w.id ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-brand-100 group-hover:text-brand-600'}`}>
                                                                     {w.nama.charAt(0)}
                                                                 </div>
                                                                 <div>
-                                                                    <p className={`text-sm font-black tracking-tight mb-0.5 ${selectedHostId === w.id ? 'text-brand-700' : 'text-slate-900'}`}>{w.nama}</p>
+                                                                    <p className={`text-sm font-bold tracking-tight mb-0.5 ${selectedHostId === w.id ? 'text-brand-700' : 'text-slate-900'}`}>{w.nama}</p>
                                                                     <p className="text-[10px] font-medium text-slate-400 tracking-tight">{w.alamat}</p>
                                                                 </div>
                                                             </div>
@@ -353,7 +353,7 @@ export default function NotulensiForm() {
                         </section>
 
                         <section className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                            <div className="p-5 border-b border-slate-50 bg-slate-50/50 flex items-center gap-3 font-black">
+                            <div className="p-5 border-b border-slate-50 bg-slate-50/50 flex items-center gap-3 font-bold">
                                 <div className="p-2 bg-slate-900 rounded-lg shadow-lg">
                                     <ImageIcon weight="fill" className="text-white w-4 h-4" />
                                 </div>
@@ -382,7 +382,7 @@ export default function NotulensiForm() {
                                         <div className="p-2 bg-white/10 rounded-lg">
                                             <UsersThree weight="bold" className="w-5 h-5" />
                                         </div>
-                                        <h3 className="text-sm font-black tracking-tight">Daftar Kehadiran</h3>
+                                        <h3 className="text-sm font-bold tracking-tight">Daftar Kehadiran</h3>
                                     </div>
                                     <button
                                         type="button"
@@ -416,7 +416,7 @@ export default function NotulensiForm() {
                                         className="flex flex-col items-center justify-center p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all border border-white/10"
                                     >
                                         <CheckCircle weight="fill" className="w-4 h-4 mb-1" />
-                                        <span className="text-[8px] font-black uppercase tracking-widest">Hadir</span>
+                                        <span className="text-[8px] font-bold uppercase tracking-widest">Hadir</span>
                                     </button>
                                     <button
                                         type="button"
@@ -424,7 +424,7 @@ export default function NotulensiForm() {
                                         className="flex flex-col items-center justify-center p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all border border-white/10"
                                     >
                                         <MinusCircle weight="fill" className="w-4 h-4 mb-1 text-blue-300" />
-                                        <span className="text-[8px] font-black uppercase tracking-widest">Izin</span>
+                                        <span className="text-[8px] font-bold uppercase tracking-widest">Izin</span>
                                     </button>
                                     <button
                                         type="button"
@@ -432,7 +432,7 @@ export default function NotulensiForm() {
                                         className="flex flex-col items-center justify-center p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all border border-white/10"
                                     >
                                         <MinusCircle weight="fill" className="w-4 h-4 mb-1 text-amber-300" />
-                                        <span className="text-[8px] font-black uppercase tracking-widest">Sakit</span>
+                                        <span className="text-[8px] font-bold uppercase tracking-widest">Sakit</span>
                                     </button>
                                     <button
                                         type="button"
@@ -440,7 +440,7 @@ export default function NotulensiForm() {
                                         className="flex flex-col items-center justify-center p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all border border-white/10"
                                     >
                                         <XCircle weight="fill" className="w-4 h-4 mb-1 text-rose-300" />
-                                        <span className="text-[8px] font-black uppercase tracking-widest">Alfa</span>
+                                        <span className="text-[8px] font-bold uppercase tracking-widest">Alfa</span>
                                     </button>
                                 </div>
                             </div>
@@ -448,12 +448,12 @@ export default function NotulensiForm() {
                             {/* Summary Badges Grid */}
                             <div className="grid grid-cols-2 gap-2 p-4 bg-slate-50 border-b border-slate-100">
                                 <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-400 tracking-tight mb-1 leading-none text-left">Hadir</span>
-                                    <span className="text-xl font-black text-emerald-600 leading-none">{Object.values(kehadiranState).filter(s => s === 'hadir').length}</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-tight mb-1 leading-none text-left">Hadir</span>
+                                    <span className="text-xl font-bold text-emerald-600 leading-none">{Object.values(kehadiranState).filter(s => s === 'hadir').length}</span>
                                 </div>
                                 <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-400 tracking-tight mb-1 leading-none text-left">Izin / Sakit</span>
-                                    <span className="text-xl font-black text-amber-500 leading-none">{Object.values(kehadiranState).filter(s => s === 'izin' || s === 'sakit').length}</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-tight mb-1 leading-none text-left">Izin / Sakit</span>
+                                    <span className="text-xl font-bold text-amber-500 leading-none">{Object.values(kehadiranState).filter(s => s === 'izin' || s === 'sakit').length}</span>
                                 </div>
                             </div>
 
@@ -482,7 +482,7 @@ export default function NotulensiForm() {
                                                     {selectedWargaIds.has(warga.id) && <CheckCircle weight="bold" className="text-white w-3 h-3" />}
                                                 </div>
 
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs transition-colors shrink-0 ${kehadiranState[warga.id] === 'hadir' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${kehadiranState[warga.id] === 'hadir' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
                                                     {warga.nama.charAt(0)}
                                                 </div>
                                                 <div className="truncate">
@@ -507,8 +507,8 @@ export default function NotulensiForm() {
 
                             <div className="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-500 tracking-tight mb-0.5">Total Warga</span>
-                                    <span className="text-white font-black text-sm">{wargaList.length} Jiwa</span>
+                                    <span className="text-[10px] font-bold text-slate-500 tracking-tight mb-0.5">Total Warga</span>
+                                    <span className="text-white font-bold text-sm">{wargaList.length} Jiwa</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -522,7 +522,7 @@ export default function NotulensiForm() {
                             <button
                                 type="submit"
                                 disabled={isUploading || isSubmitting}
-                                className={`w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl flex items-center justify-center gap-3 font-black tracking-tight text-sm hover-lift active-press shadow-xl shadow-brand-100 hover:shadow-brand-200 transition-all ${isUploading || isSubmitting ? 'opacity-70 cursor-wait bg-slate-500 shadow-none' : ''}`}
+                                className={`w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl flex items-center justify-center gap-3 font-bold tracking-tight text-sm hover-lift active-press shadow-xl shadow-brand-100 hover:shadow-brand-200 transition-all ${isUploading || isSubmitting ? 'opacity-70 cursor-wait bg-slate-500 shadow-none' : ''}`}
                             >
                                 {isUploading || isSubmitting ? (
                                     <CircleNotch weight="bold" className="animate-spin w-6 h-6" />
@@ -535,7 +535,7 @@ export default function NotulensiForm() {
                             <button
                                 type="button"
                                 onClick={() => navigate('/notulensi')}
-                                className="w-full py-3 bg-white hover:bg-slate-50 text-slate-400 hover:text-slate-600 rounded-2xl flex items-center justify-center font-black tracking-tight text-xs border border-slate-100 transition-all active:scale-95"
+                                className="w-full py-3 bg-white hover:bg-slate-50 text-slate-400 hover:text-slate-600 rounded-2xl flex items-center justify-center font-bold tracking-tight text-xs border border-slate-100 transition-all active:scale-95"
                             >
                                 Batalkan Progres
                             </button>
