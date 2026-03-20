@@ -51,8 +51,10 @@ export function Header() {
                                 {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD'}
                             </div>
                             <div className="hidden md:block text-left">
-                                <p className="text-[13px] font-bold text-slate-900 leading-tight">{currentUser?.name || 'Admin'}</p>
-                                <p className="section-label !text-[10px] mt-0.5">{currentUser?.role_entity?.name || currentUser?.role || 'Administrator'}</p>
+                                <p className="text-sm font-bold text-slate-900 leading-tight">
+                                    {currentUser?.name?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') || 'Admin'}
+                                </p>
+                                <p className="section-label !text-sm mt-0.5">{currentUser?.role_entity?.name || currentUser?.role || 'Administrator'}</p>
                             </div>
                             <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
                         </button>
@@ -62,7 +64,9 @@ export function Header() {
                                 <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)}></div>
                                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-scale-in origin-top-right">
                                     <div className="px-4 py-3 border-b border-gray-50 mb-2">
-                                        <p className="font-bold text-gray-900 text-sm">{currentUser?.name}</p>
+                                        <p className="font-bold text-gray-900 text-sm">
+                                            {currentUser?.name?.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
+                                        </p>
                                         <p className="text-xs text-gray-500">{currentUser?.email}</p>
                                     </div>
                                     <button 
