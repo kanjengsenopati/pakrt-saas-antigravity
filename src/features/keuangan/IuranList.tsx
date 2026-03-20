@@ -286,7 +286,11 @@ export default function IuranList() {
                                         <td className="p-3">
                                             <div className="flex flex-wrap gap-1 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
-                                                    <span key={b} className="inline-flex px-1.5 py-0.5 rounded-lg text-sm font-semibold bg-white text-blue-700 border border-blue-200 tracking-normal shadow-sm">
+                                                    <span key={b} className={`inline-flex px-1.5 py-0.5 rounded-lg text-sm font-semibold tracking-normal shadow-sm border ${
+                                                        iuran.status === 'VERIFIED' ? 'bg-emerald-500 text-white border-emerald-600' :
+                                                        iuran.status === 'PENDING' ? 'bg-yellow-400 text-black border-yellow-500' :
+                                                        'bg-red-50 border-red-200 text-red-600'
+                                                    }`}>
                                                         {getMonthName(b).substring(0, 3)} {iuran.periode_tahun}
                                                     </span>
                                                 ))}
@@ -443,7 +447,9 @@ export default function IuranList() {
                                                                 key={month} 
                                                                 className={`inline-flex px-1 py-1 rounded-md text-[13px] font-semibold border items-center justify-center shadow-sm transition-all duration-300
                                                                     ${isPaid 
-                                                                        ? 'bg-brand-600 text-white border-brand-700 ring-1 ring-brand-500/20' 
+                                                                        ? (iuran.status === 'VERIFIED' ? 'bg-emerald-500 text-white border-emerald-600 shadow-sm border-b-2' 
+                                                                         : iuran.status === 'PENDING' ? 'bg-yellow-400 text-black border-yellow-500 shadow-sm border-b-2'
+                                                                         : 'bg-red-50 border-red-200 text-red-600 shadow-sm border-b-2')
                                                                         : 'bg-red-500 text-white border-red-600 shadow-sm border-b-2'
                                                                     }`}
                                                             >

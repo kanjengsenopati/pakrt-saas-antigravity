@@ -111,23 +111,53 @@ export const pembayaranIuranService = {
             throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dalam proses pembayaran atau sudah lunas untuk tahun ${processedData.periode_tahun}`);
         }
 
-        // Default status is PENDING (from schema), but explicit here for clarity
+        const { _autoVerify, ...createData } = processedData;
+        const status = _autoVerify ? 'VERIFIED' : 'PENDING';
+
         const result = await tx.pembayaranIuran.create({ 
             data: {
-                ...processedData,
-                status: 'PENDING'
+                ...createData,
+                status
             } 
         });
         
-        // DO NOT Sync to Keuangan yet. Only after verification.
+        if (_autoVerify) {
+            const wargaNama = (await tx.warga.findUnique({ where: { id: createData.warga_id } }))?.nama || 'Warga';
+            await tx.keuangan.create({
+                data: {
+                    tenant_id: result.tenant_id,
+                    scope: result.scope || 'RT',
+                    tipe: 'pemasukan',
+                    kategori: 'Iuran Warga',
+                    nominal: result.nominal,
+                    tanggal: result.tanggal_bayar,
+                    keterangan: buildKeterangan(
+                        wargaNama,
+                        result.kategori,
+                        result.periode_bulan as number[],
+                        result.periode_tahun,
+                        result.id
+                    )
+                }
+            });
 
-        await aktivitasService.create({
-            tenant_id: processedData.tenant_id,
-            scope: processedData.scope || 'RT',
-            action: 'Bayar Iuran',
-            details: `Pembayaran iuran dari warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
-            timestamp: Date.now()
-        });
+            await aktivitasService.create({
+                tenant_id: createData.tenant_id,
+                scope: createData.scope || 'RT',
+                action: 'Bayar Iuran',
+                details: `Pembayaran iuran tunai warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
+                timestamp: Date.now()
+            });
+        } else {
+            await aktivitasService.create({
+                tenant_id: createData.tenant_id,
+                scope: createData.scope || 'RT',
+                action: 'Bayar Iuran',
+                details: `Pembayaran iuran dari warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                timestamp: Date.now()
+            });
+        }
+
         return result;
     });
   },

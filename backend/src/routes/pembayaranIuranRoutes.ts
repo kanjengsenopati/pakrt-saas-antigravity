@@ -45,6 +45,9 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
       // Force tenant_id from session
       data.tenant_id = user.tenant_id;
       
+      const isWarga = user.role?.toLowerCase() === 'warga' || user.role_entity?.name?.toLowerCase() === 'warga';
+      data._autoVerify = !isWarga;
+      
       const item = await pembayaranIuranService.create(data);
       return reply.code(201).send(item);
     } catch (err: any) {
