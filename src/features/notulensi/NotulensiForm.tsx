@@ -216,7 +216,7 @@ export default function NotulensiForm() {
                             <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-none">
                                 {isEditing ? 'Ubah Notulensi' : 'Notulensi Baru'}
                             </h1>
-                            <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[9px] font-black uppercase tracking-tight rounded-md border border-brand-100">
+                            <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[10px] font-bold tracking-tight rounded-md border border-brand-100">
                                 {currentScope}
                             </span>
                         </div>
@@ -237,12 +237,12 @@ export default function NotulensiForm() {
                                 <div className="p-2 bg-brand-600 rounded-lg shadow-lg shadow-brand-100">
                                     <Notebook weight="fill" className="text-white w-4 h-4" />
                                 </div>
-                                <h3 className="text-sm font-black text-slate-900 tracking-tight">Informasi Utama</h3>
+                                <h3 className="text-sm font-bold text-slate-900 tracking-tight">Informasi Utama</h3>
                             </div>
 
                             <div className="p-6 space-y-6">
                                 <div>
-                                    <label className="block text-sm font-black text-slate-700 tracking-tight mb-2 px-1">
+                                    <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
                                         Judul / Topik Pertemuan <span className="text-rose-500">*</span>
                                     </label>
                                     <input
@@ -256,7 +256,7 @@ export default function NotulensiForm() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-black text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                        <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
                                             <CalendarBlank className="text-brand-500" /> Tanggal Pelaksanaan
                                         </label>
                                         <input
@@ -267,7 +267,7 @@ export default function NotulensiForm() {
                                         {errors.tanggal && <p className="text-rose-500 text-[10px] font-bold tracking-tight mt-2 px-1 animate-pulse">{errors.tanggal.message}</p>}
                                     </div>
                                     <div className="relative">
-                                        <label className="block text-sm font-black text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                        <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
                                             <UserCircle className="text-brand-500" /> Tuan Rumah / Host
                                         </label>
                                         <div className="flex gap-2">
@@ -287,7 +287,7 @@ export default function NotulensiForm() {
                                         {showHostSelector && (
                                             <div className="absolute z-50 mt-3 w-full bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                                 <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                                                    <span className="text-[10px] font-black text-slate-400 tracking-tight px-1">Pilih Warga</span>
+                                                    <span className="text-[11px] font-bold text-slate-400 tracking-tight px-1">Pilih Warga</span>
                                                     <button onClick={() => setShowHostSelector(false)} className="text-slate-400 hover:text-rose-500 p-1 transition-colors">
                                                         <XCircle size={24} weight="fill" />
                                                     </button>
@@ -310,9 +310,9 @@ export default function NotulensiForm() {
                                                                 </div>
                                                             </div>
                                                             {pastHosts.has(w.id) && (
-                                                                <div className="flex items-center gap-1 text-[8px] bg-amber-50 text-amber-700 px-2 py-1 rounded-lg font-black tracking-tight border border-amber-100">
+                                                            <div className="flex items-center gap-1 text-[9px] bg-amber-50 text-amber-700 px-2 py-1 rounded-lg font-bold tracking-tight border border-amber-100">
                                                                     <ClockCounterClockwise size={12} weight="bold" />
-                                                                    <span>History Host</span>
+                                                                    <span>Riwayat Host</span>
                                                                 </div>
                                                             )}
                                                             {selectedHostId === w.id && (
@@ -327,7 +327,7 @@ export default function NotulensiForm() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-black text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
                                         <MapPin className="text-brand-500" /> Lokasi Pertemuan
                                     </label>
                                     <input
@@ -339,7 +339,7 @@ export default function NotulensiForm() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-black text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
                                         <Notebook className="text-brand-500" /> Hasil & Pembahasan Rapat
                                     </label>
                                     <textarea
@@ -357,7 +357,7 @@ export default function NotulensiForm() {
                                 <div className="p-2 bg-slate-900 rounded-lg shadow-lg">
                                     <ImageIcon weight="fill" className="text-white w-4 h-4" />
                                 </div>
-                                <h3 className="text-sm font-black text-slate-900 tracking-tight text-left">Dokumentasi Visual</h3>
+                                <h3 className="text-sm font-bold text-slate-900 tracking-tight text-left">Dokumentasi Visual</h3>
                             </div>
                             <div className="p-6">
                                 <FileUpload
@@ -387,7 +387,7 @@ export default function NotulensiForm() {
                                     <button
                                         type="button"
                                         onClick={toggleSelectAll}
-                                        className="text-[10px] font-black uppercase tracking-widest px-2 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                                        className="text-[10px] font-bold tracking-tight px-2 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                                     >
                                         {selectedWargaIds.size === wargaList.length ? 'Batal Semua' : 'Pilih Semua'}
                                     </button>
@@ -400,7 +400,7 @@ export default function NotulensiForm() {
                             {/* Bulk Action Bar - Appear when selected */}
                             <div className={`overflow-hidden transition-all duration-300 bg-brand-600 text-white flex flex-col ${selectedWargaIds.size > 0 ? 'h-auto p-4 opacity-100' : 'h-0 opacity-0'}`}>
                                 <div className="flex items-center justify-between mb-3 px-1">
-                                    <span className="text-[10px] font-black uppercase tracking-tight ">{selectedWargaIds.size} Warga Terpilih</span>
+                                    <span className="text-[10px] font-bold tracking-tight ">{selectedWargaIds.size} Warga Terpilih</span>
                                     <button
                                         type="button"
                                         onClick={() => setSelectedWargaIds(new Set())}
@@ -494,7 +494,7 @@ export default function NotulensiForm() {
                                             <button
                                                 type="button"
                                                 onClick={() => toggleKehadiran(warga.id)}
-                                                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-black tracking-tight border transition-all active:scale-90 shadow-sm shrink-0
+                                                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-bold tracking-tight border transition-all active:scale-90 shadow-sm shrink-0
                                                        ${getStatusTheme(kehadiranState[warga.id] || 'hadir')}`}
                                             >
                                                 {getStatusIcon(kehadiranState[warga.id] || 'hadir')}
@@ -529,7 +529,7 @@ export default function NotulensiForm() {
                                 ) : (
                                     <FloppyDisk weight="fill" className="w-5 h-5" />
                                 )}
-                                <span>{isUploading ? 'Progress...' : (isSubmitting ? 'Saving...' : (isEditing ? 'Simpan Perubahan' : 'Finalisasi & Simpan'))}</span>
+                                <span>{isUploading ? 'Progress...' : (isSubmitting ? 'Simpan' : (isEditing ? 'Simpan Perubahan' : 'Finalisasi & Simpan'))}</span>
                             </button>
 
                             <button

@@ -139,7 +139,7 @@ export default function RondaList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Jadwal Ronda</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">Kelola jadwal siskamling keamanan lingkungan</p>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">Kelola jadwal siskamling keamanan lingkungan</p>
                 </div>
                 <HasPermission module="Jadwal Ronda" action="Buat">
                     <button
@@ -210,14 +210,14 @@ export default function RondaList() {
                                                     </span>
                                                     {group.name}
                                                 </h3>
-                                                <span className="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                                                <span className="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-tight">
                                                     {group.dates.length} Jadwal
                                                 </span>
                                             </div>
 
                                             <div className="space-y-3">
                                                 <div>
-                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Petugas Utama</p>
+                                                    <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Utama</p>
                                                     <div className="flex flex-wrap gap-2">
                                                         {Array.from(group.members.values()).map(w => (
                                                             <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-white border border-gray-100 rounded-lg shadow-sm">
@@ -232,7 +232,7 @@ export default function RondaList() {
 
                                                 {group.konsumsi.size > 0 && (
                                                     <div>
-                                                        <p className="text-[10px] text-amber-500 font-bold uppercase tracking-wider mb-2">Penyedia Konsumsi</p>
+                                                        <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Penyedia Konsumsi</p>
                                                         <div className="flex flex-wrap gap-2">
                                                             {Array.from(group.konsumsi.values()).map(w => (
                                                                 <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-amber-50/50 border border-amber-100 rounded-lg">
@@ -246,7 +246,7 @@ export default function RondaList() {
                                         </div>
 
                                         <div className="p-5 bg-gray-50/30 flex-1">
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3">Daftar Tanggal Jaga</p>
+                                            <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-3">Daftar Tanggal Jaga</p>
                                             <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
                                                 {group.dates.sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map(d => {
                                                     const dateObj = new Date(d.tanggal);
@@ -275,7 +275,7 @@ export default function RondaList() {
                                                             </div>
                                                             {isActive && (
                                                                 <div className="ml-3.5 pl-3 border-l-2 border-amber-200 py-1 animate-slide-down">
-                                                                    <p className="text-[9px] text-amber-600 font-bold uppercase tracking-tight mb-1">Petugas Snack:</p>
+                                                                    <p className="text-[10px] text-amber-600 font-bold tracking-tight mb-1">Petugas Snack:</p>
                                                                     <div className="flex flex-wrap gap-1">
                                                                         {d.petugas_konsumsi.length > 0 ? (
                                                                             d.petugas_konsumsi.map((p: any) => (
@@ -307,7 +307,7 @@ export default function RondaList() {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-slate-50 text-slate-500 text-[14px] font-semibold capitalize tracking-wider border-b border-slate-200">
+                                    <tr className="bg-slate-50 text-slate-500 text-[14px] font-bold tracking-tight border-b border-slate-200">
                                         <th
                                             className="p-3 w-1/4 cursor-pointer hover:bg-slate-100 transition-colors"
                                             onClick={() => handleSort('tanggal')}
@@ -360,7 +360,7 @@ export default function RondaList() {
                                                     </p>
                                                 </td>
                                                 <td className="p-3">
-                                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wider">
+                                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 tracking-tight">
                                                         {ronda.regu}
                                                     </span>
                                                 </td>
@@ -439,14 +439,14 @@ export default function RondaList() {
                                                         </p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 uppercase tracking-wider">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 tracking-tight">
                                                             {ronda.regu}
                                                         </span>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <p className="text-[10px] text-gray-400 uppercase font-semibold mb-2">Petugas Piket</p>
+                                                    <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Piket</p>
                                                     <div className="flex flex-wrap gap-1.5 mb-3">
                                                         {ronda.anggota_warga?.map(w => (
                                                             <span key={w.id} className="inline-flex items-center px-2 py-1 rounded bg-gray-50 text-gray-700 border border-gray-100 text-xs font-medium">
@@ -454,7 +454,7 @@ export default function RondaList() {
                                                             </span>
                                                         ))}
                                                     </div>
-                                                    <p className="text-[10px] text-amber-500 uppercase font-semibold mb-2">Bawa Konsumsi/Snack</p>
+                                                    <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Bawa Konsumsi/Snack</p>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
                                                             ronda.anggota_konsumsi.map(w => (

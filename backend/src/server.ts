@@ -98,17 +98,15 @@ export default async function handler(req: any, res: any) {
   fastify.server.emit('request', req, res);
 }
 
-// Start server locally if not in Vercel environment
-if (require.main === module) {
-  const start = async () => {
-    try {
-      const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-      await fastify.listen({ port, host: '0.0.0.0' });
-      fastify.log.info('Server started on ' + port);
-    } catch (err) {
-      fastify.log.error(err);
-      process.exit(1);
-    }
-  };
-  start();
-}
+// Start server locally
+const start = async () => {
+  try {
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 3100;
+    await fastify.listen({ port, host: '0.0.0.0' });
+    fastify.log.info('Server started on ' + port);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();

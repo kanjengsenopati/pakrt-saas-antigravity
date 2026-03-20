@@ -108,7 +108,7 @@ export default function AsetList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Inventaris Aset</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">Kelola barang inventaris untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span></p>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">Kelola barang inventaris untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span></p>
                 </div>
                 <HasPermission module="Aset" action="Buat">
                     <button
@@ -149,7 +149,7 @@ export default function AsetList() {
                 <div className="hidden md:block overflow-x-auto min-h-[400px]">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 text-slate-500 text-[14px] capitalize tracking-wider border-b border-slate-200">
+                            <tr className="bg-slate-50 text-slate-500 text-[14px] font-bold tracking-tight border-b border-slate-200">
                                 <th className="p-4 font-semibold w-1/3 text-slate-500">Informasi Barang</th>
                                 <th className="p-4 font-semibold w-1/4 text-slate-500">Pembelian</th>
                                 <th className="p-4 font-semibold w-1/4 text-slate-500">Status Pinjam</th>
@@ -187,7 +187,7 @@ export default function AsetList() {
                                                 <div>
                                                     <p className="font-bold text-slate-800 leading-tight mb-1 text-[14px]">{aset.nama_barang}</p>
                                                     <div className="flex items-center gap-2">
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider capitalize 
+                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-tight 
                                                             ${aset.kondisi === 'baik' ? 'bg-brand-50 text-brand-700 border border-brand-200' :
                                                                 aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                                                                 aset.kondisi === 'rusak_berat' ? 'bg-red-50 text-red-700 border border-red-200' :
@@ -320,7 +320,7 @@ export default function AsetList() {
                                             {aset.status_pinjam === 'dipinjam' ? (
                                                 <div className="bg-amber-50 border border-amber-100 rounded-lg p-2.5 w-full flex justify-between items-center">
                                                     <div>
-                                                        <div className="flex items-center gap-1.5 text-amber-800 font-semibold text-[10px] uppercase tracking-wider mb-0.5">
+                                                        <div className="flex items-center gap-1.5 text-amber-800 font-bold text-[10px] tracking-tight mb-0.5">
                                                             <Handshake className="w-3.5 h-3.5" /> Sedang Dipinjam
                                                         </div>
                                                         <p className="text-xs font-bold text-gray-900">{aset.peminjam?.nama || 'Warga (ID: ' + aset.peminjam_id + ')'}</p>
@@ -399,7 +399,7 @@ export default function AsetList() {
                                     <Package weight="duotone" className="w-6 h-6 text-brand-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold text-brand-600 uppercase tracking-wider mb-0.5">Barang dipinjam</p>
+                                    <p className="text-xs font-bold text-brand-600 tracking-tight mb-0.5">Barang dipinjam</p>
                                     <p className="font-bold text-gray-900 leading-tight">{selectedAset.nama_barang}</p>
                                     <p className="text-xs text-gray-500 font-medium">Stok total: {selectedAset.jumlah} unit</p>
                                 </div>

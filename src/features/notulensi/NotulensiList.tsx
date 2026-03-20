@@ -85,7 +85,7 @@ export default function NotulensiList() {
             return (
                 <div className="p-12 flex flex-col items-center justify-center gap-3 bg-slate-50/50">
                     <CircleNotch size={24} className="animate-spin text-brand-500" />
-                    <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Memuat Detail...</span>
+                    <span className="text-[11px] font-bold tracking-tight text-slate-400">Memuat Detail...</span>
                 </div>
             );
         }
@@ -99,7 +99,7 @@ export default function NotulensiList() {
                             <div className="p-2 bg-slate-900 rounded-lg shadow-sm">
                                 <Notebook weight="fill" className="text-white w-4 h-4" />
                             </div>
-                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Hasil & Pembahasan</h4>
+                            <h4 className="text-sm font-bold tracking-tight text-slate-500">Hasil & Pembahasan</h4>
                         </div>
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[120px]">
                             <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{data.konten || 'Tidak ada catatan hasil rapat.'}</p>
@@ -113,13 +113,13 @@ export default function NotulensiList() {
                                 <div className="p-2 bg-brand-600 rounded-lg shadow-sm">
                                     <UsersThree weight="fill" className="text-white w-4 h-4" />
                                 </div>
-                                <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">Daftar Kehadiran</h4>
+                                <h4 className="text-sm font-bold tracking-tight text-slate-500">Daftar Kehadiran</h4>
                             </div>
                             <div className="flex gap-2">
-                                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-tight rounded-full border border-emerald-100">
+                                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold tracking-tight rounded-full border border-emerald-100">
                                     {data.kehadiran_list?.filter(k => k.status === 'hadir').length || 0} Hadir
                                 </span>
-                                <span className="px-3 py-1 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-tight rounded-full border border-amber-100">
+                                <span className="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold tracking-tight rounded-full border border-amber-100">
                                     {data.kehadiran_list?.filter(k => k.status !== 'hadir').length || 0} Berhalangan
                                 </span>
                             </div>
@@ -129,8 +129,8 @@ export default function NotulensiList() {
                             <table className="w-full text-[11px]">
                                 <thead className="bg-slate-50 border-b border-slate-100 sticky top-0">
                                     <tr>
-                                        <th className="px-4 py-2 text-left font-black text-slate-400 uppercase tracking-widest">Warga</th>
-                                        <th className="px-4 py-2 text-right font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                        <th className="px-4 py-2 text-left font-bold text-slate-500 tracking-tight">Warga</th>
+                                        <th className="px-4 py-2 text-right font-bold text-slate-500 tracking-tight">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
@@ -146,12 +146,12 @@ export default function NotulensiList() {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    <span className={`px-2 py-1 rounded-lg font-black uppercase tracking-tighter text-[9px] border ${k.status === 'hadir' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                                    <span className={`px-2 py-1 rounded-lg font-bold tracking-tight text-[10px] border ${k.status === 'hadir' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                                                         k.status === 'izin' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                                                             k.status === 'sakit' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                                 'bg-rose-50 text-rose-600 border-rose-100'
                                                         }`}>
-                                                        {k.status}
+                                                        {k.status.charAt(0).toUpperCase() + k.status.slice(1)}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -175,7 +175,7 @@ export default function NotulensiList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Notulensi Rapat</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 uppercase tracking-wider">
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
                         Catatan rapat & absensi untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
@@ -249,7 +249,7 @@ export default function NotulensiList() {
                                     <td colSpan={5} className="p-12 text-center text-gray-500">
                                         <div className="flex flex-col items-center gap-2">
                                             <CircleNotch size={24} className="animate-spin text-brand-500" />
-                                            <span className="text-[10px] capitalize font-black text-slate-400 tracking-widest italic">Sinkronisasi Notulensi...</span>
+                                            <span className="text-[11px] font-bold text-slate-400 tracking-tight italic">Sinkronisasi Notulensi...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -261,8 +261,8 @@ export default function NotulensiList() {
                                                 <Notebook className="w-8 h-8 text-slate-300" />
                                             </div>
                                             <div>
-                                                <p className="text-base font-black text-slate-900 capitalize tracking-tight">Belum Ada Notulensi</p>
-                                                <p className="text-[10px] text-slate-400 mt-1 capitalize tracking-widest font-normal">Catatan pertemuan masih kosong untuk scope ini</p>
+                                                <p className="text-base font-bold text-slate-900 tracking-tight">Belum Ada Notulensi</p>
+                                                <p className="text-[11px] text-slate-400 mt-1 tracking-tight font-normal">Catatan pertemuan masih kosong untuk scope ini</p>
                                             </div>
                                         </div>
                                     </td>
@@ -313,7 +313,7 @@ export default function NotulensiList() {
                                                     <p className="text-[14px] font-normal text-slate-600 leading-relaxed line-clamp-2 max-w-xl pr-4">{notulensi.konten}</p>
                                                     {notulensi.url_foto && (
                                                         <div className="flex items-center gap-1.5 pt-1">
-                                                            <div className="text-[10px] font-semibold capitalize tracking-widest text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100/50 flex items-center gap-1">
+                                                            <div className="text-[10px] font-bold tracking-tight text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100/50 flex items-center gap-1">
                                                                 <CheckCircle weight="fill" className="w-3 h-3" /> Foto Dokumentasi
                                                             </div>
                                                         </div>
@@ -371,7 +371,7 @@ export default function NotulensiList() {
                     ) : filteredNotulensi.length === 0 ? (
                         <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center flex flex-col items-center">
                             <Notebook weight="duotone" className="w-10 h-10 text-slate-200 mb-2" />
-                            <p className="text-[10px] font-black capitalize tracking-widest text-slate-400">Data Kosong</p>
+                            <p className="text-[11px] font-bold tracking-tight text-slate-400">Data Kosong</p>
                         </div>
                     ) : (
                         filteredNotulensi.map((notulensi) => (
@@ -410,11 +410,11 @@ export default function NotulensiList() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                                                <p className="text-slate-400 capitalize font-black text-[8px] tracking-[0.1em] mb-0.5">Tuan Rumah</p>
+                                                <p className="text-slate-400 font-bold text-[9px] tracking-tight mb-0.5">Tuan Rumah</p>
                                                 <p className="text-slate-900 font-normal text-[11px] truncate">{notulensi.tuan_rumah || '-'}</p>
                                             </div>
                                             <div className="bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                                                <p className="text-slate-400 capitalize font-black text-[8px] tracking-[0.1em] mb-0.5">Lokasi</p>
+                                                <p className="text-slate-400 font-bold text-[9px] tracking-tight mb-0.5">Lokasi</p>
                                                 <p className="text-slate-900 font-normal text-[11px] truncate">{notulensi.lokasi || '-'}</p>
                                             </div>
                                         </div>
@@ -431,14 +431,14 @@ export default function NotulensiList() {
                                     <HasPermission module="Notulensi" action="Ubah">
                                         <button
                                             onClick={() => navigate(`/notulensi/${notulensi.id}`)}
-                                            className="px-4 py-2 text-amber-600 bg-white border border-amber-100 rounded-xl transition-all text-[10px] font-black capitalize tracking-widest active:scale-95 shadow-sm">
+                                            className="px-4 py-2 text-amber-600 bg-white border border-amber-100 rounded-xl transition-all text-[11px] font-bold tracking-tight active:scale-95 shadow-sm">
                                             Ubah
                                         </button>
                                     </HasPermission>
                                     <HasPermission module="Notulensi" action="Hapus">
                                         <button
                                             onClick={() => handleDelete(notulensi.id, notulensi.judul)}
-                                            className="px-4 py-2 text-rose-500 bg-white border border-rose-100 rounded-xl transition-all text-[10px] font-black capitalize tracking-widest active:scale-95 shadow-sm">
+                                            className="px-4 py-2 text-rose-500 bg-white border border-rose-100 rounded-xl transition-all text-[11px] font-bold tracking-tight active:scale-95 shadow-sm">
                                             Hapus
                                         </button>
                                     </HasPermission>

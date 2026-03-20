@@ -41,7 +41,7 @@ const ReportPanel = ({
                     <div className="p-2 bg-brand-600 rounded-lg shadow-sm">
                         <FileText weight="fill" className="text-white w-4 h-4" />
                     </div>
-                    <h4 className="text-[12px] font-black tracking-wide text-slate-400">
+                    <h4 className="text-sm font-bold tracking-tight text-slate-500">
                         {agenda.is_terlaksana ? 'Edit Laporan Kegiatan' : 'Buat Laporan Realisasi'}
                     </h4>
                 </div>
@@ -50,7 +50,7 @@ const ReportPanel = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-[12px] font-black tracking-wide text-slate-400 mb-1.5">Catatan Laporan</label>
+                        <label className="block text-[11px] font-bold tracking-tight text-slate-500 mb-1.5">Catatan Laporan</label>
                         <textarea
                             value={laporanText}
                             onChange={(e) => setLaporanText(e.target.value)}
@@ -198,7 +198,7 @@ export default function AgendaList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Informasi Kegiatan</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-wide">
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
                         Jadwal Kegiatan Untuk Scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                     </p>
                 </div>
@@ -352,7 +352,7 @@ export default function AgendaList() {
                     {/* DESKTOP VIEW: TABLE */}
                     <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-semibold text-slate-500 tracking-wider">
+                            <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-bold text-slate-500 tracking-tight">
                                 <tr>
                                     <th className="p-4 w-24 text-center">Tanggal</th>
                                     <th className="p-4">Agenda & Deskripsi</th>
@@ -364,11 +364,11 @@ export default function AgendaList() {
                             <tbody className="divide-y divide-slate-50">
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan={5} className="p-20 text-center text-slate-400 font-black text-[10px] tracking-widest animate-pulse">
-                                            <div className="flex flex-col items-center gap-4">
-                                                <CircleNotch weight="bold" className="w-10 h-10 animate-spin text-brand-500" />
-                                                Sinkronisasi Laporan...
-                                            </div>
+                                    <td colSpan={5} className="p-20 text-center text-slate-400 font-bold text-[11px] tracking-tight animate-pulse">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <CircleNotch weight="bold" className="w-10 h-10 animate-spin text-brand-500" />
+                                            Sinkronisasi Laporan...
+                                        </div>
                                         </td>
                                     </tr>
                                 ) : filteredAgenda.length === 0 ? (
@@ -378,7 +378,7 @@ export default function AgendaList() {
                                                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center border-2 border-dashed border-slate-200">
                                                     <CalendarBlank weight="duotone" className="w-10 h-10 text-slate-300" />
                                                 </div>
-                                                <p className="text-lg font-black text-slate-900 tracking-tight">Belum Ada Informasi Kegiatan</p>
+                                                <p className="text-lg font-bold text-slate-900 tracking-tight">Belum Ada Informasi Kegiatan</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -392,7 +392,7 @@ export default function AgendaList() {
                                                 <tr className={`hover:bg-brand-50/20 transition-colors group ${expandedId === agenda.id ? 'bg-brand-50/40' : ''}`}>
                                                     <td className="p-4 text-center">
                                                         <div className={`px-2 py-1 mx-auto rounded-lg flex flex-col items-center justify-center border shrink-0 ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'} shadow-sm`}>
-                                                            <span className="text-[11px] font-black leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
+                                                            <span className="text-[11px] font-bold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                         </div>
                                                     </td>
                                                     <td className="p-4 min-w-0">
@@ -407,19 +407,19 @@ export default function AgendaList() {
                                                     </td>
                                                     <td className="p-4 text-right">
                                                         {agenda.butuh_pendanaan ? (
-                                                            <div className="text-sm font-black text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</div>
+                                                            <div className="text-sm font-bold text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</div>
                                                         ) : (
-                                                            <div className="text-[11px] font-bold text-slate-400 tracking-wide italic">Tanpa Budget</div>
+                                                            <div className="text-[11px] font-bold text-slate-400 tracking-tight italic">Tanpa Budget</div>
                                                         )}
-                                                        <div className="text-[11px] font-bold text-slate-400 tracking-wide mt-0.5">{(agenda.peserta_ids?.length || 0)} Peserta</div>
+                                                        <div className="text-[11px] font-bold text-slate-400 tracking-tight mt-0.5">{(agenda.peserta_ids?.length || 0)} Peserta</div>
                                                     </td>
                                                     <td className="p-4 text-center">
                                                         {isRealized ? (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-wide">Terlaksana</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Terlaksana</span>
                                                         ) : past ? (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 tracking-wide whitespace-nowrap">Menunggu Laporan</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 tracking-tight whitespace-nowrap">Menunggu Laporan</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-wide">Terjadwal</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-tight">Terjadwal</span>
                                                         )}
                                                     </td>
                                                     <td className="p-4">
@@ -514,7 +514,7 @@ export default function AgendaList() {
                         ) : filteredAgenda.length === 0 ? (
                             <div className="col-span-2 bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center">
                                 <CalendarBlank weight="duotone" className="w-10 h-10 text-slate-200 mb-2" />
-                                <p className="text-[12px] font-bold tracking-wide text-slate-400">Belum Ada Informasi Kegiatan</p>
+                                <p className="text-[12px] font-bold tracking-tight text-slate-400">Belum Ada Informasi Kegiatan</p>
                             </div>
                         ) : (
                             filteredAgenda.map((agenda) => {
