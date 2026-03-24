@@ -12,7 +12,8 @@ import {
     Wallet,
     FileText,
     HandCoins,
-    CreditCard
+    CreditCard,
+    ArrowRight
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { aktivitasService } from '../../services/aktivitasService';
@@ -223,8 +224,14 @@ export default function Dashboard() {
                                 )}
                             </div>
 
+                            {/* Link Text */}
+                            <div className="flex items-center justify-between mt-3 mb-1.5 px-0.5 relative z-10 opacity-70 group-hover:opacity-100 transition-opacity">
+                                <span className={`text-xs font-bold tracking-normal ${card.color.split(' ')[1]}`}>Lihat Detil</span>
+                                <ArrowRight weight="bold" className={`w-3 h-3 ${card.color.split(' ')[1]} group-hover:translate-x-1 transition-transform`} />
+                            </div>
+
                             {/* Progress bar accent */}
-                            <div className="mt-3 h-0.5 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
+                            <div className="mt-1 h-0.5 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
                                 <div className={`h-full w-1/3 rounded-full ${card.bar} opacity-50 group-hover:w-full transition-all duration-700`} />
                             </div>
                         </div>
