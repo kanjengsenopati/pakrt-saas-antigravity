@@ -160,17 +160,17 @@ export default function Dashboard() {
     }
 
     const adminCards: DashboardCard[] = [
-        { title: 'Total Warga', count: stats.warga, icon: Users, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/warga' },
-        { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', isCurrency: true, link: '/keuangan' },
-        { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', link: '/surat' },
-        { title: 'Verifikasi Iuran', count: stats.pendingIuran, icon: HandCoins, color: 'bg-amber-100 text-amber-600', bar: 'bg-amber-500', link: '/iuran' },
+        { title: 'Total Warga', count: stats.warga, icon: Users, color: 'from-blue-500 to-indigo-600', bar: 'bg-white', link: '/warga' },
+        { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'from-emerald-500 to-teal-600', bar: 'bg-white', isCurrency: true, link: '/keuangan' },
+        { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'from-rose-500 to-red-600', bar: 'bg-white', link: '/surat' },
+        { title: 'Verifikasi Iuran', count: stats.pendingIuran, icon: HandCoins, color: 'from-amber-400 to-orange-500', bar: 'bg-white', link: '/iuran' },
     ];
 
     const wargaCards: DashboardCard[] = [
-        { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-rose-100 text-rose-600', bar: 'bg-rose-500', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
-        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'bg-blue-100 text-blue-600', bar: 'bg-blue-500', link: '/ronda' },
-        { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'bg-purple-100 text-purple-600', bar: 'bg-purple-500', link: '/agenda' },
-        { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-500', link: '/surat' },
+        { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'from-rose-500 to-red-600', bar: 'bg-white', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
+        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'from-blue-500 to-indigo-600', bar: 'bg-white', link: '/ronda' },
+        { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'from-purple-500 to-fuchsia-600', bar: 'bg-white', link: '/agenda' },
+        { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'from-emerald-500 to-teal-600', bar: 'bg-white', link: '/surat' },
     ];
 
     const cards = isWarga ? wargaCards : adminCards;
@@ -197,42 +197,47 @@ export default function Dashboard() {
                         <div
                             key={index}
                             onClick={() => navigate(card.link)}
-                            className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 cursor-pointer transition-all hover:border-brand-300 hover:shadow-md active:scale-[0.98] group relative overflow-hidden"
+                            className={`bg-gradient-to-br ${card.color} rounded-[18px] p-5 shadow-sm border border-transparent cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98] group relative overflow-hidden`}
                         >
+                            {/* Decorative glowing orb */}
+                            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white rounded-full mix-blend-overlay opacity-[0.08] blur-2xl group-hover:opacity-[0.15] transition-opacity duration-500"></div>
+
                             {/* Decorative bg icon */}
-                            <div className="absolute -right-1 -bottom-1 opacity-[0.04] group-hover:opacity-[0.07] transition-opacity duration-300">
-                                <Icon weight="fill" className="w-16 h-16" />
+                            <div className="absolute -right-4 -bottom-4 opacity-20 group-hover:opacity-30 group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 drop-shadow-lg">
+                                <Icon weight="fill" className="w-32 h-32 text-white" />
                             </div>
 
                             {/* Icon + Title on the same row */}
-                            <div className="flex items-center gap-2 mb-3 relative z-10">
-                                <div className={`p-2 rounded-lg ${card.color} shrink-0 shadow-sm`}>
-                                    <Icon weight="duotone" className="w-4 h-4" />
+                            <div className="flex items-center gap-2 mb-4 relative z-10">
+                                <div className={`p-2 rounded-xl bg-white/20 backdrop-blur-md shadow-inner shrink-0 border border-white/20 group-hover:bg-white/30 transition-colors duration-300`}>
+                                    <Icon weight="duotone" className="w-5 h-5 text-white" />
                                 </div>
-                                <p className="section-label !text-sm leading-tight">{card.title}</p>
+                                <p className="font-semibold tracking-wide text-white/95 text-[13px] uppercase drop-shadow-sm">{card.title}</p>
                             </div>
 
                             {/* Center-aligned big number */}
-                            <div className="relative z-10 text-center py-1">
-                                <div className="text-[22px] font-semibold text-gray-900 leading-tight">
+                            <div className="relative z-10 py-1">
+                                <div className="text-3xl font-extrabold text-white leading-none tracking-tight drop-shadow-md">
                                     {card.isCurrency ? (
-                                        <span className="text-[19px] font-semibold">{formatRupiah(card.count as number)}</span>
+                                        <span className="text-[26px] font-extrabold">{formatRupiah(card.count as number)}</span>
                                     ) : card.count}
                                 </div>
                                 {card.subtitle && (
-                                    <p className="text-sm text-gray-400 font-medium mt-1 italic">{card.subtitle}</p>
+                                    <p className="text-xs text-white/80 font-medium mt-1.5 italic drop-shadow-sm">{card.subtitle}</p>
                                 )}
                             </div>
 
-                            {/* Link Text */}
-                            <div className="flex items-center justify-between mt-3 mb-1.5 px-0.5 relative z-10 opacity-70 group-hover:opacity-100 transition-opacity">
-                                <span className={`text-xs font-bold tracking-normal ${card.color.split(' ')[1]}`}>Lihat Detil</span>
-                                <ArrowRight weight="bold" className={`w-3 h-3 ${card.color.split(' ')[1]} group-hover:translate-x-1 transition-transform`} />
+                            {/* Link Text Area */}
+                            <div className="flex items-center justify-between mt-5 mb-1 px-1 relative z-10 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                                <span className="text-[11px] font-bold tracking-wider text-white uppercase backdrop-blur-md bg-white/10 hover:bg-white/20 py-1 px-3 rounded-md border border-white/20 transition-colors duration-300 shadow-sm">Lihat Detil</span>
+                                <div className="w-7 h-7 rounded-full bg-white/20 border border-white/20 flex items-center justify-center group-hover:translate-x-1 group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 text-white backdrop-blur-md shadow-sm">
+                                    <ArrowRight weight="bold" className="w-3.5 h-3.5" />
+                                </div>
                             </div>
 
                             {/* Progress bar accent */}
-                            <div className="mt-1 h-0.5 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
-                                <div className={`h-full w-1/3 rounded-full ${card.bar} opacity-50 group-hover:w-full transition-all duration-700`} />
+                            <div className="mt-2 h-1 w-full bg-black/10 rounded-full overflow-hidden relative z-10 mix-blend-overlay">
+                                <div className={`h-full w-1/3 rounded-full bg-white opacity-40 group-hover:w-full group-hover:opacity-80 transition-all duration-[800ms] ease-out`} />
                             </div>
                         </div>
                     );
