@@ -48,9 +48,10 @@ api.interceptors.response.use(async (response: AxiosResponse) => {
     const isGet = response.config.method?.toLowerCase() === 'get';
     
     if (isGet && response.status === 200) {
-        // Cache the result
+        // Cache the result using the full URI (including params)
+        const cacheKey = api.getUri(response.config);
         await syncDb.apiCache.put({
-            url: response.config.url || '',
+            url: cacheKey,
             data: response.data,
             timestamp: Date.now(),
             expiresAt: Date.now() + (1000 * 60 * 60 * 24) // 24h cache
@@ -64,9 +65,10 @@ api.interceptors.response.use(async (response: AxiosResponse) => {
     
     // If GET fails due to network (or offline), try to serve from cache
     if ((!isOnline() || error.code === 'ERR_NETWORK') && isGet) {
-        const cached = await syncDb.apiCache.get(originalRequest.url || '');
+        const cacheKey = api.getUri(originalRequest);
+        const cached = await syncDb.apiCache.get(cacheKey);
         if (cached) {
-            console.log('Serving from local cache:', originalRequest.url);
+            console.log('Serving from local cache:', cacheKey);
             return {
                 ...error,
                 data: cached.data,

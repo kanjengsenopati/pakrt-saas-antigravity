@@ -9,7 +9,8 @@ export const pengurusService = {
         const response = await api.get('/pengurus', {
             params: { tenant_id: tenantId, scope }
         });
-        return response.data;
+        const data = response.data;
+        return Array.isArray(data) ? data : (data.items || []);
     },
 
     async getById(id: string): Promise<PengurusWithWarga | undefined> {

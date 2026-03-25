@@ -9,7 +9,11 @@ export const iuranService = {
         const response = await api.get('/iuran', {
             params: { tenant_id: tenantId, scope, page, limit }
         });
-        return response.data;
+        const data = response.data;
+        if (Array.isArray(data)) {
+            return { items: data, total: data.length, page: 1, limit: data.length };
+        }
+        return data || { items: [], total: 0, page, limit };
     },
 
     async getById(id: string): Promise<IuranWithWarga | undefined> {

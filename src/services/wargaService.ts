@@ -8,7 +8,11 @@ export const wargaService = {
         const response = await api.get('/warga', {
             params: { tenant_id: tenantId, scope, page, limit }
         });
-        return response.data;
+        const data = response.data;
+        if (Array.isArray(data)) {
+            return { items: data, total: data.length, page: 1, limit: data.length };
+        }
+        return data || { items: [], total: 0, page, limit };
     },
 
     async count(tenantId: string, scope: ScopeType): Promise<number> {

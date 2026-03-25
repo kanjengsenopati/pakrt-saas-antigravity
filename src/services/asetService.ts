@@ -7,7 +7,8 @@ export const asetService = {
         const response = await api.get('/aset', {
             params: { tenant_id: tenantId, scope }
         });
-        return response.data;
+        const data = response.data;
+        return Array.isArray(data) ? data : (data.items || []);
     },
 
     async getById(id: string): Promise<Aset | undefined> {

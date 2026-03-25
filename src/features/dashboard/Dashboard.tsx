@@ -227,15 +227,15 @@ export default function Dashboard() {
                                 <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm shadow-inner shrink-0 border border-white/20 text-white">
                                     <Icon weight="duotone" className="w-4 h-4" />
                                 </div>
-                                <p className="font-bold tracking-wide text-white text-[0.6875rem] uppercase drop-shadow-sm">{card.title}</p>
+                                <p className="font-medium tracking-wide text-white text-[0.6875rem] uppercase drop-shadow-sm">{card.title}</p>
                             </div>
 
                             {/* Middle: Big number */}
                             <div className={`relative z-10 flex-1 flex flex-col justify-center mb-2 overflow-hidden ${['Agenda', 'Surat Saya'].includes(card.title) ? 'items-center text-center' : 'items-start text-left'}`}>
-                                <div className="text-[1.625rem] font-extrabold text-white leading-none tracking-tight drop-shadow-sm w-full truncate">
+                                <div className="text-[1.625rem] font-semibold text-white leading-none tracking-tight drop-shadow-sm w-full truncate">
                                     {card.isCurrency ? (
                                         <div className="flex flex-col items-start gap-1">
-                                            <span className="text-2xl font-black">{formatRupiah(card.count as number)}</span>
+                                            <span className="text-2xl font-semibold">{formatRupiah(card.count as number)}</span>
                                             {card.subtitle && (
                                                 <span className="text-[0.625rem] text-white/90 font-medium italic drop-shadow-sm leading-none">{card.subtitle}</span>
                                             )}
@@ -251,7 +251,7 @@ export default function Dashboard() {
 
                             {/* Bottom: Link Button */}
                             <div className={`relative z-10 flex items-center justify-between w-max gap-3 border border-white/30 hover:bg-white/10 transition-colors rounded-full pl-3 pr-1.5 py-1 ${['Agenda', 'Surat Saya'].includes(card.title) ? 'mx-auto' : ''}`}>
-                                <span className="text-[0.5625rem] font-bold tracking-wider text-white uppercase drop-shadow-sm">Lihat Detil</span>
+                                <span className="text-[0.5625rem] font-medium tracking-wider text-white uppercase drop-shadow-sm">Lihat Detil</span>
                                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-sm">
                                     <ArrowRight weight="bold" className="w-2.5 h-2.5" />
                                 </div>

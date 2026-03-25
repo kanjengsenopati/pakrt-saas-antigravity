@@ -12,14 +12,16 @@ export const rondaService = {
         const response = await api.get('/ronda', {
             params: { tenant_id: tenantId, scope }
         });
-        return response.data;
+        const data = response.data;
+        return Array.isArray(data) ? data : (data.items || []);
     },
 
     async getUpcoming(tenantId: string, scope: ScopeType, limit: number = 5): Promise<RondaWithWarga[]> {
         const response = await api.get('/ronda/upcoming', {
             params: { tenant_id: tenantId, scope, limit }
         });
-        return response.data;
+        const data = response.data;
+        return Array.isArray(data) ? data : (data.items || []);
     },
 
     async getById(id: string): Promise<RondaWithWarga | undefined> {
