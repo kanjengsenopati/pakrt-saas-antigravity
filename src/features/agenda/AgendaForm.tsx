@@ -27,6 +27,8 @@ export default function AgendaForm() {
         }
     });
 
+    const [isAllWarga, setIsAllWarga] = useState(true);
+
     const isButuhPendanaan = watch('butuh_pendanaan');
 
     useEffect(() => {
@@ -45,7 +47,9 @@ export default function AgendaForm() {
                         sumber_dana: data.sumber_dana,
                         peserta_ids: data.peserta_ids
                     });
+                    const hasParticipants = data.peserta_ids && data.peserta_ids.length > 0;
                     setSelectedParticipants(data.peserta_ids || []);
+                    setIsAllWarga(!hasParticipants);
                     setFotoDokumentasi(data.foto_dokumentasi || []);
                 }
             });
@@ -68,7 +72,7 @@ export default function AgendaForm() {
         try {
             const submitData = {
                 ...data,
-                peserta_ids: selectedParticipants,
+                peserta_ids: isAllWarga ? [] : selectedParticipants,
                 foto_dokumentasi: fotoDokumentasi,
                 nominal_biaya: data.butuh_pendanaan ? data.nominal_biaya : undefined,
                 sumber_dana: data.butuh_pendanaan ? data.sumber_dana : undefined
@@ -243,46 +247,72 @@ export default function AgendaForm() {
                             <h3 className="font-normal text-gray-900 truncate">Peserta Terlibat</h3>
                         </div>
 
-                        <p className="text-xs text-gray-500 mb-4 italic">
-                            Siapa saja yang terlibat dalam kegiatan ini? (Opsional)
-                        </p>
+                        <div className="mb-4 p-3 bg-brand-50/50 rounded-xl border border-brand-100 flex items-center justify-between">
+                            <span className="text-xs font-bold text-brand-900">Semua Warga</span>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    checked={isAllWarga} 
+                                    onChange={(e) => {
+                                        setIsAllWarga(e.target.checked);
+                                        if (e.target.checked) setSelectedParticipants([]);
+                                    }} 
+                                    className="sr-only peer" 
+                                />
+                                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </div>
 
-                        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                            {wargaList.map((warga) => (
-                                <div
-                                    key={warga.id}
-                                    onClick={() => toggleParticipant(warga.id)}
-                                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedParticipants.includes(warga.id)
-                                        ? 'border-brand-500 bg-brand-50'
-                                        : 'border-gray-100 hover:border-brand-200 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-normal ${selectedParticipants.includes(warga.id) ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
-                                        }`}>
-                                        {warga.nama.charAt(0)}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className={`text-sm font-normal truncate ${selectedParticipants.includes(warga.id) ? 'text-brand-900' : 'text-gray-700'}`}>
-                                            {warga.nama}
-                                        </p>
-                                        <p className="text-[10px] text-gray-400 capitalize tracking-tighter">NIK: {warga.nik.substring(0, 10)}...</p>
-                                    </div>
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedParticipants.includes(warga.id) ? 'bg-brand-500 border-brand-500' : 'border-gray-300'
-                                        }`}>
-                                        {selectedParticipants.includes(warga.id) && (
-                                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                                        )}
-                                    </div>
+                        {!isAllWarga && (
+                            <>
+                                <p className="text-xs text-gray-500 mb-4 italic">
+                                    Pilih warga spesifik yang terlibat:
+                                </p>
+
+                                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar animate-in fade-in slide-in-from-top-1 duration-300">
+                                    {wargaList.map((warga) => (
+                                        <div
+                                            key={warga.id}
+                                            onClick={() => toggleParticipant(warga.id)}
+                                            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedParticipants.includes(warga.id)
+                                                ? 'border-brand-500 bg-brand-50'
+                                                : 'border-gray-100 hover:border-brand-200 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-normal ${selectedParticipants.includes(warga.id) ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400'
+                                                }`}>
+                                                {warga.nama.charAt(0)}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className={`text-sm font-normal truncate ${selectedParticipants.includes(warga.id) ? 'text-brand-900' : 'text-gray-700'}`}>
+                                                    {warga.nama}
+                                                </p>
+                                                <p className="text-[10px] text-gray-400 capitalize tracking-tighter">NIK: {warga.nik.substring(0, 10)}...</p>
+                                            </div>
+                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedParticipants.includes(warga.id) ? 'bg-brand-500 border-brand-500' : 'border-gray-300'
+                                                }`}>
+                                                {selectedParticipants.includes(warga.id) && (
+                                                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {wargaList.length === 0 && (
+                                        <p className="text-center py-4 text-gray-400 text-xs italic">Belum ada data warga.</p>
+                                    )}
                                 </div>
-                            ))}
-                            {wargaList.length === 0 && (
-                                <p className="text-center py-4 text-gray-400 text-xs italic">Belum ada data warga.</p>
-                            )}
-                        </div>
 
-                        <div className="mt-4 pt-4 border-t border-gray-50">
-                            <p className="text-xs font-normal text-slate-500 capitalize">Terpilih: <span className="text-brand-600">{selectedParticipants.length} orang</span></p>
-                        </div>
+                                <div className="mt-4 pt-4 border-t border-gray-50">
+                                    <p className="text-xs font-normal text-slate-500 capitalize">Terpilih: <span className="text-brand-600">{selectedParticipants.length} orang</span></p>
+                                </div>
+                            </>
+                        )}
+                        
+                        {isAllWarga && (
+                            <p className="text-[11px] text-slate-400 italic text-center py-4">
+                                Pengumuman ini bersifat publik untuk seluruh warga.
+                            </p>
+                        )}
                     </div>
                 </div>
             </form>
