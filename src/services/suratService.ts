@@ -2,7 +2,7 @@ import api from './api';
 import { SuratPengantar, Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 
-export type SuratWithWarga = SuratPengantar & { warga?: Warga };
+export type SuratWithWarga = SuratPengantar & { pemohon?: Warga, warga?: Warga };
 
 export const suratService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<SuratWithWarga[]> {
