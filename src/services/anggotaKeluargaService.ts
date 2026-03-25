@@ -7,6 +7,11 @@ export const anggotaKeluargaService = {
         return response.data;
     },
 
+    // Alias for backward compatibility with components using this name
+    async getAllByWargaId(wargaId: string): Promise<AnggotaKeluarga[]> {
+        return this.getByWargaId(wargaId);
+    },
+
     async create(data: Omit<AnggotaKeluarga, 'id'>): Promise<string> {
         const response = await api.post('/anggota-keluarga', data);
         return response.data.id;

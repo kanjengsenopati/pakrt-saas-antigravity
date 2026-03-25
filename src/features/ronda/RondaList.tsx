@@ -389,7 +389,7 @@ export default function RondaList() {
                                                 </td>
                                                 <td className="p-3">
                                                     <div className="flex flex-wrap gap-1">
-                                                        {ronda.anggota_warga?.map(w => (
+                                                        {ronda.anggota_warga?.map((w: any) => (
                                                             <span key={w.id} className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-gray-50 text-gray-600 border border-gray-100">
                                                                 {w.nama}
                                                             </span>
@@ -399,7 +399,7 @@ export default function RondaList() {
                                                 <td className="p-3">
                                                     <div className="flex flex-wrap gap-1">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
-                                                            ronda.anggota_konsumsi.map(w => (
+                                                            ronda.anggota_konsumsi.map((w: any) => (
                                                                 <span key={`desk-k-${w.id}`} className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-100">
                                                                     {w.nama}
                                                                 </span>
@@ -471,7 +471,7 @@ export default function RondaList() {
                                                 <div>
                                                     <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Piket</p>
                                                     <div className="flex flex-wrap gap-1.5 mb-3">
-                                                        {ronda.anggota_warga?.map(w => (
+                                                        {ronda.anggota_warga?.map((w: any) => (
                                                             <span key={w.id} className="inline-flex items-center px-2 py-1 rounded bg-gray-50 text-gray-700 border border-gray-100 text-xs font-medium">
                                                                 {w.nama}
                                                             </span>
@@ -480,7 +480,7 @@ export default function RondaList() {
                                                     <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Bawa Konsumsi/Snack</p>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
-                                                            ronda.anggota_konsumsi.map(w => (
+                                                            ronda.anggota_konsumsi.map((w: any) => (
                                                                 <span key={`mob-k-${w.id}`} className="inline-flex items-center px-2 py-1 rounded bg-amber-50 text-amber-800 border border-amber-100 text-xs font-medium">
                                                                     {w.nama}
                                                                 </span>
@@ -549,7 +549,7 @@ export default function RondaList() {
                             <p className="text-sm font-medium text-gray-700 mb-4 px-1">Tandai warga yang hadir saat jadwal ronda ini:</p>
 
                             <div className="space-y-2">
-                                {selectedRonda.anggota_warga?.map(warga => {
+                                {selectedRonda.anggota_warga?.map((warga: any) => {
                                     const isAttended = attendanceSelections.includes(warga.id);
                                     return (
                                         <label

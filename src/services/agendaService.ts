@@ -2,7 +2,6 @@ import api from './api';
 import { Agenda } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
-import { wargaService } from './wargaService';
 
 export const agendaService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Agenda[]> {

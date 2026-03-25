@@ -1,13 +1,25 @@
 import api from './api';
-import { SuratPengantar } from '../types/database';
+import { SuratPengantar, Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 
+export type SuratWithWarga = SuratPengantar & { warga?: Warga };
+
 export const suratService = {
-    async getAll(tenantId: string, scope: ScopeType): Promise<SuratPengantar[]> {
+    async getAll(tenantId: string, scope: ScopeType): Promise<SuratWithWarga[]> {
         const response = await api.get('/surat', {
             params: { tenant_id: tenantId, scope }
         });
         return response.data;
+    },
+
+    async getById(id: string): Promise<SuratWithWarga | undefined> {
+        try {
+            const response = await api.get(`/surat/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching surat by ID:', error);
+            return undefined;
+        }
     },
 
     async create(data: Omit<SuratPengantar, 'id'>): Promise<string> {
@@ -18,6 +30,10 @@ export const suratService = {
     async update(id: string, data: Partial<SuratPengantar>): Promise<number> {
         await api.put(`/surat/${id}`, data);
         return 1;
+    },
+
+    async updateStatus(id: string, status: string, alasan?: string): Promise<void> {
+        await api.post(`/surat/status/${id}`, { status, alasan_penolakan: alasan });
     },
 
     async delete(id: string): Promise<void> {
