@@ -207,9 +207,13 @@ export default function RondaList() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {sortedGroups.map(group => {
                                     const isMyGroup = wargaId && group.members.has(wargaId);
+                                    const todayStr = new Date().toISOString().split('T')[0];
+                                    const nextSchedule = [...group.dates]
+                                        .filter(d => d.tanggal >= todayStr)
+                                        .sort((a, b) => a.tanggal.localeCompare(b.tanggal))[0];
                                     
                                     return (
-                                    <div key={group.name} className={`bg-white border rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group/card ${isMyGroup ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-brand-500/20 transform scale-[1.02] z-10' : 'border-gray-200'}`}>
+                                    <div key={group.name} className={`bg-white border rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group/card ${isMyGroup ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-brand-500/20 transform scale-[1.02] z-10' : 'border-gray-200'}`}>
                                         
                                         {isMyGroup && (
                                             <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg z-20 shadow-sm flex items-center gap-1">
@@ -264,20 +268,23 @@ export default function RondaList() {
                                             <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-3">Daftar Tanggal Jaga</p>
                                             <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
                                                 {group.dates.sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map(d => {
-                                                    const dateObj = new Date(d.tanggal);
-                                                    const isPast = dateObj < new Date();
+                                                    const isPast = d.tanggal < todayStr;
+                                                    const isNext = nextSchedule && d.id === nextSchedule.id;
                                                     const isActive = activeSnackId === d.id;
                                                     return (
                                                         <div key={d.id} className="flex flex-col gap-1">
                                                             <div
                                                                 onClick={() => setActiveSnackId(isActive ? null : d.id)}
-                                                                className={`flex items-center justify-between text-[11px] p-2 rounded-lg transition-all cursor-pointer ${isActive ? 'bg-amber-50 border border-amber-100 shadow-sm' : 'hover:bg-gray-100/80 border border-transparent'}`}
+                                                                className={`flex items-center justify-between text-[11px] p-2 rounded-lg transition-all cursor-pointer ${isActive ? 'bg-amber-50 border border-amber-100 shadow-sm' : isNext ? 'bg-emerald-50/70 border border-emerald-100 ring-1 ring-emerald-500/10' : 'hover:bg-gray-100/80 border border-transparent'}`}
                                                             >
                                                                 <div className="flex items-center gap-2">
-                                                                    <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-emerald-400' : 'bg-blue-400 animate-pulse'}`}></div>
-                                                                    <span className={isPast ? 'text-gray-400' : 'text-gray-600 font-medium'}>
+                                                                    <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-emerald-400' : isNext ? 'bg-brand-500 animate-pulse' : 'bg-blue-400'}`}></div>
+                                                                    <span className={isPast ? 'text-gray-400' : isNext ? 'text-brand-700 font-bold' : 'text-gray-600 font-medium'}>
                                                                         {dateUtils.toDisplay(d.tanggal)}
                                                                     </span>
+                                                                    {isNext && (
+                                                                        <span className="text-[9px] bg-brand-600 text-white px-1.5 py-0.5 rounded-md font-bold ml-1 tracking-tight shadow-sm">Terdekat</span>
+                                                                    )}
                                                                 </div>
                                                                 <div className="flex items-center gap-2">
                                                                     {d.kehadiranCount > 0 && (
