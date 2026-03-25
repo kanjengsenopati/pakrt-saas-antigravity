@@ -33,17 +33,17 @@ export const iuranService = {
         return response.data;
     },
 
-    async create(data: Omit<PembayaranIuran, 'id'>, ...args: any[]): Promise<string> {
+    async create(data: Omit<PembayaranIuran, 'id'>, ..._args: any[]): Promise<string> {
         const response = await api.post('/iuran', data);
         return response.data.id;
     },
 
-    async update(id: string, data: Partial<PembayaranIuran>, ...args: any[]): Promise<number> {
+    async update(id: string, data: Partial<PembayaranIuran>, ..._args: any[]): Promise<number> {
         await api.put(`/iuran/${id}`, data);
         return 1;
     },
 
-    async delete(id: string, ...args: any[]): Promise<void> {
+    async delete(id: string, ..._args: any[]): Promise<void> {
         await api.delete(`/iuran/${id}`);
     },
 

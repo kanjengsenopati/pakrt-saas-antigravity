@@ -102,6 +102,8 @@ export interface Kehadiran {
     notulensi_id: string;
     warga_id: string;
     status: 'hadir' | 'izin' | 'sakit' | 'alfa';
+    // Relationship
+    warga?: Warga;
 }
 
 export interface Aset {
