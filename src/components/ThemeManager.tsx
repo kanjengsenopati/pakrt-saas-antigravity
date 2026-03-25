@@ -11,9 +11,9 @@ export function ThemeManager() {
 
         // Fetch and apply custom theme color
         if (currentTenant) {
-            pengaturanService.getByKey(currentTenant.id, currentScope, 'warna_tema').then(color => {
-                if (color && typeof color === 'string' && color.startsWith('#')) {
-                    applyThemeColor(color);
+            pengaturanService.getByKey(currentTenant.id, currentScope, 'warna_tema').then(config => {
+                if (config && typeof config.value === 'string' && config.value.startsWith('#')) {
+                    applyThemeColor(config.value);
                 }
             });
         }

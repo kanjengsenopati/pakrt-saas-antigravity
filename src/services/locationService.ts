@@ -1,24 +1,39 @@
 import api from './api';
-import { Wilayah } from '../types/database';
 
 export const locationService = {
-    async getProvinsi(): Promise<Wilayah[]> {
+    async getProvinsi() {
         const response = await api.get('/location/provinsi');
         return response.data;
     },
-
-    async getKabupaten(provinsiId: string): Promise<Wilayah[]> {
-        const response = await api.get(`/location/kabupaten/${provinsiId}`);
+    async getKabKota(provinsiId: string) {
+        const response = await api.get(`/location/kabkota/${provinsiId}`);
         return response.data;
     },
-
-    async getKecamatan(kabupatenId: string): Promise<Wilayah[]> {
-        const response = await api.get(`/location/kecamatan/${kabupatenId}`);
+    async getKecamatan(kabKotaId: string) {
+        const response = await api.get(`/location/kecamatan/${kabKotaId}`);
         return response.data;
     },
-
-    async getKelurahan(kecamatanId: string): Promise<Wilayah[]> {
-        const response = await api.get(`/location/kelurahan/${kecamatanId}`);
+    async getKelDesa(kecamatanId: string) {
+        const response = await api.get(`/location/keldesa/${kecamatanId}`);
         return response.data;
+    },
+    async getRW(kelDesaId: string) {
+        const response = await api.get(`/location/rw/${kelDesaId}`);
+        return response.data;
+    },
+    async getRT(rwId: string) {
+        const response = await api.get(`/location/rt/${rwId}`);
+        return response.data;
+    },
+    async getWilayahById(id: string) {
+        try {
+            const response = await api.get(`/location/id/${id}`);
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+    },
+    async seedLocations() {
+        await api.post('/location/seed');
     }
 };

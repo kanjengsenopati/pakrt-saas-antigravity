@@ -8,19 +8,22 @@ export interface Tenant {
 export interface User {
     id: string;
     tenant_id: string;
-    role: 'admin' | 'staff' | 'warga';
+    role: 'Admin' | 'Ketua' | 'Sekretaris' | 'Bendahara' | 'Warga' | string;
+    role_id?: string;
+    role_entity?: any;
     name: string;
     email: string;
     scope?: string;
     kontak?: string;
     password?: string;
-    permissions?: Record<string, string[]>; // e.g., { 'warga': ['create', 'read', 'update', 'delete'] }
+    permissions?: Record<string, string[]>;
+    verification_status?: 'VERIFIED' | 'PENDING' | 'UNVERIFIED' | string;
 }
 
 export interface Pengaturan {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     key: string;
     value: any;
 }
@@ -61,7 +64,7 @@ export interface AnggotaKeluarga {
     warga_id: string; // Foreign key ke Kepala Keluarga (Warga)
     nik: string;
     nama: string;
-    hubungan: 'Istri' | 'Suami' | 'Anak' | 'Orang Tua' | 'Mertua' | 'Famili Lain';
+    hubungan: 'Istri' | 'Suami' | 'Anak' | 'Orang Tua' | 'Mertua' | 'Famili Lain' | string;
     tempat_lahir?: string;
     tanggal_lahir?: string;
     pendidikan?: string;
@@ -83,9 +86,13 @@ export interface Pengurus {
 export interface Notulensi {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     judul: string;
     tanggal: string;
+    tuan_rumah_id?: string;
+    tuan_rumah?: string;
+    lokasi?: string;
+    url_foto?: string;
     konten: string;
 }
 
@@ -104,12 +111,21 @@ export interface Aset {
     nama_barang: string;
     jumlah: number;
     kondisi: 'baik' | 'rusak_ringan' | 'rusak_berat';
+    foto_barang?: string;
+    tanggal_beli?: string;
+    harga_beli?: number;
+    vendor?: string;
+    status_pinjam: 'tersedia' | 'dipinjam';
+    peminjam_id?: string;
+    petugas_id?: string;
+    tanggal_pinjam?: string;
+    peminjam?: Warga;
 }
 
 export interface SuratPengantar {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     warga_id: string;
     jenis_surat: string;
     keperluan: string;
@@ -118,48 +134,64 @@ export interface SuratPengantar {
     status: 'proses' | 'selesai' | 'ditolak';
     // Relationships
     warga?: Warga;
+    pemohon?: Warga;
 }
 
 export interface JadwalRonda {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     tanggal: string;
     regu: string;
     warga_ids: string[];
     petugas_konsumsi?: string[];
     kehadiran_warga?: string[];
+    anggota_warga?: Warga[];
+    anggota_konsumsi?: Warga[];
 }
 
 export interface Agenda {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     judul: string;
     tanggal: string;
     deskripsi: string;
+    butuh_pendanaan: boolean;
+    nominal_biaya?: number;
+    sumber_dana?: 'Kas' | 'Iuran' | string;
+    peserta_ids: string[];
+    is_terlaksana: boolean;
+    laporan_kegiatan?: string;
+    foto_dokumentasi: string[];
+    peserta_details?: { id: string; nama: string }[];
 }
 
 export interface Keuangan {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     tipe: 'pemasukan' | 'pengeluaran';
     kategori: string;
     nominal: number;
     tanggal: string;
     keterangan: string;
+    url_bukti?: string;
 }
 
 export interface PembayaranIuran {
     id: string;
     tenant_id: string;
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     warga_id: string; // Foreign key ke tabel Warga
     kategori: string; // Kategori pembayaran (dinamis dari pengaturan)
     periode_bulan: number[]; // Array of months (1-12)
     periode_tahun: number;
     nominal: number;
     tanggal_bayar: string;
+    url_bukti?: string;
+    status: 'PENDING' | 'VERIFIED' | 'REJECTED' | string;
+    alasan_penolakan?: string;
     // Relationships
     warga?: Warga;
 }
@@ -167,7 +199,7 @@ export interface PembayaranIuran {
 export interface Aktivitas {
     id: string;
     tenant_id: string;
-    scope: 'RT' | 'PKK' | 'Dasa Wisma';
+    scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     action: string; // e.g., 'Tambah Warga', 'Hapus Aset'
     details: string;
     timestamp: number;
@@ -177,5 +209,5 @@ export interface Wilayah {
     id: string; // Kode regional
     parent_id: string | null;
     name: string;
-    level: 'provinsi' | 'kabkota' | 'kecamatan' | 'keldesa';
+    level: 'provinsi' | 'kabkota' | 'kecamatan' | 'keldesa' | string;
 }

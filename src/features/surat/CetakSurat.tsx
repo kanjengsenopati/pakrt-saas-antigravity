@@ -26,7 +26,9 @@ export default function CetakSurat() {
                 if (suratData) setSurat(suratData);
 
                 const settings = await pengaturanService.getAll(currentTenant.id, currentScope);
-                setConfig(settings);
+                const configRecord: any = {};
+                settings.forEach(i => configRecord[i.key] = i.value);
+                setConfig(configRecord);
             } catch (error) {
                 console.error("Gagal memuat data cetak:", error);
             } finally {

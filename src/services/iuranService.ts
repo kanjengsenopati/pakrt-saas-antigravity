@@ -1,36 +1,40 @@
 import api from './api';
-import { PembayaranIuran } from '../types/database';
+import { PembayaranIuran, Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
-import { aktivitasService } from './aktivitasService';
+
+export type IuranWithWarga = PembayaranIuran & { warga?: Warga };
 
 export const iuranService = {
-    async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 200): Promise<{ items: PembayaranIuran[], total: number, page: number, limit: number }> {
-        try {
-            const response = await api.get('/iuran', {
-                params: { tenant_id: tenantId, scope, page, limit }
-            });
-            return response.data;
-        } catch (e) { console.error(e); throw e; }
+    async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
+        const response = await api.get('/iuran', {
+            params: { tenant_id: tenantId, scope, page, limit }
+        });
+        return response.data;
     },
 
-    async getById(id: string): Promise<PembayaranIuran | undefined> {
+    async getById(id: string): Promise<IuranWithWarga | undefined> {
         try {
             const response = await api.get(`/iuran/${id}`);
             return response.data;
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
             return undefined;
         }
     },
 
+    async getBillingSummary(wargaId: string, year: number, monthOrKategori: number | string | undefined, scope: ScopeType): Promise<any> {
+        const params: any = { year, scope };
+        if (typeof monthOrKategori === 'number') {
+            params.month = monthOrKategori;
+        } else if (typeof monthOrKategori === 'string') {
+            params.kategori = monthOrKategori;
+        }
+        
+        const response = await api.get(`/iuran/billing-summary/${wargaId}`, { params });
+        return response.data;
+    },
+
     async create(data: Omit<PembayaranIuran, 'id'>): Promise<string> {
         const response = await api.post('/iuran', data);
-        await aktivitasService.logActivity(
-            data.tenant_id,
-            'RT', // Default scope if not in data
-            'Pembayaran Iuran (Cloud)',
-            `Menerima pembayaran dari warga_id: ${data.warga_id}`
-        );
         return response.data.id;
     },
 
@@ -43,14 +47,11 @@ export const iuranService = {
         await api.delete(`/iuran/${id}`);
     },
 
-    async getSummary(tenantId: string, scope: ScopeType): Promise<any> {
-        const response = await api.get('/iuran/summary', {
-            params: { tenant_id: tenantId, scope }
-        });
-        return response.data;
+    async verify(id: string, status: 'VERIFIED' | 'REJECTED', alasan?: string): Promise<void> {
+        await api.post(`/iuran/${id}/verify`, { status, alasan_penolakan: alasan });
     },
 
-    async verify(id: string, status: 'VERIFIED' | 'REJECTED', alasan?: string): Promise<void> {
-        await api.post(`/iuran/verify/${id}`, { status, alasan_penolakan: alasan });
+    async syncAllToKeuangan(tenantId: string, scope: ScopeType): Promise<void> {
+        await api.post('/iuran/sync-keuangan', { tenant_id: tenantId, scope });
     }
 };

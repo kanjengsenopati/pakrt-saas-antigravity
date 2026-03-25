@@ -1,7 +1,8 @@
 import api from './api';
 import { Notulensi, Kehadiran } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
-import { aktivitasService } from './aktivitasService';
+
+export type NotulensiWithKehadiran = Notulensi & { kehadiran?: Kehadiran[] };
 
 export const notulensiService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Notulensi[]> {
@@ -11,39 +12,17 @@ export const notulensiService = {
         return response.data;
     },
 
-    async getById(id: string): Promise<Notulensi | undefined> {
-        try {
-            const response = await api.get(`/notulensi/${id}`);
-            return response.data;
-        } catch (e) { return undefined; }
-    },
-
-    async create(data: Omit<Notulensi, 'id'>): Promise<string> {
-        const response = await api.post('/notulensi', data);
-        await aktivitasService.logActivity(
-            data.tenant_id,
-            data.scope,
-            'Tambah Notulensi (Cloud)',
-            `Mencatat notulensi: ${data.judul}`
-        );
+    async create(data: Omit<Notulensi, 'id'>, kehadiran?: any[]): Promise<string> {
+        const response = await api.post('/notulensi', { ...data, kehadiran });
         return response.data.id;
     },
 
-    async update(id: string, data: Partial<Notulensi>): Promise<number> {
-        await api.put(`/notulensi/${id}`, data);
+    async update(id: string, data: Partial<Notulensi>, kehadiran?: any[]): Promise<number> {
+        await api.put(`/notulensi/${id}`, { ...data, kehadiran });
         return 1;
     },
 
     async delete(id: string): Promise<void> {
         await api.delete(`/notulensi/${id}`);
-    },
-
-    async getKehadiran(notulensiId: string): Promise<Kehadiran[]> {
-        const response = await api.get(`/notulensi/${notulensiId}/kehadiran`);
-        return response.data;
-    },
-
-    async saveKehadiran(notulensiId: string, kehadiran: Kehadiran[]): Promise<void> {
-        await api.post(`/notulensi/${notulensiId}/kehadiran`, { kehadiran });
     }
 };

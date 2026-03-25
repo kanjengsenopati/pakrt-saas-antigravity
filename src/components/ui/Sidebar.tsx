@@ -81,7 +81,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
-    const { currentTenant } = useTenant();
+    const { currentTenant, currentScope } = useTenant();
     const { hasPermission } = useAuth();
     const [kelurahanName, setKelurahanName] = useState<string>('');
     const [pendingIuranCount, setPendingIuranCount] = useState<number>(0);
@@ -103,8 +103,8 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     // Currently getAll doesn't support status filter in params, but it returns total for the current filter.
                     // Let's assume we want to show a badge if there's *any* pending.
                     // For now, let's just fetch all and filter client-side or assume we'll add a service method.
-                    const data = await iuranService.getAll(currentTenant.id);
-                    const pending = data.items.filter(i => i.status === 'PENDING').length;
+                    const data = await iuranService.getAll(currentTenant.id, currentScope);
+                    const pending = data.items.filter((i: any) => i.status === 'PENDING').length;
                     setPendingIuranCount(pending);
                 } catch (error) {
                     console.error('Failed to fetch pending iuran count:', error);
@@ -126,7 +126,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     if (ids.length >= 4) {
                         const kelId = ids.slice(0, 4).join('.');
                         const kel = await locationService.getWilayahById(kelId);
-                        if (kel) setKelurahanName(kel.name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '));
+                        if (kel) setKelurahanName(kel.name.split(' ').map((w: any) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '));
                     }
                 } catch (error) {
                     console.error('Failed to fetch wilayah name for sidebar:', error);

@@ -42,7 +42,9 @@ export default function KeuanganForm() {
 
     useEffect(() => {
         if (currentTenant) {
-            pengaturanService.getAll(currentTenant.id, currentScope).then(config => {
+            pengaturanService.getAll(currentTenant.id, currentScope).then(items => {
+                const config: any = {};
+                items.forEach(i => config[i.key] = i.value);
                 if (config.kategori_pemasukan) {
                     try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch { }
                 }

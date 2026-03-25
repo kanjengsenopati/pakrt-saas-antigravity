@@ -238,7 +238,7 @@ export default function RondaList() {
                                                 <div>
                                                     <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Utama</p>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {Array.from(group.members.values()).map((w: any) => (
+                                                        {Array.from((group as any).members.values()).map((w: any) => (
                                                             <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-white border border-gray-100 rounded-lg shadow-sm">
                                                                 <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center">
                                                                     <span className="text-[8px] font-bold text-blue-600">{w.nama[0]}</span>
@@ -253,7 +253,7 @@ export default function RondaList() {
                                                     <div>
                                                         <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Penyedia Konsumsi</p>
                                                         <div className="flex flex-wrap gap-2">
-                                                            {Array.from(group.konsumsi.values()).map((w: any) => (
+                                                            {Array.from((group as any).konsumsi.values()).map((w: any) => (
                                                                 <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-amber-50/50 border border-amber-100 rounded-lg">
                                                                     <span className="text-[11px] font-medium text-amber-900">{w.nama}</span>
                                                                 </div>

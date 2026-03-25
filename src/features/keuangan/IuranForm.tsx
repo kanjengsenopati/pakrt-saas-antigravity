@@ -86,14 +86,17 @@ export default function IuranForm() {
                         setValue('nominal', data.nominal);
                         setValue('url_bukti', data.url_bukti);
                         setSelectedMonths(Array.isArray(data.periode_bulan) ? data.periode_bulan : []);
-                        setCurrentStatus(data.status || 'PENDING');
+                        setCurrentStatus((data.status as any) || 'PENDING');
                         setRejectionReason(data.alasan_penolakan || null);
                     }
                 });
             }
 
             // Get default settings
-            pengaturanService.getAll(currentTenant.id, currentScope).then(config => {
+            pengaturanService.getAll(currentTenant.id, currentScope).then(items => {
+                const config: Record<string, any> = {};
+                items.forEach(item => { config[item.key] = item.value; });
+
                 const tieredRates = {
                     'Tetap-Dihuni': Number(config.iuran_tetap_dihuni || 0),
                     'Tetap-Kosong': Number(config.iuran_tetap_kosong || 0),
@@ -215,9 +218,9 @@ export default function IuranForm() {
             };
 
             if (isEdit && id) {
-                await iuranService.update(id, payload, currentScope);
+                await iuranService.update(id, payload);
             } else {
-                await iuranService.create(payload, currentScope);
+                await iuranService.create(payload);
             }
             navigate('/iuran');
         } catch (error: any) {

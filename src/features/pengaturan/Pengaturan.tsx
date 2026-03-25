@@ -115,7 +115,10 @@ export default function Pengaturan() {
 
     useEffect(() => {
         if (currentTenant) {
-            pengaturanService.getAll(currentTenant.id, currentScope).then(config => {
+            pengaturanService.getAll(currentTenant.id, currentScope).then(items => {
+                const config: Record<string, any> = {};
+                items.forEach(item => { config[item.key] = item.value; });
+
                 reset({
                     nama_wilayah: config.nama_wilayah || '',
                     alamat_sekretariat: config.alamat_sekretariat || '',

@@ -65,7 +65,7 @@ export default function Dashboard() {
                         agendaService.count(currentTenant.id, currentScope),
                         keuanganService.getSummary(currentTenant.id, currentScope),
                         suratService.getAll(currentTenant.id, currentScope),
-                        iuranService.getAll(currentTenant.id),
+                        iuranService.getAll(currentTenant.id, currentScope),
                     ]);
                     setStats({
                         warga: wargaCount,
@@ -73,8 +73,8 @@ export default function Dashboard() {
                         aset: asetCount,
                         agenda: agendaCount,
                         saldo: finSummary.saldo,
-                        pendingSurat: (allSurat || []).filter(s => s.status === 'proses').length,
-                        pendingIuran: (allIuran.items || []).filter(i => i.status === 'PENDING').length
+                        pendingSurat: (allSurat || []).filter((s: any) => s.status === 'proses').length,
+                        pendingIuran: (allIuran.items || []).filter((i: any) => i.status === 'PENDING').length
                     });
                 } else if (wargaId) {
                     // Warga specific stats using getBillingSummary
@@ -90,7 +90,7 @@ export default function Dashboard() {
                     const allSurat = await suratService.getAll(currentTenant.id, currentScope);
                     setStats(prev => ({
                         ...prev,
-                        pendingSurat: (allSurat || []).filter(s => s.warga_id === wargaId && s.status === 'proses').length
+                        pendingSurat: (allSurat || []).filter((s: any) => s.warga_id === wargaId && s.status === 'proses').length
                     }));
                 }
             } catch (error) {

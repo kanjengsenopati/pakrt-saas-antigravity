@@ -50,13 +50,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setIsLoading(false); // Unblock UI immediately if we have local data
 
                 // Refresh user data from server in background
-                userService.getById(parsedUser.id).then(latestUser => {
+                userService.getById(parsedUser.id).then((latestUser: any) => {
                     if (latestUser) {
                         setUser(latestUser);
                         localStorage.setItem('auth_user', JSON.stringify(latestUser));
                         console.log('AuthContext: User data refreshed in background');
                     }
-                }).catch(error => {
+                }).catch((error: any) => {
                     console.error('AuthContext: Background refresh failed', error);
                 });
             } else {
