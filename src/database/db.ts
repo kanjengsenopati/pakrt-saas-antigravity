@@ -161,6 +161,7 @@ export interface Agenda {
     is_terlaksana: boolean;
     laporan_kegiatan?: string;
     foto_dokumentasi: string[];
+    peserta_details?: { id: string; nama: string }[];
 }
 
 export interface Keuangan {

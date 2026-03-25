@@ -99,6 +99,7 @@ export default function AgendaList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const currentWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
     const [agendaList, setAgendaList] = useState<Agenda[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -163,10 +164,17 @@ export default function AgendaList() {
         }
     };
 
-    const filteredAgenda = (agendaList || []).filter(a =>
-        a.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.deskripsi.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredAgenda = (agendaList || []).filter(a => {
+        // Search filter
+        const matchesSearch = a.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            a.deskripsi.toLowerCase().includes(searchQuery.toLowerCase());
+        if (!matchesSearch) return false;
+
+        // Visibility filter
+        if (!isWarga) return true;
+        if (!a.peserta_ids || a.peserta_ids.length === 0) return true;
+        return currentWargaId && a.peserta_ids.includes(currentWargaId);
+    });
 
     const isPast = (dateStr: string) => new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0));
 
@@ -342,13 +350,13 @@ export default function AgendaList() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50">
                         <div className="relative w-full md:w-80">
-                            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
                                 placeholder="Cari informasi kegiatan..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm bg-white"
+                                className="w-full pl-14 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm bg-white"
                             />
                         </div>
                     </div>
@@ -579,11 +587,25 @@ export default function AgendaList() {
                                                                     <p className="text-[12px] font-bold text-emerald-600">{formatRupiah(agenda.nominal_biaya || 0)}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Sumber Dana</p>
-                                                                    <p className="text-[12px] font-bold text-slate-600">{agenda.sumber_dana || '-'}</p>
+                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Peserta</p>
+                                                                    <p className="text-[12px] font-bold text-slate-600">{(agenda.peserta_ids?.length || 0)} Orang</p>
                                                                 </div>
                                                             </div>
                                                         )}
+                                                        
+                                                        {agenda.peserta_details && agenda.peserta_details.length > 0 && (
+                                                            <div className="pt-2 border-t border-slate-200/50">
+                                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Daftar Peserta</p>
+                                                                <div className="flex flex-wrap gap-1.5">
+                                                                    {agenda.peserta_details.map(p => (
+                                                                        <span key={p.id} className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-200/50 text-slate-600 text-[10px] font-medium border border-slate-200/80">
+                                                                            {p.nama}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
                                                         {isRealized && agenda.laporan_kegiatan && (
                                                             <div className="pt-2 border-t border-slate-200/50">
                                                                 <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Laporan Realisasi</p>

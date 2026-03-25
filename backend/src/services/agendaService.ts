@@ -18,11 +18,42 @@ export const agendaService = {
         prisma.agenda.count({ where })
     ]);
 
-    return { items, total, page, limit };
+    // Hydrate Peserta Names
+    const allPesertaIds = Array.from(new Set(items.flatMap(i => i.peserta_ids || [])));
+    const wargas = allPesertaIds.length > 0 
+        ? await prisma.warga.findMany({
+            where: { id: { in: allPesertaIds } },
+            select: { id: true, nama: true }
+        })
+        : [];
+    
+    const wargaMap = new Map(wargas.map(w => [w.id, w.nama]));
+    const itemsWithDetails = items.map(item => ({
+        ...item,
+        peserta_details: (item.peserta_ids || []).map(id => ({
+            id,
+            nama: wargaMap.get(id) || 'Warga'
+        }))
+    }));
+
+    return { items: itemsWithDetails, total, page, limit };
   },
 
   async getById(id: string) {
-    return await prisma.agenda.findUnique({ where: { id } });
+    const agenda = await prisma.agenda.findUnique({ where: { id } });
+    if (!agenda) return null;
+
+    const wargas = agenda.peserta_ids.length > 0
+        ? await prisma.warga.findMany({
+            where: { id: { in: agenda.peserta_ids } },
+            select: { id: true, nama: true }
+        })
+        : [];
+
+    return {
+        ...agenda,
+        peserta_details: wargas
+    };
   },
 
   async create(data: any) {
