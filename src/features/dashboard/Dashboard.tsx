@@ -123,7 +123,12 @@ export default function Dashboard() {
                     setRecentIuran((allIuran.items || []).filter(i => i.warga_id === wargaId).slice(0, 4));
                     const myRonda = (allRonda || []).filter(r => r.warga_ids?.includes(wargaId));
                     const todayStr = new Date().toISOString().split('T')[0];
-                    setUpcomingRonda(myRonda.filter(r => r.tanggal >= todayStr).slice(0, 3));
+                    setUpcomingRonda(
+                        myRonda
+                            .filter(r => r.tanggal >= todayStr)
+                            .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
+                            .slice(0, 3)
+                    );
                 } else {
                     setRecentIuran((allIuran.items || []).slice(0, 4));
                     const todayStr = new Date().toISOString().split('T')[0];
@@ -159,6 +164,19 @@ export default function Dashboard() {
         subtitle?: string;
     }
 
+    const getRondaSubtitle = () => {
+        if (upcomingRonda.length === 0) return '';
+        const teammates = upcomingRonda[0].anggota_warga?.filter(w => w.id !== wargaId).map(w => w.nama.split(' ')[0]);
+        if (!teammates || teammates.length === 0) return 'Regu Anda';
+        return `Rekan: ${teammates.join(', ')}`;
+    };
+
+    const getRondaCount = () => {
+        if (upcomingRonda.length === 0) return 'Tidak ada';
+        const d = upcomingRonda[0].tanggal;
+        return d.split('-').reverse().join('-');
+    };
+
     const adminCards: DashboardCard[] = [
         { title: 'Total Warga', count: stats.warga, icon: Users, color: 'bg-blue-500', bar: '', link: '/warga' },
         { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'bg-emerald-500', bar: '', isCurrency: true, link: '/keuangan' },
@@ -168,7 +186,7 @@ export default function Dashboard() {
 
     const wargaCards: DashboardCard[] = [
         { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-red-500', bar: '', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
-        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'bg-blue-500', bar: '', link: '/ronda' },
+        { title: 'Ronda Terdekat', count: getRondaCount(), icon: ShieldCheck, color: 'bg-blue-500', bar: '', link: '/ronda', subtitle: getRondaSubtitle() },
         { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'bg-[#a855f7]', bar: '', link: '/agenda' },
         { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'bg-[#10b981]', bar: '', link: '/surat' },
     ];
@@ -213,8 +231,8 @@ export default function Dashboard() {
                             </div>
 
                             {/* Middle: Big number */}
-                            <div className={`relative z-10 flex-1 flex flex-col justify-center mb-2 ${['Agenda', 'Surat Saya'].includes(card.title) ? 'items-center text-center' : 'items-start text-left'}`}>
-                                <div className="text-[26px] font-extrabold text-white leading-none tracking-tight drop-shadow-sm">
+                            <div className={`relative z-10 flex-1 flex flex-col justify-center mb-2 overflow-hidden ${['Agenda', 'Surat Saya'].includes(card.title) ? 'items-center text-center' : 'items-start text-left'}`}>
+                                <div className="text-[26px] font-extrabold text-white leading-none tracking-tight drop-shadow-sm w-full truncate">
                                     {card.isCurrency ? (
                                         <div className="flex flex-col items-start gap-1">
                                             <span className="text-2xl font-black">{formatRupiah(card.count as number)}</span>
@@ -223,11 +241,11 @@ export default function Dashboard() {
                                             )}
                                         </div>
                                     ) : (
-                                        <span>{card.count}</span>
+                                        <span className="whitespace-nowrap">{card.count}</span>
                                     )}
                                 </div>
                                 {!card.isCurrency && card.subtitle && (
-                                    <p className="text-[10px] text-white/90 font-medium mt-1 italic drop-shadow-sm">{card.subtitle}</p>
+                                    <p className="text-[10px] text-white/90 font-medium mt-1.5 line-clamp-2 leading-tight drop-shadow-sm">{card.subtitle}</p>
                                 )}
                             </div>
 
