@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 interface FontContextType {
     fontSizeOffset: number;
@@ -23,12 +23,19 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('font-size-offset', fontSizeOffset.toString());
     }, [fontSizeOffset]);
 
-    const increaseFont = () => setFontSizeOffset(prev => Math.min(prev + 1, 10)); // Max +10px
-    const decreaseFont = () => setFontSizeOffset(prev => Math.max(prev - 1, -4));  // Min -4px
-    const resetFont = () => setFontSizeOffset(0);
+    const increaseFont = useCallback(() => setFontSizeOffset(prev => Math.min(prev + 1, 10)), []); // Max +10px
+    const decreaseFont = useCallback(() => setFontSizeOffset(prev => Math.max(prev - 1, -4)), []);  // Min -4px
+    const resetFont = useCallback(() => setFontSizeOffset(0), []);
+
+    const value = useMemo(() => ({
+        fontSizeOffset,
+        increaseFont,
+        decreaseFont,
+        resetFont
+    }), [fontSizeOffset, increaseFont, decreaseFont, resetFont]);
 
     return (
-        <FontContext.Provider value={{ fontSizeOffset, increaseFont, decreaseFont, resetFont }}>
+        <FontContext.Provider value={value}>
             {children}
         </FontContext.Provider>
     );

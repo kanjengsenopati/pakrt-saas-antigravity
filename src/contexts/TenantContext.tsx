@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Tenant } from '../database/db';
 import { authService } from '../services/authService';
 
@@ -35,7 +35,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const initializeTenant = async () => {
+    const initializeTenant = useCallback(async () => {
         try {
             const storedUser = localStorage.getItem('auth_user');
             if (storedUser) {
@@ -64,29 +64,39 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         setCurrentTenant(null);
         setCurrentUser(null);
         setIsLoading(false);
-    };
+    }, [setCurrentUser, setCurrentScope, setCurrentTenant, setIsLoading, fetchTenant]);
 
     useEffect(() => {
         initializeTenant();
-    }, []);
+    }, [initializeTenant]);
 
-    const setTenant = async (tenantId: string) => {
+    const setTenant = useCallback(async (tenantId: string) => {
         setIsLoading(true);
         const tenant = await fetchTenant(tenantId);
         setCurrentTenant(tenant);
         setIsLoading(false);
-    };
+    }, []); // fetchTenant, setCurrentTenant, setIsLoading are stable
 
-    const setScope = (scope: ScopeType) => {
+    const setScope = useCallback((scope: ScopeType) => {
         setCurrentScope(scope);
-    };
+    }, []); // setCurrentScope is stable
 
-    const refreshTenant = async () => {
+    const refreshTenant = useCallback(async () => {
         await initializeTenant();
-    };
+    }, [initializeTenant]);
+
+    const value = useMemo(() => ({ 
+        currentTenant, 
+        currentUser, 
+        currentScope, 
+        setTenant, 
+        setScope, 
+        isLoading, 
+        refreshTenant 
+    }), [currentTenant, currentUser, currentScope, setTenant, setScope, isLoading, refreshTenant]);
 
     return (
-        <TenantContext.Provider value={{ currentTenant, currentUser, currentScope, setTenant, setScope, isLoading, refreshTenant }}>
+        <TenantContext.Provider value={value}>
             {children}
         </TenantContext.Provider>
     );

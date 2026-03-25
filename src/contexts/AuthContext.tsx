@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { userService } from '../services/userService';
 
 interface User {
@@ -66,17 +66,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         initializeAuth();
     }, []);
 
-    const login = (newToken: string, newUser: User) => {
+    const login = useCallback((newToken: string, newUser: User) => {
         setToken(newToken);
         setUser(newUser);
         localStorage.setItem('auth_token', newToken);
         localStorage.setItem('auth_user', JSON.stringify(newUser));
-    };
+    }, []);
 
-    const updateUser = (updatedUser: User) => {
+    const updateUser = useCallback((updatedUser: User) => {
         setUser(updatedUser);
         localStorage.setItem('auth_user', JSON.stringify(updatedUser));
-    };
+    }, []);
 
     const logout = useCallback(() => {
         setToken(null);
@@ -147,18 +147,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return user?.role === role;
     }, [user]);
 
+    const value = useMemo(() => ({ 
+        user, 
+        token, 
+        isAuthenticated: !!token, 
+        login, 
+        updateUser,
+        logout, 
+        hasPermission, 
+        hasRole,
+        isLoading 
+    }), [user, token, login, updateUser, logout, hasPermission, hasRole, isLoading]);
+
     return (
-        <AuthContext.Provider value={{ 
-            user, 
-            token, 
-            isAuthenticated: !!token, 
-            login, 
-            updateUser,
-            logout, 
-            hasPermission, 
-            hasRole,
-            isLoading 
-        }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );
