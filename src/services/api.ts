@@ -11,8 +11,16 @@ const api = axios.create({
 // Helper to check network status
 const isOnline = () => navigator.onLine;
 
-// Request Interceptor: Offline Queueing for Mutations
+// Request Interceptor: Offline Queueing & Auth
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+    // Inject Authorization Header
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+
     const isMutation = ['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase() || '');
     
     if (!isOnline() && isMutation) {

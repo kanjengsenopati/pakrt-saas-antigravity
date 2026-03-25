@@ -56,6 +56,7 @@ fastify.register(fastifyRateLimit, {
 // Public routes
 fastify.register(authRoutes, { prefix: '/api/auth' });
 fastify.register(wilayahRoutes, { prefix: '/api/wilayah' });
+fastify.register(wilayahRoutes, { prefix: '/api/location' });
 fastify.post('/api/test-upload', async () => ({ status: 'found' }));
 
 // Protected routes
@@ -83,10 +84,14 @@ fastify.register(async (protectedRoutes) => {
   protectedRoutes.register(agendaRoutes, { prefix: '/agenda' });
   protectedRoutes.register(keuanganRoutes, { prefix: '/keuangan' });
   protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/pembayaranIuran' });
+  protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/iuran' });
   protectedRoutes.register(aktivitasRoutes, { prefix: '/aktivitas' });
   protectedRoutes.register(anggotaKeluargaRoutes, { prefix: '/anggotaKeluarga' });
   protectedRoutes.register(userRoutes, { prefix: '/user' });
+  protectedRoutes.register(userRoutes, { prefix: '/users' });
   protectedRoutes.register(roleRoutes, { prefix: '/role' });
+  protectedRoutes.register(jadwalRondaRoutes, { prefix: '/ronda' });
+  protectedRoutes.register(suratPengantarRoutes, { prefix: '/surat' });
   protectedRoutes.register(uploadRoutes);
 }, { prefix: '/api' });
 

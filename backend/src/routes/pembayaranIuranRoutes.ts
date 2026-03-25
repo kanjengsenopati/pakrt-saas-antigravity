@@ -148,4 +148,24 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     );
     return result;
   });
+  
+  // Alias for billing-summary to match frontend calls
+  fastify.get('/billing-summary/:wargaId', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
+    const { wargaId } = request.params as any;
+    const { year, tahun, kategori, scope } = request.query as any;
+    const user = (request as any).user;
+
+    if ((request as any).permissionScope === 'personal' && user.warga_id !== wargaId) {
+      return reply.code(403).send({ error: 'Forbidden: Cannot access other citizen billing' });
+    }
+
+    const result = await pembayaranIuranService.getBillingSummary(
+      user.tenant_id,
+      wargaId,
+      year ? parseInt(year) : (tahun ? parseInt(tahun) : new Date().getFullYear()),
+      kategori || 'Iuran Warga',
+      scope || 'RT'
+    );
+    return result;
+  });
 }

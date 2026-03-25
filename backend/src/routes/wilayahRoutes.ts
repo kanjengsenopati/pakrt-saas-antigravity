@@ -19,6 +19,14 @@ export default async function wilayahRoutes(fastify: FastifyInstance) {
     if (!item) return reply.code(404).send({ error: 'Not found' });
     return item;
   });
+  
+  // Alias for /id/:id to match locationService frontend calls
+  fastify.get('/id/:id', async (request, reply) => {
+    const { id } = request.params as any;
+    const item = await wilayahService.getById(id);
+    if (!item) return reply.code(404).send({ error: 'Not found' });
+    return item;
+  });
 
   // Mutation of global wilayah is restricted
   fastify.post('/bulk', { preHandler: [authenticate] }, async (request, reply) => {
