@@ -109,7 +109,7 @@ export default function RondaList() {
         return acc;
     }, {} as Record<string, { name: string, members: Map<string, any>, dates: any[], konsumsi: Map<string, any> }>);
 
-    const sortedGroups = Object.values(groups).sort((a, b) => a.name.localeCompare(b.name));
+    const sortedGroups = Object.values(groups).sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     const handleOpenAttendance = (ronda: RondaWithWarga) => {
         setSelectedRonda(ronda);
@@ -205,12 +205,12 @@ export default function RondaList() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {sortedGroups.map(group => {
+                                {sortedGroups.map((group: any) => {
                                     const isMyGroup = wargaId && group.members.has(wargaId);
                                     const todayStr = new Date().toISOString().split('T')[0];
                                     const nextSchedule = [...group.dates]
-                                        .filter(d => d.tanggal >= todayStr)
-                                        .sort((a, b) => a.tanggal.localeCompare(b.tanggal))[0];
+                                        .filter((d: any) => d.tanggal >= todayStr)
+                                        .sort((a: any, b: any) => a.tanggal.localeCompare(b.tanggal))[0];
                                     
                                     return (
                                     <div key={group.name} className={`bg-white border rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group/card ${isMyGroup ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-brand-500/20 transform scale-[1.02] z-10' : 'border-gray-200'}`}>
@@ -238,7 +238,7 @@ export default function RondaList() {
                                                 <div>
                                                     <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Utama</p>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {Array.from(group.members.values()).map(w => (
+                                                        {Array.from(group.members.values()).map((w: any) => (
                                                             <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-white border border-gray-100 rounded-lg shadow-sm">
                                                                 <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center">
                                                                     <span className="text-[8px] font-bold text-blue-600">{w.nama[0]}</span>
@@ -253,7 +253,7 @@ export default function RondaList() {
                                                     <div>
                                                         <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Penyedia Konsumsi</p>
                                                         <div className="flex flex-wrap gap-2">
-                                                            {Array.from(group.konsumsi.values()).map(w => (
+                                                            {Array.from(group.konsumsi.values()).map((w: any) => (
                                                                 <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-amber-50/50 border border-amber-100 rounded-lg">
                                                                     <span className="text-[11px] font-medium text-amber-900">{w.nama}</span>
                                                                 </div>
@@ -267,7 +267,7 @@ export default function RondaList() {
                                         <div className="p-5 bg-gray-50/30 flex-1">
                                             <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-3">Daftar Tanggal Jaga</p>
                                             <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
-                                                {group.dates.sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map(d => {
+                                                {group.dates.sort((a: any, b: any) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map((d: any) => {
                                                     const isPast = d.tanggal < todayStr;
                                                     const isNext = nextSchedule && d.id === nextSchedule.id;
                                                     const isActive = activeSnackId === d.id;
