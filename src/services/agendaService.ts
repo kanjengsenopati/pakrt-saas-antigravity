@@ -54,7 +54,7 @@ export const agendaService = {
         const response = await api.post(`/agenda`, data);
         await aktivitasService.logActivity(
             data.tenant_id,
-            data.scope,
+            data.scope as ScopeType,
             'Buat Agenda',
             `Membuat agenda baru: ${data.judul}`
         );
@@ -66,7 +66,7 @@ export const agendaService = {
         if (response.data) {
             await aktivitasService.logActivity(
                 response.data.tenant_id || data.tenant_id || '',
-                response.data.scope || data.scope || 'RT',
+                (response.data.scope || data.scope || 'RT') as ScopeType,
                 'Update Agenda',
                 `Memperbarui agenda: ${response.data.judul || data.judul || 'tanpa judul'}`
             );

@@ -33,7 +33,7 @@ export const locationService = {
             return null;
         }
     },
-    async seedLocations() {
-        await api.post('/location/seed');
+    async seedLocations(data?: any) {
+        await api.post('/location/seed', { data });
     }
 };

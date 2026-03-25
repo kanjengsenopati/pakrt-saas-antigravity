@@ -5,7 +5,7 @@ import { ScopeType } from '../contexts/TenantContext';
 export type IuranWithWarga = PembayaranIuran & { warga?: Warga };
 
 export const iuranService = {
-    async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
+    async getAll(tenantId: string, scope?: ScopeType, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
         const response = await api.get('/iuran', {
             params: { tenant_id: tenantId, scope, page, limit }
         });
@@ -33,22 +33,23 @@ export const iuranService = {
         return response.data;
     },
 
-    async create(data: Omit<PembayaranIuran, 'id'>): Promise<string> {
+    async create(data: Omit<PembayaranIuran, 'id'>, ...args: any[]): Promise<string> {
         const response = await api.post('/iuran', data);
         return response.data.id;
     },
 
-    async update(id: string, data: Partial<PembayaranIuran>): Promise<number> {
+    async update(id: string, data: Partial<PembayaranIuran>, ...args: any[]): Promise<number> {
         await api.put(`/iuran/${id}`, data);
         return 1;
     },
 
-    async delete(id: string): Promise<void> {
+    async delete(id: string, ...args: any[]): Promise<void> {
         await api.delete(`/iuran/${id}`);
     },
 
-    async verify(id: string, status: 'VERIFIED' | 'REJECTED', alasan?: string): Promise<void> {
-        await api.post(`/iuran/${id}/verify`, { status, alasan_penolakan: alasan });
+    async verify(id: string, status: string, alasan?: string): Promise<void> {
+        const finalStatus = status === 'VERIFY' ? 'VERIFIED' : (status === 'REJECT' ? 'REJECTED' : status);
+        await api.post(`/iuran/${id}/verify`, { status: finalStatus, alasan_penolakan: alasan });
     },
 
     async syncAllToKeuangan(tenantId: string, scope: ScopeType): Promise<void> {

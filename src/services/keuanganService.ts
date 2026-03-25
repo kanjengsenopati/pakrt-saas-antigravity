@@ -30,7 +30,7 @@ export const keuanganService = {
         const response = await api.post('/keuangan', data);
         await aktivitasService.logActivity(
             data.tenant_id,
-            data.scope,
+            data.scope as ScopeType,
             'Tambah Transaksi (Cloud)',
             `Mencatat ${data.tipe}: ${data.keterangan}`
         );

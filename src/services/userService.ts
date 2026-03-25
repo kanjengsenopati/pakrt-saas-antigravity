@@ -23,9 +23,10 @@ export const userService = {
         return response.data.id;
     },
 
-    async update(id: string, data: Partial<User>): Promise<number> {
-        await api.put(`/users/${id}`, data);
-        return 1;
+    async update(id: string, data: Partial<User>): Promise<User> {
+        const response = await api.put(`/users/${id}`, data);
+        // Usually the backend returns the updated object, if not we merge
+        return response.data;
     },
 
     async updatePermissions(id: string, permissions: Record<string, string[]>): Promise<void> {

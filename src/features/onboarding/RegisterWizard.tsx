@@ -61,7 +61,7 @@ export default function RegisterWizard() {
         if (watchProvinsi) {
             locationService.getKabKota(watchProvinsi).then(data => {
                 setKabkotas(data);
-                if (data.length > 0 && !data.find(d => d.id === getValues('kabkota'))) {
+                if (data.length > 0 && !data.find((d: any) => d.id === getValues('kabkota'))) {
                     setValue('kabkota', ''); setValue('kecamatan', ''); setValue('keldesa', '');
                 }
             });
@@ -72,7 +72,7 @@ export default function RegisterWizard() {
         if (watchKabkota) {
             locationService.getKecamatan(watchKabkota).then(data => {
                 setKecamatans(data);
-                if (data.length > 0 && !data.find(d => d.id === getValues('kecamatan'))) {
+                if (data.length > 0 && !data.find((d: any) => d.id === getValues('kecamatan'))) {
                     setValue('kecamatan', ''); setValue('keldesa', '');
                 }
             });
@@ -83,7 +83,7 @@ export default function RegisterWizard() {
         if (watchKecamatan) {
             locationService.getKelDesa(watchKecamatan).then(data => {
                 setKeldesas(data);
-                if (data.length > 0 && !data.find(d => d.id === getValues('keldesa'))) setValue('keldesa', '');
+                if (data.length > 0 && !data.find((d: any) => d.id === getValues('keldesa'))) setValue('keldesa', '');
             });
         } else setKeldesas([]);
     }, [watchKecamatan, setValue, getValues]);
@@ -92,7 +92,7 @@ export default function RegisterWizard() {
         if (watchKeldesa) {
             locationService.getRW(watchKeldesa).then(data => {
                 setRws(data);
-                if (data.length > 0 && !data.find(d => d.id === getValues('rw'))) setValue('rw', '');
+                if (data.length > 0 && !data.find((d: any) => d.id === getValues('rw'))) setValue('rw', '');
             });
         } else setRws([]);
     }, [watchKeldesa, setValue, getValues]);
@@ -101,7 +101,7 @@ export default function RegisterWizard() {
         if (watchRW) {
             locationService.getRT(watchRW).then(data => {
                 setRts(data);
-                if (data.length > 0 && !data.find(d => d.id === getValues('rt'))) setValue('rt', '');
+                if (data.length > 0 && !data.find((d: any) => d.id === getValues('rt'))) setValue('rt', '');
             });
         } else setRts([]);
     }, [watchRW, setValue, getValues]);
@@ -241,28 +241,28 @@ export default function RegisterWizard() {
                                             <label className="block text-sm font-bold text-gray-700">Provinsi <span className="text-red-500">*</span></label>
                                             <select {...register('provinsi', { required: true })} className={`w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white text-gray-900 font-medium ${errors.provinsi ? 'border-red-400' : ''}`}>
                                                 <option value="">Pilih Provinsi</option>
-                                                {provinsis.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                                {provinsis.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="block text-sm font-bold text-gray-700">Kabupaten/Kota <span className="text-red-500">*</span></label>
                                             <select {...register('kabkota', { required: true })} disabled={!watchProvinsi} className="w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium text-gray-900">
                                                 <option value="">Pilih Kab/Kota</option>
-                                                {kabkotas.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
+                                                {kabkotas.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="block text-sm font-bold text-gray-700">Kecamatan <span className="text-red-500">*</span></label>
                                             <select {...register('kecamatan', { required: true })} disabled={!watchKabkota} className="w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium text-gray-900">
                                                 <option value="">Pilih Kecamatan</option>
-                                                {kecamatans.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
+                                                {kecamatans.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="block text-sm font-bold text-gray-700">Kelurahan/Desa <span className="text-red-500">*</span></label>
                                             <select {...register('keldesa', { required: true })} disabled={!watchKecamatan} className="w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium text-gray-900">
                                                 <option value="">Pilih Kel/Desa</option>
-                                                {keldesas.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
+                                                {keldesas.map((k: any) => <option key={k.id} value={k.id}>{k.name}</option>)}
                                             </select>
                                         </div>
                                     </div>
@@ -272,14 +272,14 @@ export default function RegisterWizard() {
                                             <label className="block text-sm font-bold text-gray-700">Nomor RW <span className="text-red-500">*</span></label>
                                             <select {...register('rw', { required: true })} disabled={!watchKeldesa} className="w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium text-gray-900">
                                                 <option value="">Pilih RW</option>
-                                                {rws.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                                {rws.map((r: any) => <option key={r.id} value={r.id}>{r.name}</option>)}
                                             </select>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="block text-sm font-bold text-gray-700">Nomor RT <span className="text-red-500">*</span></label>
                                             <select {...register('rt', { required: true })} disabled={!watchRW} className="w-full rounded-xl border-gray-200 shadow-sm p-3 border focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-gray-50 focus:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium text-gray-900">
                                                 <option value="">Pilih RT</option>
-                                                {rts.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                                {rts.map((r: any) => <option key={r.id} value={r.id}>{r.name}</option>)}
                                             </select>
                                         </div>
                                     </div>
