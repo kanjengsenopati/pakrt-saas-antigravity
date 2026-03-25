@@ -160,17 +160,17 @@ export default function Dashboard() {
     }
 
     const adminCards: DashboardCard[] = [
-        { title: 'Total Warga', count: stats.warga, icon: Users, color: 'from-blue-500 to-indigo-600', bar: 'bg-white', link: '/warga' },
-        { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'from-emerald-500 to-teal-600', bar: 'bg-white', isCurrency: true, link: '/keuangan' },
-        { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'from-rose-500 to-red-600', bar: 'bg-white', link: '/surat' },
-        { title: 'Verifikasi Iuran', count: stats.pendingIuran, icon: HandCoins, color: 'from-amber-400 to-orange-500', bar: 'bg-white', link: '/iuran' },
+        { title: 'Total Warga', count: stats.warga, icon: Users, color: 'bg-blue-500', bar: '', link: '/warga' },
+        { title: 'Kas Aktif', count: stats.saldo, icon: Wallet, color: 'bg-emerald-500', bar: '', isCurrency: true, link: '/keuangan' },
+        { title: 'Surat Pending', count: stats.pendingSurat, icon: FileText, color: 'bg-red-500', bar: '', link: '/surat' },
+        { title: 'Verifikasi Iuran', count: stats.pendingIuran, icon: HandCoins, color: 'bg-amber-500', bar: '', link: '/iuran' },
     ];
 
     const wargaCards: DashboardCard[] = [
-        { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'from-rose-500 to-red-600', bar: 'bg-white', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
-        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'from-blue-500 to-indigo-600', bar: 'bg-white', link: '/ronda' },
-        { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'from-purple-500 to-fuchsia-600', bar: 'bg-white', link: '/agenda' },
-        { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'from-emerald-500 to-teal-600', bar: 'bg-white', link: '/surat' },
+        { title: 'Sisa Tagihan', count: Math.max(0, wargaIuranStats.expected - wargaIuranStats.totalPaid), icon: CreditCard, color: 'bg-red-500', bar: '', isCurrency: true, link: '/iuran', subtitle: 'Hingga akhir tahun' },
+        { title: 'Ronda Terdekat', count: upcomingRonda.length > 0 ? dateUtils.toDisplay(upcomingRonda[0].tanggal) : 'Tidak ada', icon: ShieldCheck, color: 'bg-blue-500', bar: '', link: '/ronda' },
+        { title: 'Agenda', count: upcomingAgenda.length, icon: CalendarCheck, color: 'bg-[#a855f7]', bar: '', link: '/agenda' },
+        { title: 'Surat Saya', count: stats.pendingSurat, icon: FileText, color: 'bg-[#10b981]', bar: '', link: '/surat' },
     ];
 
     const cards = isWarga ? wargaCards : adminCards;
@@ -197,47 +197,46 @@ export default function Dashboard() {
                         <div
                             key={index}
                             onClick={() => navigate(card.link)}
-                            className={`bg-gradient-to-br ${card.color} rounded-[18px] p-5 shadow-sm border border-transparent cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98] group relative overflow-hidden`}
+                            className={`${card.color} rounded-[18px] p-4 shadow-sm border border-transparent cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group relative overflow-hidden flex flex-col justify-between min-h-[135px]`}
                         >
-                            {/* Decorative glowing orb */}
-                            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white rounded-full mix-blend-overlay opacity-[0.08] blur-2xl group-hover:opacity-[0.15] transition-opacity duration-500"></div>
-
                             {/* Decorative bg icon */}
-                            <div className="absolute -right-4 -bottom-4 opacity-20 group-hover:opacity-30 group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 drop-shadow-lg">
-                                <Icon weight="fill" className="w-32 h-32 text-white" />
+                            <div className="absolute -right-3 -bottom-3 opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 select-none pointer-events-none">
+                                <Icon weight="fill" className="w-[110px] h-[110px] text-white" />
                             </div>
 
-                            {/* Icon + Title on the same row */}
-                            <div className="flex items-center gap-2 mb-4 relative z-10">
-                                <div className={`p-2 rounded-xl bg-white/20 backdrop-blur-md shadow-inner shrink-0 border border-white/20 group-hover:bg-white/30 transition-colors duration-300`}>
-                                    <Icon weight="duotone" className="w-5 h-5 text-white" />
+                            {/* Top row: Icon + Title */}
+                            <div className="flex items-center gap-2 mb-2 relative z-10">
+                                <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm shadow-inner shrink-0 border border-white/20 text-white">
+                                    <Icon weight="duotone" className="w-4 h-4" />
                                 </div>
-                                <p className="font-semibold tracking-wide text-white/95 text-[13px] uppercase drop-shadow-sm">{card.title}</p>
+                                <p className="font-bold tracking-wide text-white text-[11px] uppercase drop-shadow-sm">{card.title}</p>
                             </div>
 
-                            {/* Center-aligned big number */}
-                            <div className="relative z-10 py-1">
-                                <div className="text-3xl font-extrabold text-white leading-none tracking-tight drop-shadow-md">
+                            {/* Middle: Big number */}
+                            <div className={`relative z-10 flex-1 flex flex-col justify-center mb-2 ${['Agenda', 'Surat Saya'].includes(card.title) ? 'items-center text-center' : 'items-start text-left'}`}>
+                                <div className="text-[26px] font-extrabold text-white leading-none tracking-tight drop-shadow-sm">
                                     {card.isCurrency ? (
-                                        <span className="text-[26px] font-extrabold">{formatRupiah(card.count as number)}</span>
-                                    ) : card.count}
+                                        <div className="flex flex-col items-start gap-1">
+                                            <span className="text-2xl font-black">{formatRupiah(card.count as number)}</span>
+                                            {card.subtitle && (
+                                                <span className="text-[10px] text-white/90 font-medium italic drop-shadow-sm leading-none">{card.subtitle}</span>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <span>{card.count}</span>
+                                    )}
                                 </div>
-                                {card.subtitle && (
-                                    <p className="text-xs text-white/80 font-medium mt-1.5 italic drop-shadow-sm">{card.subtitle}</p>
+                                {!card.isCurrency && card.subtitle && (
+                                    <p className="text-[10px] text-white/90 font-medium mt-1 italic drop-shadow-sm">{card.subtitle}</p>
                                 )}
                             </div>
 
-                            {/* Link Text Area */}
-                            <div className="flex items-center justify-between mt-5 mb-1 px-1 relative z-10 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
-                                <span className="text-[11px] font-bold tracking-wider text-white uppercase backdrop-blur-md bg-white/10 hover:bg-white/20 py-1 px-3 rounded-md border border-white/20 transition-colors duration-300 shadow-sm">Lihat Detil</span>
-                                <div className="w-7 h-7 rounded-full bg-white/20 border border-white/20 flex items-center justify-center group-hover:translate-x-1 group-hover:bg-white group-hover:text-gray-900 transition-all duration-300 text-white backdrop-blur-md shadow-sm">
-                                    <ArrowRight weight="bold" className="w-3.5 h-3.5" />
+                            {/* Bottom: Link Button */}
+                            <div className={`relative z-10 flex items-center justify-between w-max gap-3 border border-white/30 hover:bg-white/10 transition-colors rounded-full pl-3 pr-1.5 py-1 ${['Agenda', 'Surat Saya'].includes(card.title) ? 'mx-auto' : ''}`}>
+                                <span className="text-[9px] font-bold tracking-wider text-white uppercase drop-shadow-sm">Lihat Detil</span>
+                                <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-sm">
+                                    <ArrowRight weight="bold" className="w-2.5 h-2.5" />
                                 </div>
-                            </div>
-
-                            {/* Progress bar accent */}
-                            <div className="mt-2 h-1 w-full bg-black/10 rounded-full overflow-hidden relative z-10 mix-blend-overlay">
-                                <div className={`h-full w-1/3 rounded-full bg-white opacity-40 group-hover:w-full group-hover:opacity-80 transition-all duration-[800ms] ease-out`} />
                             </div>
                         </div>
                     );
