@@ -10,14 +10,52 @@ export const jadwalRondaService = {
         has: wargaId
       };
     }
-    return await prisma.jadwalRonda.findMany({
+    const jadwal = await prisma.jadwalRonda.findMany({
       where,
       orderBy: { tanggal: 'asc' }
     });
+
+    // Populate warga details
+    const allWargaIds = new Set<string>();
+    jadwal.forEach(j => {
+        j.warga_ids?.forEach(id => allWargaIds.add(id));
+        j.petugas_konsumsi?.forEach(id => allWargaIds.add(id));
+    });
+
+    const wargaData = await prisma.warga.findMany({
+        where: { id: { in: Array.from(allWargaIds) } },
+        select: { id: true, nama: true }
+    });
+
+    const wargaMap = new Map(wargaData.map(w => [w.id, w]));
+
+    return jadwal.map(j => ({
+        ...j,
+        anggota_warga: (j.warga_ids || []).map(id => wargaMap.get(id)).filter(w => w !== undefined),
+        anggota_konsumsi: (j.petugas_konsumsi || []).map(id => wargaMap.get(id)).filter(w => w !== undefined)
+    }));
   },
 
   async getById(id: string) {
-    return await prisma.jadwalRonda.findUnique({ where: { id } });
+    const j = await prisma.jadwalRonda.findUnique({ where: { id } });
+    if (!j) return null;
+
+    const allWargaIds = new Set<string>();
+    j.warga_ids?.forEach((id: string) => allWargaIds.add(id));
+    j.petugas_konsumsi?.forEach((id: string) => allWargaIds.add(id));
+
+    const wargaData = await prisma.warga.findMany({
+        where: { id: { in: Array.from(allWargaIds) } },
+        select: { id: true, nama: true }
+    });
+
+    const wargaMap = new Map(wargaData.map(w => [w.id, w]));
+
+    return {
+        ...j,
+        anggota_warga: (j.warga_ids || []).map((wId: string) => wargaMap.get(wId)).filter(w => w !== undefined),
+        anggota_konsumsi: (j.petugas_konsumsi || []).map((wId: string) => wargaMap.get(wId)).filter(w => w !== undefined)
+    };
   },
 
   async create(data: any) {

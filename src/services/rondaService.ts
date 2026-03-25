@@ -19,16 +19,7 @@ export const rondaService = {
         const items = Array.isArray(data) ? data : (data.items || []);
         const jadwalList = items.sort((a: JadwalRonda, b: JadwalRonda) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime());
 
-        const wargaRes = await axios.get(`${API_URL}/warga`, { params: { tenant_id: tenantId } });
-        const wargaData = wargaRes.data;
-        const wargaItems = Array.isArray(wargaData) ? wargaData : (wargaData.items || []);
-        const wargaMap = new Map(wargaItems.map((w: Warga) => [w.id, w]));
-
-        return jadwalList.map((j: any) => ({
-            ...j,
-            anggota_warga: (j.warga_ids || []).map((id: string) => wargaMap.get(id)).filter((w: any) => w !== undefined),
-            anggota_konsumsi: (j.petugas_konsumsi || []).map((id: string) => wargaMap.get(id)).filter((w: any) => w !== undefined)
-        }));
+        return jadwalList;
     },
 
     async getById(id: string): Promise<RondaWithWarga | undefined> {

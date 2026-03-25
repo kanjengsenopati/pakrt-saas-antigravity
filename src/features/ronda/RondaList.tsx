@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { rondaService, RondaWithWarga } from '../../services/rondaService';
 import { Plus, MagnifyingGlass, Funnel, Trash, ShieldCheck, PencilSimple, CheckCircle, X, CaretUp, CaretDown } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
@@ -8,6 +9,10 @@ import { dateUtils } from '../../utils/date';
 
 export default function RondaList() {
     const { currentTenant, currentScope } = useTenant();
+    const { user: authUser } = useAuth();
+    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const wargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
+    
     const [rondaList, setRondaList] = useState<RondaWithWarga[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -200,17 +205,27 @@ export default function RondaList() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {sortedGroups.map(group => (
-                                    <div key={group.name} className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group/card">
-                                        <div className="p-5 bg-gradient-to-br from-brand-50 to-white border-b border-gray-100">
+                                {sortedGroups.map(group => {
+                                    const isMyGroup = wargaId && group.members.has(wargaId);
+                                    
+                                    return (
+                                    <div key={group.name} className={`bg-white border rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group/card ${isMyGroup ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-brand-500/20 transform scale-[1.02] z-10' : 'border-gray-200'}`}>
+                                        
+                                        {isMyGroup && (
+                                            <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg z-20 shadow-sm flex items-center gap-1">
+                                                <CheckCircle weight="fill" /> Regu Anda
+                                            </div>
+                                        )}
+
+                                        <div className={`p-5 border-b border-gray-100 relative ${isMyGroup ? 'bg-gradient-to-br from-brand-50 to-white' : 'bg-gradient-to-br from-gray-50 to-white'}`}>
                                             <div className="flex justify-between items-center mb-4">
                                                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                                    <span className="w-8 h-8 bg-brand-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                                                    <span className={`w-8 h-8 ${isMyGroup ? 'bg-brand-600' : 'bg-gray-700'} text-white rounded-lg flex items-center justify-center text-sm font-bold`}>
                                                         {group.name.charAt(0)}
                                                     </span>
                                                     {group.name}
                                                 </h3>
-                                                <span className="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-tight">
+                                                <span className={`${isMyGroup ? 'bg-brand-100 text-brand-700' : 'bg-gray-200 text-gray-700'} text-[10px] font-bold px-2 py-0.5 rounded-full tracking-tight`}>
                                                     {group.dates.length} Jadwal
                                                 </span>
                                             </div>
@@ -295,7 +310,8 @@ export default function RondaList() {
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
