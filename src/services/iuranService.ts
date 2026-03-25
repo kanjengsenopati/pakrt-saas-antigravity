@@ -1,150 +1,56 @@
-import axios from 'axios';
-import { PembayaranIuran, Warga } from '../database/db'; // Keep interface 
-import { aktivitasService } from './aktivitasService';
-import { keuanganService } from './keuanganService';
+import api from './api';
+import { PembayaranIuran } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
-import { wargaService } from './wargaService';
-
-export interface IuranWithWarga extends PembayaranIuran {
-    warga?: Warga;
-}
-
-const API_URL = import.meta.env.VITE_API_URL || '/api';
-
-/** Helper: Build a keterangan tag that encodes the iuran ID, Warga name, and months */
-/** Helper: Build a keterangan tag that encodes the iuran ID, Warga name, and months */
-const buildKeteranganTag = (iuranId: string, kategori: string, months: string, tahun: number, wargaNama?: string) =>
-    `[${wargaNama || 'Warga'}] Pembayaran ${kategori} — ${months}/${tahun} | ref:${iuranId}`;
+import { aktivitasService } from './aktivitasService';
 
 export const iuranService = {
-    async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 100): Promise<{ items: IuranWithWarga[], total: number, page: number, limit: number }> {
-        const response = await axios.get(`${API_URL}/pembayaranIuran`, {
-            params: { tenant_id: tenantId, scope, page, limit }
-        });
-        return response.data;
-    },
-
-    async getById(id: string): Promise<IuranWithWarga | undefined> {
+    async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 200): Promise<{ items: PembayaranIuran[], total: number, page: number, limit: number }> {
         try {
-            const response = await axios.get(`${API_URL}/pembayaranIuran/${id}`);
+            const response = await api.get('/iuran', {
+                params: { tenant_id: tenantId, scope, page, limit }
+            });
             return response.data;
         } catch (e) { console.error(e); throw e; }
     },
 
-    async create(data: Omit<PembayaranIuran, 'id'>, scope: ScopeType = 'RT'): Promise<string> {
-        // 1. Save the iuran entry (Backend handles Keuangan sync on verification)
-        const response = await axios.post(`${API_URL}/pembayaranIuran`, { ...data, scope });
-        const iuranId: string = response.data.id;
-
-        await aktivitasService.logActivity(
-            data.tenant_id,
-            'RT',
-            'Bayar Iuran',
-            `Pembayaran ${data.kategori}`
-        );
-
-        return iuranId;
+    async getById(id: string): Promise<PembayaranIuran | undefined> {
+        try {
+            const response = await api.get(`/iuran/${id}`);
+            return response.data;
+        } catch (e) {
+            console.error(e);
+            return undefined;
+        }
     },
 
-    async update(id: string, data: Partial<Omit<PembayaranIuran, 'id' | 'tenant_id'>>, scope: ScopeType = 'RT'): Promise<number> {
-        // 1. Update the iuran entry
-        await axios.put(`${API_URL}/pembayaranIuran/${id}`, { ...data, scope });
+    async create(data: Omit<PembayaranIuran, 'id'>): Promise<string> {
+        const response = await api.post('/iuran', data);
+        await aktivitasService.logActivity(
+            data.tenant_id,
+            'RT', // Default scope if not in data
+            'Pembayaran Iuran (Cloud)',
+            `Menerima pembayaran dari warga_id: ${data.warga_id}`
+        );
+        return response.data.id;
+    },
+
+    async update(id: string, data: Partial<PembayaranIuran>): Promise<number> {
+        await api.put(`/iuran/${id}`, data);
         return 1;
     },
 
-    async verify(id: string, action: 'VERIFY' | 'REJECT', alasan?: string): Promise<IuranWithWarga> {
-        const response = await axios.post(`${API_URL}/pembayaranIuran/${id}/verify`, { action, alasan });
-        return response.data;
+    async delete(id: string): Promise<void> {
+        await api.delete(`/iuran/${id}`);
     },
 
-    async delete(id: string, tenantId: string, scope: ScopeType = 'RT'): Promise<void> {
-        // 1. Find & delete the linked Kas Masuk entry first
-        try {
-            const data = await keuanganService.getAll(tenantId, scope, 1, 1000);
-            const refTag = `| ref:${id}`;
-            const linked = data.items.find(k => k.keterangan?.includes(refTag));
-            if (linked) {
-                await keuanganService.delete(linked.id);
-            }
-        } catch (err) {
-            console.error('[iuranService] Gagal menghapus linked Kas Masuk:', err);
-        }
-
-        // 2. Delete the iuran entry
-        await axios.delete(`${API_URL}/pembayaranIuran/${id}`);
-    },
-
-    /** Internal helper to sync a single Iuran entry to Keuangan (Create or Update) */
-    async syncToKeuangan(iuranId: string, iuranData: Omit<PembayaranIuran, 'id'>, scope: ScopeType) {
-        try {
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-                'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
-            const monthLabel = iuranData.periode_bulan
-                .map(m => monthNames[m - 1])
-                .join(', ');
-
-            // Fetch Warga name for the keterangan
-            let wargaNama = '';
-            try {
-                const warga = await wargaService.getById(iuranData.warga_id);
-                wargaNama = warga?.nama || '';
-            } catch (e) {
-                console.warn('[iuranService] Gagal fetch info warga untuk sync:', e);
-            }
-
-            let existingLinked: any = undefined;
-            const refTag = `| ref:${iuranId}`;
-            try {
-                const data = await keuanganService.getAll(iuranData.tenant_id, scope, 1, 1000);
-                existingLinked = data.items.find(k => k.keterangan?.includes(refTag));
-            } catch (e) {
-                console.warn('[iuranService] Gagal fetch info keuangan untuk sync:', e);
-            }
-
-            const payload = {
-                tenant_id: iuranData.tenant_id,
-                scope,
-                tipe: 'pemasukan' as const,
-                kategori: iuranData.kategori,
-                nominal: iuranData.nominal,
-                tanggal: iuranData.tanggal_bayar,
-                keterangan: buildKeteranganTag(iuranId, iuranData.kategori, monthLabel, iuranData.periode_tahun, wargaNama),
-                url_bukti: iuranData.url_bukti,
-            };
-
-            if (existingLinked) {
-                await keuanganService.update(existingLinked.id, payload);
-            } else {
-                await keuanganService.create(payload);
-            }
-        } catch (err) {
-            console.error('[iuranService] Gagal sync ke Kas Masuk:', err);
-        }
-    },
-
-    /** Bulk sync all existing Iuran entries to Keuangan (find orphans) */
-    async syncAllToKeuangan(tenantId: string, scope: ScopeType) {
-        const iuranData = await this.getAll(tenantId, scope, 1, 1000);
-        const keuanganData = await keuanganService.getAll(tenantId, scope, 1, 1000);
-
-        for (const iuran of iuranData.items) {
-            const hasLinked = keuanganData.items.some(k => k.keterangan?.includes(`ref:${iuran.id}`));
-            if (!hasLinked) {
-                await this.syncToKeuangan(iuran.id, iuran, scope);
-            }
-        }
-    },
-
-    async getBillingSummary(wargaId: string, tahun: number, kategori?: string, scope?: string): Promise<{
-        rate: number,
-        expectedTotal: number,
-        totalPaid: number,
-        paidMonths: number[],
-        sisa: number
-    }> {
-        const response = await axios.get(`${API_URL}/pembayaranIuran/billing/${wargaId}`, {
-            params: { tahun, kategori, scope }
+    async getSummary(tenantId: string, scope: ScopeType): Promise<any> {
+        const response = await api.get('/iuran/summary', {
+            params: { tenant_id: tenantId, scope }
         });
         return response.data;
+    },
+
+    async verify(id: string, status: 'VERIFIED' | 'REJECTED', alasan?: string): Promise<void> {
+        await api.post(`/iuran/verify/${id}`, { status, alasan_penolakan: alasan });
     }
 };

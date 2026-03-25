@@ -158,7 +158,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         <aside className={`bg-white text-gray-900 flex flex-col h-screen fixed left-0 top-0 overflow-y-auto overflow-x-hidden shadow-sm border-r border-gray-100 z-50 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'}`}>
             <div className={`p-4 sm:px-6 sm:py-5 border-b border-gray-100/80 flex items-center h-[78px] ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                 <div className={`overflow-hidden transition-all duration-300 whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'}`}>
-                    <h2 className="text-[20px] font-semibold text-gray-900 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
+                    <h2 className="text-[1.25rem] font-semibold text-gray-900 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
                         {getRtRwLabel()}
                     </h2>
                     <p className="text-xs text-gray-400 mt-1 tracking-normal font-medium truncate">

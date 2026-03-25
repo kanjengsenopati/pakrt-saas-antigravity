@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, MagnifyingGlass, SignOut, CaretDown, User as UserIcon } from '@phosphor-icons/react';
+import { Bell, MagnifyingGlass, SignOut, CaretDown, User as UserIcon, Plus, Minus } from '@phosphor-icons/react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFont } from '../../contexts/FontContext';
+import { SyncStatus } from './SyncStatus';
 
 
 export function Header() {
     const navigate = useNavigate();
     const { logout, user: currentUser } = useAuth();
+    const { fontSizeOffset, increaseFont, decreaseFont } = useFont();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const handleLogout = () => {
@@ -28,15 +31,43 @@ export function Header() {
                 {/* Mobile Identity */}
                 <div className="md:hidden flex items-center gap-2">
                     <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/30">
-                        <div className="w-4 h-4 text-white font-bold text-[11px] italic">RT</div>
+                        <div className="w-4 h-4 text-white font-bold text-[0.6875rem] italic">RT</div>
                     </div>
                     <span className="font-bold text-slate-900 tracking-tight text-sm">Pak<span className="text-brand-600">RT</span></span>
                 </div>
             </div>
 
             <div className="flex items-center gap-3 md:gap-6">
-                <div className="flex items-center gap-4 pl-2 md:pl-4 border-gray-200">
-                    <button className="text-gray-400 hover:text-brand-600 transition-colors relative hidden md:block">
+                <div className="flex items-center gap-2 md:gap-4 pl-2 md:pl-4 border-gray-200">
+                    {/* Sync Status Badge */}
+                    <div className="hidden sm:block">
+                        <SyncStatus />
+                    </div>
+
+                    {/* Font Resize Tools */}
+                    <div className="flex items-center bg-gray-50 rounded-lg border border-gray-100 p-0.5 shadow-inner">
+                        <button 
+                            onClick={decreaseFont}
+                            className="p-1 px-1.5 text-gray-500 hover:text-brand-600 hover:bg-white rounded-md transition-all active:scale-95"
+                            title="Perkecil Font (-1px)"
+                        >
+                            <Minus weight="bold" className="w-3.5 h-3.5" />
+                        </button>
+                        <div className="w-[1px] h-4 bg-gray-200 mx-0.5"></div>
+                        <span className="text-[0.625rem] font-bold text-gray-400 w-5 text-center select-none">
+                            {16 + fontSizeOffset}
+                        </span>
+                        <div className="w-[1px] h-4 bg-gray-200 mx-0.5"></div>
+                        <button 
+                            onClick={increaseFont}
+                            className="p-1 px-1.5 text-gray-500 hover:text-brand-600 hover:bg-white rounded-md transition-all active:scale-95"
+                            title="Perbesar Font (+1px)"
+                        >
+                            <Plus weight="bold" className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+
+                    <button className="text-gray-400 hover:text-brand-600 transition-colors relative hidden sm:block">
                         <Bell weight="duotone" className="w-5 h-5 md:w-6 md:h-6" />
                         <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                     </button>

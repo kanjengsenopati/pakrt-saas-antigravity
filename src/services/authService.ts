@@ -1,11 +1,9 @@
-import axios from 'axios';
-import { User } from '../database/db';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+import api from './api';
+import { User } from '../types/database';
 
 export const authService = {
     async login(contactOrEmail: string, password: string): Promise<{ token: string; user: User }> {
-        const response = await axios.post(`${API_URL}/auth/login`, {
+        const response = await api.post('/auth/login', {
             contactOrEmail,
             password
         });
@@ -13,25 +11,25 @@ export const authService = {
     },
 
     async checkTenant(id: string): Promise<{ exists: boolean; tenant?: any }> {
-        const response = await axios.get(`${API_URL}/auth/tenant/${id}`);
+        const response = await api.get(`/auth/tenant/${id}`);
         return response.data;
     },
 
-    async register(tenantData: any, userData: any): Promise<{ message: string; tenant: any; user: any }> {
-        const response = await axios.post(`${API_URL}/auth/register`, {
+    async register(tenantData: any, userData: any): Promise<{ message: string; tenant: any; user: User }> {
+        const response = await api.post('/auth/register', {
             tenantData,
             userData
         });
         return response.data;
     },
 
-    logout(): void {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
+    logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     },
 
     async joinResident(tenantId: string, residentData: any): Promise<any> {
-        const response = await axios.post(`${API_URL}/auth/join`, {
+        const response = await api.post('/auth/join', {
             tenantId,
             residentData
         });

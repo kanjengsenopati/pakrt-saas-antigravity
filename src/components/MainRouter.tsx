@@ -297,15 +297,21 @@ const router = createBrowserRouter([
     }
 ]);
 
+import { FontProvider } from '../contexts/FontContext';
+import { SyncProvider } from '../contexts/SyncContext';
+
 export function MainRouter() {
     return (
-        <AuthProvider>
-            <TenantProvider>
-                <RouterProvider router={router} />
-            </TenantProvider>
-        </AuthProvider>
+        <SyncProvider>
+            <FontProvider>
+                <AuthProvider>
+                    <TenantProvider>
+                        <RouterProvider router={router} />
+                    </TenantProvider>
+                </AuthProvider>
+            </FontProvider>
+        </SyncProvider>
     );
 }
-
 
 

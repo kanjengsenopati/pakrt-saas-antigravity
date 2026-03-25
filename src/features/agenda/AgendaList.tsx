@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { Agenda } from '../../database/db';
-import { Plus, MagnifyingGlass, PencilSimple, Trash, CalendarBlank, Users, CheckCircle, FileText, X, Image as ImageIcon, CircleNotch, ChartPieSlice, TrendUp } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, CalendarBlank, Users, CheckCircle, FileText, X, Image as ImageIcon, CircleNotch, ChartPieSlice, TrendUp } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
@@ -42,7 +42,7 @@ const ReportPanel = ({
                     <div className="p-2 bg-brand-600 rounded-lg shadow-sm">
                         <FileText weight="fill" className="text-white w-4 h-4" />
                     </div>
-                    <h4 className="text-sm font-bold tracking-tight text-slate-500">
+                    <h4 className="text-sm font-semibold tracking-tight text-slate-500">
                         {agenda.is_terlaksana ? 'Edit Laporan Kegiatan' : 'Buat Laporan Realisasi'}
                     </h4>
                 </div>
@@ -51,7 +51,7 @@ const ReportPanel = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-[11px] font-bold tracking-tight text-slate-500 mb-1.5">Catatan Laporan</label>
+                        <label className="block text-xs font-semibold tracking-tight text-slate-500 mb-1.5">Catatan Laporan</label>
                         <textarea
                             value={laporanText}
                             onChange={(e) => setLaporanText(e.target.value)}
@@ -76,14 +76,14 @@ const ReportPanel = ({
                     <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
                         <button
                             onClick={() => setExpandedId(null)}
-                            className="px-5 py-2 text-[12px] font-bold tracking-wide text-slate-500 hover:bg-slate-100 rounded-lg transition-all"
+                            className="px-5 py-2 text-xs font-semibold tracking-wide text-slate-500 hover:bg-slate-100 rounded-lg transition-all"
                         >
                             Batal
                         </button>
                         <button
                             onClick={() => handleSubmitReport(agenda.id)}
                             disabled={isUploading || !laporanText.trim()}
-                            className={`px-6 py-2 bg-brand-600 text-white rounded-lg text-[12px] font-bold tracking-wide transition-all shadow-md flex items-center gap-2 ${(isUploading || !laporanText.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 active:scale-95'}`}
+                            className={`px-6 py-2 bg-brand-600 text-white rounded-lg text-xs font-semibold tracking-wide transition-all shadow-md flex items-center gap-2 ${(isUploading || !laporanText.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 active:scale-95'}`}
                         >
                             {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                             Simpan Laporan
@@ -207,17 +207,15 @@ export default function AgendaList() {
 
     return (
         <div className="space-y-6 animate-fade-in relative">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 className="page-title">Informasi Kegiatan</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
-                        Jadwal Kegiatan Untuk Scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
-                    </p>
+                    <p className="text-sm text-gray-500 mt-1 font-medium tracking-normal">Log aktivitas dan jadwal kegiatan warga</p>
                 </div>
                 <HasPermission module="Agenda" action="Buat">
                     <button
                         onClick={() => navigate('/agenda/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Agenda Baru</span>
@@ -228,13 +226,13 @@ export default function AgendaList() {
             <div className="flex space-x-2 border-b border-gray-100 pb-1">
                 <button
                     onClick={() => setActiveTab('summary')}
-                    className={`px-5 py-3 font-normal text-sm tracking-wide transition-all border-b-2 ${activeTab === 'summary' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
+                    className={`px-5 py-3 font-medium text-sm tracking-wide transition-all border-b-2 ${activeTab === 'summary' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
                 >
                     Dashboard Monitor
                 </button>
                 <button
                     onClick={() => setActiveTab('list')}
-                    className={`px-5 py-3 font-normal text-sm tracking-wide transition-all border-b-2 ${activeTab === 'list' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
+                    className={`px-5 py-3 font-medium text-sm tracking-wide transition-all border-b-2 ${activeTab === 'list' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
                 >
                     Log Aktivitas
                 </button>
@@ -246,9 +244,9 @@ export default function AgendaList() {
                         {/* TOTAL AGENDA */}
                         <div className="bg-white py-3.5 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <p className="text-[12px] font-bold text-slate-900 tracking-tight leading-none mb-2">Cakupan Kegiatan</p>
+                                <p className="text-xs font-bold text-slate-900 tracking-tight leading-none mb-2">Cakupan Kegiatan</p>
                                 <p className="text-3xl font-bold text-slate-800 leading-none tabular-nums">{totalAgenda}</p>
-                                <p className="text-[11px] font-medium text-slate-500 mt-2">Total Kegiatan</p>
+                                <p className="text-[0.6875rem] font-medium text-slate-500 mt-2">Total Kegiatan</p>
                             </div>
                         </div>
 
@@ -256,9 +254,9 @@ export default function AgendaList() {
                         <div className="bg-emerald-600 py-3.5 px-4 rounded-xl border border-emerald-500 shadow-md relative overflow-hidden group hover:bg-emerald-700 transition-all duration-300">
                             <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
                             <div className="relative z-10 flex flex-col items-center text-center text-white">
-                                <p className="text-[12px] font-bold text-white tracking-tight leading-none mb-2">Terealisasi</p>
+                                <p className="text-xs font-bold text-white tracking-tight leading-none mb-2">Terealisasi</p>
                                 <p className="text-3xl font-bold text-white leading-none tabular-nums">{realizedAgenda}</p>
-                                <div className="flex items-center gap-1 text-[11px] font-medium text-white/80 mt-2">
+                                <div className="flex items-center gap-1 text-[0.6875rem] font-medium text-white/80 mt-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
                                     Sudah Dilaksanakan
                                 </div>
@@ -268,18 +266,18 @@ export default function AgendaList() {
                         {/* MENUNGGU LAPORAN */}
                         <div className="bg-white py-3.5 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-amber-400">
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <p className="text-[12px] font-bold text-slate-900 tracking-tight leading-none mb-2">Menunggu Laporan</p>
+                                <p className="text-xs font-bold text-slate-900 tracking-tight leading-none mb-2">Menunggu Laporan</p>
                                 <p className="text-3xl font-bold text-slate-800 leading-none tabular-nums">{pendingAgenda}</p>
-                                <p className="text-[11px] font-medium text-amber-600 mt-2">Butuh Dokumentasi</p>
+                                <p className="text-[0.6875rem] font-medium text-amber-600 mt-2">Butuh Dokumentasi</p>
                             </div>
                         </div>
 
                         {/* TOTAL BUDGET */}
                         <div className="bg-white py-3.5 px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-slate-300">
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <p className="text-[12px] font-bold text-slate-900 tracking-tight leading-none mb-2">Estimasi Anggaran</p>
-                                <p className="text-[18px] font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(totalPendanaan)}</p>
-                                <p className="text-[11px] font-medium text-slate-500 mt-2">Estimasi Biaya</p>
+                                <p className="text-xs font-bold text-slate-900 tracking-tight leading-none mb-2">Estimasi Anggaran</p>
+                                <p className="text-lg font-bold text-slate-800 leading-none truncate tabular-nums">{formatRupiah(totalPendanaan)}</p>
+                                <p className="text-[0.6875rem] font-medium text-slate-500 mt-2">Estimasi Biaya</p>
                             </div>
                         </div>
                     </div>
@@ -288,7 +286,7 @@ export default function AgendaList() {
                         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
                                 <ChartPieSlice weight="duotone" className="w-6 h-6 text-brand-500" />
-                                <h3 className="text-[12px] font-bold tracking-tight text-slate-900">Status Realisasi</h3>
+                                <h3 className="text-xs font-bold tracking-tight text-slate-900">Status Realisasi</h3>
                             </div>
                             <div className="h-[250px] w-full">
                                 {statusData.length > 0 ? (
@@ -312,7 +310,7 @@ export default function AgendaList() {
                                         </PieChart>
                                     </ResponsiveContainer>
                                 ) : (
-                                    <div className="h-full flex items-center justify-center text-slate-300 text-[12px] font-normal tracking-wide">Belum Ada Data Status</div>
+                                    <div className="h-full flex items-center justify-center text-slate-300 text-xs font-normal tracking-wide">Belum Ada Data Status</div>
                                 )}
                             </div>
                         </div>
@@ -320,7 +318,7 @@ export default function AgendaList() {
                         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
                                 <TrendUp weight="duotone" className="w-6 h-6 text-emerald-500" />
-                                <h3 className="text-[12px] font-bold tracking-tight text-slate-900">Alokasi Pendanaan</h3>
+                                <h3 className="text-xs font-bold tracking-tight text-slate-900">Alokasi Pendanaan</h3>
                             </div>
                             <div className="h-[250px] w-full">
                                 {fundingData.length > 0 ? (
@@ -338,7 +336,7 @@ export default function AgendaList() {
                                         </BarChart>
                                     </ResponsiveContainer>
                                 ) : (
-                                    <div className="h-full flex items-center justify-center text-slate-400 text-[12px] font-medium tracking-wide">Belum Ada Data Pendanaan</div>
+                                    <div className="h-full flex items-center justify-center text-slate-400 text-xs font-medium tracking-wide">Belum Ada Data Pendanaan</div>
                                 )}
                             </div>
                         </div>
@@ -350,13 +348,12 @@ export default function AgendaList() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50">
                         <div className="relative w-full md:w-80">
-                            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
                                 placeholder="Cari informasi kegiatan..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full pl-14 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm bg-white"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm font-medium bg-white placeholder:text-gray-400"
                             />
                         </div>
                     </div>
@@ -364,7 +361,7 @@ export default function AgendaList() {
                     {/* DESKTOP VIEW: TABLE */}
                     <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 border-b border-slate-100 text-[14px] font-bold text-slate-500 tracking-tight">
+                            <thead className="bg-slate-50 border-b border-slate-100 text-sm font-bold text-slate-500 tracking-tight">
                                 <tr>
                                     <th className="p-4 w-24 text-center">Tanggal</th>
                                     <th className="p-4">Agenda & Deskripsi</th>
@@ -376,7 +373,7 @@ export default function AgendaList() {
                             <tbody className="divide-y divide-slate-50">
                                 {isLoading ? (
                                     <tr>
-                                    <td colSpan={5} className="p-20 text-center text-slate-400 font-bold text-[11px] tracking-tight animate-pulse">
+                                    <td colSpan={5} className="p-20 text-center text-slate-400 font-bold text-[0.6875rem] tracking-tight animate-pulse">
                                         <div className="flex flex-col items-center gap-4">
                                             <CircleNotch weight="bold" className="w-10 h-10 animate-spin text-brand-500" />
                                             Sinkronisasi Laporan...
@@ -404,14 +401,14 @@ export default function AgendaList() {
                                                 <tr className={`hover:bg-brand-50/20 transition-colors group ${expandedId === agenda.id ? 'bg-brand-50/40' : ''}`}>
                                                     <td className="p-4 text-center">
                                                         <div className={`px-2 py-1 mx-auto rounded-lg flex flex-col items-center justify-center border shrink-0 ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'} shadow-sm`}>
-                                                            <span className="text-[11px] font-bold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
+                                                            <span className="text-[0.6875rem] font-bold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                         </div>
                                                     </td>
                                                     <td className="p-4 min-w-0">
-                                                        <h3 className="text-[14px] font-bold text-slate-800 leading-tight group-hover:text-brand-700 transition-colors truncate">{agenda.judul}</h3>
-                                                        <p className="text-[14px] text-slate-500 line-clamp-1 mt-1 font-normal">{agenda.deskripsi}</p>
+                                                        <h3 className="text-sm font-bold text-slate-800 leading-tight group-hover:text-brand-700 transition-colors truncate">{agenda.judul}</h3>
+                                                        <p className="text-sm text-slate-500 line-clamp-1 mt-1 font-normal">{agenda.deskripsi}</p>
                                                         {isRealized && agenda.laporan_kegiatan && !expandedId && (
-                                                            <div className="mt-2 text-[12px] text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 flex items-center gap-1.5 w-fit">
+                                                            <div className="mt-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 flex items-center gap-1.5 w-fit">
                                                                 <CheckCircle weight="fill" className="w-3 h-3" />
                                                                 <span className="font-semibold truncate max-w-md">Laporan: {agenda.laporan_kegiatan}</span>
                                                             </div>
@@ -421,17 +418,17 @@ export default function AgendaList() {
                                                         {agenda.butuh_pendanaan ? (
                                                             <div className="text-sm font-bold text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</div>
                                                         ) : (
-                                                            <div className="text-[11px] font-bold text-slate-400 tracking-tight italic">Tanpa Budget</div>
+                                                            <div className="text-[0.6875rem] font-bold text-slate-400 tracking-tight italic">Tanpa Budget</div>
                                                         )}
-                                                        <div className="text-[11px] font-bold text-slate-400 tracking-tight mt-0.5">{(agenda.peserta_ids?.length || 0)} Peserta</div>
+                                                        <div className="text-[0.6875rem] font-bold text-slate-400 tracking-tight mt-0.5">{(agenda.peserta_ids?.length || 0)} Peserta</div>
                                                     </td>
                                                     <td className="p-4 text-center">
                                                         {isRealized ? (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Terlaksana</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.625rem] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Terlaksana</span>
                                                         ) : past ? (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 tracking-tight whitespace-nowrap">Menunggu Laporan</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.625rem] font-bold bg-amber-50 text-amber-600 border border-amber-100 tracking-tight whitespace-nowrap">Menunggu Laporan</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-tight">Terjadwal</span>
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.625rem] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-tight">Terjadwal</span>
                                                         )}
                                                     </td>
                                                     <td className="p-4">
@@ -440,7 +437,7 @@ export default function AgendaList() {
                                                             <HasPermission module="Agenda" action="Ubah">
                                                                 <button
                                                                     onClick={() => handleToggleExpand(agenda)}
-                                                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all active:scale-95 whitespace-nowrap border shadow-sm ${
+                                                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[0.6875rem] font-bold transition-all active:scale-95 whitespace-nowrap border shadow-sm ${
                                                                         expandedId === agenda.id 
                                                                         ? 'bg-slate-900 text-white border-slate-900' 
                                                                         : 'bg-white text-amber-600 border-amber-100 hover:bg-amber-50 hover:border-amber-200 hover:shadow-brand-500/10'
@@ -522,11 +519,11 @@ export default function AgendaList() {
                     {/* MOBILE VIEW: CARDS - 1 Column Grid */}
                     <div className="lg:hidden grid grid-cols-1 gap-4 p-3 bg-slate-50/50">
                         {isLoading ? (
-                            <div className="col-span-1 text-center py-12 text-slate-400 font-bold text-[12px] animate-pulse tracking-wide">Sinkronisasi Data...</div>
+                            <div className="col-span-1 text-center py-12 text-slate-400 font-bold text-xs animate-pulse tracking-wide">Sinkronisasi Data...</div>
                         ) : filteredAgenda.length === 0 ? (
                             <div className="col-span-1 bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center">
                                 <CalendarBlank weight="duotone" className="w-10 h-10 text-slate-200 mb-2" />
-                                <p className="text-[12px] font-bold tracking-tight text-slate-400">Belum Ada Informasi Kegiatan</p>
+                                <p className="text-xs font-bold tracking-tight text-slate-400">Belum Ada Informasi Kegiatan</p>
                             </div>
                         ) : (
                             filteredAgenda.map((agenda) => {
@@ -543,7 +540,7 @@ export default function AgendaList() {
                                             {/* Date Badge */}
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className={`px-2.5 py-1 rounded-md flex items-center justify-center shrink-0 border ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'}`}>
-                                                    <span className="text-[12px] font-bold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
+                                                    <span className="text-xs font-semibold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                 </div>
                                                 {isRealized && agenda.foto_dokumentasi && agenda.foto_dokumentasi.length > 0 && (
                                                     <div className="text-brand-600">
@@ -553,22 +550,22 @@ export default function AgendaList() {
                                             </div>
 
                                             {/* Title */}
-                                            <h3 className="text-[14px] font-bold text-slate-900 leading-snug mb-2">
+                                            <h3 className="text-sm font-semibold text-slate-900 leading-snug mb-2 tracking-tight">
                                                 {agenda.judul}
                                             </h3>
 
                                             {/* Meta Info */}
                                             <div className="flex flex-wrap items-center gap-3 mb-4">
                                                 {isRealized ? (
-                                                    <span className="text-[11px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-100 italic">Terealisasi</span>
+                                                    <span className="text-[0.6875rem] font-medium bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-100 italic">Terealisasi</span>
                                                 ) : past ? (
-                                                    <span className="text-[11px] font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">Menunggu Laporan</span>
+                                                    <span className="text-[0.6875rem] font-medium bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">Menunggu Laporan</span>
                                                 ) : (
-                                                    <span className="text-[11px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100">Terjadwal</span>
+                                                    <span className="text-[0.6875rem] font-medium bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100 tracking-normal">Terjadwal</span>
                                                 )}
-                                                <div className="flex items-center gap-1.5 text-[12px] font-bold text-slate-400">
+                                                <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
                                                     <Users weight="bold" className="w-3.5 h-3.5" />
-                                                    {agenda.peserta_ids?.length || 0} <span className="font-normal text-[10px] ml-0.5">Peserta</span>
+                                                    {agenda.peserta_ids?.length || 0} <span className="font-normal text-[0.625rem] ml-0.5 tracking-tight">Peserta</span>
                                                 </div>
                                             </div>
 
@@ -577,28 +574,28 @@ export default function AgendaList() {
                                                 <div className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-100 animate-in slide-in-from-top-2 duration-300">
                                                     <div className="space-y-3">
                                                         <div>
-                                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Deskripsi Kegiatan</p>
-                                                            <p className="text-[12px] text-slate-700 leading-relaxed font-normal">{agenda.deskripsi}</p>
+                                                            <p className="text-[0.625rem] font-semibold text-slate-400 uppercase tracking-wider mb-1">Deskripsi Kegiatan</p>
+                                                            <p className="text-xs text-slate-700 leading-relaxed font-normal">{agenda.deskripsi}</p>
                                                         </div>
                                                         {agenda.butuh_pendanaan && (
                                                             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200/50">
                                                                 <div>
-                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Anggaran</p>
-                                                                    <p className="text-[12px] font-bold text-emerald-600">{formatRupiah(agenda.nominal_biaya || 0)}</p>
+                                                                    <p className="text-[0.625rem] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Anggaran</p>
+                                                                    <p className="text-xs font-semibold text-emerald-600">{formatRupiah(agenda.nominal_biaya || 0)}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Peserta</p>
-                                                                    <p className="text-[12px] font-bold text-slate-600">{(agenda.peserta_ids?.length || 0)} Orang</p>
+                                                                    <p className="text-[0.625rem] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Peserta</p>
+                                                                    <p className="text-xs font-semibold text-slate-600">{(agenda.peserta_ids?.length || 0)} Orang</p>
                                                                 </div>
                                                             </div>
                                                         )}
                                                         
                                                         {agenda.peserta_details && agenda.peserta_details.length > 0 && (
                                                             <div className="pt-2 border-t border-slate-200/50">
-                                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Daftar Peserta</p>
+                                                                <p className="text-[0.625rem] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Daftar Peserta</p>
                                                                 <div className="flex flex-wrap gap-1.5">
                                                                     {agenda.peserta_details.map(p => (
-                                                                        <span key={p.id} className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-200/50 text-slate-600 text-[10px] font-medium border border-slate-200/80">
+                                                                        <span key={p.id} className="inline-flex items-center px-2 py-0.5 rounded-md bg-white text-slate-600 text-[0.625rem] font-medium border border-slate-200 shadow-sm">
                                                                             {p.nama}
                                                                         </span>
                                                                     ))}
@@ -608,14 +605,14 @@ export default function AgendaList() {
 
                                                         {isRealized && agenda.laporan_kegiatan && (
                                                             <div className="pt-2 border-t border-slate-200/50">
-                                                                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Laporan Realisasi</p>
+                                                                <p className="text-[10px] font-semibold text-emerald-600 uppercase tracking-wider mb-0.5">Laporan Realisasi</p>
                                                                 <p className="text-[12px] text-slate-600 italic font-normal">"{agenda.laporan_kegiatan}"</p>
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <p className="text-[12px] text-slate-500 line-clamp-2 mb-4 font-normal leading-relaxed">
+                                                <p className="text-[12px] text-slate-500 line-clamp-2 mb-4 font-normal leading-relaxed tracking-tight">
                                                     {agenda.deskripsi}
                                                 </p>
                                             )}
@@ -625,7 +622,7 @@ export default function AgendaList() {
                                                 {isWarga ? (
                                                     <button
                                                         onClick={() => setExpandedId(isExpanded ? null : agenda.id)}
-                                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-bold transition-all ${isExpanded ? 'bg-slate-900 text-white' : 'bg-brand-50 text-brand-600 hover:bg-brand-100'}`}
+                                                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-semibold transition-all shadow-sm ${isExpanded ? 'bg-slate-900 text-white' : 'bg-brand-50 text-brand-600 hover:bg-brand-100 hover:shadow-md'}`}
                                                     >
                                                         {isExpanded ? (
                                                             <>
@@ -643,7 +640,7 @@ export default function AgendaList() {
                                                     <>
                                                         <button
                                                             onClick={() => navigate(`/agenda/edit/${agenda.id}`)}
-                                                            className="flex-1 p-2.5 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all flex items-center justify-center gap-2 text-[12px] font-bold"
+                                                            className="flex-1 p-2.5 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all flex items-center justify-center gap-2 text-[12px] font-semibold shadow-sm hover:shadow-md"
                                                         >
                                                             <PencilSimple weight="bold" className="w-4 h-4" />
                                                             <span>Edit Agenda</span>
@@ -651,7 +648,7 @@ export default function AgendaList() {
                                                         <HasPermission module="Agenda" action="Hapus">
                                                             <button
                                                                 onClick={() => handleDelete(agenda.id, agenda.judul)}
-                                                                className="p-2.5 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all"
+                                                                className="p-2.5 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100"
                                                             >
                                                                 <Trash weight="bold" className="w-4 h-4" />
                                                             </button>

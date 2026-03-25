@@ -83,7 +83,7 @@ body {
 }
 
 .page-title {
-    @apply text-[20px] font-semibold text-gray-900 tracking-tight leading-tight;
+    @apply text-[1.25rem] font-semibold text-gray-900 tracking-tight leading-tight;
 }
 
 .section-label {

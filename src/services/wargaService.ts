@@ -1,13 +1,11 @@
-import axios from 'axios';
+import api from './api';
 import { Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
-
 export const wargaService = {
     async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 100): Promise<{ items: Warga[], total: number, page: number, limit: number }> {
-        const response = await axios.get(`${API_URL}/warga`, {
+        const response = await api.get('/warga', {
             params: { tenant_id: tenantId, scope, page, limit }
         });
         return response.data;
@@ -20,7 +18,7 @@ export const wargaService = {
 
     async getById(id: string): Promise<Warga | undefined> {
         try {
-            const response = await axios.get(`${API_URL}/warga/${id}`);
+            const response = await api.get(`/warga/${id}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching warga by ID:', error);
@@ -30,9 +28,8 @@ export const wargaService = {
 
     async create(data: Omit<Warga, 'id'>): Promise<string> {
         try {
-            const response = await axios.post(`${API_URL}/warga`, data);
+            const response = await api.post('/warga', data);
 
-            // Still log to local activity for now until that's migrated
             await aktivitasService.logActivity(
                 data.tenant_id,
                 data.scope,
@@ -49,9 +46,8 @@ export const wargaService = {
 
     async update(id: string, data: Partial<Warga>): Promise<number> {
         try {
-            const response = await axios.put(`${API_URL}/warga/${id}`, data);
+            const response = await api.put(`/warga/${id}`, data);
 
-            // Still log to local activity for now
             if (response.data) {
                 await aktivitasService.logActivity(
                     response.data.tenant_id || data.tenant_id || '',
@@ -70,7 +66,7 @@ export const wargaService = {
 
     async delete(id: string): Promise<void> {
         try {
-            await axios.delete(`${API_URL}/warga/${id}`);
+            await api.delete(`/warga/${id}`);
         } catch (error) {
             console.error('Error deleting warga:', error);
             throw error;
@@ -79,7 +75,7 @@ export const wargaService = {
 
     async exportWarga(scope?: string): Promise<void> {
         try {
-            const response = await axios.get(`${API_URL}/warga/export`, {
+            const response = await api.get('/warga/export', {
                 params: { scope },
                 responseType: 'blob'
             });
@@ -103,7 +99,7 @@ export const wargaService = {
             const formData = new FormData();
             formData.append('file', file);
             
-            const response = await axios.post(`${API_URL}/warga/import`, formData, {
+            const response = await api.post('/warga/import', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -117,17 +113,17 @@ export const wargaService = {
     },
 
     async getPending(): Promise<Warga[]> {
-        const response = await axios.get(`${API_URL}/warga/pending`);
+        const response = await api.get('/warga/pending');
         return response.data;
     },
 
     async verifyWarga(id: string, status: 'VERIFIED' | 'REJECTED'): Promise<void> {
-        await axios.post(`${API_URL}/warga/verify/${id}`, { status });
+        await api.post(`/warga/verify/${id}`, { status });
     },
 
     async downloadTemplate(): Promise<void> {
         try {
-            const response = await axios.get(`${API_URL}/warga/template`, {
+            const response = await api.get('/warga/template', {
                 responseType: 'blob'
             });
             

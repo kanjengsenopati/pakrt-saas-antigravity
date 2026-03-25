@@ -1,13 +1,11 @@
-import axios from 'axios';
-import { Aktivitas } from '../database/db';
+import api from './api';
+import { Aktivitas } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const aktivitasService = {
     async logActivity(tenantId: string, scope: ScopeType, action: string, details: string): Promise<string> {
         try {
-            const response = await axios.post(`${API_URL}/aktivitas`, {
+            const response = await api.post('/aktivitas', {
                 tenant_id: tenantId,
                 scope,
                 action,
@@ -20,7 +18,7 @@ export const aktivitasService = {
 
     async getRecent(tenantId: string, scope: ScopeType, limit: number = 5): Promise<Aktivitas[]> {
         try {
-            const response = await axios.get(`${API_URL}/aktivitas`, {
+            const response = await api.get('/aktivitas', {
                 params: { tenant_id: tenantId, scope }
             });
             const data = response.data;
@@ -33,7 +31,7 @@ export const aktivitasService = {
 
     async getAll(tenantId: string, scope: ScopeType): Promise<Aktivitas[]> {
         try {
-            const response = await axios.get(`${API_URL}/aktivitas`, {
+            const response = await api.get('/aktivitas', {
                 params: { tenant_id: tenantId, scope }
             });
             const data = response.data;

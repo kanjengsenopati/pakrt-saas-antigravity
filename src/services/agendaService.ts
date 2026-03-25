@@ -1,14 +1,13 @@
-import axios from 'axios';
-import { Agenda } from '../database/db';
+import api from './api';
+import { Agenda } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
-
-const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
+import { wargaService } from './wargaService';
 
 export const agendaService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Agenda[]> {
         try {
-            const response = await axios.get(`${API_URL}/agenda`, {
+            const response = await api.get(`/agenda`, {
                 params: { tenant_id: tenantId, scope }
             });
             const data = response.data;
@@ -27,7 +26,7 @@ export const agendaService = {
 
     async getUpcoming(tenantId: string, scope: ScopeType, limit: number = 5): Promise<Agenda[]> {
         try {
-            const response = await axios.get(`${API_URL}/agenda`, {
+            const response = await api.get(`/agenda`, {
                 params: { tenant_id: tenantId, scope }
             });
             const data = response.data;
@@ -45,7 +44,7 @@ export const agendaService = {
 
     async getById(id: string): Promise<Agenda | undefined> {
         try {
-            const response = await axios.get(`${API_URL}/agenda/${id}`);
+            const response = await api.get(`/agenda/${id}`);
             return response.data;
         } catch (error) {
             return undefined;
@@ -53,7 +52,7 @@ export const agendaService = {
     },
 
     async create(data: Omit<Agenda, 'id'>): Promise<string> {
-        const response = await axios.post(`${API_URL}/agenda`, data);
+        const response = await api.post(`/agenda`, data);
         await aktivitasService.logActivity(
             data.tenant_id,
             data.scope,
@@ -64,7 +63,7 @@ export const agendaService = {
     },
 
     async update(id: string, data: Partial<Agenda>): Promise<number> {
-        const response = await axios.put(`${API_URL}/agenda/${id}`, data);
+        const response = await api.put(`/agenda/${id}`, data);
         if (response.data) {
             await aktivitasService.logActivity(
                 response.data.tenant_id || data.tenant_id || '',
@@ -77,6 +76,6 @@ export const agendaService = {
     },
 
     async delete(id: string): Promise<void> {
-        await axios.delete(`${API_URL}/agenda/${id}`);
+        await api.delete(`/agenda/${id}`);
     }
 };

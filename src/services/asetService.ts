@@ -1,27 +1,19 @@
-import axios from 'axios';
-import { Aset } from '../database/db';
+import api from './api';
+import { Aset } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
 
-const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
-
 export const asetService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Aset[]> {
-        const response = await axios.get(`${API_URL}/aset`, {
+        const response = await api.get('/aset', {
             params: { tenant_id: tenantId, scope }
         });
-        const data = response.data;
-        return Array.isArray(data) ? data : (data.items || []);
-    },
-
-    async count(tenantId: string, scope: ScopeType): Promise<number> {
-        const data = await this.getAll(tenantId, scope);
-        return data.length;
+        return response.data;
     },
 
     async getById(id: string): Promise<Aset | undefined> {
         try {
-            const response = await axios.get(`${API_URL}/aset/${id}`);
+            const response = await api.get(`/aset/${id}`);
             return response.data;
         } catch (error) {
             return undefined;
@@ -29,31 +21,31 @@ export const asetService = {
     },
 
     async create(data: Omit<Aset, 'id'>): Promise<string> {
-        const response = await axios.post(`${API_URL}/aset`, data);
+        const response = await api.post('/aset', data);
         await aktivitasService.logActivity(
             data.tenant_id,
             data.scope,
-            'Tambah Aset',
+            'Tambah Aset (Cloud)',
             `Menambahkan aset baru: ${data.nama_barang}`
         );
         return response.data.id;
     },
 
     async update(id: string, data: Partial<Aset>): Promise<number> {
-        const response = await axios.put(`${API_URL}/aset/${id}`, data);
+        const response = await api.put(`/aset/${id}`, data);
         const updated = response.data;
         if (updated) {
             await aktivitasService.logActivity(
                 updated.tenant_id || data.tenant_id || '',
                 updated.scope || data.scope || 'RT',
-                'Update Aset',
-                `Memperbarui data aset: ${updated.nama_barang} (Jumlah: ${updated.jumlah})`
+                'Update Aset (Cloud)',
+                `Memperbarui data aset: ${updated.nama_barang || data.nama_barang}`
             );
         }
-        return 1;
+        return response.status === 200 ? 1 : 0;
     },
 
     async delete(id: string): Promise<void> {
-        await axios.delete(`${API_URL}/aset/${id}`);
+        await api.delete(`/aset/${id}`);
     }
 };
