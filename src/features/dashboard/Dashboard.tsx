@@ -355,24 +355,40 @@ export default function Dashboard() {
                         {loadingActivities ? (
                             [1, 2].map(i => <div key={i} className="h-12 bg-gray-50 animate-pulse rounded-lg" />)
                         ) : upcomingRonda.length > 0 ? (
-                            upcomingRonda.map((ronda: RondaWithWarga) => (
-                                <div
-                                    key={`dash-${ronda.id}`}
-                                    className="flex items-center justify-between px-3 py-2.5 border border-gray-100 rounded-xl bg-gray-50/20 hover:border-brand-300 hover:bg-white transition-colors"
-                                >
-                                    <div className="min-w-0">
-                                        <p className="font-semibold text-gray-900 text-sm leading-none">
-                                            {dateUtils.toDisplay(ronda.tanggal)}
-                                        </p>
-                                        <p className="text-sm font-medium text-gray-500 mt-1 truncate max-w-[180px]">
-                                            {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}
-                                        </p>
+                            upcomingRonda.map((ronda: RondaWithWarga, index: number) => {
+                                const isFirst = index === 0;
+                                return (
+                                    <div
+                                        key={`dash-${ronda.id}`}
+                                        className={`flex items-center justify-between px-4 transition-all duration-300 ${
+                                            isFirst 
+                                                ? 'py-4 bg-blue-50 border-2 border-blue-200 rounded-xl shadow-md ring-1 ring-blue-100 scale-[1.02] z-10' 
+                                                : 'py-2.5 bg-gray-50/20 border border-gray-100 rounded-xl hover:border-brand-300 hover:bg-white mt-2 mb-1'
+                                        }`}
+                                    >
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <p className={`font-bold text-gray-900 leading-none ${isFirst ? 'text-lg' : 'text-sm'}`}>
+                                                    {dateUtils.toDisplay(ronda.tanggal)}
+                                                </p>
+                                                {isFirst && (
+                                                    <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold animate-pulse">
+                                                        Terdekat
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className={`${isFirst ? 'text-sm font-semibold' : 'text-[13px] font-medium'} text-gray-500 mt-1.5 truncate max-w-[200px]`}>
+                                                {ronda.anggota_warga?.map((w: any) => w.nama).join(', ')}
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                            <span className={`${isFirst ? 'text-base py-1.5 px-4' : 'text-xs py-1 px-2.5'} bg-blue-600 text-white rounded-full font-black tracking-wide shadow-sm`}>
+                                                {ronda.regu}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <span className="text-sm bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold tracking-normal shrink-0 shadow-sm">
-                                        {ronda.regu}
-                                    </span>
-                                </div>
-                            ))
+                                );
+                            })
                         ) : (
                             <div className="text-center py-8 text-gray-400 flex flex-col items-center bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
                                 <ShieldCheck size={28} weight="duotone" className="text-gray-300 mb-1" />
