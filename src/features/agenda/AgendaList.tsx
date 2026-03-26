@@ -374,7 +374,7 @@ export default function AgendaList() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {isLoading ? (
+                                {!agendaItems && isLoading ? (
                                     <tr>
                                     <td colSpan={5} className="p-20 text-center text-slate-400 font-bold text-[0.6875rem] tracking-tight animate-pulse">
                                         <div className="flex flex-col items-center gap-4">
@@ -521,7 +521,7 @@ export default function AgendaList() {
 
                     {/* MOBILE VIEW: CARDS - 1 Column Grid */}
                     <div className="lg:hidden grid grid-cols-1 gap-4 p-3 bg-slate-50/50">
-                        {isLoading ? (
+                        {!agendaItems && isLoading ? (
                             <div className="col-span-1 text-center py-12 text-slate-400 font-bold text-xs animate-pulse tracking-wide">Sinkronisasi Data...</div>
                         ) : filteredAgenda.length === 0 ? (
                             <div className="col-span-1 bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center">

@@ -179,7 +179,7 @@ export default function AsetList() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {isLoading ? (
+                            {!(asetItems && wargaServerData) && isLoading ? (
                                 <tr>
                                     <td colSpan={4} className="p-8 text-center text-gray-500">Memuat data...</td>
                                 </tr>
@@ -297,7 +297,7 @@ export default function AsetList() {
 
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-gray-50">
-                    {isLoading ? (
+                    {!(asetItems && wargaServerData) && isLoading ? (
                         <div className="text-center text-gray-500 py-8">Memuat data...</div>
                     ) : filteredAset.length === 0 ? (
                         <div className="text-center text-gray-500 py-8 flex flex-col items-center">

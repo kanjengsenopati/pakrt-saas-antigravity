@@ -22,7 +22,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     const [currentScope, setCurrentScope] = useState<ScopeType>('RT');
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchTenant = async (tenantId: string) => {
+    const fetchTenant = useCallback(async (tenantId: string) => {
         try {
             const res = await authService.checkTenant(tenantId);
             if (res.exists) {
@@ -33,7 +33,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
             console.error('Failed to fetch tenant:', error);
             return null;
         }
-    };
+    }, []);
 
     const initializeTenant = useCallback(async () => {
         try {

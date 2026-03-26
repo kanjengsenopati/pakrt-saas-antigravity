@@ -16,6 +16,18 @@ export function useHybridData<T>({ cacheKey, fetcher, enabled = true }: HybridDa
     const [serverData, setServerData] = useState<T | null>(null);
     const [mergedData, setMergedData] = useState<T | null>(null);
     
+    const localDataRef = useRef<T | null>(null);
+    const serverDataRef = useRef<T | null>(null);
+
+    // Sync refs with state
+    useEffect(() => {
+        localDataRef.current = localData;
+    }, [localData]);
+
+    useEffect(() => {
+        serverDataRef.current = serverData;
+    }, [serverData]);
+
     // 1 & 2. Add guards
     const [isFetching, setIsFetching] = useState(false);
     const isFetchingRef = useRef(false);
@@ -32,12 +44,12 @@ export function useHybridData<T>({ cacheKey, fetcher, enabled = true }: HybridDa
                 
                 setLocalData(dataWithSource);
                 // If we don't have server data yet, use local as merged
-                if (!serverData) setMergedData(dataWithSource);
+                if (!serverDataRef.current) setMergedData(dataWithSource);
             }
         } catch (error) {
             console.error("Local fetch failed:", error);
         }
-    }, [cacheKey, serverData]);
+    }, [cacheKey]);
 
     // Fetch from server (Cloud)
     const fetchServer = useCallback(async () => {
@@ -60,12 +72,12 @@ export function useHybridData<T>({ cacheKey, fetcher, enabled = true }: HybridDa
         } catch (error) {
             console.error("Server fetch failed:", error);
             // Fallback to local if server fails
-            if (localData) setMergedData(localData);
+            if (localDataRef.current) setMergedData(localDataRef.current);
         } finally {
             setIsFetching(false);
             isFetchingRef.current = false;
         }
-    }, [cacheKey, fetcher, localData]);
+    }, [cacheKey, fetcher]);
 
     // Initial load
     useEffect(() => {

@@ -197,7 +197,7 @@ export default function RondaList() {
 
                 {activeTab === 'informasi' && (
                     <div className="p-6">
-                        {isLoading ? (
+                        {!rondaItems && isLoading ? (
                             <p className="p-8 text-center text-gray-500">Memuat data regu...</p>
                         ) : sortedGroups.length === 0 ? (
                             <div className="text-center py-12">
@@ -360,7 +360,7 @@ export default function RondaList() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {isLoading ? (
+                                    {!rondaItems && isLoading ? (
                                         <tr>
                                             <td colSpan={5} className="p-8 text-center text-gray-500">Memuat data...</td>
                                         </tr>
@@ -444,7 +444,7 @@ export default function RondaList() {
 
                         {/* MOBILE VIEW: CARD GRID */}
                         <div className="md:hidden space-y-4 p-4 bg-gray-50">
-                            {isLoading ? (
+                            {!rondaItems && isLoading ? (
                                 <div className="text-center text-gray-500 py-8">Memuat data...</div>
                             ) : filteredRonda.length === 0 ? (
                                 <div className="text-center text-gray-500 py-8 flex flex-col items-center">

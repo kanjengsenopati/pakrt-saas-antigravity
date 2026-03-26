@@ -320,7 +320,7 @@ export default function WargaList() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {isLoading ? (
+                            {!wargaServerData && isLoading ? (
                                 <tr>
                                     <td colSpan={8} className="p-8 text-center text-gray-500">Memuat data...</td>
                                 </tr>

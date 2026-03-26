@@ -252,7 +252,7 @@ export default function IuranList() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {isLoading ? (
+                            {!iuranServerData && isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="text-center py-20 text-gray-500">
                                         <div className="flex flex-col items-center gap-2">
@@ -379,7 +379,7 @@ export default function IuranList() {
 
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-gray-50">
-                    {isLoading ? (
+                    {!iuranServerData && isLoading ? (
                         <div className="text-center text-gray-500 py-8 font-bold text-xs animate-pulse">Memuat data...</div>
                     ) : filteredIuran.length === 0 ? (
                         <div className="text-center text-gray-500 py-12 flex flex-col items-center">
