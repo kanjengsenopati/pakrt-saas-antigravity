@@ -232,7 +232,7 @@ export default function AgendaList() {
                 </button>
             </div>
 
-            {activeTab === 'summary' && (
+            <div className={activeTab === 'summary' ? 'block' : 'hidden md:hidden lg:hidden'}>
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                         {/* TOTAL AGENDA */}
@@ -336,9 +336,9 @@ export default function AgendaList() {
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
 
-            {activeTab === 'list' && (
+            <div className={activeTab === 'list' ? 'block' : 'hidden md:hidden lg:hidden'}>
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50">
                         <div className="relative w-full md:w-80">
@@ -657,7 +657,7 @@ export default function AgendaList() {
                         )}
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* END MAIN CONTENT */}
             {/* VIEW PHOTOS MODAL */}
