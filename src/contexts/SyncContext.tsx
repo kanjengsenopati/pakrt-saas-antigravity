@@ -16,6 +16,7 @@ export const SyncProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isSyncing, setIsSyncing] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
     const isSyncingRef = useRef(false);
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const updatePendingCount = useCallback(async () => {
         const count = await syncDb.syncQueue.count();
@@ -26,11 +27,14 @@ export const SyncProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!navigator.onLine || isSyncingRef.current) return;
         
         const queue = await syncDb.syncQueue.toArray();
-        if (queue.length === 0) return;
+        if (queue.length === 0) {
+            updatePendingCount();
+            return;
+        }
 
+        console.log("SYNC START", `Processing ${queue.length} items...`);
         isSyncingRef.current = true;
         setIsSyncing(true);
-        console.log(`Starting sync of ${queue.length} items...`);
 
         try {
             const sortedQueue = [...queue].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
@@ -48,42 +52,53 @@ export const SyncProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     await syncDb.syncQueue.delete(item.id!);
                 } catch (error: any) {
                     console.error(`Sync failed for ${item.url}:`, error.message);
-                    if (error.response?.status >= 400 && error.response?.status < 500) {
+                    // Only retry on network issues or server errors
+                    if (!error.response || error.response.status >= 500) {
                         await syncDb.syncQueue.update(item.id!, { retries: (item.retries || 0) + 1 });
-                        if ((item.retries || 0) > 5) {
-                            await syncDb.syncQueue.delete(item.id!);
-                        }
+                        if ((item.retries || 0) > 5) await syncDb.syncQueue.delete(item.id!);
+                    } else {
+                        // For 4xx errors, we might want to discard them as they won't succeed on retry
+                        await syncDb.syncQueue.delete(item.id!);
                     }
-                    break;
+                    break; 
                 }
             }
         } finally {
             await updatePendingCount();
             isSyncingRef.current = false;
             setIsSyncing(false);
+            console.log("SYNC END");
         }
     }, [updatePendingCount]);
 
     useEffect(() => {
-        const handleOnline = () => {
-            setIsOnline(true);
-            syncNow();
+        const handleStatusChange = () => {
+            if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+            
+            debounceTimerRef.current = setTimeout(() => {
+                const status = navigator.onLine;
+                setIsOnline(status);
+                console.log("ONLINE STATUS CHANGE", status ? "ONLINE" : "OFFLINE");
+                if (status) syncNow();
+            }, 1000); // 1s debounce
         };
-        const handleOffline = () => setIsOnline(false);
 
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
+        window.addEventListener('online', handleStatusChange);
+        window.addEventListener('offline', handleStatusChange);
         
         updatePendingCount();
 
         const interval = setInterval(() => {
-            if (navigator.onLine) syncNow();
+            if (navigator.onLine && !isSyncingRef.current) {
+                syncNow();
+            }
             updatePendingCount();
-        }, 30000);
+        }, 15000); // Check every 15s
 
         return () => {
-            window.removeEventListener('online', handleOnline);
-            window.removeEventListener('offline', handleOffline);
+            window.removeEventListener('online', handleStatusChange);
+            window.removeEventListener('offline', handleStatusChange);
+            if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
             clearInterval(interval);
         };
     }, [syncNow, updatePendingCount]);

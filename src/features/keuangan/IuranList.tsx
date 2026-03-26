@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,6 +19,8 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
+import { useHybridData } from '../../hooks/useHybridData';
+import api from '../../services/api';
 
 
 const toTitleCase = (str: string) => {
@@ -32,8 +34,25 @@ export default function IuranList() {
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
 
-    const [iuranList, setIuranList] = useState<IuranWithWarga[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const cacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({
+            url: '/iuran',
+            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 }
+        });
+    }, [currentTenant, currentScope]);
+
+    const {
+        mergedData: iuranServerData,
+        isFetching: isLoading,
+        refresh: loadData
+    } = useHybridData<{ items: IuranWithWarga[] }>({
+        cacheKey,
+        fetcher: () => iuranService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const iuranList = iuranServerData?.items || [];
     const [searchQuery, setSearchQuery] = useState('');
     const [filterYear, setFilterYear] = useState<string>(new Date().getFullYear().toString());
     const [filterStatus, setFilterStatus] = useState<string>('');
@@ -46,33 +65,17 @@ export default function IuranList() {
 
 
     useEffect(() => {
-        if (currentTenant) {
-            loadData();
-        }
-    }, [currentTenant]);
-
-    const loadData = async () => {
-        if (!currentTenant) return;
-        setIsLoading(true);
-        try {
-            const data = await iuranService.getAll(currentTenant.id);
-            const items = data.items || [];
-            setIuranList(items);
-
+        if (iuranList.length > 0) {
             // Extract unique years
-            const years = Array.from(new Set(items.map(i => i.periode_tahun))).sort((a, b) => b - a);
+            const years = Array.from(new Set(iuranList.map(i => i.periode_tahun))).sort((a, b) => b - a);
             // Ensure current year is in the list
             const currentYear = new Date().getFullYear();
             if (!years.includes(currentYear)) {
                 years.unshift(currentYear);
             }
             setAvailableYears(years);
-        } catch (error) {
-            console.error("Failed to load iuran:", error);
-        } finally {
-            setIsLoading(false);
         }
-    };
+    }, [iuranList]);
 
     const handleDelete = async (id: string) => {
         if (window.confirm("Apakah Anda yakin ingin menghapus data pembayaran ini? Entri Kas Masuk terkait juga akan dihapus.")) {
@@ -217,7 +220,6 @@ export default function IuranList() {
                             <button
                                 onClick={async () => {
                                     if (window.confirm("Sinkronkan semua data iuran ke Kas Masuk? (Hanya entri yang belum ada yang akan ditambahkan)")) {
-                                        setIsLoading(true);
                                         await iuranService.syncAllToKeuangan(currentTenant!.id, currentScope);
                                         await loadData();
                                         alert("Sinkronisasi data selesai.");

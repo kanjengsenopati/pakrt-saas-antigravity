@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -6,43 +6,44 @@ import { rondaService, RondaWithWarga } from '../../services/rondaService';
 import { Plus, MagnifyingGlass, Funnel, Trash, ShieldCheck, PencilSimple, CheckCircle, X, CaretUp, CaretDown } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { dateUtils } from '../../utils/date';
+import { useHybridData } from '../../hooks/useHybridData';
+import api from '../../services/api';
 
 export default function RondaList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
-    const wargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
-    
-    const [rondaList, setRondaList] = useState<RondaWithWarga[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
+
+    const cacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({ 
+            url: '/ronda', 
+            params: { tenant_id: currentTenant.id, scope: currentScope } 
+        });
+    }, [currentTenant, currentScope]);
+
+    const { 
+        mergedData: rondaItems, 
+        isFetching: isLoading, 
+        refresh: loadData 
+    } = useHybridData<RondaWithWarga[]>({
+        cacheKey,
+        fetcher: () => rondaService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const rondaList = rondaItems || [];
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState<'informasi' | 'jadwal'>('informasi');
-    const navigate = useNavigate();
     const [sortConfig, setSortConfig] = useState<{ key: 'tanggal' | 'regu', direction: 'asc' | 'desc' } | null>({ key: 'tanggal', direction: 'desc' });
+    const wargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
     // Attendance Modal state
     const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
     const [activeSnackId, setActiveSnackId] = useState<string | null>(null);
     const [selectedRonda, setSelectedRonda] = useState<RondaWithWarga | null>(null);
     const [attendanceSelections, setAttendanceSelections] = useState<string[]>([]);
-
-    const loadData = async () => {
-        if (!currentTenant) return;
-        setIsLoading(true);
-        try {
-            // Ronda applies at the Tenant level generally, or RT scope. Here we assume Tenant level for all RT members
-            const data = await rondaService.getAll(currentTenant.id, currentScope);
-            setRondaList(data);
-        } catch (error) {
-            console.error("Failed to load jadwal ronda:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadData();
-    }, [currentTenant]);
 
     const handleDelete = async (id: string, tanggal: string) => {
         if (window.confirm(`Hapus jadwal ronda untuk tanggal ${tanggal}?`)) {

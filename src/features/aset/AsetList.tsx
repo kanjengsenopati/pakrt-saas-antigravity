@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { asetService } from '../../services/asetService';
@@ -8,16 +8,55 @@ import { Plus, MagnifyingGlass, PencilSimple, Trash, Package, Handshake, ArrowUU
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
+import { useHybridData } from '../../hooks/useHybridData';
+import api from '../../services/api';
 
 export default function AsetList() {
     const { currentTenant, currentScope } = useTenant();
-    const [asetList, setAsetList] = useState<Aset[]>([]);
-    const [wargaList, setWargaList] = useState<Warga[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filterCondition, setFilterCondition] = useState<string>('');
     const navigate = useNavigate();
 
+    const asetCacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({ 
+            url: '/aset', 
+            params: { tenant_id: currentTenant.id, scope: currentScope } 
+        });
+    }, [currentTenant, currentScope]);
+
+    const { 
+        mergedData: asetItems, 
+        isFetching: isAsetLoading, 
+        refresh: loadAset 
+    } = useHybridData<Aset[]>({
+        cacheKey: asetCacheKey,
+        fetcher: () => asetService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const wargaCacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({ 
+            url: '/warga', 
+            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 } 
+        });
+    }, [currentTenant, currentScope]);
+
+    const { 
+        mergedData: wargaServerData, 
+        isFetching: isWargaLoading 
+    } = useHybridData<{ items: Warga[] }>({
+        cacheKey: wargaCacheKey,
+        fetcher: () => wargaService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const asetList = asetItems || [];
+    const wargaList = wargaServerData?.items || [];
+    const isLoading = isAsetLoading || isWargaLoading;
+
+    // ... handle other states
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterCondition, setFilterCondition] = useState<string>('');
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
     const [selectedAset, setSelectedAset] = useState<Aset | null>(null);
     const [selectedWargaId, setSelectedWargaId] = useState('');
@@ -26,26 +65,9 @@ export default function AsetList() {
     const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
     const IMAGE_BASE_URL = API_URL.replace('/api', '');
 
-    const loadData = async () => {
-        if (!currentTenant) return;
-        setIsLoading(true);
-        try {
-            const [asetData, wargaRes] = await Promise.all([
-                asetService.getAll(currentTenant.id, currentScope),
-                wargaService.getAll(currentTenant.id, currentScope)
-            ]);
-            setAsetList(asetData);
-            setWargaList(wargaRes.items || []);
-        } catch (error) {
-            console.error("Failed to load data:", error);
-        } finally {
-            setIsLoading(false);
-        }
+    const loadData = () => {
+        loadAset();
     };
-
-    useEffect(() => {
-        loadData();
-    }, [currentTenant, currentScope]);
 
     const handleDelete = async (id: string, namaBarang: string) => {
         if (window.confirm(`Hapus data aset ${namaBarang}?`)) {

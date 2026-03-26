@@ -61,6 +61,7 @@ api.interceptors.response.use(async (response: AxiosResponse) => {
         await syncDb.apiCache.put({
             url: cacheKey,
             data: response.data,
+            source: 'server', // Data from server is authoritative
             timestamp: Date.now(),
             expiresAt: Date.now() + (1000 * 60 * 60 * 24) // 24h cache
         });
@@ -83,7 +84,8 @@ api.interceptors.response.use(async (response: AxiosResponse) => {
                 status: 200,
                 statusText: 'OK (Cached)',
                 config: originalRequest,
-                isCached: true
+                isCached: true,
+                source: 'local' // Mark as local for UI consumers
             };
         }
     }

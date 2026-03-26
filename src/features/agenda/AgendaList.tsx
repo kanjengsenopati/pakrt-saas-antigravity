@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
@@ -11,6 +11,8 @@ import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useAuth } from '../../contexts/AuthContext';
+import { useHybridData } from '../../hooks/useHybridData';
+import api from '../../services/api';
 
 interface ReportPanelProps {
     agenda: Agenda;
@@ -98,11 +100,30 @@ const ReportPanel = ({
 export default function AgendaList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
+    const navigate = useNavigate();
+
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const currentWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
-    const [agendaList, setAgendaList] = useState<Agenda[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const cacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({ 
+            url: '/agenda', 
+            params: { tenant_id: currentTenant.id, scope: currentScope } 
+        });
+    }, [currentTenant, currentScope]);
+
+    const { 
+        mergedData: agendaItems, 
+        isFetching: isLoading, 
+        refresh: loadData 
+    } = useHybridData<Agenda[]>({
+        cacheKey,
+        fetcher: () => agendaService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const agendaList = agendaItems || [];
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [viewPhotosModal, setViewPhotosModal] = useState<{ isOpen: boolean, photos: string[], judul: string }>({ isOpen: false, photos: [], judul: '' });
@@ -110,25 +131,7 @@ export default function AgendaList() {
     const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [activeTab, setActiveTab] = useState<'summary' | 'list'>('summary');
-    const navigate = useNavigate();
 
-
-    const loadData = async () => {
-        if (!currentTenant) return;
-        setIsLoading(true);
-        try {
-            const data = await agendaService.getAll(currentTenant.id, currentScope);
-            setAgendaList(data);
-        } catch (error) {
-            console.error("Failed to load agenda:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadData();
-    }, [currentTenant, currentScope]);
 
     const handleDelete = async (id: string, judul: string) => {
         if (window.confirm(`Hapus agenda "${judul}"?`)) {

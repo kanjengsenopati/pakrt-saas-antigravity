@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
@@ -7,19 +7,41 @@ import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus, DotsThreeOutlineVertical } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
+import { useHybridData } from '../../hooks/useHybridData';
+import api from '../../services/api';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
     const { user } = useAuth();
-    const [wargaList, setWargaList] = useState<Warga[]>([]);
+    
+    // 3. Separate state clearly - moved to useHybridData
     const [expandedWargaId, setExpandedWargaId] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState<'Verified' | 'Pending'>('Verified');
     const [pendingWarga, setPendingWarga] = useState<Warga[]>([]);
     const [showShareModal, setShowShareModal] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
+
+    const cacheKey = useMemo(() => {
+        if (!currentTenant) return '';
+        return api.getUri({ 
+            url: '/warga', 
+            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 } 
+        });
+    }, [currentTenant, currentScope]);
+
+    const { 
+        mergedData: wargaServerData, 
+        isFetching: isLoading, // Rename to match existing UI
+        refresh: loadData 
+    } = useHybridData<{ items: Warga[] }>({
+        cacheKey,
+        fetcher: () => wargaService.getAll(currentTenant?.id || '', currentScope),
+        enabled: !!currentTenant
+    });
+
+    const wargaList = wargaServerData?.items || [];
 
     const toggleExpand = (wargaId: string) => {
         setExpandedWargaId(prev => prev === wargaId ? null : wargaId);
@@ -54,7 +76,7 @@ export default function WargaList() {
             return;
         }
 
-        setIsLoading(true);
+        // We use local loading state for mutations
         try {
             const count = await wargaService.importWarga(file);
             alert(`Berhasil mengimport ${count} data warga baru.`);
@@ -63,21 +85,7 @@ export default function WargaList() {
             console.error("Import failed:", error);
             alert(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
         } finally {
-            setIsLoading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
-        }
-    };
-
-    const loadData = async () => {
-        if (!currentTenant) return;
-        setIsLoading(true);
-        try {
-            const data = await wargaService.getAll(currentTenant.id, currentScope);
-            setWargaList(data.items || []);
-        } catch (error) {
-            console.error("Failed to load warga:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -92,7 +100,6 @@ export default function WargaList() {
     };
 
     useEffect(() => {
-        loadData();
         if (currentTenant) {
             loadPendingData();
         }

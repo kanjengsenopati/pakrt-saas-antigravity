@@ -13,6 +13,7 @@ export interface PendingRequest {
 export interface ApiCache {
     url: string;
     data: any;
+    source: 'local' | 'server';
     timestamp: number;
     expiresAt: number;
 }
