@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
@@ -8,7 +8,6 @@ import { Users, Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, CaretDown, C
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
-import api from '../../services/api';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -23,20 +22,12 @@ export default function WargaList() {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
 
-    const cacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({ 
-            url: '/warga', 
-            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 } 
-        });
-    }, [currentTenant, currentScope]);
 
     const { 
         mergedData: wargaServerData, 
         isFetching: isLoading, // Rename to match existing UI
         refresh: loadData 
     } = useHybridData<{ items: Warga[] }>({
-        cacheKey,
         fetcher: () => wargaService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });

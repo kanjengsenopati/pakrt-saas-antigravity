@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,7 +7,6 @@ import { Plus, MagnifyingGlass, Funnel, Trash, ShieldCheck, PencilSimple, CheckC
 import { HasPermission } from '../../components/auth/HasPermission';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
-import api from '../../services/api';
 
 export default function RondaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -15,20 +14,12 @@ export default function RondaList() {
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const navigate = useNavigate();
 
-    const cacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({ 
-            url: '/ronda', 
-            params: { tenant_id: currentTenant.id, scope: currentScope } 
-        });
-    }, [currentTenant, currentScope]);
 
     const { 
         mergedData: rondaItems, 
         isFetching: isLoading, 
         refresh: loadData 
     } = useHybridData<RondaWithWarga[]>({
-        cacheKey,
         fetcher: () => rondaService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });

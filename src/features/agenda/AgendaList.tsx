@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
@@ -12,7 +12,6 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
-import api from '../../services/api';
 
 interface ReportPanelProps {
     agenda: Agenda;
@@ -105,20 +104,12 @@ export default function AgendaList() {
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const currentWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
-    const cacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({ 
-            url: '/agenda', 
-            params: { tenant_id: currentTenant.id, scope: currentScope } 
-        });
-    }, [currentTenant, currentScope]);
 
     const { 
         mergedData: agendaItems, 
         isFetching: isLoading, 
         refresh: loadData 
     } = useHybridData<Agenda[]>({
-        cacheKey,
         fetcher: () => agendaService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });

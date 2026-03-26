@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { asetService } from '../../services/asetService';
@@ -9,43 +9,26 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
-import api from '../../services/api';
 
 export default function AsetList() {
     const { currentTenant, currentScope } = useTenant();
     const navigate = useNavigate();
 
-    const asetCacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({ 
-            url: '/aset', 
-            params: { tenant_id: currentTenant.id, scope: currentScope } 
-        });
-    }, [currentTenant, currentScope]);
 
     const { 
         mergedData: asetItems, 
         isFetching: isAsetLoading, 
         refresh: loadAset 
     } = useHybridData<Aset[]>({
-        cacheKey: asetCacheKey,
         fetcher: () => asetService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });
 
-    const wargaCacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({ 
-            url: '/warga', 
-            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 } 
-        });
-    }, [currentTenant, currentScope]);
 
     const { 
         mergedData: wargaServerData, 
         isFetching: isWargaLoading 
     } = useHybridData<{ items: Warga[] }>({
-        cacheKey: wargaCacheKey,
         fetcher: () => wargaService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });

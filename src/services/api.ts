@@ -11,7 +11,7 @@ const api = axios.create({
 // Helper to check network status
 const isOnline = () => navigator.onLine;
 
-// Request Interceptor: Offline Queueing & Auth
+// Request Interceptor: Auth only
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     // Inject Authorization Header
     if (typeof window !== 'undefined') {
@@ -20,76 +20,16 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
-
-    const isMutation = ['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase() || '');
-    
-    if (!isOnline() && isMutation) {
-        // Queue the request for later
-        await syncDb.syncQueue.add({
-            url: config.url || '',
-            method: (config.method?.toUpperCase() as any) || 'POST',
-            data: config.data,
-            headers: config.headers as any,
-            timestamp: Date.now(),
-            retries: 0
-        });
-        
-        // Return a mock success response so the UI doesn't break
-        // We'll throw an "OfflineQueued" error to be handled if needed, 
-        // or just return a response that mimics success.
-        // For now, let's treat it as "Accepted" (202)
-        return Promise.reject({
-            message: 'Offline: Request queued for sync',
-            isOffline: true,
-            status: 202,
-            config
-        });
-    }
     
     return config;
 }, (error) => {
     return Promise.reject(error);
 });
 
-// Response Interceptor: Caching for GET requests
-api.interceptors.response.use(async (response: AxiosResponse) => {
-    const isGet = response.config.method?.toLowerCase() === 'get';
-    
-    if (isGet && response.status === 200) {
-        // Cache the result using the full URI (including params)
-        const cacheKey = api.getUri(response.config);
-        await syncDb.apiCache.put({
-            url: cacheKey,
-            data: response.data,
-            source: 'server', // Data from server is authoritative
-            timestamp: Date.now(),
-            expiresAt: Date.now() + (1000 * 60 * 60 * 24) // 24h cache
-        });
-    }
-    
+// Response Interceptor: Basic error handling
+api.interceptors.response.use((response: AxiosResponse) => {
     return response;
-}, async (error) => {
-    const originalRequest = error.config;
-    const isGet = originalRequest?.method?.toLowerCase() === 'get';
-    
-    // If GET fails due to network (or offline), try to serve from cache
-    if ((!isOnline() || error.code === 'ERR_NETWORK') && isGet) {
-        const cacheKey = api.getUri(originalRequest);
-        const cached = await syncDb.apiCache.get(cacheKey);
-        if (cached) {
-            console.log('Serving from local cache:', cacheKey);
-            return {
-                ...error,
-                data: cached.data,
-                status: 200,
-                statusText: 'OK (Cached)',
-                config: originalRequest,
-                isCached: true,
-                source: 'local' // Mark as local for UI consumers
-            };
-        }
-    }
-    
+}, (error) => {
     return Promise.reject(error);
 });
 

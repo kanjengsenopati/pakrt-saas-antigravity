@@ -3,110 +3,48 @@ import { useSync } from '../contexts/SyncContext';
 import { syncDb } from '../database/syncDb';
 
 interface HybridDataOptions<T> {
-    cacheKey: string;
     fetcher: () => Promise<T>;
     enabled?: boolean;
 }
 
-export function useHybridData<T>({ cacheKey, fetcher, enabled = true }: HybridDataOptions<T>) {
-    const { isOnline, isSyncing } = useSync();
-    
-    // 3. Separate state clearly
-    const [localData, setLocalData] = useState<T | null>(null);
-    const [serverData, setServerData] = useState<T | null>(null);
-    const [mergedData, setMergedData] = useState<T | null>(null);
-    
-    const localDataRef = useRef<T | null>(null);
-    const serverDataRef = useRef<T | null>(null);
-
-    // Sync refs with state
-    useEffect(() => {
-        localDataRef.current = localData;
-    }, [localData]);
-
-    useEffect(() => {
-        serverDataRef.current = serverData;
-    }, [serverData]);
-
-    // 1 & 2. Add guards
+export function useHybridData<T>({ fetcher, enabled = true }: HybridDataOptions<T>) {
+    const { isOnline } = useSync();
+    const [data, setData] = useState<T | null>(null);
     const [isFetching, setIsFetching] = useState(false);
     const isFetchingRef = useRef(false);
     const initialFetchDone = useRef(false);
 
-    // Fetch from local cache (IndexedDB)
-    const fetchLocal = useCallback(async () => {
-        try {
-            const cached = await syncDb.apiCache.get(cacheKey);
-            if (cached) {
-                const dataWithSource = Array.isArray(cached.data) 
-                    ? cached.data.map((item: any) => ({ ...item, source: 'local' }))
-                    : { ...cached.data, source: 'local' };
-                
-                setLocalData(dataWithSource);
-                // If we don't have server data yet, use local as merged
-                if (!serverDataRef.current) setMergedData(dataWithSource);
-            }
-        } catch (error) {
-            console.error("Local fetch failed:", error);
-        }
-    }, [cacheKey]);
-
-    // Fetch from server (Cloud)
-    const fetchServer = useCallback(async () => {
+    const refresh = useCallback(async () => {
         if (isFetchingRef.current || !navigator.onLine) return;
         
-        console.log("FETCH TRIGGER", cacheKey);
         setIsFetching(true);
         isFetchingRef.current = true;
 
         try {
             const result = await fetcher();
-            const dataWithSource = Array.isArray(result)
-                ? result.map((item: any) => ({ ...item, source: 'server' }))
-                : { ...result as any, source: 'server' };
-            
-            setServerData(dataWithSource);
-            setMergedData(dataWithSource);
-            
-            // Update local cache is handled by api interceptor
+            setData(result);
         } catch (error) {
-            console.error("Server fetch failed:", error);
-            // Fallback to local if server fails
-            if (localDataRef.current) setMergedData(localDataRef.current);
+            console.error("Fetch failed:", error);
         } finally {
             setIsFetching(false);
             isFetchingRef.current = false;
         }
-    }, [cacheKey, fetcher]);
+    }, [fetcher]);
 
-    // Initial load
     useEffect(() => {
-        if (!enabled) return;
-        
-        fetchLocal();
-        
-        // Anti-loop: Only trigger server fetch if not already done or if online status changes to true
-        if (!initialFetchDone.current && navigator.onLine) {
-            fetchServer();
+        if (enabled && !initialFetchDone.current && navigator.onLine) {
+            refresh();
             initialFetchDone.current = true;
         }
-    }, [enabled, fetchLocal, fetchServer]);
-
-    // Sync trigger: When syncing status ends or online status returns
-    useEffect(() => {
-        if (enabled && isOnline && !isSyncing && initialFetchDone.current) {
-            // After a sync completes, we should refresh from server to get authoritative data
-            fetchServer();
-        }
-    }, [isOnline, isSyncing, enabled, fetchServer]);
+    }, [enabled, refresh]);
 
     return {
-        localData,
-        serverData,
-        mergedData,
+        localData: data, // Keep for compatibility
+        serverData: data, // Keep for compatibility
+        mergedData: data, // Keep for compatibility
         isFetching,
-        isSyncing,
+        isSyncing: false, // No longer syncing in online-only mode
         isOnline,
-        refresh: fetchServer
+        refresh
     };
 }

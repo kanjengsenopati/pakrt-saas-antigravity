@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -20,7 +20,6 @@ import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
-import api from '../../services/api';
 
 
 const toTitleCase = (str: string) => {
@@ -34,20 +33,12 @@ export default function IuranList() {
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
 
-    const cacheKey = useMemo(() => {
-        if (!currentTenant) return '';
-        return api.getUri({
-            url: '/iuran',
-            params: { tenant_id: currentTenant.id, scope: currentScope, page: 1, limit: 100 }
-        });
-    }, [currentTenant, currentScope]);
 
     const {
         mergedData: iuranServerData,
         isFetching: isLoading,
         refresh: loadData
     } = useHybridData<{ items: IuranWithWarga[] }>({
-        cacheKey,
         fetcher: () => iuranService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });
