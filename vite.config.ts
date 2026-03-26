@@ -79,14 +79,8 @@ export default defineConfig({
         chunkSizeWarningLimit: 1000,
         rollupOptions: {
             output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules')) {
-                        if (id.includes('@phosphor-icons')) return 'icons';
-                        if (id.includes('recharts')) return 'charts';
-                        if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
-                        return 'vendor';
-                    }
-                }
+                // Remove manualChunks to ensure React 19 and its dependencies (recharts, phosphor)
+                // are bundled together, avoiding initialization order issues for the Activity API.
             }
         }
     }
