@@ -1,5 +1,4 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import { syncDb } from '../database/syncDb';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -8,8 +7,6 @@ const api = axios.create({
     timeout: 15000,
 });
 
-// Helper to check network status
-const isOnline = () => navigator.onLine;
 
 // Request Interceptor: Auth only
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {

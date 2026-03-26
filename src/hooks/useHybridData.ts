@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSync } from '../contexts/SyncContext';
-import { syncDb } from '../database/syncDb';
 
 interface HybridDataOptions<T> {
     fetcher: () => Promise<T>;
