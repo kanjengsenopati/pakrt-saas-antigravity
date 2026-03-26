@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSync } from '../contexts/SyncContext';
 import { syncDb } from '../database/syncDb';
-import api from '../services/api';
 
 interface HybridDataOptions<T> {
     cacheKey: string;
