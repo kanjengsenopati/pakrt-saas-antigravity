@@ -10,6 +10,14 @@ export default async function pengurusRoutes(fastify: FastifyInstance) {
     return await pengurusService.getAll(tenantId, scope);
   });
 
+  fastify.get('/count', { preHandler: [requirePermission('Pengurus', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const tenantId = user.tenant_id;
+    const count = await pengurusService.count(tenantId, scope);
+    return { count };
+  });
+
   fastify.get('/:id', { preHandler: [requirePermission('Pengurus', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;

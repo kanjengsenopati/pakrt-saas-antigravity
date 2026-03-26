@@ -38,5 +38,11 @@ export const asetService = {
 
   async delete(id: string) {
     return await prisma.aset.delete({ where: { id } });
+  },
+
+  async count(tenantId: string, scope?: string) {
+    const where: any = { tenant_id: tenantId };
+    if (scope) where.scope = scope;
+    return await prisma.aset.count({ where });
   }
 };

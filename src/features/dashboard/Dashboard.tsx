@@ -57,7 +57,9 @@ export default function Dashboard() {
         if (!currentTenant) return;
         try {
             if (!isWarga) {
-                const [wargaCount, pengurusCount, asetCount, agendaCount, finSummary, allSurat, allIuran] = await Promise.all([
+                // Use Promise.allSettled to ensure that even if one fetching fails (e.g. returns 404), 
+                // the rest of the dashboard stats still display correctly.
+                const results = await Promise.allSettled([
                     wargaService.count(currentTenant.id, currentScope),
                     pengurusService.count(currentTenant.id, currentScope),
                     asetService.count(currentTenant.id, currentScope),
@@ -66,6 +68,26 @@ export default function Dashboard() {
                     suratService.getAll(currentTenant.id, currentScope),
                     iuranService.getAll(currentTenant.id, currentScope),
                 ]);
+
+                const getVal = (res: PromiseSettledResult<any>, fallback: any) => 
+                    res.status === 'fulfilled' ? res.value : fallback;
+
+                const wargaCount = getVal(results[0], 0);
+                const pengurusCount = getVal(results[1], 0);
+                const asetCount = getVal(results[2], 0);
+                const agendaCount = getVal(results[3], 0);
+                const finSummary = getVal(results[4], { saldo: 0 });
+                const allSurat = getVal(results[5], []);
+                const allIuran = getVal(results[6], { items: [] });
+
+                // Log any failures for debugging
+                results.forEach((res, idx) => {
+                    if (res.status === 'rejected') {
+                        const labels = ['Warga', 'Pengurus', 'Aset', 'Agenda', 'Keuangan', 'Surat', 'Iuran'];
+                        console.warn(`Dashboard: Failed to fetch ${labels[idx]} stats:`, res.reason);
+                    }
+                });
+
                 setStats({
                     warga: wargaCount || 0,
                     pengurus: pengurusCount || 0,
@@ -76,10 +98,13 @@ export default function Dashboard() {
                     pendingIuran: (allIuran?.items || []).filter((i: any) => i.status === 'PENDING').length
                 });
             } else if (wargaId) {
-                const [billing, allSurat] = await Promise.all([
+                const results = await Promise.allSettled([
                     iuranService.getBillingSummary(wargaId, new Date().getFullYear(), undefined, currentScope),
                     suratService.getAll(currentTenant.id, currentScope)
                 ]);
+                
+                const billing = results[0].status === 'fulfilled' ? results[0].value : { totalPaid: 0, expectedTotal: 0, rate: 0, paidMonths: [] };
+                const allSurat = results[1].status === 'fulfilled' ? results[1].value : [];
                 
                 setWargaIuranStats({
                     totalPaid: billing.totalPaid || 0,
@@ -94,7 +119,7 @@ export default function Dashboard() {
                 }));
             }
         } catch (error) {
-            console.error("Dashboard: Error fetching stats:", error);
+            console.error("Dashboard: Unexpected error in fetchStats:", error);
         }
     }, [currentTenant, currentScope, isWarga, wargaId]);
 

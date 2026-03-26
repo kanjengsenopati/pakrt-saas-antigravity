@@ -50,5 +50,26 @@ export const keuanganService = {
 
   async delete(id: string) {
     return await prisma.keuangan.delete({ where: { id } });
+  },
+
+  async getSummary(tenantId: string, scope?: string) {
+    const where: any = { tenant_id: tenantId };
+    if (scope) where.scope = scope;
+
+    const data = await prisma.keuangan.findMany({ where });
+    
+    let kasMasuk = 0;
+    let kasKeluar = 0;
+    
+    data.forEach(item => {
+      if (item.tipe === 'masuk') kasMasuk += item.nominal;
+      else if (item.tipe === 'keluar') kasKeluar += item.nominal;
+    });
+
+    return {
+      kasMasuk,
+      kasKeluar,
+      saldo: kasMasuk - kasKeluar
+    };
   }
 };

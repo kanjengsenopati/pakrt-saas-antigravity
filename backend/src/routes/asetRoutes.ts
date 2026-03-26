@@ -15,6 +15,14 @@ export default async function asetRoutes(fastify: FastifyInstance) {
     );
   });
 
+  fastify.get('/count', { preHandler: [requirePermission('Aset', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const tenantId = user.tenant_id;
+    const { total } = await asetService.getAll(tenantId, scope, 1, 1);
+    return { count: total };
+  });
+
   fastify.get('/:id', { preHandler: [requirePermission('Aset', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;

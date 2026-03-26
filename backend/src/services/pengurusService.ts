@@ -61,5 +61,11 @@ export const pengurusService = {
 
   async delete(id: string) {
     return await prisma.pengurus.delete({ where: { id } });
+  },
+
+  async count(tenantId: string, scope?: string) {
+    const where: any = { tenant_id: tenantId };
+    if (scope) where.scope = scope;
+    return await prisma.pengurus.count({ where });
   }
 };

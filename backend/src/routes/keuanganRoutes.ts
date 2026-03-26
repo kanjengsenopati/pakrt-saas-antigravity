@@ -17,6 +17,15 @@ export default async function keuanganRoutes(fastify: FastifyInstance) {
     return result;
   });
 
+  fastify.get('/summary', { preHandler: [requirePermission('Buku Kas / Transaksi', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const tenantId = user.tenant_id;
+
+    const result = await keuanganService.getSummary(tenantId, scope);
+    return result;
+  });
+
   fastify.get('/:id', { preHandler: [requirePermission('Buku Kas / Transaksi', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;
