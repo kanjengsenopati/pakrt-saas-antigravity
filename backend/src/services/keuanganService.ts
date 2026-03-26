@@ -62,8 +62,9 @@ export const keuanganService = {
     let kasKeluar = 0;
     
     data.forEach(item => {
-      if (item.tipe === 'masuk') kasMasuk += item.nominal;
-      else if (item.tipe === 'keluar') kasKeluar += item.nominal;
+      const tipe = item.tipe.toLowerCase();
+      if (tipe === 'pemasukan' || tipe === 'masuk') kasMasuk += item.nominal;
+      else if (tipe === 'pengeluaran' || tipe === 'keluar') kasKeluar += item.nominal;
     });
 
     return {
