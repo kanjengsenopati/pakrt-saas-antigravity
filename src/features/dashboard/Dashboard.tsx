@@ -192,18 +192,20 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (currentTenant?.id && authUser?.id) {
+            // Initial fetch
             fetchStats();
             fetchActivities();
         }
-    }, [currentTenant?.id, currentScope, authUser?.id]);
+    }, [currentTenant?.id, currentScope, authUser?.id]); // Only refetch if core context changes meaningfully
 
     useEffect(() => {
+        // Setup background refresh interval (e.g. every 2 minutes for dashboard)
         const interval = setInterval(() => { 
-            if (currentTenant?.id && authUser?.id) {
+            if (currentTenant?.id && authUser?.id && document.visibilityState === 'visible') {
                 fetchStats(); 
                 fetchActivities(); 
             }
-        }, 60000); 
+        }, 120000); // Increased to 2 minutes to reduce load
         return () => clearInterval(interval);
     }, [currentTenant?.id, currentScope, authUser?.id, fetchStats, fetchActivities]);
 

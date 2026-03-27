@@ -56,16 +56,20 @@ export const keuanganService = {
     const where: any = { tenant_id: tenantId };
     if (scope) where.scope = scope;
 
-    const data = await prisma.keuangan.findMany({ where });
-    
-    let kasMasuk = 0;
-    let kasKeluar = 0;
-    
-    data.forEach(item => {
-      const tipe = item.tipe.toLowerCase();
-      if (tipe === 'pemasukan' || tipe === 'masuk') kasMasuk += item.nominal;
-      else if (tipe === 'pengeluaran' || tipe === 'keluar') kasKeluar += item.nominal;
-    });
+    // Use aggregation for much better performance on large datasets
+    const [pemasukan, pengeluaran] = await Promise.all([
+        prisma.keuangan.aggregate({
+            where: { ...where, tipe: { in: ['pemasukan', 'masuk'] } },
+            _sum: { nominal: true }
+        }),
+        prisma.keuangan.aggregate({
+            where: { ...where, tipe: { in: ['pengeluaran', 'keluar'] } },
+            _sum: { nominal: true }
+        })
+    ]);
+
+    const kasMasuk = pemasukan._sum.nominal || 0;
+    const kasKeluar = pengeluaran._sum.nominal || 0;
 
     return {
       kasMasuk,
