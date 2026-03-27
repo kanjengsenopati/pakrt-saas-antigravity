@@ -8,7 +8,7 @@ function App() {
 
     // Global UI Cache Buster & Error Safeguard
     useEffect(() => {
-        const UI_VERSION = 'v1.0.3-search-fix';
+        const UI_VERSION = 'v1.0.4-pengelola-fix';
         const storedVersion = localStorage.getItem('app_ui_version');
 
         const forceCleanup = async () => {

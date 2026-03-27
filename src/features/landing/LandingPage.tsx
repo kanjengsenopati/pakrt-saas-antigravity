@@ -20,7 +20,7 @@ export default function LandingPage() {
     const faqs = [
         {
             question: "Apakah sistem PAKRT ini aman?",
-            answer: "Sangat aman. Setiap data Warga dan Keuangan antar-RT dipisahkan dengan sistem Multi-Tenant yang terenkripsi di server awan (cloud), sehingga data antar RT tidak akan pernah tercampur atau bocor."
+            answer: "Sangat aman. Setiap data Warga dan Keuangan antar-RT dipisahkan dengan sistem Multi-Pengelola yang terenkripsi di server awan (cloud), sehingga data antar RT tidak akan pernah tercampur atau bocor."
         },
         {
             question: "Apakah warga biasa (bukan pengurus) bisa mengakses aplikasi ini?",

@@ -84,6 +84,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     const { currentTenant, currentScope } = useTenant();
     const { hasPermission } = useAuth();
     const [kelurahanName, setKelurahanName] = useState<string>('');
+    const [kecamatanName, setKecamatanName] = useState<string>('');
     const [pendingIuranCount, setPendingIuranCount] = useState<number>(0);
     const [expandedGroups, setExpandedGroups] = useState<string[]>(MENU_GROUPS.map(g => g.label));
 
@@ -97,12 +98,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         const fetchPendingIuran = async () => {
             if (currentTenant?.id && hasPermission('Iuran Warga', 'Ubah')) {
                 try {
-                    // We can just fetch the first page with limit 1 to get the total
                     const { iuranService } = await import('../../services/iuranService');
-                    // We need a specific way to get only pending?
-                    // Currently getAll doesn't support status filter in params, but it returns total for the current filter.
-                    // Let's assume we want to show a badge if there's *any* pending.
-                    // For now, let's just fetch all and filter client-side or assume we'll add a service method.
                     const data = await iuranService.getAll(currentTenant.id, currentScope);
                     const pending = data.items.filter((i: any) => i.status === 'PENDING').length;
                     setPendingIuranCount(pending);
@@ -113,20 +109,26 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         };
         fetchPendingIuran();
         
-        // Refresh every 5 minutes
         const interval = setInterval(fetchPendingIuran, 5 * 60 * 1000);
         return () => clearInterval(interval);
-    }, [currentTenant, hasPermission]);
+    }, [currentTenant, hasPermission, currentScope]);
 
     useEffect(() => {
         const fetchWilayahData = async () => {
             if (currentTenant?.id) {
                 try {
                     const ids = currentTenant.id.split('.');
+                    // Kelurahan is segment 4 (index 0,1,2,3)
                     if (ids.length >= 4) {
                         const kelId = ids.slice(0, 4).join('.');
                         const kel = await locationService.getWilayahById(kelId);
                         if (kel) setKelurahanName(kel.name.split(' ').map((w: any) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '));
+                    }
+                    // Kecamatan is segment 3 (index 0,1,2)
+                    if (ids.length >= 3) {
+                        const kecId = ids.slice(0, 3).join('.');
+                        const kec = await locationService.getWilayahById(kecId);
+                        if (kec) setKecamatanName(kec.name.split(' ').map((w: any) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '));
                     }
                 } catch (error) {
                     console.error('Failed to fetch wilayah name for sidebar:', error);
@@ -161,8 +163,8 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                     <h2 className="text-[1.25rem] font-semibold text-gray-900 truncate tracking-tight" title={currentTenant?.name || 'PAKRT'}>
                         {getRtRwLabel()}
                     </h2>
-                    <p className="text-xs text-gray-400 mt-1 tracking-normal font-medium truncate">
-                        {kelurahanName || 'Sistem Manajemen RT'}
+                    <p className="text-[11px] text-gray-400 mt-0.5 tracking-tight font-medium truncate">
+                        {kelurahanName ? `${kelurahanName}${kecamatanName ? `, ${kecamatanName}` : ''}` : 'Sistem Manajemen RT'}
                     </p>
                 </div>
                 {onToggle && (

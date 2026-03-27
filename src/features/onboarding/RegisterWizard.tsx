@@ -181,7 +181,7 @@ export default function RegisterWizard() {
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            alert(error.response?.data?.error || 'Gagal registrasi tenant. Pastikan data lengkap.');
+            alert(error.response?.data?.error || 'Gagal registrasi pengelola. Pastikan data lengkap.');
         }
     };
 
@@ -313,7 +313,7 @@ export default function RegisterWizard() {
 
                                     <div className="bg-gradient-to-br from-brand-50 to-blue-50 border border-brand-100 p-5 rounded-2xl mb-8 flex items-center justify-between shadow-sm">
                                         <div>
-                                            <label className="block text-xs font-bold text-brand-800 uppercase tracking-wider mb-1">ID Tenant Wilayah Anda</label>
+                                            <label className="block text-xs font-bold text-brand-800 uppercase tracking-wider mb-1">ID Pengelola Wilayah Anda</label>
                                             <div className="text-2xl font-mono font-bold text-brand-900 tracking-widest leading-none mt-1">{generatedTenantId}</div>
                                         </div>
                                         <div className="hidden sm:block">
