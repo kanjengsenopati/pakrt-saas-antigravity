@@ -19,14 +19,17 @@ export const notulensiService = {
     
     const notulensi = await prisma.notulensi.create({ data: notulensiData });
 
-    if (kehadiran && Array.isArray(kehadiran) && kehadiran.length > 0) {
-      await prisma.kehadiran.createMany({
-        data: kehadiran.map((k: any) => ({
-          ...k,
-          notulensi_id: notulensi.id,
-          tenant_id: notulensi.tenant_id
-        }))
-      });
+    if (kehadiran) {
+      const kehadiranArray = Array.isArray(kehadiran) ? kehadiran : Object.values(kehadiran);
+      if (kehadiranArray.length > 0) {
+        await prisma.kehadiran.createMany({
+          data: kehadiranArray.map((k: any) => ({
+            ...k,
+            notulensi_id: notulensi.id,
+            tenant_id: notulensi.tenant_id
+          }))
+        });
+      }
     }
 
     return notulensi;
@@ -41,12 +44,13 @@ export const notulensiService = {
       data: notulensiData 
     });
 
-    if (kehadiran && Array.isArray(kehadiran)) {
+    if (kehadiran) {
+      const kehadiranArray = Array.isArray(kehadiran) ? kehadiran : Object.values(kehadiran);
       // Sync attendance: delete and recreate in one batch
       await prisma.kehadiran.deleteMany({ where: { notulensi_id: id } });
-      if (kehadiran.length > 0) {
+      if (kehadiranArray.length > 0) {
         await prisma.kehadiran.createMany({
-          data: kehadiran.map((k: any) => ({
+          data: kehadiranArray.map((k: any) => ({
             ...k,
             notulensi_id: id,
             tenant_id: notulensi.tenant_id

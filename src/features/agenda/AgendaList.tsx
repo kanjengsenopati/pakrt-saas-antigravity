@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { Agenda } from '../../database/db';
-import { Plus, PencilSimple, Trash, CalendarBlank, Users, CheckCircle, FileText, X, Image as ImageIcon, CircleNotch, ChartPieSlice, TrendUp } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, CalendarBlank, Users, CheckCircle, FileText, X, Image as ImageIcon, CircleNotch, ChartPieSlice, TrendUp, MapPin, House } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
@@ -550,17 +550,29 @@ export default function AgendaList() {
                                                                             )}
                                                                         </div>
 
-                                                                        <div className="grid grid-cols-2 gap-4">
-                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center">
+                                                                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center flex flex-col items-center justify-center">
                                                                                 <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">Anggaran</p>
                                                                                 <p className="text-lg font-bold text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</p>
                                                                                 <p className="text-[10px] font-medium text-slate-400 mt-1 italic">{agenda.sumber_dana || '-'}</p>
                                                                             </div>
-                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center">
+                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center flex flex-col items-center justify-center">
                                                                                 <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">Jenis</p>
                                                                                 <p className="text-lg font-bold text-brand-600">{agenda.jenis_kegiatan || '-'}</p>
                                                                                 <p className="text-[10px] font-medium text-slate-400 mt-1 italic">{agenda.perlu_rapat ? 'Ada Notulensi' : 'Tanpa Rapat'}</p>
                                                                             </div>
+                                                                            {agenda.perlu_rapat && agenda.tuan_rumah && (
+                                                                                <div className="bg-white p-4 rounded-xl border border-brand-100 text-center flex flex-col items-center justify-center shadow-sm">
+                                                                                    <p className="text-[10px] font-bold text-brand-500 tracking-widest uppercase mb-1 flex items-center gap-1">
+                                                                                        <House weight="fill" className="w-3 h-3" /> Tuan Rumah
+                                                                                    </p>
+                                                                                    <p className="text-sm font-bold text-slate-900 truncate max-w-full px-2" title={agenda.tuan_rumah}>{agenda.tuan_rumah}</p>
+                                                                                    <div className="flex items-center gap-1 mt-1">
+                                                                                        <MapPin weight="bold" className="w-2.5 h-2.5 text-slate-400" />
+                                                                                        <span className="text-[9px] font-medium text-slate-500 tracking-tight" title={agenda.lokasi}>{agenda.lokasi || 'Lokasi Rapat'}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            )}
                                                                         </div>
                                                                     </div>
 

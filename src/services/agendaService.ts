@@ -63,6 +63,9 @@ export const agendaService = {
                     scope: data.scope,
                     judul: `Rapat: ${data.judul}`,
                     tanggal: data.tanggal,
+                    tuan_rumah: data.tuan_rumah,
+                    tuan_rumah_id: data.tuan_rumah_id,
+                    lokasi: data.lokasi,
                     konten: `Laporan rapat otomatis dari Agenda: ${data.judul}.\n\nKeterangan: ${data.keterangan_tambahan || '-'}`,
                     agenda_id: newId
                 });

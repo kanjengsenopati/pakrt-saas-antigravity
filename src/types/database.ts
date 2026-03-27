@@ -172,6 +172,9 @@ export interface Agenda {
     jenis_kegiatan?: 'Kebersihan' | 'Sosial' | 'Kerohanian' | 'Keamanan' | 'Pembangunan' | 'Lainnya';
     perlu_rapat?: boolean;
     keterangan_tambahan?: string;
+    tuan_rumah_id?: string;
+    tuan_rumah?: string;
+    lokasi?: string;
 }
 
 export interface Keuangan {

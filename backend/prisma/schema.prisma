@@ -223,6 +223,9 @@ model Agenda {
   jenis_kegiatan   String?
   perlu_rapat      Boolean? @default(false)
   keterangan_tambahan String?
+  tuan_rumah_id       String?
+  tuan_rumah          String?
+  lokasi              String?
 
   @@index([tenant_id, scope, tanggal])
 }

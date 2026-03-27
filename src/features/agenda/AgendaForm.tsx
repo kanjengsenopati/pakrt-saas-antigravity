@@ -5,7 +5,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { wargaService } from '../../services/wargaService';
 import { Agenda, Warga } from '../../database/db';
-import { ArrowLeft, FloppyDisk, Users, Coins, CircleNotch } from '@phosphor-icons/react';
+import { ArrowLeft, FloppyDisk, Users, Coins, CircleNotch, UserCircle, XCircle, MapPin } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
 type AgendaFormData = Omit<Agenda, 'id' | 'tenant_id' | 'scope' | 'is_terlaksana' | 'laporan_kegiatan' | 'foto_dokumentasi'>;
@@ -19,6 +19,9 @@ export default function AgendaForm() {
     const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
     const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
+    const [selectedHostId, setSelectedHostId] = useState<string | null>(null);
+    const [showHostSelector, setShowHostSelector] = useState(false);
+    const [pastHosts, setPastHosts] = useState<Set<string>>(new Set());
 
     const { register, handleSubmit, reset, watch, setValue, control, formState: { errors } } = useForm<AgendaFormData>({
         defaultValues: {
@@ -35,6 +38,16 @@ export default function AgendaForm() {
         if (!currentTenant) return;
         wargaService.getAll(currentTenant.id, currentScope).then(data => setWargaList(data.items || []));
 
+        // Load Host History (from Notulensi)
+        const activeTenantId = currentTenant.id;
+        const activeScope = currentScope;
+        import('../../services/notulensiService').then(({ notulensiService }) => {
+            notulensiService.getAll(activeTenantId, activeScope).then(list => {
+                const hosts = new Set(list.map(n => n.tuan_rumah_id).filter(Boolean) as string[]);
+                setPastHosts(hosts);
+            });
+        });
+
         if (isEditing && id) {
             agendaService.getById(id).then(data => {
                 if (data) {
@@ -49,15 +62,26 @@ export default function AgendaForm() {
                         is_semua_warga: data.is_semua_warga,
                         jenis_kegiatan: data.jenis_kegiatan,
                         perlu_rapat: data.perlu_rapat,
-                        keterangan_tambahan: data.keterangan_tambahan
+                        keterangan_tambahan: data.keterangan_tambahan,
+                        tuan_rumah: data.tuan_rumah,
+                        tuan_rumah_id: data.tuan_rumah_id,
+                        lokasi: data.lokasi
                     });
                     setSelectedParticipants(data.peserta_ids || []);
                     setIsAllWarga(data.is_semua_warga ?? (data.peserta_ids?.length === 0));
                     setFotoDokumentasi(data.foto_dokumentasi || []);
+                    setSelectedHostId(data.tuan_rumah_id || null);
                 }
             });
         }
     }, [id, isEditing, reset, currentTenant, currentScope]);
+
+    const handleHostSelect = (warga: Warga) => {
+        setSelectedHostId(warga.id);
+        setValue('tuan_rumah_id', warga.id);
+        setValue('tuan_rumah', warga.nama);
+        setShowHostSelector(false);
+    };
 
     const toggleParticipant = (wargaId: string) => {
         const current = Array.isArray(selectedParticipants) ? selectedParticipants : [];
@@ -81,7 +105,10 @@ export default function AgendaForm() {
                 peserta_ids: isAllWarga ? [] : selectedParticipants,
                 foto_dokumentasi: fotoDokumentasi,
                 nominal_biaya: data.butuh_pendanaan ? data.nominal_biaya : undefined,
-                sumber_dana: data.butuh_pendanaan ? data.sumber_dana : undefined
+                sumber_dana: data.butuh_pendanaan ? data.sumber_dana : undefined,
+                tuan_rumah_id: selectedHostId || undefined,
+                tuan_rumah: data.tuan_rumah,
+                lokasi: data.lokasi
             };
 
             if (isEditing && id) {
@@ -142,7 +169,7 @@ export default function AgendaForm() {
                                     {errors.jenis_kegiatan && <p className="text-red-500 text-xs mt-1">{errors.jenis_kegiatan.message}</p>}
                                 </div>
                                 
-                                <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 h-fit self-end">
+                                <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 h-fit self-end text-left">
                                     <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
@@ -150,6 +177,102 @@ export default function AgendaForm() {
                                     </label>
                                 </div>
                             </div>
+
+                            {watch('perlu_rapat') && (
+                                <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-4 animate-in slide-in-from-top-2 duration-300 text-left">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-1 h-4 bg-brand-500 rounded-full"></div>
+                                        <h4 className="text-sm font-bold text-slate-800 tracking-tight uppercase">Detail Rapat</h4>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="relative">
+                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                                <UserCircle className="text-brand-500 w-3.5 h-3.5" /> Tuan Rumah (Host)
+                                            </label>
+                                            <div className="flex gap-2">
+                                                <div
+                                                    onClick={() => setShowHostSelector(true)}
+                                                    className="w-full rounded-lg p-3 border border-slate-200 bg-white hover:border-brand-500 cursor-pointer transition-all flex items-center justify-between group/input shadow-sm"
+                                                >
+                                                    <span className={`text-sm ${selectedHostId ? 'text-slate-900' : 'text-slate-400'}`}>
+                                                        {selectedHostId ? wargaList.find(w => w.id === selectedHostId)?.nama : 'Pilih Warga...'}
+                                                    </span>
+                                                    <div className="p-1 rounded-md bg-slate-100 group-hover/input:bg-brand-100 group-hover/input:text-brand-600 transition-colors">
+                                                        <Users weight="bold" className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {showHostSelector && (
+                                                <div className="absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                                    <div className="p-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Pilih Warga</span>
+                                                        <button onClick={() => setShowHostSelector(false)} className="text-slate-400 hover:text-rose-500 transition-colors">
+                                                            <XCircle size={20} weight="fill" />
+                                                        </button>
+                                                    </div>
+                                                    <div className="max-h-48 overflow-y-auto custom-scrollbar">
+                                                        {wargaList.map(w => (
+                                                            <button
+                                                                key={w.id}
+                                                                type="button"
+                                                                onClick={() => handleHostSelect(w)}
+                                                                className={`w-full text-left p-3 hover:bg-brand-50 flex items-center justify-between border-b border-slate-50 last:border-0 transition-all group ${selectedHostId === w.id ? 'bg-brand-50' : ''}`}
+                                                            >
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${selectedHostId === w.id ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                                        {w.nama.charAt(0)}
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="text-xs font-bold text-slate-900 leading-none mb-1">{w.nama}</p>
+                                                                        <p className="text-[9px] text-slate-400 tracking-tight">{w.alamat}</p>
+                                                                    </div>
+                                                                </div>
+                                                                {pastHosts.has(w.id) && (
+                                                                    <div className="text-[8px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-md font-bold tracking-tight border border-amber-100">
+                                                                        H-Host
+                                                                    </div>
+                                                                )}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                                <MapPin className="text-brand-500 w-3.5 h-3.5" /> Atau Host Lainnya
+                                            </label>
+                                            <input
+                                                type="text"
+                                                {...register('tuan_rumah')}
+                                                onChange={(e) => {
+                                                    // If they type, clear the selected ID
+                                                    if (selectedHostId) setSelectedHostId(null);
+                                                    setValue('tuan_rumah_id', '');
+                                                    setValue('tuan_rumah', e.target.value);
+                                                }}
+                                                className="w-full rounded-lg p-3 border border-slate-200 bg-white focus:border-brand-500 outline-none text-sm transition-all shadow-sm"
+                                                placeholder="Contoh: Balai Pertemuan, Musholla, dll"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Lokasi Rapat */}
+                                    <div className="pt-2">
+                                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                            <MapPin className="text-brand-500 w-3.5 h-3.5" /> Lokasi Spesifik / Alamat
+                                        </label>
+                                        <input
+                                            type="text"
+                                            {...register('lokasi')}
+                                            className="w-full rounded-lg p-3 border border-slate-200 bg-white focus:border-brand-500 outline-none text-sm transition-all shadow-sm"
+                                            placeholder="Contoh: Jl. Merdeka No. 10, atau detail lokasi lainnya..."
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             {watch('jenis_kegiatan') && (
                                 <div className="animate-in fade-in slide-in-from-top-2">
