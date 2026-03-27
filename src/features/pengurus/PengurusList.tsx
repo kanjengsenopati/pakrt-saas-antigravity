@@ -131,7 +131,7 @@ export default function PengurusList() {
                                 placeholder="Cari berdasarkan Jabatan atau Nama..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                                className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
                             />
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">
