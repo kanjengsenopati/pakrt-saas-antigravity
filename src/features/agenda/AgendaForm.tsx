@@ -119,6 +119,51 @@ export default function AgendaForm() {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6">
                         <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold tracking-tight text-slate-500 mb-1.5">
+                                        Jenis Kegiatan <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        {...register('jenis_kegiatan', { required: 'Jenis kegiatan wajib diisi' })}
+                                        className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.jenis_kegiatan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
+                                    >
+                                        <option value="">-- Pilih Jenis --</option>
+                                        <option value="Kebersihan">Kebersihan</option>
+                                        <option value="Sosial">Sosial</option>
+                                        <option value="Kerohanian">Kerohanian</option>
+                                        <option value="Keamanan">Keamanan</option>
+                                        <option value="Pembangunan">Pembangunan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                    {errors.jenis_kegiatan && <p className="text-red-500 text-xs mt-1">{errors.jenis_kegiatan.message}</p>}
+                                </div>
+                                
+                                {watch('jenis_kegiatan') && (
+                                    <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 animate-in fade-in slide-in-from-top-2">
+                                        <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+
+                            {watch('jenis_kegiatan') && (
+                                <div className="animate-in fade-in slide-in-from-top-2">
+                                    <label className="block text-sm font-normal text-gray-700 mb-1">
+                                        Keterangan Terkait {watch('jenis_kegiatan')}
+                                    </label>
+                                    <textarea
+                                        rows={3}
+                                        {...register('keterangan_tambahan')}
+                                        className="w-full rounded-xl p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors text-sm"
+                                        placeholder={`Detail tambahan untuk kegiatan ${watch('jenis_kegiatan')}...`}
+                                    />
+                                </div>
+                            )}
+
                             <div>
                                 <label className="block text-sm font-normal text-gray-700 mb-1">
                                     Judul Kegiatan <span className="text-red-500">*</span>
@@ -159,50 +204,6 @@ export default function AgendaForm() {
                                 {errors.deskripsi && <p className="text-red-500 text-xs mt-1">{errors.deskripsi.message}</p>}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-normal text-gray-700 mb-1">
-                                        Jenis Kegiatan
-                                    </label>
-                                    <select
-                                        {...register('jenis_kegiatan')}
-                                        className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors"
-                                    >
-                                        <option value="">-- Pilih Jenis --</option>
-                                        <option value="Kebersihan">Kebersihan</option>
-                                        <option value="Sosial">Sosial</option>
-                                        <option value="Kerohanian">Kerohanian</option>
-                                        <option value="Keamanan">Keamanan</option>
-                                        <option value="Pembangunan">Pembangunan</option>
-                                        <option value="Lainnya">Lainnya</option>
-                                    </select>
-                                </div>
-                                
-                                {watch('jenis_kegiatan') && (
-                                    <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 animate-in fade-in slide-in-from-top-2">
-                                        <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
-                                        </label>
-                                    </div>
-                                )}
-                            </div>
-
-                            {watch('jenis_kegiatan') && (
-                                <div className="animate-in fade-in slide-in-from-top-2">
-                                    <label className="block text-sm font-normal text-gray-700 mb-1">
-                                        Keterangan Terkait {watch('jenis_kegiatan')}
-                                    </label>
-                                    <textarea
-                                        rows={3}
-                                        {...register('keterangan_tambahan')}
-                                        className="w-full rounded-xl p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors text-sm"
-                                        placeholder={`Detail tambahan untuk kegiatan ${watch('jenis_kegiatan')}...`}
-                                    />
-                                </div>
-                            )}
-
                             <div className="pt-2">
                                 <FileUpload
                                     label="Foto Dokumentasi (Opsional)"
@@ -232,14 +233,14 @@ export default function AgendaForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-amber-50 rounded-xl border border-amber-100 animate-in slide-in-from-top-2 duration-300">
                                     <div>
                                         <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 font-medium z-10 text-xs">Rp</span>
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 font-bold z-10 text-xs pointer-events-none">Rp</span>
                                             <Controller
                                                 name="nominal_biaya"
                                                 control={control}
                                                 render={({ field }) => (
                                                     <CurrencyInput
                                                         {...field}
-                                                        className="w-full pl-9 rounded-lg border-amber-200 focus:ring-amber-500 bg-white"
+                                                        className="w-full !pl-10 rounded-lg border-amber-200 focus:ring-amber-500 bg-white"
                                                         placeholder="0"
                                                     />
                                                 )}
