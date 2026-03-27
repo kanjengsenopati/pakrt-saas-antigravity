@@ -94,6 +94,7 @@ export interface Notulensi {
     lokasi?: string;
     url_foto?: string;
     konten: string;
+    agenda_id?: string;
 }
 
 export interface Kehadiran {
@@ -167,6 +168,9 @@ export interface Agenda {
     laporan_kegiatan?: string;
     foto_dokumentasi: string[];
     peserta_details?: { id: string; nama: string }[];
+    jenis_kegiatan?: 'Kebersihan' | 'Sosial' | 'Kerohanian' | 'Keamanan' | 'Pembangunan' | 'Lainnya';
+    perlu_rapat?: boolean;
+    keterangan_tambahan?: string;
 }
 
 export interface Keuangan {

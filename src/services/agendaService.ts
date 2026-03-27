@@ -2,6 +2,7 @@ import api from './api';
 import { Agenda } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
+import { notulensiService } from './notulensiService';
 
 export const agendaService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Agenda[]> {
@@ -52,13 +53,31 @@ export const agendaService = {
 
     async create(data: Omit<Agenda, 'id'>): Promise<string> {
         const response = await api.post(`/agenda`, data);
+        const newId = response.data.id;
+
+        // Auto-create Notulensi if requested
+        if (data.perlu_rapat) {
+            try {
+                await notulensiService.create({
+                    tenant_id: data.tenant_id,
+                    scope: data.scope,
+                    judul: `Rapat: ${data.judul}`,
+                    tanggal: data.tanggal,
+                    konten: `Laporan rapat otomatis dari Agenda: ${data.judul}.\n\nKeterangan: ${data.keterangan_tambahan || '-'}`,
+                    agenda_id: newId
+                });
+            } catch (err) {
+                console.error("Gagal membuat notulensi otomatis:", err);
+            }
+        }
+
         await aktivitasService.logActivity(
             data.tenant_id,
             data.scope as ScopeType,
             'Buat Agenda',
-            `Membuat agenda baru: ${data.judul}`
+            `Membuat agenda baru: ${data.judul} ${data.perlu_rapat ? '(Auto-create Notulen)' : ''}`
         );
-        return response.data.id;
+        return newId;
     },
 
     async update(id: string, data: Partial<Agenda>): Promise<number> {

@@ -45,7 +45,10 @@ export default function AgendaForm() {
                         butuh_pendanaan: data.butuh_pendanaan,
                         nominal_biaya: data.nominal_biaya,
                         sumber_dana: data.sumber_dana,
-                        peserta_ids: data.peserta_ids
+                        peserta_ids: data.peserta_ids,
+                        jenis_kegiatan: data.jenis_kegiatan,
+                        perlu_rapat: data.perlu_rapat,
+                        keterangan_tambahan: data.keterangan_tambahan
                     });
                     const hasParticipants = data.peserta_ids && data.peserta_ids.length > 0;
                     setSelectedParticipants(data.peserta_ids || []);
@@ -155,6 +158,50 @@ export default function AgendaForm() {
                                 />
                                 {errors.deskripsi && <p className="text-red-500 text-xs mt-1">{errors.deskripsi.message}</p>}
                             </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-normal text-gray-700 mb-1">
+                                        Jenis Kegiatan
+                                    </label>
+                                    <select
+                                        {...register('jenis_kegiatan')}
+                                        className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors"
+                                    >
+                                        <option value="">-- Pilih Jenis --</option>
+                                        <option value="Kebersihan">Kebersihan</option>
+                                        <option value="Sosial">Sosial</option>
+                                        <option value="Kerohanian">Kerohanian</option>
+                                        <option value="Keamanan">Keamanan</option>
+                                        <option value="Pembangunan">Pembangunan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                
+                                {watch('jenis_kegiatan') && (
+                                    <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 animate-in fade-in slide-in-from-top-2">
+                                        <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+
+                            {watch('jenis_kegiatan') && (
+                                <div className="animate-in fade-in slide-in-from-top-2">
+                                    <label className="block text-sm font-normal text-gray-700 mb-1">
+                                        Keterangan Terkait {watch('jenis_kegiatan')}
+                                    </label>
+                                    <textarea
+                                        rows={3}
+                                        {...register('keterangan_tambahan')}
+                                        className="w-full rounded-xl p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors text-sm"
+                                        placeholder={`Detail tambahan untuk kegiatan ${watch('jenis_kegiatan')}...`}
+                                    />
+                                </div>
+                            )}
 
                             <div className="pt-2">
                                 <FileUpload
