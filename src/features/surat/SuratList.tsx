@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { suratService, SuratWithWarga } from '../../services/suratService';
 import { SuratPengantar } from '../../database/db';
 import { dateUtils } from '../../utils/date';
-import { Plus, MagnifyingGlass, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCircle, Printer } from '@phosphor-icons/react';
+import { Plus, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCircle, Printer } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 
 export default function SuratList() {
@@ -87,13 +87,12 @@ export default function SuratList() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
                     <div className="relative w-full sm:w-96">
-                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
                             type="text"
                             placeholder="Cari pemohon atau jenis surat..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors shadow-sm"
+                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors shadow-sm"
                         />
                     </div>
                     <button className="w-full sm:w-auto flex justify-center items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors">

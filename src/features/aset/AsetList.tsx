@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { asetService } from '../../services/asetService';
 import { wargaService } from '../../services/wargaService';
 import { Aset, Warga } from '../../database/db';
-import { Plus, MagnifyingGlass, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -129,13 +129,12 @@ export default function AsetList() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
                     <div className="relative w-full sm:w-96">
-                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
                             type="text"
                             placeholder="Cari nama barang..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
                         />
                     </div>
                     <select

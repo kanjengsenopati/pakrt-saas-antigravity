@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     CheckCircle, Users, CurrencyCircleDollar,
     ArrowRight, MapPinLine,
-    ChartLineUp, Wallet, Bell, MagnifyingGlass, House, Envelope,
+    ChartLineUp, Wallet, Bell, House, Envelope,
     Article, Calendar, Package, Heart, Flashlight, Megaphone, CaretDown, CaretUp, Buildings, SignIn
 } from '@phosphor-icons/react';
 import { useTenant } from '../../contexts/TenantContext';
@@ -155,7 +155,7 @@ export default function LandingPage() {
                                 <div className="flex-1 bg-gray-50 flex flex-col overflow-hidden">
                                     {/* Header Mock */}
                                     <div className="h-12 bg-white border-b border-gray-100 flex items-center justify-between px-6 shrink-0 z-10">
-                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-100 px-3 py-1.5 rounded-full w-48"><MagnifyingGlass className="w-3 h-3" /> <span className="text-[10px]">Cari data...</span></div>
+                                        <div className="flex items-center gap-2 text-gray-400 bg-gray-100 px-3 py-1.5 rounded-full w-48"><span className="text-[10px]">Cari data...</span></div>
                                         <div className="flex items-center gap-3"><Bell weight="fill" className="w-4 h-4 text-gray-300" /><div className="w-6 h-6 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center text-[10px] font-bold border border-brand-200">A</div></div>
                                     </div>
                                     {/* Content Dashboard */}

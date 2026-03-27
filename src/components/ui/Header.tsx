@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, MagnifyingGlass, SignOut, CaretDown, User as UserIcon, Plus, Minus } from '@phosphor-icons/react';
+import { Bell, SignOut, CaretDown, User as UserIcon, Plus, Minus } from '@phosphor-icons/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFont } from '../../contexts/FontContext';
 import { SyncStatus } from './SyncStatus';
@@ -21,11 +21,10 @@ export function Header() {
             <div className="flex items-center gap-2 md:gap-4 flex-1">
                 {/* Desktop Search */}
                 <div className="relative w-full max-w-sm hidden md:block">
-                    <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Cari warga, aset, surat..."
-                        className="w-full pl-12 pr-4 py-2.5 bg-gray-100/50 border-none rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all duration-300 group-focus-within:shadow-inner"
+                        className="w-full pl-4 pr-4 py-2.5 bg-gray-100/50 border-none rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all duration-300 group-focus-within:shadow-inner"
                     />
                 </div>
                 {/* Mobile Identity */}

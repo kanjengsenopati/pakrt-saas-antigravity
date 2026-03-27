@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { Plus, MagnifyingGlass, Funnel, PencilSimple, Trash, UserList, ListDashes, SquaresFour, WarningCircle } from '@phosphor-icons/react';
+import { Plus, Funnel, PencilSimple, Trash, UserList, ListDashes, SquaresFour, WarningCircle } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 
@@ -125,13 +125,12 @@ export default function PengurusList() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
                         <div className="relative w-full sm:w-96">
-                            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
                                 placeholder="Cari berdasarkan Jabatan atau Nama..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                                className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
                             />
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { notulensiService, NotulensiWithKehadiran } from '../../services/notulensiService';
 import { Notulensi } from '../../database/db';
-import { Plus, MagnifyingGlass, Funnel, Trash, Notebook, CalendarBlank, Eye, XCircle, CheckCircle, Pencil, MagnifyingGlassPlus, X, CircleNotch, MapPin, Image as ImageIcon, CaretDown, CaretUp, UsersThree } from '@phosphor-icons/react';
+import { Plus, Funnel, Trash, Notebook, CalendarBlank, Eye, XCircle, CheckCircle, Pencil, MagnifyingGlassPlus, X, CircleNotch, MapPin, Image as ImageIcon, CaretDown, CaretUp, UsersThree } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
@@ -193,13 +193,12 @@ export default function NotulensiList() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col lg:flex-row justify-between gap-4 bg-gray-50/50">
                     <div className="relative flex-1 max-w-md">
-                        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
                             type="text"
                             placeholder="Cari Judul, Tanggal, atau Tuan Rumah..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
                         />
                     </div>
 
