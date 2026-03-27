@@ -129,7 +129,7 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     }
   });
 
-  fastify.post('/:id/resubmit', { preHandler: [requirePermission('Iuran Warga', 'Ubah')] }, async (request, reply) => {
+  fastify.post('/:id/resubmit', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
     try {
       const { id } = request.params as any;
       const data = request.body as any;

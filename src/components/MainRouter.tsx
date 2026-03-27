@@ -276,7 +276,7 @@ const router = createBrowserRouter([
             {
                 path: 'iuran/edit/:id',
                 element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Ubah' }}>
+                    <ProtectedRoute>
                         <IuranForm />
                     </ProtectedRoute>
                 )
