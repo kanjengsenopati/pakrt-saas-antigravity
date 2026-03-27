@@ -6,23 +6,48 @@ import { syncDb } from './database/syncDb';
 function App() {
     const { isLoading } = useTenant();
 
-    // Cleanup IndexedDB and add Global Error Safeguard
+    // Global UI Cache Buster & Error Safeguard
     useEffect(() => {
-        const cleanup = async () => {
-            console.log("Cleaning up old offline caches...");
+        const UI_VERSION = 'v1.0.3-search-fix';
+        const storedVersion = localStorage.getItem('app_ui_version');
+
+        const forceCleanup = async () => {
+            console.log(`UI Version Change Detected: ${storedVersion} -> ${UI_VERSION}`);
             try {
+                // Clear Service Worker if possible
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                
+                // Clear IndexedDB via syncDb
                 await Promise.all([
                     syncDb.apiCache.clear(),
                     syncDb.syncQueue.clear()
                 ]);
-                console.log("Cache cleared successfully.");
+
+                // Clear all localStorage except auth
+                const authToken = localStorage.getItem('auth_token');
+                const authUser = localStorage.getItem('auth_user');
+                localStorage.clear();
+                if (authToken) localStorage.setItem('auth_token', authToken);
+                if (authUser) localStorage.setItem('auth_user', authUser);
+
+                localStorage.setItem('app_ui_version', UI_VERSION);
+                console.log("Global cache cleared. Reloading...");
+                window.location.reload();
             } catch (err) {
-                console.error("Failed to clear cache:", err);
+                console.error("Failed to force cleanup:", err);
             }
         };
 
+        if (storedVersion !== UI_VERSION) {
+            forceCleanup();
+        }
+
         const handleGlobalError = (event: ErrorEvent) => {
-            // Catch the specific Recharts/React19 internal "Activity" error
             if (event.message?.includes("'Activity'") || event.message?.includes("undefined (setting 'Activity')")) {
                 console.warn("Caught and suppressed Recharts/React19 Activity instability error.");
                 event.preventDefault();
@@ -30,7 +55,6 @@ function App() {
             }
         };
 
-        cleanup();
         window.addEventListener('error', handleGlobalError);
         return () => window.removeEventListener('error', handleGlobalError);
     }, []);

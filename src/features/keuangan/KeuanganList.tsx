@@ -33,22 +33,7 @@ export default function KeuanganList() {
     const [selectedProof, setSelectedProof] = useState<string | null>(null);
 
 
-    useEffect(() => {
-        const CACHE_VERSION = 'pakrt_finance_v1.2';
-        if (!localStorage.getItem(CACHE_VERSION)) {
-            // Clear all older finance cache keys
-            const keysToRemove: string[] = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('pakrt_finance_v')) keysToRemove.push(key);
-            }
-            keysToRemove.forEach(k => localStorage.removeItem(k));
-            localStorage.setItem(CACHE_VERSION, 'true');
-            console.log("Finance cache updated to v1.2. Reloading...");
-            window.location.reload();
-        }
-    }, []);
-
+    // Data loading handled by Tenant changes
     useEffect(() => {
         if (currentTenant) {
             loadData();
