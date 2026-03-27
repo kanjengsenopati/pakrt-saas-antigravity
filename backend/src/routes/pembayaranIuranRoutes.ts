@@ -129,6 +129,31 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     }
   });
 
+  fastify.post('/:id/resubmit', { preHandler: [requirePermission('Iuran Warga', 'Ubah')] }, async (request, reply) => {
+    try {
+      const { id } = request.params as any;
+      const data = request.body as any;
+      const user = (request as any).user;
+      const scope = (request as any).permissionScope;
+
+      const existing = await pembayaranIuranService.getById(id);
+      if (!existing || existing.tenant_id !== user.tenant_id) {
+        return reply.code(404).send({ error: 'Not found or unauthorized' });
+      }
+
+      // Restriction: Warga can only resubmit their own
+      if (scope === 'personal' && user.warga_id !== existing.warga_id) {
+        return reply.code(403).send({ error: 'Forbidden', message: 'Anda hanya dapat mengajukan ulang data iuran sendiri.' });
+      }
+
+      const item = await pembayaranIuranService.resubmit(id, data);
+      return item;
+    } catch (err: any) {
+      fastify.log.error(err);
+      return reply.code(500).send({ error: err.message || 'Failed to resubmit' });
+    }
+  });
+
   fastify.get('/billing/:wargaId', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
     const { wargaId } = request.params as any;
     const { tahun, kategori, scope } = request.query as any;

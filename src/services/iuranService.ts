@@ -52,8 +52,13 @@ export const iuranService = {
     },
 
     async verify(id: string, status: string, alasan?: string): Promise<void> {
-        const finalStatus = status === 'VERIFY' ? 'VERIFIED' : (status === 'REJECT' ? 'REJECTED' : status);
-        await api.post(`/iuran/${id}/verify`, { status: finalStatus, alasan_penolakan: alasan });
+        // Backend expects: { action: 'VERIFY' | 'REJECT', alasan?: string }
+        const action = (status === 'VERIFY' || status === 'VERIFIED') ? 'VERIFY' : 'REJECT';
+        await api.post(`/iuran/${id}/verify`, { action, alasan });
+    },
+
+    async resubmit(id: string, updateData?: { url_bukti?: string }): Promise<void> {
+        await api.post(`/iuran/${id}/resubmit`, updateData || {});
     },
 
     async syncAllToKeuangan(tenantId: string, scope: ScopeType): Promise<void> {

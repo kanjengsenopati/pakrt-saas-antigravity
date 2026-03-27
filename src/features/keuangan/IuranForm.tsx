@@ -223,7 +223,13 @@ export default function IuranForm() {
             };
 
             if (isEdit && id) {
-                await iuranService.update(id, payload);
+                if (currentStatus === 'REJECTED') {
+                    // Warga resubmitting rejected payment
+                    await iuranService.resubmit(id, { url_bukti: payload.url_bukti });
+                } else {
+                    // Normal admin update
+                    await iuranService.update(id, payload);
+                }
             } else {
                 await iuranService.create(payload);
             }

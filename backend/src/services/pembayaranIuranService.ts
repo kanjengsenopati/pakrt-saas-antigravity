@@ -409,6 +409,34 @@ export const pembayaranIuranService = {
     });
   },
 
+  async resubmit(id: string, updateData?: { url_bukti?: string }) {
+    return await prisma.$transaction(async (tx) => {
+        const iuran = await tx.pembayaranIuran.findUnique({ where: { id } });
+
+        if (!iuran) throw new Error('Data iuran tidak ditemukan');
+        if (iuran.status !== 'REJECTED') throw new Error('Hanya pembayaran yang ditolak yang dapat diajukan ulang');
+
+        const result = await tx.pembayaranIuran.update({
+            where: { id },
+            data: {
+                status: 'PENDING',
+                alasan_penolakan: null, // Clear old rejection reason
+                ...(updateData?.url_bukti ? { url_bukti: updateData.url_bukti } : {}),
+            }
+        });
+
+        await aktivitasService.create({
+            tenant_id: result.tenant_id,
+            scope: result.scope || 'RT',
+            action: 'Ajukan Ulang Iuran',
+            details: `Warga mengajukan ulang pembayaran iuran yang ditolak: ${result.kategori}`,
+            timestamp: Date.now()
+        });
+
+        return result;
+    });
+  },
+
   async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori?: string, scope: string = 'RT') {
     const rate = await getWargaIuranRate(wargaId, tenantId, scope);
     

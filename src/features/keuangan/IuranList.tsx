@@ -318,15 +318,28 @@ export default function IuranList() {
                                                         </button>
                                                     </HasPermission>
                                                 )}
-                                                <HasPermission module="Iuran Warga" action="Ubah">
-                                                    <button
-                                                        onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
-                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors shadow-sm bg-white border border-blue-100"
-                                                        title="Ubah Data"
-                                                    >
-                                                        <PencilSimple weight="bold" className="w-4 h-4" />
-                                                    </button>
-                                                </HasPermission>
+                                                {iuran.status === 'REJECTED' && (
+                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                        <button
+                                                            onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
+                                                            title="Edit & Ajukan Ulang"
+                                                        >
+                                                            Ajukan Ulang
+                                                        </button>
+                                                    </HasPermission>
+                                                )}
+                                                {(iuran.status === 'PENDING' || iuran.status === 'VERIFIED') && (
+                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                        <button
+                                                            onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors shadow-sm bg-white border border-blue-100"
+                                                            title="Ubah Data"
+                                                        >
+                                                            <PencilSimple weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                )}
                                                 {iuran.url_bukti && (
                                                     <button
                                                         onClick={() => setViewProofUrl(iuran.url_bukti || null)}
@@ -465,14 +478,27 @@ export default function IuranList() {
                                                     <ImageIcon weight="bold" className="w-4 h-4" />
                                                 </button>
                                             )}
-                                            <HasPermission module="Iuran Warga" action="Ubah">
-                                                <button
-                                                    onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
-                                                    className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50"
-                                                >
-                                                    <PencilSimple weight="bold" className="w-4 h-4" />
-                                                </button>
-                                            </HasPermission>
+                                            {iuran.status === 'REJECTED' && (
+                                                <HasPermission module="Iuran Warga" action="Ubah">
+                                                    <button
+                                                        onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                        className="flex items-center gap-1.5 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-sm font-semibold transition-all shadow-sm flex-1 md:flex-none justify-center"
+                                                        title="Edit & Ajukan Ulang"
+                                                    >
+                                                        Ajukan Ulang
+                                                    </button>
+                                                </HasPermission>
+                                            )}
+                                            {(iuran.status === 'PENDING' || iuran.status === 'VERIFIED') && (
+                                                <HasPermission module="Iuran Warga" action="Ubah">
+                                                    <button
+                                                        onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                        className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50 flex-1 md:flex-none flex items-center justify-center"
+                                                    >
+                                                        <PencilSimple weight="bold" className="w-4 h-4" />
+                                                    </button>
+                                                </HasPermission>
+                                            )}
                                             <HasPermission module="Iuran Warga" action="Hapus">
                                                 <button
                                                     onClick={() => handleDelete(iuran.id)}
