@@ -570,11 +570,6 @@ export default function AgendaList() {
                                     })
                                 )}
                             </tbody>
-                                            </React.Fragment>
-                                        );
-                                    })
-                                )}
-                            </tbody>
                         </table>
 
                     </div>
