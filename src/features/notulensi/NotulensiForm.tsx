@@ -61,7 +61,9 @@ export default function NotulensiForm() {
                         tuan_rumah_id: data.tuan_rumah_id,
                         lokasi: data.lokasi,
                         url_foto: data.url_foto,
-                        konten: data.konten
+                        konten: data.konten,
+                        jam_mulai: data.jam_mulai,
+                        jam_selesai: data.jam_selesai
                     });
                     setUrlFoto(data.url_foto || null);
                     setSelectedHostId(data.tuan_rumah_id || null);
@@ -176,7 +178,9 @@ export default function NotulensiForm() {
             const finalData = {
                 ...data,
                 url_foto: urlFoto || undefined,
-                tuan_rumah_id: selectedHostId || undefined
+                tuan_rumah_id: selectedHostId || undefined,
+                jam_mulai: data.jam_mulai,
+                jam_selesai: data.jam_selesai
             };
 
             if (isEditing && id) {
@@ -265,6 +269,28 @@ export default function NotulensiForm() {
                                             className={`w-full rounded-xl p-4 border transition-all outline-none font-normal shadow-sm ${errors.tanggal ? 'border-rose-200 bg-rose-50 focus:ring-rose-200' : 'border-slate-100 bg-slate-50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10'}`}
                                         />
                                         {errors.tanggal && <p className="text-rose-500 text-[10px] font-bold tracking-tight mt-2 px-1 animate-pulse">{errors.tanggal.message}</p>}
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
+                                                Jam Mulai
+                                            </label>
+                                            <input
+                                                type="time"
+                                                {...register('jam_mulai')}
+                                                className="w-full rounded-xl p-4 border border-slate-100 bg-slate-50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none font-normal shadow-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
+                                                Jam Selesai
+                                            </label>
+                                            <input
+                                                type="time"
+                                                {...register('jam_selesai')}
+                                                className="w-full rounded-xl p-4 border border-slate-100 bg-slate-50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none font-normal shadow-sm"
+                                            />
+                                        </div>
                                     </div>
                                     <div className="relative">
                                         <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">

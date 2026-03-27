@@ -1,5 +1,6 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
+import { pushService } from './pushService';
 
 export const agendaService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -58,7 +59,29 @@ export const agendaService = {
 
   async create(data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.agenda.create({ data });
+    const agenda = await prisma.agenda.create({ data });
+
+    // Trigger Push Notification
+    try {
+        const payload = {
+            title: 'Agenda Baru: ' + agenda.judul,
+            body: `Kegiatan baru pada ${dateUtils.toDisplay(agenda.tanggal)}. Cek detailnya sekarang!`,
+            icon: '/pwa-192x192.png',
+            data: { url: '/agenda', id: agenda.id }
+        };
+
+        if (agenda.is_semua_warga) {
+            await pushService.sendNotificationToScope(agenda.tenant_id, agenda.scope, payload);
+        } else if (agenda.peserta_ids && agenda.peserta_ids.length > 0) {
+            await Promise.all(agenda.peserta_ids.map(id => 
+                pushService.sendNotificationToWarga(id, payload)
+            ));
+        }
+    } catch (error) {
+        console.error('Error sending agenda push notification:', error);
+    }
+
+    return agenda;
   },
 
   async update(id: string, data: any) {

@@ -75,6 +75,7 @@ model Warga {
   surat_pengantars  SuratPengantar[]
   pembayaran_iurans PembayaranIuran[]
   aset_dipinjam     Aset[] @relation("WargaPeminjam")
+  push_subscriptions PushSubscription[]
   user              User?
 
   @@unique([tenant_id, nik])
@@ -136,6 +137,8 @@ model Notulensi {
   url_foto  String?
   konten    String
   agenda_id String?
+  jam_mulai String?
+  jam_selesai String?
 
   kehadirans Kehadiran[]
 
@@ -151,8 +154,21 @@ model Kehadiran {
 
   notulensi    Notulensi @relation(fields: [notulensi_id], references: [id], onDelete: Cascade)
   warga        Warga     @relation(fields: [warga_id], references: [id], onDelete: Cascade)
-
+  
   @@index([tenant_id, notulensi_id, warga_id])
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  warga_id  String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  warga     Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([warga_id])
 }
 
 model Aset {
@@ -226,6 +242,8 @@ model Agenda {
   tuan_rumah_id       String?
   tuan_rumah          String?
   lokasi              String?
+  jam_mulai           String?
+  jam_selesai         String?
 
   @@index([tenant_id, scope, tanggal])
 }

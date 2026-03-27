@@ -13,7 +13,10 @@ import {
     FileText,
     HandCoins,
     CreditCard,
-    ArrowRight
+    ArrowRight,
+    Bell,
+    X,
+    SpeakerHigh
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { aktivitasService } from '../../services/aktivitasService';
@@ -26,6 +29,7 @@ import { keuanganService } from '../../services/keuanganService';
 import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
 import { dateUtils } from '../../utils/date';
+import { pushNotificationUtil } from '../../utils/pushNotification';
 
 const toTitleCase = (str: string) => {
     if (!str) return '';
@@ -44,14 +48,16 @@ export default function Dashboard() {
     const [recentIuran, setRecentIuran] = useState<IuranWithWarga[]>([]);
     const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
     const [wargaIuranStats, setWargaIuranStats] = useState({ totalPaid: 0, expected: 0, rate: 0, paidMonths: [] as number[] });
+    const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+    const [isSubscribing, setIsSubscribing] = useState(false);
 
     const isWarga = useMemo(() =>
         authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
     [authUser?.role, authUser?.role_entity?.name]);
 
     const wargaId = useMemo(() =>
-        authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null,
-    [authUser?.id, isWarga]);
+        (authUser as any)?.warga_id || authUser?.id,
+    [authUser]);
 
     const fetchStats = useCallback(async () => {
         if (!currentTenant) return;
@@ -173,6 +179,16 @@ export default function Dashboard() {
     }, [currentTenant, currentScope, isWarga, wargaId]);
 
     useEffect(() => {
+        const checkNotificationStatus = async () => {
+            if (await pushNotificationUtil.isSupported()) {
+                const permission = Notification.permission;
+                if (permission === 'default') {
+                    setShowNotificationPrompt(true);
+                }
+            }
+        };
+        checkNotificationStatus();
+
         fetchStats();
         fetchActivities();
         const interval = setInterval(() => { 
@@ -181,6 +197,21 @@ export default function Dashboard() {
         }, 60000); 
         return () => clearInterval(interval);
     }, [fetchStats, fetchActivities]);
+
+    const handleSubscribe = async () => {
+        setIsSubscribing(true);
+        try {
+            const granted = await pushNotificationUtil.requestPermission();
+            if (granted && wargaId) {
+                await pushNotificationUtil.subscribeUser(wargaId);
+                setShowNotificationPrompt(false);
+            }
+        } catch (error) {
+            console.error('Error in handleSubscribe:', error);
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
 
     const getRondaSubtitle = () => {
         if (upcomingRonda.length === 0) return '';
@@ -217,6 +248,76 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-4 animate-fade-in pb-6">
+            {showNotificationPrompt && (
+                <div className="bg-gradient-to-r from-brand-600 to-emerald-600 rounded-2xl p-5 shadow-lg border border-brand-500/20 relative overflow-hidden animate-in slide-in-from-top-4 duration-500 group">
+                    <div className="absolute -right-6 -top-6 bg-white/10 w-32 h-32 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+                    <div className="absolute -left-6 -bottom-6 bg-emerald-400/10 w-24 h-24 rounded-full blur-2xl" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-inner group-hover:rotate-6 transition-transform">
+                                <Bell weight="fill" className="w-7 h-7 text-white animate-bounce-subtle" />
+                            </div>
+                            <div className="text-white">
+                                <h3 className="text-lg font-bold tracking-tight flex items-center gap-2">
+                                    Aktifkan Notifikasi Pintar
+                                    <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/30">PWA</span>
+                                </h3>
+                                <p className="text-sm text-brand-50/90 font-medium leading-relaxed max-w-md mt-0.5">
+                                    Dapatkan info terbaru, agenda RT, dan notulensi secara <span className="text-white font-bold underline decoration-emerald-400 underline-offset-2">real-time</span> langsung di HP Anda.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 w-full md:w-auto">
+                            <button 
+                                onClick={() => setShowNotificationPrompt(false)}
+                                className="flex-1 md:flex-none px-5 py-2.5 text-white/80 hover:text-white font-bold text-sm transition-colors rounded-xl hover:bg-white/10"
+                            >
+                                Nanti Saja
+                            </button>
+                            <button 
+                                onClick={handleSubscribe}
+                                disabled={isSubscribing}
+                                className="flex-1 md:flex-none px-6 py-2.5 bg-white text-brand-700 hover:bg-brand-50 font-black text-sm rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
+                            >
+                                {isSubscribing ? (
+                                    <div className="w-4 h-4 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        Aktifkan Sekarang
+                                        <ArrowRight weight="bold" className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+                            <button 
+                                onClick={async () => {
+                                    if (!wargaId) return;
+                                    const axios = (await import('axios')).default;
+                                    await axios.post(`${import.meta.env.VITE_API_URL || '/api'}/push/test`, {
+                                        warga_id: wargaId,
+                                        title: 'Halo!',
+                                        body: 'Ini adalah uji coba notifikasi prominent dari PAKRT.'
+                                    }, {
+                                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                                    });
+                                }}
+                                className="flex-1 md:flex-none px-4 py-2.5 bg-brand-500/20 text-white hover:bg-white/20 font-bold text-xs rounded-xl border border-white/20 transition-all flex items-center justify-center gap-2"
+                            >
+                                <SpeakerHigh weight="bold" className="w-4 h-4" />
+                                Test Notif
+                            </button>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => setShowNotificationPrompt(false)}
+                        className="absolute top-2 right-2 p-1.5 text-white/40 hover:text-white transition-colors hover:bg-white/10 rounded-full"
+                    >
+                        <X size={16} weight="bold" />
+                    </button>
+                </div>
+            )}
+
             <div className="flex items-baseline gap-3">
                 <h1 className="page-title">Dashboard</h1>
                 <span className="text-sm text-gray-500 font-medium">Scope: <span className="font-semibold text-brand-600 tracking-wide">{currentScope}</span></span>

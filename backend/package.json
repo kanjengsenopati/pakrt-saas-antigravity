@@ -22,12 +22,14 @@
         "exceljs": "^4.4.0",
         "fastify": "^5.8.1",
         "pino": "^8.19.0",
+        "web-push": "^3.6.7",
         "xlsx": "^0.18.5",
         "zod": "^3.25.76"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",
         "@types/node": "^20.11.24",
+        "@types/web-push": "^3.6.4",
         "nodemon": "^3.1.0",
         "prisma": "^5.10.2",
         "ts-node": "^10.9.2",

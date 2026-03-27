@@ -65,7 +65,9 @@ export default function AgendaForm() {
                         keterangan_tambahan: data.keterangan_tambahan,
                         tuan_rumah: data.tuan_rumah,
                         tuan_rumah_id: data.tuan_rumah_id,
-                        lokasi: data.lokasi
+                        lokasi: data.lokasi,
+                        jam_mulai: data.jam_mulai,
+                        jam_selesai: data.jam_selesai
                     });
                     setSelectedParticipants(data.peserta_ids || []);
                     setIsAllWarga(data.is_semua_warga ?? (data.peserta_ids?.length === 0));
@@ -108,7 +110,9 @@ export default function AgendaForm() {
                 sumber_dana: data.butuh_pendanaan ? data.sumber_dana : undefined,
                 tuan_rumah_id: selectedHostId || undefined,
                 tuan_rumah: data.tuan_rumah,
-                lokasi: data.lokasi
+                lokasi: data.lokasi,
+                jam_mulai: data.jam_mulai,
+                jam_selesai: data.jam_selesai
             };
 
             if (isEditing && id) {
@@ -300,6 +304,28 @@ export default function AgendaForm() {
                                         className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.tanggal ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
                                     />
                                     {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal.message}</p>}
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-normal text-gray-700 mb-1">
+                                            Jam Mulai
+                                        </label>
+                                        <input
+                                            type="time"
+                                            {...register('jam_mulai')}
+                                            className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 outline-none transition-colors"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-normal text-gray-700 mb-1">
+                                            Jam Selesai
+                                        </label>
+                                        <input
+                                            type="time"
+                                            {...register('jam_selesai')}
+                                            className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-gray-50 outline-none transition-colors"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

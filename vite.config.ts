@@ -8,8 +8,12 @@ export default defineConfig({
     plugins: [
         react(),
         VitePWA({
+            strategies: 'injectManifest',
+            srcDir: 'src',
+            filename: 'sw.ts',
             registerType: 'autoUpdate',
-            includeAssets: ['favicon.ico', 'pwa-512x512.png'],
+            injectRegister: 'auto',
+            includeAssets: ['favicon.ico', 'pwa-512x512.png', 'sounds/*.mp3'],
             manifest: {
                 name: 'PAKRT - Sistem Manajemen RT',
                 short_name: 'PAKRT',

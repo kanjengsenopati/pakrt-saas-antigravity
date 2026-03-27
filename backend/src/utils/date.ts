@@ -35,5 +35,12 @@ export const dateUtils = {
         }
 
         return dateStr; // Fallback to original if can't normalize
+    },
+
+    toDisplay: (dateStr: string | null | undefined): string => {
+        if (!dateStr) return '-';
+        const [year, month, day] = dateStr.split('-');
+        if (!year || !month || !day) return dateStr;
+        return `${day}/${month}/${year}`;
     }
 };

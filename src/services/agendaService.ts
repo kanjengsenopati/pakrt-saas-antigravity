@@ -66,6 +66,8 @@ export const agendaService = {
                     tuan_rumah: data.tuan_rumah,
                     tuan_rumah_id: data.tuan_rumah_id,
                     lokasi: data.lokasi,
+                    jam_mulai: data.jam_mulai,
+                    jam_selesai: data.jam_selesai,
                     konten: `Laporan rapat otomatis dari Agenda: ${data.judul}.\n\nKeterangan: ${data.keterangan_tambahan || '-'}`,
                     agenda_id: newId
                 });

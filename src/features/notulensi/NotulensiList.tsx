@@ -303,12 +303,19 @@ export default function NotulensiList() {
                                         <tr key={notulensi.id} className={`hover:bg-slate-50/30 transition-all group ${expandedId === notulensi.id ? 'bg-slate-50/50' : ''}`}>
                                             <td className="p-4 align-top">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
-                                                        <CalendarBlank weight="bold" className="w-4 h-4" />
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-1">
+                                                            <CalendarBlank weight="bold" className="w-4 h-4" />
+                                                        </div>
+                                                        {notulensi.jam_mulai && (
+                                                            <span className="text-[9px] font-bold text-slate-500 bg-slate-100 px-1 rounded border border-slate-200/50">
+                                                                {notulensi.jam_mulai}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <span className="text-sm font-bold capitalize tracking-tight text-slate-900">
-    {dateUtils.toDisplay(notulensi.tanggal)}
-</span>
+                                                        {dateUtils.toDisplay(notulensi.tanggal)}
+                                                    </span>
                                                 </div>
                                             </td>
                                             <td className="p-4 align-top text-center">
@@ -420,9 +427,14 @@ export default function NotulensiList() {
                                     <div className="p-4" onClick={() => handleToggleExpand(notulensi.id)}>
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
+                                                <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner min-w-[50px]">
                                                     <span className="text-[8px] font-bold leading-none uppercase">{new Date(notulensi.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
                                                     <span className="text-sm font-black leading-none mt-0.5">{new Date(notulensi.tanggal).getDate()}</span>
+                                                    {notulensi.jam_mulai && (
+                                                        <span className="text-[8px] font-bold mt-1 text-slate-500 bg-white/50 px-1 rounded border border-slate-200/50">
+                                                            {notulensi.jam_mulai}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div>
                                                     <h3 className="font-bold text-slate-900 text-[14px] capitalize tracking-tight leading-tight mb-1">{notulensi.judul}</h3>

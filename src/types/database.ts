@@ -95,6 +95,8 @@ export interface Notulensi {
     url_foto?: string;
     konten: string;
     agenda_id?: string;
+    jam_mulai?: string;
+    jam_selesai?: string;
 }
 
 export interface Kehadiran {
@@ -175,6 +177,8 @@ export interface Agenda {
     tuan_rumah_id?: string;
     tuan_rumah?: string;
     lokasi?: string;
+    jam_mulai?: string;
+    jam_selesai?: string;
 }
 
 export interface Keuangan {

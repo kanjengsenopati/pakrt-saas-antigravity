@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useTenant } from './contexts/TenantContext';
 import LandingPage from './features/landing/LandingPage';
 import { syncDb } from './database/syncDb';
+import { pushNotificationUtil } from './utils/pushNotification';
 
 function App() {
     const { isLoading } = useTenant();
@@ -54,6 +55,12 @@ function App() {
                 event.stopPropagation();
             }
         };
+
+        // Initialize Push Notification Foreground Handler
+        pushNotificationUtil.initForegroundHandler((payload) => {
+            console.log("Foreground Notification Received:", payload);
+            // You can trigger a global toast/alert here if needed
+        });
 
         window.addEventListener('error', handleGlobalError);
         return () => window.removeEventListener('error', handleGlobalError);
