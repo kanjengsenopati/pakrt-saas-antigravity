@@ -188,7 +188,9 @@ export default function Dashboard() {
             }
         };
         checkNotificationStatus();
+    }, []);
 
+    useEffect(() => {
         fetchStats();
         fetchActivities();
         const interval = setInterval(() => { 
