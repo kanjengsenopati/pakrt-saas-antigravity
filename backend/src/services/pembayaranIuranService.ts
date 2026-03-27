@@ -396,33 +396,44 @@ export const pembayaranIuranService = {
         tenant_id: tenantId,
         warga_id: wargaId,
         periode_tahun: tahun,
-        status: 'VERIFIED'
+        status: { in: ['VERIFIED', 'PENDING'] }
       }
     });
 
     // Filter payments flexibly
-    const existing = allPayments.filter(p => {
+    const verifiedPayments = allPayments.filter(p => {
+      if (p.status !== 'VERIFIED') return false;
       const pKat = p.kategori.trim().replace(/\s+/g, ' ').toLowerCase();
-      
-      // If a specific category was requested (not the default 'Iuran Warga' or 'Semua')
       if (targetKat && targetKat !== 'iuran warga' && targetKat !== 'semua') {
         return pKat === targetKat;
       }
-      
-      // Default behavior: match anything that contains 'iuran'
       return pKat.includes('iuran');
     });
 
-    const totalPaid = existing.reduce((sum, curr) => sum + curr.nominal, 0);
+    const pendingPayments = allPayments.filter(p => {
+      if (p.status !== 'PENDING') return false;
+      const pKat = p.kategori.trim().replace(/\s+/g, ' ').toLowerCase();
+      if (targetKat && targetKat !== 'iuran warga' && targetKat !== 'semua') {
+        return pKat === targetKat;
+      }
+      return pKat.includes('iuran');
+    });
+
+    const totalPaid = verifiedPayments.reduce((sum, curr) => sum + curr.nominal, 0);
+    const pendingAmount = pendingPayments.reduce((sum, curr) => sum + curr.nominal, 0);
     const expectedTotal = rate * 12;
-    const paidMonths = [...new Set(existing.flatMap(e => e.periode_bulan))].sort((a, b) => a - b);
+    
+    const paidMonths = [...new Set(verifiedPayments.flatMap(e => e.periode_bulan))].sort((a, b) => a - b);
+    const pendingMonths = [...new Set(pendingPayments.flatMap(e => e.periode_bulan))].sort((a, b) => a - b);
 
     return {
       rate,
       expectedTotal,
       totalPaid,
+      pendingAmount,
       paidMonths,
-      sisa: Math.max(0, expectedTotal - totalPaid)
+      pendingMonths,
+      sisa: Math.max(0, expectedTotal - totalPaid - pendingAmount)
     };
   }
 };

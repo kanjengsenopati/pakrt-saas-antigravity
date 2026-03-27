@@ -8,7 +8,7 @@ import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { PembayaranIuran, Warga } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch, Warning, X } from '@phosphor-icons/react';
+import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch, Warning, X, Clock } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { formatRupiah } from '../../utils/currency';
 
@@ -44,7 +44,9 @@ export default function IuranForm() {
 
     // Summary Data State
     const [alreadyPaid, setAlreadyPaid] = useState(0);
+    const [pendingAmount, setPendingAmount] = useState(0);
     const [paidMonthsRecord, setPaidMonthsRecord] = useState<number[]>([]);
+    const [pendingMonthsRecord, setPendingMonthsRecord] = useState<number[]>([]);
 
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
@@ -165,12 +167,15 @@ export default function IuranForm() {
                         currentScope
                     );
                     setAlreadyPaid(result.totalPaid);
-                    setDefaultNominal(result.rate);
+                    setPendingAmount(result.pendingAmount);
                     setPaidMonthsRecord(result.paidMonths);
+                    setPendingMonthsRecord(result.pendingMonths);
 
-                    // Auto-select first unpaid month if not edit and hasn't interacted
+                    // Auto-select first unpaid and non-pending month if not edit and hasn't interacted
                     if (!isEdit && !hasInteracted && result.rate > 0) {
-                        const firstUnpaid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].find(m => !result.paidMonths.includes(m));
+                        const firstUnpaid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].find(m => 
+                            !result.paidMonths.includes(m) && !result.pendingMonths.includes(m)
+                        );
                         if (firstUnpaid) {
                             setSelectedMonths([firstUnpaid]);
                         }
@@ -322,13 +327,19 @@ export default function IuranForm() {
                                     <p className="value-highlight !text-emerald-600">
                                         {formatRupiah(alreadyPaid)}
                                     </p>
-                                    <p className="text-xs text-emerald-500/70 italic font-medium">Hingga periode saat ini</p>
+                                    {pendingAmount > 0 && (
+                                        <div className="flex items-center gap-1.5 mt-1 text-amber-600">
+                                            <Clock className="w-3.5 h-3.5" />
+                                            <span className="text-xs font-bold whitespace-nowrap">Menunggu Verifikasi: {formatRupiah(pendingAmount)}</span>
+                                        </div>
+                                    )}
+                                    <p className="text-xs text-emerald-500/70 italic font-medium mt-1">Hingga periode saat ini</p>
                                 </div>
 
                                 <div className="p-4 bg-brand-50 rounded-xl border border-brand-100 shadow-inner">
                                     <p className="section-label !text-sm text-brand-600 mb-1">Sisa Kewajiban</p>
                                     <p className="text-[22px] font-semibold text-brand-700 tabular-nums leading-none">
-                                        {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
+                                        {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
                                     </p>
                                     <p className="text-xs text-brand-500 mt-2 font-medium italic">
                                         {paymentMode === 'Pas' ? '*(Otomatis Mode Pas)' : '*(Setelah nominal ini lunas)'}
@@ -480,31 +491,44 @@ export default function IuranForm() {
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
-                                            {MONTHS.map(m => (
-                                                <button
-                                                    key={m.value}
-                                                    type="button"
-                                                    disabled={paidMonthsRecord.includes(m.value)}
-                                                    onClick={() => toggleMonth(m.value)}
-                                                    className={`py-2 px-1 text-sm font-semibold rounded-lg border transition-all relative ${paidMonthsRecord.includes(m.value)
-                                                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
-                                                        : selectedMonths.includes(m.value)
-                                                            ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                            : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50 hover:border-gray-200'
-                                                        }`}
-                                                >
-                                                    {m.label.substring(0, 3)}
-                                                    {paidMonthsRecord.includes(m.value) ? (
-                                                        <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5">
-                                                            <CheckCircle weight="fill" className="w-2.5 h-2.5" />
-                                                        </div>
-                                                    ) : selectedMonths.includes(m.value) && (
-                                                        <div className="absolute -top-1 -right-1 bg-brand-500 text-white rounded-full p-0.5">
-                                                            <CheckCircle weight="fill" className="w-2.5 h-2.5" />
-                                                        </div>
-                                                    )}
-                                                </button>
-                                            ))}
+                                            {MONTHS.map(m => {
+                                                const isPaid = paidMonthsRecord.includes(m.value);
+                                                const isPending = pendingMonthsRecord.includes(m.value);
+                                                const isSelected = selectedMonths.includes(m.value);
+
+                                                return (
+                                                    <button
+                                                        key={m.value}
+                                                        type="button"
+                                                        disabled={isPaid || isPending}
+                                                        onClick={() => toggleMonth(m.value)}
+                                                        className={`py-2 px-1 text-sm font-semibold rounded-lg border transition-all relative ${
+                                                            isPaid
+                                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
+                                                                : isPending
+                                                                    ? 'bg-amber-50 border-amber-200 text-amber-700 cursor-not-allowed opacity-80'
+                                                                    : isSelected
+                                                                        ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
+                                                                        : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50 hover:border-gray-200'
+                                                            }`}
+                                                    >
+                                                        {m.label.substring(0, 3)}
+                                                        {isPaid ? (
+                                                            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5">
+                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                            </div>
+                                                        ) : isPending ? (
+                                                            <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5">
+                                                                <Clock weight="fill" className="w-2.5 h-2.5" />
+                                                            </div>
+                                                        ) : isSelected && (
+                                                            <div className="absolute -top-1 -right-1 bg-brand-500 text-white rounded-full p-0.5">
+                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                            </div>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                         {selectedMonths.length === 0 && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
                                     </div>
