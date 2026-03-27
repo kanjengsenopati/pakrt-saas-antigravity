@@ -121,7 +121,7 @@ export default function AgendaList() {
     const [laporanText, setLaporanText] = useState('');
     const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
-    const [activeTab, setActiveTab] = useState<'summary' | 'list'>('summary');
+    const [activeTab, setActiveTab] = useState<'summary' | 'list'>('list');
 
 
     const handleDelete = async (id: string, judul: string) => {
@@ -204,7 +204,7 @@ export default function AgendaList() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 className="page-title">Informasi Kegiatan</h1>
-                    <p className="text-sm text-gray-500 mt-1 font-medium tracking-normal">Log aktivitas dan jadwal kegiatan warga</p>
+                    <p className="text-sm text-gray-500 mt-1 font-medium tracking-normal">Daftar aktivitas dan jadwal kegiatan warga</p>
                 </div>
                 <HasPermission module="Agenda" action="Buat">
                     <button
@@ -219,16 +219,16 @@ export default function AgendaList() {
 
             <div className="flex space-x-2 border-b border-gray-100 pb-1">
                 <button
+                    onClick={() => setActiveTab('list')}
+                    className={`px-5 py-3 font-medium text-sm tracking-wide transition-all border-b-2 ${activeTab === 'list' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
+                >
+                    Daftar Aktivitas
+                </button>
+                <button
                     onClick={() => setActiveTab('summary')}
                     className={`px-5 py-3 font-medium text-sm tracking-wide transition-all border-b-2 ${activeTab === 'summary' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
                 >
                     Dashboard Monitor
-                </button>
-                <button
-                    onClick={() => setActiveTab('list')}
-                    className={`px-5 py-3 font-medium text-sm tracking-wide transition-all border-b-2 ${activeTab === 'list' ? 'text-brand-600 border-brand-600 bg-brand-50/50 rounded-t-xl' : 'text-slate-400 border-transparent hover:text-slate-600 hover:bg-slate-50 rounded-t-xl'}`}
-                >
-                    Log Aktivitas
                 </button>
             </div>
 
