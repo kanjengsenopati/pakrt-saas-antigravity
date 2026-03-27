@@ -115,7 +115,14 @@ export default function AgendaList() {
     });
 
     const agendaList = agendaItems || [];
+    const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'terencana' | 'terlaksana'>('all');
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [viewPhotosModal, setViewPhotosModal] = useState<{ isOpen: boolean, photos: string[], judul: string }>({ isOpen: false, photos: [], judul: '' });
+    const [laporanText, setLaporanText] = useState('');
+    const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [activeTab, setActiveTab] = useState<'summary' | 'list'>('list');
 
     const handleDelete = async (id: string, judul: string) => {
         if (window.confirm(`Hapus agenda "${judul}"?`)) {
