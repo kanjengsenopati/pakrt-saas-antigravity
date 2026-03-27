@@ -115,14 +115,7 @@ export default function AgendaList() {
     });
 
     const agendaList = agendaItems || [];
-    const [searchQuery, setSearchQuery] = useState('');
-    const [expandedId, setExpandedId] = useState<string | null>(null);
-    const [viewPhotosModal, setViewPhotosModal] = useState<{ isOpen: boolean, photos: string[], judul: string }>({ isOpen: false, photos: [], judul: '' });
-    const [laporanText, setLaporanText] = useState('');
-    const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
-    const [isUploading, setIsUploading] = useState(false);
-    const [activeTab, setActiveTab] = useState<'summary' | 'list'>('list');
-
+    const [statusFilter, setStatusFilter] = useState<'all' | 'terencana' | 'terlaksana'>('all');
 
     const handleDelete = async (id: string, judul: string) => {
         if (window.confirm(`Hapus agenda "${judul}"?`)) {
@@ -158,19 +151,23 @@ export default function AgendaList() {
         }
     };
 
+    const isPast = (dateStr: string) => new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0));
+
     const filteredAgenda = (agendaList || []).filter(a => {
         // Search filter
         const matchesSearch = a.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             a.deskripsi.toLowerCase().includes(searchQuery.toLowerCase());
         if (!matchesSearch) return false;
 
+        // Status filter
+        if (statusFilter === 'terlaksana' && !a.is_terlaksana) return false;
+        if (statusFilter === 'terencana' && a.is_terlaksana) return false;
+
         // Visibility filter
         if (!isWarga) return true;
-        if (!a.peserta_ids || a.peserta_ids.length === 0) return true;
+        if (a.is_semua_warga) return true;
         return currentWargaId && a.peserta_ids.includes(currentWargaId);
     });
-
-    const isPast = (dateStr: string) => new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0));
 
     // Summary Analytics
     const totalAgenda = filteredAgenda.length;
@@ -339,31 +336,50 @@ export default function AgendaList() {
             </div>
 
             <div className={activeTab === 'list' ? 'block' : 'hidden md:hidden lg:hidden'}>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50">
-                        <div className="relative w-full md:w-80">
-                            <input
-                                type="text"
-                                placeholder="Cari informasi kegiatan..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm font-medium bg-white placeholder:text-gray-400"
-                            />
-                        </div>
+                <div className={`p-4 bg-white rounded-2xl border border-slate-100 shadow-sm transition-all duration-300 ${activeTab === 'list' ? 'block' : 'hidden'}`}>
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+                    <div className="flex-1 relative">
+                        <input
+                            type="text"
+                            placeholder="Cari informasi kegiatan..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-6 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-slate-400 text-sm font-normal"
+                        />
                     </div>
+                    <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
+                        <button
+                            onClick={() => setStatusFilter('all')}
+                            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                            Semua
+                        </button>
+                        <button
+                            onClick={() => setStatusFilter('terencana')}
+                            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${statusFilter === 'terencana' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                            Terencana
+                        </button>
+                        <button
+                            onClick={() => setStatusFilter('terlaksana')}
+                            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${statusFilter === 'terlaksana' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                            Terlaksana
+                        </button>
+                    </div>
+                </div>
 
-                    {/* DESKTOP VIEW: TABLE */}
-                    <div className="hidden lg:block overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 border-b border-slate-100 text-sm font-bold text-slate-500 tracking-tight">
-                                <tr>
-                                    <th className="p-4 w-24 text-center">Tanggal</th>
-                                    <th className="p-4">Agenda & Deskripsi</th>
-                                    <th className="p-4 w-56 text-right">Budget & Peserta</th>
-                                    <th className="p-4 w-32 text-center">Status</th>
-                                    <th className="p-4 w-32 text-center">Aksi</th>
-                                </tr>
-                            </thead>
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="border-b border-slate-100 text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest">
+                                <th className="p-4 w-24 text-center">Tanggal</th>
+                                <th className="p-4">Agenda & Deskripsi</th>
+                                <th className="p-4 w-56 text-right">Budget & Peserta</th>
+                                <th className="p-4 w-32 text-center">Status</th>
+                                <th className="p-4 w-32 text-center">Aksi</th>
+                            </tr>
+                        </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {!agendaItems && isLoading ? (
                                     <tr>
@@ -392,19 +408,29 @@ export default function AgendaList() {
 
                                         return (
                                             <React.Fragment key={agenda.id}>
-                                                <tr className={`hover:bg-brand-50/20 transition-colors group ${expandedId === agenda.id ? 'bg-brand-50/40' : ''}`}>
+                                                <tr className={`transition-all group ${
+                                                    isRealized
+                                                    ? 'bg-slate-50/40 hover:bg-slate-50 grayscale-[0.3]'
+                                                    : 'hover:bg-emerald-50/30'
+                                                } ${expandedId === agenda.id ? 'bg-brand-50/40 ring-1 ring-inset ring-brand-100' : ''}`}>
                                                     <td className="p-4 text-center">
-                                                        <div className={`px-2 py-1 mx-auto rounded-lg flex flex-col items-center justify-center border shrink-0 ${past ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600'} shadow-sm`}>
+                                                        <div className={`px-2 py-1 mx-auto rounded-lg flex flex-col items-center justify-center border shrink-0 ${
+                                                            isRealized
+                                                            ? 'bg-slate-100 border-slate-200 text-slate-400'
+                                                            : past
+                                                                ? 'bg-amber-50 border-amber-100 text-amber-600'
+                                                                : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                                                        } shadow-sm`}>
                                                             <span className="text-[0.6875rem] font-bold leading-none whitespace-nowrap">{dateUtils.toDisplay(agenda.tanggal)}</span>
                                                         </div>
                                                     </td>
                                                     <td className="p-4 min-w-0">
-                                                        <h3 className="text-sm font-bold text-slate-800 leading-tight group-hover:text-brand-700 transition-colors truncate">{agenda.judul}</h3>
-                                                        <p className="text-sm text-slate-500 line-clamp-1 mt-1 font-normal">{agenda.deskripsi}</p>
+                                                        <h3 className={`text-sm font-bold leading-tight transition-colors truncate ${isRealized ? 'text-slate-500 line-through decoration-slate-300' : 'text-slate-800 focus-within:text-brand-700'}`}>{agenda.judul}</h3>
+                                                        <p className={`text-sm line-clamp-1 mt-1 font-normal ${isRealized ? 'text-slate-400' : 'text-slate-500'}`}>{agenda.deskripsi}</p>
                                                         {isRealized && agenda.laporan_kegiatan && !expandedId && (
-                                                            <div className="mt-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 flex items-center gap-1.5 w-fit">
-                                                                <CheckCircle weight="fill" className="w-3 h-3" />
-                                                                <span className="font-semibold truncate max-w-md">Laporan: {agenda.laporan_kegiatan}</span>
+                                                            <div className="mt-2 text-[10px] text-slate-500 bg-slate-100/50 px-2 py-0.5 rounded border border-slate-200 flex items-center gap-1.5 w-fit font-medium">
+                                                                <CheckCircle weight="fill" className="w-3 h-3 text-emerald-500" />
+                                                                <span className="truncate max-w-[200px]">Laporan Selesai</span>
                                                             </div>
                                                         )}
                                                     </td>

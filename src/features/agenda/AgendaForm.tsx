@@ -75,6 +75,8 @@ export default function AgendaForm() {
         try {
             const submitData = {
                 ...data,
+                judul: `Kegiatan ${data.jenis_kegiatan}`,
+                deskripsi: data.keterangan_tambahan || '',
                 is_semua_warga: isAllWarga,
                 peserta_ids: isAllWarga ? [] : selectedParticipants,
                 foto_dokumentasi: fotoDokumentasi,
@@ -140,43 +142,29 @@ export default function AgendaForm() {
                                     {errors.jenis_kegiatan && <p className="text-red-500 text-xs mt-1">{errors.jenis_kegiatan.message}</p>}
                                 </div>
                                 
-                                {watch('jenis_kegiatan') && (
-                                    <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 animate-in fade-in slide-in-from-top-2">
-                                        <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
-                                        </label>
-                                    </div>
-                                )}
+                                <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 h-fit self-end">
+                                    <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                                    </label>
+                                </div>
                             </div>
 
                             {watch('jenis_kegiatan') && (
                                 <div className="animate-in fade-in slide-in-from-top-2">
                                     <label className="block text-sm font-normal text-gray-700 mb-1">
-                                        Keterangan Terkait {watch('jenis_kegiatan')}
+                                        Keterangan Terkait {watch('jenis_kegiatan')} <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
-                                        rows={3}
-                                        {...register('keterangan_tambahan')}
-                                        className="w-full rounded-xl p-3 border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 transition-colors text-sm"
-                                        placeholder={`Detail tambahan untuk kegiatan ${watch('jenis_kegiatan')}...`}
+                                        rows={4}
+                                        {...register('keterangan_tambahan', { required: 'Keterangan wajib diisi' })}
+                                        className={`w-full rounded-xl p-4 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors text-sm leading-relaxed ${errors.keterangan_tambahan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
+                                        placeholder={`Detail pelaksanaan kegiatan ${watch('jenis_kegiatan')}...`}
                                     />
+                                    {errors.keterangan_tambahan && <p className="text-red-500 text-xs mt-1">{errors.keterangan_tambahan.message}</p>}
                                 </div>
                             )}
-
-                            <div>
-                                <label className="block text-sm font-normal text-gray-700 mb-1">
-                                    Judul Kegiatan <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    {...register('judul', { required: 'Judul kegiatan wajib diisi' })}
-                                    className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.judul ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
-                                    placeholder="Contoh: Kerja Bakti Rutin, Lomba 17an, dll"
-                                />
-                                {errors.judul && <p className="text-red-500 text-xs mt-1">{errors.judul.message}</p>}
-                            </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -190,19 +178,6 @@ export default function AgendaForm() {
                                     />
                                     {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal.message}</p>}
                                 </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-normal text-gray-700 mb-1">
-                                    Deskripsi Lengkap <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    rows={4}
-                                    {...register('deskripsi', { required: 'Deskripsi wajib diisi' })}
-                                    className={`w-full rounded-2xl p-4 border transition-all outline-none font-normal leading-relaxed text-slate-700 shadow-sm ${errors.deskripsi ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10'}`}
-                                    placeholder="Jelaskan detail waktu, tempat kumpul, dan perlengkapan..."
-                                />
-                                {errors.deskripsi && <p className="text-red-500 text-xs mt-1">{errors.deskripsi.message}</p>}
                             </div>
 
                             <div className="pt-2">
