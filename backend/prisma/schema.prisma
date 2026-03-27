@@ -94,7 +94,6 @@ model AnggotaKeluarga {
   tanggal_lahir String?
   pendidikan    String?
   pekerjaan     String?
-
   warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
 
   @@unique([tenant_id, nik])
@@ -259,6 +258,9 @@ model Keuangan {
   keterangan String
   url_bukti  String?
 
+  pembayaranIuranId String? @unique
+  pembayaranIuran   PembayaranIuran? @relation(fields: [pembayaranIuranId], references: [id])
+
   @@index([tenant_id, scope, tipe, kategori, tanggal])
 }
 
@@ -277,8 +279,9 @@ model PembayaranIuran {
   alasan_penolakan String?
 
   warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+  keuangan      Keuangan?
 
-  @@index([tenant_id, scope, warga_id, kategori, periode_tahun])
+  @@index([tenant_id, scope, warga_id, kategori, periode_tahun, status])
 }
 
 model Aktivitas {

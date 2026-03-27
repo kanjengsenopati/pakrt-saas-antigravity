@@ -191,14 +191,21 @@ export default function Dashboard() {
     }, []);
 
     useEffect(() => {
-        fetchStats();
-        fetchActivities();
+        if (currentTenant?.id && authUser?.id) {
+            fetchStats();
+            fetchActivities();
+        }
+    }, [currentTenant?.id, currentScope, authUser?.id]);
+
+    useEffect(() => {
         const interval = setInterval(() => { 
-            fetchStats(); 
-            fetchActivities(); 
+            if (currentTenant?.id && authUser?.id) {
+                fetchStats(); 
+                fetchActivities(); 
+            }
         }, 60000); 
         return () => clearInterval(interval);
-    }, [fetchStats, fetchActivities]);
+    }, [currentTenant?.id, currentScope, authUser?.id, fetchStats, fetchActivities]);
 
     const handleSubscribe = async () => {
         setIsSubscribing(true);
@@ -249,7 +256,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="space-y-4 animate-fade-in pb-6">
+        <div className="space-y-4 animate-fade-in pb-6" translate="no">
             {showNotificationPrompt && (
                 <div className="bg-gradient-to-r from-brand-600 to-emerald-600 rounded-2xl p-5 shadow-lg border border-brand-500/20 relative overflow-hidden animate-in slide-in-from-top-4 duration-500 group">
                     <div className="absolute -right-6 -top-6 bg-white/10 w-32 h-32 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />

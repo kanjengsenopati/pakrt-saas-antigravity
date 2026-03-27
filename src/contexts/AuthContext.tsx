@@ -52,9 +52,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // Refresh user data from server in background
                 userService.getById(parsedUser.id).then((latestUser: any) => {
                     if (latestUser) {
-                        setUser(latestUser);
-                        localStorage.setItem('auth_user', JSON.stringify(latestUser));
-                        console.log('AuthContext: User data refreshed in background');
+                        const currentStr = JSON.stringify(parsedUser);
+                        const latestStr = JSON.stringify(latestUser);
+                        
+                        if (currentStr !== latestStr) {
+                            setUser(latestUser);
+                            localStorage.setItem('auth_user', latestStr);
+                            console.log('AuthContext: User data updated after background refresh');
+                        } else {
+                            console.log('AuthContext: Background refresh confirmed data is identical');
+                        }
                     }
                 }).catch((error: any) => {
                     console.error('AuthContext: Background refresh failed', error);

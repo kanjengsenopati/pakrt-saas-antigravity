@@ -139,6 +139,7 @@ export const pembayaranIuranService = {
                         kategori: 'Iuran Warga',
                         nominal: result.nominal,
                         tanggal: result.tanggal_bayar,
+                        pembayaranIuranId: result.id,
                         keterangan: buildKeterangan(
                             wargaNama,
                             result.kategori,
@@ -306,10 +307,9 @@ export const pembayaranIuranService = {
             include: { warga: true }
         });
 
-        // Sync to Keuangan: Find existing record by ref tag
-        const refTag = `| ref:${id}`;
-        const existingKeuangan = await tx.keuangan.findFirst({
-            where: { keterangan: { contains: refTag } }
+        // Sync to Keuangan: Find existing record by relation ID
+        const existingKeuangan = await tx.keuangan.findUnique({
+            where: { pembayaranIuranId: id }
         });
 
         if (existingKeuangan) {
@@ -342,6 +342,7 @@ export const pembayaranIuranService = {
                     kategori: result.kategori,
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
+                    pembayaranIuranId: result.id,
                     keterangan: buildKeterangan(
                         (result as any).warga?.nama || 'Warga',
                         result.kategori,
@@ -368,10 +369,9 @@ export const pembayaranIuranService = {
     return await prisma.$transaction(async (tx) => {
         const result = await tx.pembayaranIuran.delete({ where: { id } });
         
-        // Sync to Keuangan: Delete existing record by ref tag
-        const refTag = `| ref:${id}`;
+        // Sync to Keuangan: Delete existing record by relation ID
         await tx.keuangan.deleteMany({
-            where: { keterangan: { contains: refTag } }
+            where: { pembayaranIuranId: id }
         });
 
         await aktivitasService.create({
