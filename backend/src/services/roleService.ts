@@ -24,7 +24,8 @@ export const SYSTEM_ROLES = [
             "Notulensi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
+            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
@@ -40,7 +41,8 @@ export const SYSTEM_ROLES = [
             "Notulensi": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" }
+            "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
@@ -50,7 +52,8 @@ export const SYSTEM_ROLES = [
             "Surat / Cetak": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
             "Notulensi": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
             "Agenda": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" }
+            "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" },
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
