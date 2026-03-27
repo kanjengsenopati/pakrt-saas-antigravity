@@ -148,7 +148,7 @@ export default function KeuanganForm() {
                                     render={({ field }) => (
                                         <CurrencyInput
                                             {...field}
-                                            className="w-full !pl-12 bg-white"
+                                            className="w-full !pl-16 bg-white"
                                             error={!!errors.nominal}
                                         />
                                     )}

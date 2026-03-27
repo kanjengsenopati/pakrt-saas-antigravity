@@ -30,8 +30,10 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputPro
                 value={displayValue}
                 onChange={handleChange}
                 autoComplete="off"
-                className={`w-full rounded-lg shadow-sm p-3 border outline-none transition-colors ${error ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 bg-gray-50 focus:bg-white'
-                    } ${className}`}
+                className={`w-full rounded-lg shadow-sm border outline-none transition-colors 
+                    ${error ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500 bg-gray-50 focus:bg-white'} 
+                    ${className.includes('p-') ? className : `p-3 ${className}`}
+                `}
             />
         );
     }

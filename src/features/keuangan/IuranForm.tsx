@@ -171,14 +171,9 @@ export default function IuranForm() {
                     setPaidMonthsRecord(result.paidMonths);
                     setPendingMonthsRecord(result.pendingMonths);
 
-                    // Auto-select first unpaid and non-pending month if not edit and hasn't interacted
+                    // Auto-select removed - default to 0 selected months as per user request
                     if (!isEdit && !hasInteracted && result.rate > 0) {
-                        const firstUnpaid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].find(m => 
-                            !result.paidMonths.includes(m) && !result.pendingMonths.includes(m)
-                        );
-                        if (firstUnpaid) {
-                            setSelectedMonths([firstUnpaid]);
-                        }
+                        setSelectedMonths([]);
                     }
                 } catch (error) {
                     console.error("Failed to fetch billing summary:", error);
@@ -557,7 +552,7 @@ export default function IuranForm() {
                                                 render={({ field }) => (
                                                     <CurrencyInput
                                                         {...field}
-                                                        className={`w-full !pl-12 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
+                                                        className={`w-full !pl-16 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
                                                         error={!!errors.nominal}
                                                         disabled={paymentMode === 'Pas'}
                                                     />
