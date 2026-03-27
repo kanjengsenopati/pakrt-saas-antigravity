@@ -557,7 +557,7 @@ export default function IuranForm() {
                                                 render={({ field }) => (
                                                     <CurrencyInput
                                                         {...field}
-                                                        className={`w-full pl-11 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
+                                                        className={`w-full !pl-12 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
                                                         error={!!errors.nominal}
                                                         disabled={paymentMode === 'Pas'}
                                                     />
