@@ -172,7 +172,7 @@ export default function WargaList() {
                         <div className="relative sm:hidden">
                             <button
                                 onClick={() => setShowMobileMenu(!showMobileMenu)}
-                                className={`p-3 rounded-xl border transition-all active-press ${showMobileMenu ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-400'}`}
+                                className={`p-3 rounded-xl border transition-all active-press ${showMobileMenu ? 'bg-brand-600 border-brand-600 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-400'}`}
                             >
                                 <DotsThreeOutlineVertical weight="fill" size={20} />
                             </button>
@@ -264,7 +264,7 @@ export default function WargaList() {
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
+                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
                         <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">

@@ -209,7 +209,7 @@ export default function NotulensiList() {
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
+                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
                         <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">

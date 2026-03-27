@@ -147,11 +147,11 @@ export default function IuranList() {
                 </div>
 
                 {/* MASUK BULAN INI */}
-                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
+                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Plus weight="bold" className="text-emerald-400 w-3 h-3" />
+                        <p className="text-[10px] sm:text-xs font-bold text-brand-100 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <Plus weight="bold" className="text-white w-3 h-3" />
                             Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})
                         </p>
                         <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{formatRupiah(totalCollectedMonth)}</p>
@@ -319,7 +319,7 @@ export default function IuranList() {
                                                     </HasPermission>
                                                 )}
                                                 {iuran.status === 'REJECTED' && (
-                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                    isWarga ? (
                                                         <button
                                                             onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
                                                             className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
@@ -327,7 +327,17 @@ export default function IuranList() {
                                                         >
                                                             Ajukan Ulang
                                                         </button>
-                                                    </HasPermission>
+                                                    ) : (
+                                                        <HasPermission module="Iuran Warga" action="Ubah">
+                                                            <button
+                                                                onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
+                                                                title="Edit & Ajukan Ulang"
+                                                            >
+                                                                Ajukan Ulang
+                                                            </button>
+                                                        </HasPermission>
+                                                    )
                                                 )}
                                                 {(iuran.status === 'PENDING' || iuran.status === 'VERIFIED') && (
                                                     <HasPermission module="Iuran Warga" action="Ubah">
@@ -479,7 +489,7 @@ export default function IuranList() {
                                                 </button>
                                             )}
                                             {iuran.status === 'REJECTED' && (
-                                                <HasPermission module="Iuran Warga" action="Ubah">
+                                                isWarga ? (
                                                     <button
                                                         onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
                                                         className="flex items-center gap-1.5 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-sm font-semibold transition-all shadow-sm flex-1 md:flex-none justify-center"
@@ -487,7 +497,17 @@ export default function IuranList() {
                                                     >
                                                         Ajukan Ulang
                                                     </button>
-                                                </HasPermission>
+                                                ) : (
+                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                        <button
+                                                            onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                            className="flex items-center gap-1.5 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl text-sm font-semibold transition-all shadow-sm flex-1 md:flex-none justify-center"
+                                                            title="Edit & Ajukan Ulang"
+                                                        >
+                                                            Ajukan Ulang
+                                                        </button>
+                                                    </HasPermission>
+                                                )
                                             )}
                                             {(iuran.status === 'PENDING' || iuran.status === 'VERIFIED') && (
                                                 <HasPermission module="Iuran Warga" action="Ubah">

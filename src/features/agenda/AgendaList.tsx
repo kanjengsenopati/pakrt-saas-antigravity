@@ -169,7 +169,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
             </div>
 
             {agenda.is_terlaksana && agenda.laporan_kegiatan && (
-                <div className="bg-slate-900 p-6 rounded-2xl shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+                <div className="bg-brand-600 p-6 rounded-2xl shadow-xl shadow-brand-200/50 relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">

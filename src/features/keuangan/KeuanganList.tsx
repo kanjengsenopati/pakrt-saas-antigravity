@@ -159,7 +159,7 @@ export default function KeuanganList() {
                 </div>
 
                 {/* SALDO AKHIR */}
-                <div className={`py-3 px-2 sm:px-4 rounded-2xl border shadow-lg relative overflow-hidden group transition-all duration-300 hover:shadow-xl ${summary.saldo >= 0 ? 'bg-slate-900 border-slate-800' : 'bg-red-600 border-red-500'}`}>
+                <div className={`py-3 px-2 sm:px-4 rounded-2xl border shadow-lg relative overflow-hidden group transition-all duration-300 hover:shadow-xl ${summary.saldo >= 0 ? 'bg-brand-600 border-brand-500' : 'bg-red-600 border-red-500'}`}>
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
                         <p className="text-[10px] sm:text-xs font-bold text-white/60 uppercase tracking-widest mb-1.5">Saldo</p>
