@@ -8,7 +8,7 @@ function App() {
 
     // Global UI Cache Buster & Error Safeguard
     useEffect(() => {
-        const UI_VERSION = 'v1.0.6-agenda-update';
+        const UI_VERSION = 'v1.0.7-agenda-notulensi-sync';
         const storedVersion = localStorage.getItem('app_ui_version');
 
         const forceCleanup = async () => {
