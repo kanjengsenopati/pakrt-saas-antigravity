@@ -266,7 +266,9 @@ export default function Dashboard() {
                                     <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/30">PWA</span>
                                 </h3>
                                 <p className="text-sm text-brand-50/90 font-medium leading-relaxed max-w-md mt-0.5">
-                                    Dapatkan info terbaru, agenda RT, dan notulensi secara <span className="text-white font-bold underline decoration-emerald-400 underline-offset-2">real-time</span> langsung di HP Anda.
+                                    <span>Dapatkan info terbaru, agenda RT, dan notulensi secara </span>
+                                    <span className="text-white font-bold underline decoration-emerald-400 underline-offset-2">real-time</span> 
+                                    <span> langsung di HP Anda.</span>
                                 </p>
                             </div>
                         </div>

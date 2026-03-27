@@ -126,7 +126,11 @@ export const pembayaranIuranService = {
             });
             
             if (_autoVerify) {
-                const wargaNama = (await tx.warga.findUnique({ where: { id: createData.warga_id } }))?.nama || 'Warga';
+                const wargaRecord = await tx.warga.findUnique({ where: { id: createData.warga_id } });
+                const wargaNama = wargaRecord?.nama || 'Warga';
+                
+                console.log("DEBUG - Creating keuangan entry for:", result.id);
+            try {
                 await tx.keuangan.create({
                     data: {
                         tenant_id: result.tenant_id,
@@ -138,13 +142,18 @@ export const pembayaranIuranService = {
                         keterangan: buildKeterangan(
                             wargaNama,
                             result.kategori,
-                            result.periode_bulan as number[],
+                            Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
                             result.periode_tahun,
                             result.id
                         )
                     }
                 });
+            } catch (kErr) {
+                console.error("DEBUG - Failed to create Keuangan entry:", kErr);
+                throw kErr;
+            }
 
+            try {
                 await aktivitasService.create({
                     tenant_id: createData.tenant_id,
                     scope: createData.scope || 'RT',
@@ -152,7 +161,11 @@ export const pembayaranIuranService = {
                     details: `Pembayaran iuran tunai warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
                     timestamp: Date.now()
                 });
-            } else {
+            } catch (aErr) {
+                console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
+            }
+        } else {
+            try {
                 await aktivitasService.create({
                     tenant_id: createData.tenant_id,
                     scope: createData.scope || 'RT',
@@ -160,7 +173,10 @@ export const pembayaranIuranService = {
                     details: `Pembayaran iuran dari warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
                     timestamp: Date.now()
                 });
+            } catch (aErr) {
+                console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
             }
+        }
 
             return result;
         });
