@@ -164,6 +164,7 @@ export interface Agenda {
     nominal_biaya?: number;
     sumber_dana?: 'Kas' | 'Iuran' | string;
     peserta_ids: string[];
+    is_semua_warga: boolean;
     is_terlaksana: boolean;
     laporan_kegiatan?: string;
     foto_dokumentasi: string[];

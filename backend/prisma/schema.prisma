@@ -216,6 +216,7 @@ model Agenda {
   nominal_biaya    Float?
   sumber_dana      String?  // 'Kas' | 'Iuran'
   peserta_ids      String[]
+  is_semua_warga   Boolean  @default(false)
   is_terlaksana    Boolean  @default(false)
   laporan_kegiatan String?
   foto_dokumentasi String[]

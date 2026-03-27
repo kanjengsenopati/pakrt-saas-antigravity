@@ -46,13 +46,13 @@ export default function AgendaForm() {
                         nominal_biaya: data.nominal_biaya,
                         sumber_dana: data.sumber_dana,
                         peserta_ids: data.peserta_ids,
+                        is_semua_warga: data.is_semua_warga,
                         jenis_kegiatan: data.jenis_kegiatan,
                         perlu_rapat: data.perlu_rapat,
                         keterangan_tambahan: data.keterangan_tambahan
                     });
-                    const hasParticipants = data.peserta_ids && data.peserta_ids.length > 0;
                     setSelectedParticipants(data.peserta_ids || []);
-                    setIsAllWarga(!hasParticipants);
+                    setIsAllWarga(data.is_semua_warga ?? (data.peserta_ids?.length === 0));
                     setFotoDokumentasi(data.foto_dokumentasi || []);
                 }
             });
@@ -75,6 +75,7 @@ export default function AgendaForm() {
         try {
             const submitData = {
                 ...data,
+                is_semua_warga: isAllWarga,
                 peserta_ids: isAllWarga ? [] : selectedParticipants,
                 foto_dokumentasi: fotoDokumentasi,
                 nominal_biaya: data.butuh_pendanaan ? data.nominal_biaya : undefined,

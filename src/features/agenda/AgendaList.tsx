@@ -359,7 +359,7 @@ export default function AgendaList() {
                                 <tr>
                                     <th className="p-4 w-24 text-center">Tanggal</th>
                                     <th className="p-4">Agenda & Deskripsi</th>
-                                    <th className="p-4 w-48 text-right">Budget & Peserta</th>
+                                    <th className="p-4 w-56 text-right">Budget & Peserta</th>
                                     <th className="p-4 w-32 text-center">Status</th>
                                     <th className="p-4 w-32 text-center">Aksi</th>
                                 </tr>
@@ -410,11 +410,18 @@ export default function AgendaList() {
                                                     </td>
                                                     <td className="p-4 text-right">
                                                         {agenda.butuh_pendanaan ? (
-                                                            <div className="text-sm font-bold text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</div>
+                                                            <div className="text-sm font-bold text-slate-900 mb-0.5">{formatRupiah(agenda.nominal_biaya || 0)}</div>
                                                         ) : (
-                                                            <div className="text-[0.6875rem] font-bold text-slate-400 tracking-tight italic">Tanpa Budget</div>
+                                                            <div className="text-[0.6875rem] font-bold text-slate-400 tracking-tight italic mb-0.5">Tanpa Budget</div>
                                                         )}
-                                                        <div className="text-[0.6875rem] font-bold text-slate-400 tracking-tight mt-0.5">{(agenda.peserta_ids?.length || 0)} Peserta</div>
+                                                        {agenda.is_semua_warga ? (
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-bold border border-emerald-100 tracking-tight">Semua Warga</span>
+                                                        ) : (
+                                                            <div className="flex flex-col items-end">
+                                                                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-brand-50 text-brand-600 text-[10px] font-bold border border-brand-100 tracking-tight mb-0.5">Sebagian Warga</span>
+                                                                <span className="text-[10px] font-bold text-slate-400 tracking-tight capitalize">{(agenda.peserta_ids?.length || 0)} Peserta</span>
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td className="p-4 text-center">
                                                         {isRealized ? (
@@ -427,35 +434,23 @@ export default function AgendaList() {
                                                     </td>
                                                     <td className="p-4">
                                                     <div className="flex flex-wrap items-center justify-end gap-2 pr-2">
-                                                        {past && !isRealized ? (
-                                                            <HasPermission module="Agenda" action="Ubah">
-                                                                <button
-                                                                    onClick={() => handleToggleExpand(agenda)}
-                                                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[0.6875rem] font-bold transition-all active:scale-95 whitespace-nowrap border shadow-sm ${
-                                                                        expandedId === agenda.id 
-                                                                        ? 'bg-slate-900 text-white border-slate-900' 
-                                                                        : 'bg-white text-amber-600 border-amber-100 hover:bg-amber-50 hover:border-amber-200 hover:shadow-brand-500/10'
-                                                                    }`}
-                                                                >
-                                                                    <FileText weight={expandedId === agenda.id ? "fill" : "bold"} className={`w-4 h-4 ${expandedId === agenda.id ? 'text-white' : 'text-amber-500'}`} />
-                                                                    {expandedId === agenda.id ? 'Tutup' : 'Isi Laporan'}
-                                                                </button>
-                                                            </HasPermission>
-                                                        ) : isRealized ? (
-                                                            <HasPermission module="Agenda" action="Ubah">
-                                                                <button
-                                                                    onClick={() => handleToggleExpand(agenda)}
-                                                                    className={`p-2 rounded-xl border transition-all shadow-sm ${expandedId === agenda.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-emerald-600 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200'}`}
-                                                                    title="Laporan"
-                                                                >
-                                                                    <FileText weight="bold" className="w-4 h-4" />
-                                                                </button>
-                                                            </HasPermission>
-                                                        ) : null}
+                                                        <button
+                                                            onClick={() => handleToggleExpand(agenda)}
+                                                            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[0.6875rem] font-bold transition-all active:scale-95 whitespace-nowrap border shadow-sm ${
+                                                                expandedId === agenda.id 
+                                                                ? 'bg-slate-900 text-white border-slate-900' 
+                                                                : 'bg-white text-brand-600 border-brand-100 hover:bg-brand-50 hover:border-brand-200 hover:shadow-brand-500/10'
+                                                            }`}
+                                                            title={expandedId === agenda.id ? 'Tutup' : 'Lihat Detail'}
+                                                        >
+                                                            <FileText weight={expandedId === agenda.id ? "fill" : "bold"} className="w-4 h-4" />
+                                                            {expandedId === agenda.id ? 'Tutup' : 'Lihat'}
+                                                        </button>
+                                                        
                                                         <div className="flex items-center gap-1.5 p-1 bg-slate-50 rounded-xl border border-slate-100">
                                                             {isRealized && agenda.foto_dokumentasi && agenda.foto_dokumentasi.length > 0 && (
                                                                 <button
-                                                                    onClick={() => setViewPhotosModal({ isOpen: true, photos: agenda.foto_dokumentasi, judul: agenda.judul })}
+                                                                    onClick={(e) => { e.stopPropagation(); setViewPhotosModal({ isOpen: true, photos: agenda.foto_dokumentasi, judul: agenda.judul }); }}
                                                                     className="p-1.5 text-brand-600 hover:bg-white hover:shadow-sm rounded-lg transition-all"
                                                                     title="Lihat Foto"
                                                                 >
@@ -464,7 +459,7 @@ export default function AgendaList() {
                                                             )}
                                                             <HasPermission module="Agenda" action="Ubah">
                                                                 <button
-                                                                    onClick={() => navigate(`/agenda/edit/${agenda.id}`)}
+                                                                    onClick={(e) => { e.stopPropagation(); navigate(`/agenda/edit/${agenda.id}`); }}
                                                                     className="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-white hover:shadow-sm rounded-lg transition-all"
                                                                     title="Edit Agenda"
                                                                 >
@@ -473,7 +468,7 @@ export default function AgendaList() {
                                                             </HasPermission>
                                                             <HasPermission module="Agenda" action="Hapus">
                                                                 <button
-                                                                    onClick={() => handleDelete(agenda.id, agenda.judul)}
+                                                                    onClick={(e) => { e.stopPropagation(); handleDelete(agenda.id, agenda.judul); }}
                                                                     className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-white hover:shadow-sm rounded-lg transition-all"
                                                                     title="Hapus"
                                                                 >
@@ -486,21 +481,95 @@ export default function AgendaList() {
                                                 </tr>
                                                 {expandedId === agenda.id && (
                                                     <tr key={`${agenda.id}-details`}>
-                                                        <td colSpan={5} className="p-0 border-b border-slate-100 shadow-inner">
-                                                            <ReportPanel 
-                                                                agenda={agenda} 
-                                                                laporanText={laporanText}
-                                                                setLaporanText={setLaporanText}
-                                                                fotoDokumentasi={fotoDokumentasi}
-                                                                setFotoDokumentasi={setFotoDokumentasi}
-                                                                isUploading={isUploading}
-                                                                setIsUploading={setIsUploading}
-                                                                handleSubmitReport={handleSubmitReport}
-                                                                setExpandedId={setExpandedId}
-                                                            />
+                                                        <td colSpan={5} className="p-0 border-b border-slate-100 shadow-inner overflow-hidden">
+                                                            <div className="bg-brand-50/30 animate-in slide-in-from-top-4 duration-300">
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 max-w-6xl mx-auto">
+                                                                    {/* Left side: Detail Info */}
+                                                                    <div className="space-y-6">
+                                                                        <div className="bg-white p-6 rounded-2xl border border-brand-100/50 shadow-sm space-y-4">
+                                                                            <div>
+                                                                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Deksripsi Lengkap</h4>
+                                                                                <p className="text-sm text-slate-700 leading-relaxed font-normal">{agenda.deskripsi}</p>
+                                                                            </div>
+                                                                            {agenda.keterangan_tambahan && (
+                                                                                <div className="pt-4 border-t border-slate-50">
+                                                                                    <h4 className="text-[10px] font-bold text-brand-500 uppercase tracking-widest mb-1">Catatan Tambahan ({agenda.jenis_kegiatan})</h4>
+                                                                                    <p className="text-[13px] text-slate-600 italic font-normal leading-relaxed">"{agenda.keterangan_tambahan}"</p>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+
+                                                                        <div className="grid grid-cols-2 gap-4">
+                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center">
+                                                                                <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">Anggaran</p>
+                                                                                <p className="text-lg font-bold text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</p>
+                                                                                <p className="text-[10px] font-medium text-slate-400 mt-1 italic">{agenda.sumber_dana || '-'}</p>
+                                                                            </div>
+                                                                            <div className="bg-white p-4 rounded-xl border border-slate-100 text-center">
+                                                                                <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">Jenis</p>
+                                                                                <p className="text-lg font-bold text-brand-600">{agenda.jenis_kegiatan || '-'}</p>
+                                                                                <p className="text-[10px] font-medium text-slate-400 mt-1 italic">{agenda.perlu_rapat ? 'Ada Notulensi' : 'Tanpa Rapat'}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* Right side: Report/Participants */}
+                                                                    <div className="space-y-6">
+                                                                        <div className="bg-white p-6 rounded-2xl border border-brand-100/50 shadow-sm">
+                                                                            <div className="flex items-center gap-2 mb-4 border-b border-slate-50 pb-3">
+                                                                                <Users weight="duotone" className="w-5 h-5 text-brand-500" />
+                                                                                <h4 className="text-sm font-bold text-slate-900 tracking-tight">Cakupan Peserta</h4>
+                                                                            </div>
+
+                                                                            {agenda.is_semua_warga ? (
+                                                                                <div className="flex flex-col items-center py-6 text-center space-y-3">
+                                                                                    <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-100">
+                                                                                        <Users weight="fill" className="text-emerald-500 w-6 h-6" />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p className="text-sm font-bold text-emerald-600">Terbuka Untuk Semua Warga</p>
+                                                                                        <p className="text-xs text-slate-400 font-normal mt-1">Kegiatan bersifat umum dan melibatkan seluruh elemen warga {currentScope}.</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ) : (
+                                                                                <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                                                                                    {agenda.peserta_details && agenda.peserta_details.length > 0 ? (
+                                                                                        <div className="flex flex-wrap gap-1.5">
+                                                                                            {agenda.peserta_details.map(p => (
+                                                                                                <span key={p.id} className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-50 text-slate-700 text-[10px] font-bold border border-slate-100 shadow-sm">
+                                                                                                    {p.nama}
+                                                                                                </span>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <p className="text-xs text-slate-400 italic text-center py-4">Belum ada daftar peserta.</p>
+                                                                                    )}
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+
+                                                                        <ReportPanel 
+                                                                            agenda={agenda} 
+                                                                            laporanText={laporanText}
+                                                                            setLaporanText={setLaporanText}
+                                                                            fotoDokumentasi={fotoDokumentasi}
+                                                                            setFotoDokumentasi={setFotoDokumentasi}
+                                                                            isUploading={isUploading}
+                                                                            setIsUploading={setIsUploading}
+                                                                            handleSubmitReport={handleSubmitReport}
+                                                                            setExpandedId={setExpandedId}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 )}
+                                            </React.Fragment>
+                                        );
+                                    })
+                                )}
+                            </tbody>
                                             </React.Fragment>
                                         );
                                     })
