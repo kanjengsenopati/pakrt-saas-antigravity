@@ -12,6 +12,12 @@ export const pengaturanService = {
     return await prisma.pengaturan.findUnique({ where: { id } });
   },
 
+  async getByKey(tenantId: string, scope: string, key: string) {
+    return await prisma.pengaturan.findFirst({
+        where: { tenant_id: tenantId, scope, key }
+    });
+  },
+
   async create(data: any) {
     return await prisma.pengaturan.create({ data });
   },

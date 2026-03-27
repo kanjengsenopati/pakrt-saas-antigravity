@@ -135,6 +135,7 @@ model Notulensi {
   lokasi    String?
   url_foto  String?
   konten    String
+  agenda_id String?
 
   kehadirans Kehadiran[]
 
@@ -218,6 +219,9 @@ model Agenda {
   is_terlaksana    Boolean  @default(false)
   laporan_kegiatan String?
   foto_dokumentasi String[]
+  jenis_kegiatan   String?
+  perlu_rapat      Boolean? @default(false)
+  keterangan_tambahan String?
 
   @@index([tenant_id, scope, tanggal])
 }

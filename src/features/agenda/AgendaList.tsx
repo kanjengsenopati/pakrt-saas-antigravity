@@ -282,9 +282,9 @@ export default function AgendaList() {
                                 <ChartPieSlice weight="duotone" className="w-6 h-6 text-brand-500" />
                                 <h3 className="text-xs font-bold tracking-tight text-slate-900">Status Realisasi</h3>
                             </div>
-                            <div className="h-[250px] w-full">
+                            <div className="h-[250px] w-full min-h-[250px]">
                                 {statusData.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <ResponsiveContainer width="100%" height="100%" debounce={50}>
                                         <PieChart>
                                             <Pie
                                                 data={statusData}
@@ -314,9 +314,9 @@ export default function AgendaList() {
                                 <TrendUp weight="duotone" className="w-6 h-6 text-emerald-500" />
                                 <h3 className="text-xs font-bold tracking-tight text-slate-900">Alokasi Pendanaan</h3>
                             </div>
-                            <div className="h-[250px] w-full">
+                            <div className="h-[250px] w-full min-h-[250px]">
                                 {fundingData.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <ResponsiveContainer width="100%" height="100%" debounce={50}>
                                         <BarChart data={fundingData} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                             <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} />

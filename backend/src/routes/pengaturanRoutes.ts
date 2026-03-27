@@ -10,6 +10,23 @@ export default async function pengaturanRoutes(fastify: FastifyInstance) {
     return await pengaturanService.getAll(tenantId, scope);
   });
 
+  fastify.get('/key', async (request, reply) => {
+    const { tenant_id, scope, key } = request.query as any;
+    // Fallback to user tenant if not provided
+    const user = (request as any).user;
+    const tId = tenant_id || user?.tenant_id;
+    
+    if (!tId || !key) {
+        return reply.code(400).send({ error: 'tenant_id and key are required' });
+    }
+
+    const item = await pengaturanService.getByKey(tId, scope || 'RT', key);
+    if (!item) {
+        return reply.code(404).send({ error: 'Setting not found' });
+    }
+    return item;
+  });
+
   fastify.get('/:id', async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;
