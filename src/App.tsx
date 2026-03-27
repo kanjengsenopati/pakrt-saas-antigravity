@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useTenant } from './contexts/TenantContext';
 import LandingPage from './features/landing/LandingPage';
-import { syncDb } from './database/syncDb';
 import { pushNotificationUtil } from './utils/pushNotification';
 
 function App() {
@@ -23,12 +22,6 @@ function App() {
                     }
                 }
                 
-                // Clear IndexedDB via syncDb
-                await Promise.all([
-                    syncDb.apiCache.clear(),
-                    syncDb.syncQueue.clear()
-                ]);
-
                 // Clear all localStorage except auth
                 const authToken = localStorage.getItem('auth_token');
                 const authUser = localStorage.getItem('auth_user');
