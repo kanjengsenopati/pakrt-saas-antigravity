@@ -124,19 +124,32 @@ export const pembayaranIuranService = {
                 throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dalam proses pembayaran atau sudah lunas untuk tahun ${processedData.periode_tahun}`);
             }
 
-            const { _autoVerify, ...createData } = processedData;
-            createData.periode_bulan = monthsToPay;
+            // Sanitize: only pass fields known to the PembayaranIuran model
+            const { _autoVerify } = processedData;
             const status = _autoVerify ? 'VERIFIED' : 'PENDING';
 
+            const sanitizedData = {
+                tenant_id: processedData.tenant_id,
+                scope:     processedData.scope || 'RT',
+                warga_id:  processedData.warga_id,
+                kategori:  processedData.kategori,
+                periode_bulan: monthsToPay,
+                periode_tahun: Number(processedData.periode_tahun),
+                nominal:       Number(processedData.nominal),
+                tanggal_bayar: processedData.tanggal_bayar,
+                url_bukti:     processedData.url_bukti || null,
+                alasan_penolakan: processedData.alasan_penolakan || null,
+                status
+            };
+
+            console.log("DEBUG - Sanitized createData:", JSON.stringify(sanitizedData, null, 2));
+
             const result = await tx.pembayaranIuran.create({ 
-                data: {
-                    ...createData,
-                    status
-                } 
+                data: sanitizedData
             });
             
             if (_autoVerify) {
-                const wargaRecord = await tx.warga.findUnique({ where: { id: createData.warga_id } });
+                const wargaRecord = await tx.warga.findUnique({ where: { id: processedData.warga_id } });
                 const wargaNama = wargaRecord?.nama || 'Warga';
                 
                 console.log("DEBUG - Creating keuangan entry for:", result.id);
@@ -166,10 +179,10 @@ export const pembayaranIuranService = {
 
             try {
                 await aktivitasService.create({
-                    tenant_id: createData.tenant_id,
-                    scope: createData.scope || 'RT',
+                    tenant_id: processedData.tenant_id,
+                    scope: processedData.scope || 'RT',
                     action: 'Bayar Iuran',
-                    details: `Pembayaran iuran tunai warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
+                    details: `Pembayaran iuran tunai warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
                     timestamp: Date.now()
                 });
             } catch (aErr) {
@@ -178,10 +191,10 @@ export const pembayaranIuranService = {
         } else {
             try {
                 await aktivitasService.create({
-                    tenant_id: createData.tenant_id,
-                    scope: createData.scope || 'RT',
+                    tenant_id: processedData.tenant_id,
+                    scope: processedData.scope || 'RT',
                     action: 'Bayar Iuran',
-                    details: `Pembayaran iuran dari warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                    details: `Pembayaran iuran dari warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
                     timestamp: Date.now()
                 });
             } catch (aErr) {
