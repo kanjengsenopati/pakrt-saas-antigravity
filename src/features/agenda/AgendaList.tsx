@@ -101,18 +101,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8 max-w-6xl mx-auto">
         {/* Left side: Detail Info */}
         <div className="space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-brand-100/50 shadow-sm space-y-4">
-                <div>
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Deksripsi Lengkap</h4>
-                    <p className="text-sm text-slate-700 leading-relaxed font-normal">{agenda.deskripsi}</p>
-                </div>
-                {agenda.keterangan_tambahan && (
-                    <div className="pt-4 border-t border-slate-50">
-                        <h4 className="text-[10px] font-bold text-brand-500 uppercase tracking-widest mb-1">Catatan Tambahan ({agenda.jenis_kegiatan})</h4>
-                        <p className="text-[13px] text-slate-600 italic font-normal leading-relaxed">"{agenda.keterangan_tambahan}"</p>
-                    </div>
-                )}
-            </div>
+            {/* Removed redundant Deskripsi Lengkap and Catatan Tambahan as per user request */}
 
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white p-4 rounded-xl border border-slate-100 text-center flex flex-col items-center justify-center">
