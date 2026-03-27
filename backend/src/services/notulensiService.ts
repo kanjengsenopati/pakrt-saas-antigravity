@@ -14,13 +14,47 @@ export const notulensiService = {
   },
 
   async create(data: any) {
-    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.notulensi.create({ data });
+    const { kehadiran, ...notulensiData } = data;
+    if (notulensiData.tanggal) notulensiData.tanggal = dateUtils.normalize(notulensiData.tanggal);
+    
+    const notulensi = await prisma.notulensi.create({ data: notulensiData });
+
+    if (kehadiran && Array.isArray(kehadiran) && kehadiran.length > 0) {
+      await prisma.kehadiran.createMany({
+        data: kehadiran.map((k: any) => ({
+          ...k,
+          notulensi_id: notulensi.id,
+          tenant_id: notulensi.tenant_id
+        }))
+      });
+    }
+
+    return notulensi;
   },
 
   async update(id: string, data: any) {
-    if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.notulensi.update({ where: { id }, data });
+    const { kehadiran, ...notulensiData } = data;
+    if (notulensiData.tanggal) notulensiData.tanggal = dateUtils.normalize(notulensiData.tanggal);
+    
+    const notulensi = await prisma.notulensi.update({ 
+      where: { id }, 
+      data: notulensiData 
+    });
+
+    if (kehadiran && Array.isArray(kehadiran)) {
+      // Sync attendance: delete and recreate in one batch
+      await prisma.kehadiran.deleteMany({ where: { notulensi_id: id } });
+      if (kehadiran.length > 0) {
+        await prisma.kehadiran.createMany({
+          data: kehadiran.map((k: any) => ({
+            ...k,
+            notulensi_id: id,
+            tenant_id: notulensi.tenant_id
+          }))
+        });
+      }
+    }
+    return notulensi;
   },
 
   async delete(id: string) {

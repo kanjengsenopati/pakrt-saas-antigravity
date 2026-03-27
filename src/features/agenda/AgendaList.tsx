@@ -287,7 +287,7 @@ export default function AgendaList() {
                                 <h3 className="text-xs font-bold tracking-tight text-slate-900">Status Realisasi</h3>
                             </div>
                             <div className="h-[250px] w-full min-h-[250px]">
-                                {statusData.length > 0 ? (
+                                {activeTab === 'summary' && statusData.length > 0 ? (
                                     <ResponsiveContainer width="100%" height="100%" debounce={50}>
                                         <PieChart>
                                             <Pie
@@ -299,43 +299,61 @@ export default function AgendaList() {
                                                 paddingAngle={5}
                                                 dataKey="value"
                                             >
-                                                {statusData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                {statusData.map((_entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={statusData[index].color} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip formatter={(value: any) => [`${value ?? 0} Agenda`, 'Total']} />
+                                            <Tooltip 
+                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                            />
                                             <Legend verticalAlign="bottom" height={36} iconType="circle" />
                                         </PieChart>
                                     </ResponsiveContainer>
-                                ) : (
-                                    <div className="h-full flex items-center justify-center text-slate-300 text-xs font-normal tracking-wide">Belum Ada Data Status</div>
-                                )}
+                                ) : activeTab === 'summary' ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-2">
+                                        <ChartPieSlice weight="thin" className="w-12 h-12" />
+                                        <p className="text-[10px] font-bold tracking-tight uppercase">Belum ada data status</p>
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
 
                         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
                             <div className="flex items-center gap-2 mb-6 border-b border-slate-50 pb-4">
                                 <TrendUp weight="duotone" className="w-6 h-6 text-emerald-500" />
-                                <h3 className="text-xs font-bold tracking-tight text-slate-900">Alokasi Pendanaan</h3>
+                                <h3 className="text-xs font-bold tracking-tight text-slate-900">Alokasi Anggaran</h3>
                             </div>
                             <div className="h-[250px] w-full min-h-[250px]">
-                                {fundingData.length > 0 ? (
+                                {activeTab === 'summary' && fundingData.length > 0 ? (
                                     <ResponsiveContainer width="100%" height="100%" debounce={50}>
-                                        <BarChart data={fundingData} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+                                        <BarChart data={fundingData}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} />
-                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }} tickFormatter={(value) => formatRupiah(value)} width={80} />
-                                            <Tooltip
-                                                cursor={{ fill: '#f8fafc' }}
-                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
-                                                formatter={(value: any) => [formatRupiah(Number(value ?? 0)), 'Total Dana']}
+                                            <XAxis 
+                                                dataKey="name" 
+                                                axisLine={false}
+                                                tickLine={false}
+                                                tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
                                             />
-                                            <Bar dataKey="Total" fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
+                                            <YAxis 
+                                                axisLine={false}
+                                                tickLine={false}
+                                                tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
+                                                tickFormatter={(value) => `Rp${value/1000}k`}
+                                            />
+                                            <Tooltip 
+                                                cursor={{ fill: '#f8fafc' }}
+                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                                formatter={(value: any) => [formatRupiah(value), 'Total']}
+                                            />
+                                            <Bar dataKey="Total" fill="#0ea5e9" radius={[6, 6, 0, 0]} barSize={40} />
                                         </BarChart>
                                     </ResponsiveContainer>
-                                ) : (
-                                    <div className="h-full flex items-center justify-center text-slate-400 text-xs font-medium tracking-wide">Belum Ada Data Pendanaan</div>
-                                )}
+                                ) : activeTab === 'summary' ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-slate-300 gap-2">
+                                        <TrendUp weight="thin" className="w-12 h-12" />
+                                        <p className="text-[10px] font-bold tracking-tight uppercase">Belum ada data anggaran</p>
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
                     </div>
