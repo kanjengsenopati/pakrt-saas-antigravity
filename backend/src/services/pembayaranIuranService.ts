@@ -92,74 +92,82 @@ export const pembayaranIuranService = {
       }
     }
 
-    return await prisma.$transaction(async (tx) => {
-        // CONCURRENCY CHECK: Prevent double payment for same period
-        // Only check against PENDING or VERIFIED payments. REJECTED ones are ignored.
-        const existing = await tx.pembayaranIuran.findMany({
-            where: {
-                warga_id: processedData.warga_id,
-                kategori: processedData.kategori,
-                periode_tahun: processedData.periode_tahun,
-                status: { in: ['PENDING', 'VERIFIED'] }
-            }
-        });
-
-        const alreadyPaidMonths = existing.flatMap(e => e.periode_bulan);
-        const overlappingMonths = processedData.periode_bulan.filter((m: number) => alreadyPaidMonths.includes(m));
-
-        if (overlappingMonths.length > 0) {
-            throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dalam proses pembayaran atau sudah lunas untuk tahun ${processedData.periode_tahun}`);
-        }
-
-        const { _autoVerify, ...createData } = processedData;
-        const status = _autoVerify ? 'VERIFIED' : 'PENDING';
-
-        const result = await tx.pembayaranIuran.create({ 
-            data: {
-                ...createData,
-                status
-            } 
-        });
-        
-        if (_autoVerify) {
-            const wargaNama = (await tx.warga.findUnique({ where: { id: createData.warga_id } }))?.nama || 'Warga';
-            await tx.keuangan.create({
-                data: {
-                    tenant_id: result.tenant_id,
-                    scope: result.scope || 'RT',
-                    tipe: 'pemasukan',
-                    kategori: 'Iuran Warga',
-                    nominal: result.nominal,
-                    tanggal: result.tanggal_bayar,
-                    keterangan: buildKeterangan(
-                        wargaNama,
-                        result.kategori,
-                        result.periode_bulan as number[],
-                        result.periode_tahun,
-                        result.id
-                    )
+    try {
+        return await prisma.$transaction(async (tx) => {
+            // CONCURRENCY CHECK: Prevent double payment for same period
+            // Only check against PENDING or VERIFIED payments. REJECTED ones are ignored.
+            const existing = await tx.pembayaranIuran.findMany({
+                where: {
+                    warga_id: processedData.warga_id,
+                    kategori: processedData.kategori,
+                    periode_tahun: processedData.periode_tahun,
+                    status: { in: ['PENDING', 'VERIFIED'] }
                 }
             });
 
-            await aktivitasService.create({
-                tenant_id: createData.tenant_id,
-                scope: createData.scope || 'RT',
-                action: 'Bayar Iuran',
-                details: `Pembayaran iuran tunai warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
-                timestamp: Date.now()
-            });
-        } else {
-            await aktivitasService.create({
-                tenant_id: createData.tenant_id,
-                scope: createData.scope || 'RT',
-                action: 'Bayar Iuran',
-                details: `Pembayaran iuran dari warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
-                timestamp: Date.now()
-            });
-        }
+            console.log("DEBUG - Incoming processedData:", JSON.stringify(processedData, null, 2));
+            const monthsToPay = Array.isArray(processedData.periode_bulan) ? processedData.periode_bulan : [];
+            const alreadyPaidMonths = existing.flatMap(e => (e as any).periode_bulan || []);
+            const overlappingMonths = monthsToPay.filter((m: number) => alreadyPaidMonths.includes(m));
 
-        return result;
-    });
+            if (overlappingMonths.length > 0) {
+                throw new Error(`Bulan ${overlappingMonths.join(', ')} sudah dalam proses pembayaran atau sudah lunas untuk tahun ${processedData.periode_tahun}`);
+            }
+
+            const { _autoVerify, ...createData } = processedData;
+            createData.periode_bulan = monthsToPay;
+            const status = _autoVerify ? 'VERIFIED' : 'PENDING';
+
+            const result = await tx.pembayaranIuran.create({ 
+                data: {
+                    ...createData,
+                    status
+                } 
+            });
+            
+            if (_autoVerify) {
+                const wargaNama = (await tx.warga.findUnique({ where: { id: createData.warga_id } }))?.nama || 'Warga';
+                await tx.keuangan.create({
+                    data: {
+                        tenant_id: result.tenant_id,
+                        scope: result.scope || 'RT',
+                        tipe: 'pemasukan',
+                        kategori: 'Iuran Warga',
+                        nominal: result.nominal,
+                        tanggal: result.tanggal_bayar,
+                        keterangan: buildKeterangan(
+                            wargaNama,
+                            result.kategori,
+                            result.periode_bulan as number[],
+                            result.periode_tahun,
+                            result.id
+                        )
+                    }
+                });
+
+                await aktivitasService.create({
+                    tenant_id: createData.tenant_id,
+                    scope: createData.scope || 'RT',
+                    action: 'Bayar Iuran',
+                    details: `Pembayaran iuran tunai warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
+                    timestamp: Date.now()
+                });
+            } else {
+                await aktivitasService.create({
+                    tenant_id: createData.tenant_id,
+                    scope: createData.scope || 'RT',
+                    action: 'Bayar Iuran',
+                    details: `Pembayaran iuran dari warga (ID: ${createData.warga_id}): ${createData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                    timestamp: Date.now()
+                });
+            }
+
+            return result;
+        });
+    } catch (error) {
+        console.error("DEBUG - Error in pembayaranIuranService.create:", error);
+        throw error;
+    }
   },
 
   async verify(id: string, action: 'VERIFY' | 'REJECT', alasan?: string) {
