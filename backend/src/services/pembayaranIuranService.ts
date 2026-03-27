@@ -5,15 +5,25 @@ import { pengaturanService } from './pengaturanService';
 import { wargaService } from './wargaService';
 
 async function getWargaIuranRate(wargaId: string, tenantId: string, scope: string = 'RT'): Promise<number> {
-  const warga = await wargaService.getById(wargaId);
-  const settings = await pengaturanService.getAll(tenantId, scope);
-  
-  const config: Record<string, any> = {};
-  settings.forEach((p: any) => { config[p.key] = p.value; });
+  try {
+    const warga = await wargaService.getById(wargaId);
+    const settings = await pengaturanService.getAll(tenantId, scope);
+    
+    const config: Record<string, any> = {};
+    settings.forEach((p: any) => { config[p.key] = p.value; });
 
-  const statusKey = `${warga?.status_penduduk || 'Tetap'}-${warga?.status_rumah || 'Dihuni'}`;
-  const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-  return Number(config[rateField] || config.iuran_per_bulan || 0);
+    const statusKey = `${warga?.status_penduduk || 'Tetap'}-${warga?.status_rumah || 'Dihuni'}`;
+    const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
+    const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
+    
+    if (rate === 0) {
+      console.warn(`Warga ${wargaId} has 0 iuran rate. Check settings for ${rateField}`);
+    }
+    return rate;
+  } catch (err) {
+    console.error(`Error calculating iuran rate for warga ${wargaId}:`, err);
+    throw new Error("Gagal menghitung tarif iuran. Pastikan data warga dan pengaturan iuran sudah benar.");
+  }
 }
 
 const MONTH_NAMES_ID = [
@@ -212,6 +222,7 @@ export const pembayaranIuranService = {
                     kategori: 'Iuran Warga',
                     nominal: result.nominal,
                     tanggal: result.tanggal_bayar,
+                    pembayaranIuranId: result.id, // CRITICAL FIX: Link to iuran record
                     keterangan: buildKeterangan(
                         (iuran?.warga?.nama || (result as any).warga?.nama) || 'Warga',
                         result.kategori,
@@ -435,5 +446,15 @@ export const pembayaranIuranService = {
       pendingMonths,
       sisa: Math.max(0, expectedTotal - totalPaid - pendingAmount)
     };
+  },
+
+  async getPendingCount(tenantId: string, scope?: string) {
+    const where: any = { 
+        tenant_id: tenantId,
+        status: 'PENDING'
+    };
+    if (scope) where.scope = scope;
+    
+    return await prisma.pembayaranIuran.count({ where });
   }
 };

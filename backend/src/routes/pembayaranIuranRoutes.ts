@@ -168,4 +168,11 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     );
     return result;
   });
+
+  fastify.get('/pending-count', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const count = await pembayaranIuranService.getPendingCount(user.tenant_id, scope);
+    return { count };
+  });
 }

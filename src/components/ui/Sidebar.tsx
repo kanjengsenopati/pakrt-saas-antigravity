@@ -99,9 +99,8 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
             if (currentTenant?.id && hasPermission('Iuran Warga', 'Ubah')) {
                 try {
                     const { iuranService } = await import('../../services/iuranService');
-                    const data = await iuranService.getAll(currentTenant.id, currentScope);
-                    const pending = data.items.filter((i: any) => i.status === 'PENDING').length;
-                    setPendingIuranCount(pending);
+                    const count = await iuranService.getPendingCount(currentScope);
+                    setPendingIuranCount(count);
                 } catch (error) {
                     console.error('Failed to fetch pending iuran count:', error);
                 }

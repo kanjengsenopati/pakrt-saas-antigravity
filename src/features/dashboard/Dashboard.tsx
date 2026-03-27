@@ -72,7 +72,7 @@ export default function Dashboard() {
                     agendaService.count(currentTenant.id, currentScope),
                     keuanganService.getSummary(currentTenant.id, currentScope),
                     suratService.getAll(currentTenant.id, currentScope),
-                    iuranService.getAll(currentTenant.id, currentScope),
+                    iuranService.getPendingCount(currentScope),
                 ]);
 
                 const getVal = (res: PromiseSettledResult<any>, fallback: any) => 
@@ -84,7 +84,7 @@ export default function Dashboard() {
                 const agendaCount = getVal(results[3], 0);
                 const finSummary = getVal(results[4], { saldo: 0 });
                 const allSurat = getVal(results[5], []);
-                const allIuran = getVal(results[6], { items: [] });
+                const pendingIuranCount = getVal(results[6], 0);
 
                 // Log any failures for debugging
                 results.forEach((res, idx) => {
@@ -101,7 +101,7 @@ export default function Dashboard() {
                     agenda: agendaCount || 0,
                     saldo: finSummary?.saldo || 0,
                     pendingSurat: (allSurat || []).filter((s: any) => s.status === 'proses').length,
-                    pendingIuran: (allIuran?.items || []).filter((i: any) => i.status === 'PENDING').length
+                    pendingIuran: pendingIuranCount
                 });
             } else if (wargaId) {
                 const results = await Promise.allSettled([

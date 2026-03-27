@@ -58,5 +58,10 @@ export const iuranService = {
 
     async syncAllToKeuangan(tenantId: string, scope: ScopeType): Promise<void> {
         await api.post('/iuran/sync-keuangan', { tenant_id: tenantId, scope });
+    },
+
+    async getPendingCount(scope?: ScopeType): Promise<number> {
+        const response = await api.get('/iuran/pending-count', { params: { scope } });
+        return response.data.count || 0;
     }
 };
