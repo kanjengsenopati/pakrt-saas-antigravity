@@ -86,7 +86,29 @@ export const agendaService = {
 
   async update(id: string, data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.agenda.update({ where: { id }, data });
+    const agenda = await prisma.agenda.update({ where: { id }, data });
+
+    // Trigger Push Notification on Update (if important fields changed or just as a reminder)
+    try {
+        const payload = {
+            title: 'Update Agenda: ' + agenda.judul,
+            body: `Terdapat update pada kegiatan ${agenda.judul} (${dateUtils.toDisplay(agenda.tanggal)}). Silakan cek detailnya!`,
+            icon: '/pwa-192x192.png',
+            data: { url: '/agenda', id: agenda.id }
+        };
+
+        if (agenda.is_semua_warga) {
+            await pushService.sendNotificationToScope(agenda.tenant_id, agenda.scope, payload);
+        } else if (agenda.peserta_ids && agenda.peserta_ids.length > 0) {
+            await Promise.all(agenda.peserta_ids.map(id => 
+                pushService.sendNotificationToWarga(id, payload)
+            ));
+        }
+    } catch (error) {
+        console.error('Error sending agenda update push notification:', error);
+    }
+
+    return agenda;
   },
 
   async delete(id: string) {

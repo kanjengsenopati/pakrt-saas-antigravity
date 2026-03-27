@@ -46,6 +46,8 @@ export const pushService = {
             where: { warga_id: wargaId }
         });
 
+        console.log(`Sending notification to Warga ${wargaId}. Found ${subscriptions.length} subscriptions.`);
+
         const notifications = subscriptions.map(sub => {
             const pushSubscription = {
                 endpoint: sub.endpoint,
@@ -56,6 +58,7 @@ export const pushService = {
             };
 
             return webpush.sendNotification(pushSubscription, JSON.stringify(payload))
+                .then(() => console.log(`Push sent successfully to Warga ${wargaId}`))
                 .catch(async (err) => {
                     if (err.statusCode === 404 || err.statusCode === 410) {
                         // Subscription expired or no longer valid
@@ -78,6 +81,8 @@ export const pushService = {
             }
         });
 
+        console.log(`Sending notification to Scope ${scope}. Found ${subscriptions.length} subscriptions.`);
+
         const notifications = subscriptions.map(sub => {
             const pushSubscription = {
                 endpoint: sub.endpoint,
@@ -88,6 +93,7 @@ export const pushService = {
             };
 
             return webpush.sendNotification(pushSubscription, JSON.stringify(payload))
+                .then(() => console.log(`Push sent successfully to Scope ${scope} subscriber`))
                 .catch(async (err) => {
                     if (err.statusCode === 404 || err.statusCode === 410) {
                         await prisma.pushSubscription.delete({ where: { id: sub.id } });
@@ -108,6 +114,8 @@ export const pushService = {
             }
         });
 
+        console.log(`Sending notification to All Warga in Tenant ${tenantId}. Found ${subscriptions.length} subscriptions.`);
+
         const notifications = subscriptions.map(sub => {
             const pushSubscription = {
                 endpoint: sub.endpoint,
@@ -118,6 +126,7 @@ export const pushService = {
             };
 
             return webpush.sendNotification(pushSubscription, JSON.stringify(payload))
+                .then(() => console.log(`Push sent successfully to broadcast subscriber`))
                 .catch(async (err) => {
                     if (err.statusCode === 404 || err.statusCode === 410) {
                         await prisma.pushSubscription.delete({ where: { id: sub.id } });

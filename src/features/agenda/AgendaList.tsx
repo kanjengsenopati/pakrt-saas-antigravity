@@ -596,7 +596,11 @@ export default function AgendaList() {
                                                                 <div className="flex flex-col items-center gap-0.5">
                                                                     <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Rapat</span>
                                                                     {notulensiList.some(n => n.agenda_id === agenda.id) ? (
-                                                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Selesai</span>
+                                                                        past ? (
+                                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Selesai</span>
+                                                                        ) : (
+                                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-tight">Terbit</span>
+                                                                        )
                                                                     ) : (
                                                                         <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-slate-100 text-slate-500 border border-slate-200 tracking-tight">Menunggu</span>
                                                                     )}
@@ -753,7 +757,11 @@ export default function AgendaList() {
                                                 {agenda.perlu_rapat && (
                                                     <div className="flex gap-1">
                                                         {notulensiList.some(n => n.agenda_id === agenda.id) ? (
-                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Rapat Selesai</span>
+                                                            past ? (
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 tracking-tight">Rapat Selesai</span>
+                                                            ) : (
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-blue-50 text-blue-600 border border-blue-100 tracking-tight">Rapat Terbit</span>
+                                                            )
                                                         ) : (
                                                             <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[0.625rem] font-bold bg-slate-100 text-slate-500 border border-slate-200 tracking-tight">Rapat Menunggu</span>
                                                         )}
