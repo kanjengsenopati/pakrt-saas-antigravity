@@ -170,6 +170,7 @@ export default function SetupPage() {
                     nominal_biaya: 250000,
                     sumber_dana: 'Kas',
                     peserta_ids: siswanto ? [siswanto.id] : [],
+                    is_semua_warga: true,
                     is_terlaksana: false,
                     foto_dokumentasi: []
                 });
