@@ -195,7 +195,7 @@ export default function RondaList() {
                                 <p className="text-gray-500">Data regu tidak ditemukan.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {sortedGroups.map((group: any) => {
                                     const isMyGroup = wargaId && group.members.has(wargaId);
                                     const todayStr = new Date().toISOString().split('T')[0];
@@ -204,110 +204,119 @@ export default function RondaList() {
                                         .sort((a: any, b: any) => a.tanggal.localeCompare(b.tanggal))[0];
                                     
                                     return (
-                                    <div key={group.name} className={`bg-white border rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group/card ${isMyGroup ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-brand-500/20 transform scale-[1.02] z-10' : 'border-gray-200'}`}>
-                                        
-                                        {isMyGroup && (
-                                            <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg z-20 shadow-sm flex items-center gap-1">
-                                                <CheckCircle weight="fill" /> Regu Anda
-                                            </div>
-                                        )}
+                                        <div key={group.name} className={`bg-white border-2 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden relative group/card ${isMyGroup ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-100'}`}>
+                                            
+                                            {isMyGroup && (
+                                                <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-bl-xl z-20 shadow-sm flex items-center gap-1.5 tracking-widest">
+                                                    <CheckCircle weight="fill" className="w-3 h-3" /> Regu Anda
+                                                </div>
+                                            )}
 
-                                        <div className={`p-5 border-b border-gray-100 relative ${isMyGroup ? 'bg-gradient-to-br from-brand-50 to-white' : 'bg-gradient-to-br from-gray-50 to-white'}`}>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                                    <span className={`w-8 h-8 ${isMyGroup ? 'bg-brand-600' : 'bg-gray-700'} text-white rounded-lg flex items-center justify-center text-sm font-bold`}>
-                                                        {group.name.charAt(0)}
-                                                    </span>
-                                                    {group.name}
-                                                </h3>
-                                                <span className={`${isMyGroup ? 'bg-brand-100 text-brand-700' : 'bg-gray-200 text-gray-700'} text-[10px] font-bold px-2 py-0.5 rounded-full tracking-tight`}>
-                                                    {group.dates.length} Jadwal
-                                                </span>
-                                            </div>
-
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Utama</p>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {Array.from((group as any).members.values()).map((w: any) => (
-                                                            <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-white border border-gray-100 rounded-lg shadow-sm">
-                                                                <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center">
-                                                                    <span className="text-[8px] font-bold text-blue-600">{w.nama[0]}</span>
-                                                                </div>
-                                                                <span className="text-[11px] font-medium text-gray-700">{w.nama}</span>
-                                                            </div>
-                                                        ))}
+                                            <div className={`p-5 border-b border-slate-50 relative ${isMyGroup ? 'bg-slate-50/50' : 'bg-white'}`}>
+                                                <div className="flex justify-between items-center mb-5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black shadow-inner border ${isMyGroup ? 'bg-brand-600 text-white border-brand-500' : 'bg-slate-900 text-white border-slate-800'}`}>
+                                                            {group.name.charAt(0).toUpperCase()}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-[15px] font-black text-slate-900 uppercase tracking-tight leading-none">{group.name}</h3>
+                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Siskamling Unit</p>
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                {group.konsumsi.size > 0 && (
+                                                <div className="space-y-4">
                                                     <div>
-                                                        <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Penyedia Konsumsi</p>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {Array.from((group as any).konsumsi.values()).map((w: any) => (
-                                                                <div key={w.id} className="flex items-center gap-1.5 px-2 py-1 bg-amber-50/50 border border-amber-100 rounded-lg">
-                                                                    <span className="text-[11px] font-medium text-amber-900">{w.nama}</span>
+                                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+                                                            <div className="w-1 h-3 bg-brand-500 rounded-full" />
+                                                            Petugas Utama
+                                                        </p>
+                                                        <div className="flex flex-wrap gap-1.5">
+                                                            {Array.from((group as any).members.values()).map((w: any) => (
+                                                                <div key={w.id} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm">
+                                                                    <div className="w-4 h-4 rounded-lg bg-brand-50 flex items-center justify-center">
+                                                                        <span className="text-[9px] font-black text-brand-600">{w.nama[0].toUpperCase()}</span>
+                                                                    </div>
+                                                                    <span className="text-[11px] font-bold text-slate-700">{w.nama}</span>
                                                                 </div>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                )}
-                                            </div>
-                                        </div>
 
-                                        <div className="p-5 bg-gray-50/30 flex-1">
-                                            <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-3">Daftar Tanggal Jaga</p>
-                                            <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
-                                                {group.dates.sort((a: any, b: any) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map((d: any) => {
-                                                    const isPast = d.tanggal < todayStr;
-                                                    const isNext = nextSchedule && d.id === nextSchedule.id;
-                                                    const isActive = activeSnackId === d.id;
-                                                    return (
-                                                        <div key={d.id} className="flex flex-col gap-1">
-                                                            <div
-                                                                onClick={() => setActiveSnackId(isActive ? null : d.id)}
-                                                                className={`flex items-center justify-between text-[11px] p-2 rounded-lg transition-all cursor-pointer ${isActive ? 'bg-amber-50 border border-amber-100 shadow-sm' : isNext ? 'bg-emerald-50/70 border border-emerald-100 ring-1 ring-emerald-500/10' : 'hover:bg-gray-100/80 border border-transparent'}`}
-                                                            >
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-emerald-400' : isNext ? 'bg-brand-500 animate-pulse' : 'bg-blue-400'}`}></div>
-                                                                    <span className={isPast ? 'text-gray-400' : isNext ? 'text-brand-700 font-bold' : 'text-gray-600 font-medium'}>
-                                                                        {dateUtils.toDisplay(d.tanggal)}
-                                                                    </span>
-                                                                    {isNext && (
-                                                                        <span className="text-[9px] bg-brand-600 text-white px-1.5 py-0.5 rounded-md font-bold ml-1 tracking-tight shadow-sm">Terdekat</span>
-                                                                    )}
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    {d.kehadiranCount > 0 && (
-                                                                        <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">
-                                                                            {d.kehadiranCount} Hadir
-                                                                        </span>
-                                                                    )}
-                                                                    <CheckCircle weight={isActive ? "fill" : "regular"} className={`w-3.5 h-3.5 ${isActive ? 'text-amber-500' : 'text-gray-300'}`} />
-                                                                </div>
+                                                    {group.konsumsi.size > 0 && (
+                                                        <div>
+                                                            <p className="text-[10px] text-amber-500 font-black uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+                                                                <div className="w-1 h-3 bg-amber-500 rounded-full" />
+                                                                Konsumsi
+                                                            </p>
+                                                            <div className="flex flex-wrap gap-1.5">
+                                                                {Array.from((group as any).konsumsi.values()).map((w: any) => (
+                                                                    <div key={w.id} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50/50 border border-amber-100 rounded-xl">
+                                                                        <span className="text-[11px] font-bold text-amber-700">{w.nama}</span>
+                                                                    </div>
+                                                                ))}
                                                             </div>
-                                                            {isActive && (
-                                                                <div className="ml-3.5 pl-3 border-l-2 border-amber-200 py-1 animate-slide-down">
-                                                                    <p className="text-[10px] text-amber-600 font-bold tracking-tight mb-1">Petugas Snack:</p>
-                                                                    <div className="flex flex-wrap gap-1">
-                                                                        {d.petugas_konsumsi.length > 0 ? (
-                                                                            d.petugas_konsumsi.map((p: any) => (
-                                                                                <span key={p.id} className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-medium">
-                                                                                    {p.nama}
-                                                                                </span>
-                                                                            ))
-                                                                        ) : (
-                                                                            <span className="text-[10px] text-gray-400 italic">Belum ditentukan</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="p-5 bg-slate-50/30 flex-1">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-none">Status & Jadwal</p>
+                                                    <span className="text-[9px] font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full uppercase tracking-widest">{group.dates.length} Titik</span>
+                                                </div>
+                                                <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
+                                                    {group.dates.sort((a: any, b: any) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map((d: any) => {
+                                                        const isPast = d.tanggal < todayStr;
+                                                        const isNext = nextSchedule && d.id === nextSchedule.id;
+                                                        const isActive = activeSnackId === d.id;
+                                                        return (
+                                                            <div key={d.id} className="flex flex-col gap-1">
+                                                                <div
+                                                                    onClick={() => setActiveSnackId(isActive ? null : d.id)}
+                                                                    className={`flex items-center justify-between text-[11px] p-2.5 rounded-xl transition-all cursor-pointer border ${isActive ? 'bg-amber-50 border-amber-200 shadow-sm' : isNext ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-slate-100 hover:border-slate-200'}`}
+                                                                >
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-slate-300' : isNext ? 'bg-emerald-500 animate-pulse' : 'bg-brand-500'}`}></div>
+                                                                        <span className={`text-[11px] tracking-tight ${isPast ? 'text-slate-400 font-medium' : isNext ? 'text-emerald-700 font-black' : 'text-slate-700 font-bold'}`}>
+                                                                            {dateUtils.toDisplay(d.tanggal)}
+                                                                        </span>
+                                                                        {isNext && (
+                                                                            <span className="text-[8px] bg-brand-600 text-white px-1.5 py-0.5 rounded-lg font-black uppercase tracking-widest ml-1 shadow-sm">Next</span>
                                                                         )}
                                                                     </div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        {d.kehadiranCount > 0 && (
+                                                                            <span className="text-[9px] text-emerald-600 font-black bg-emerald-50 px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
+                                                                                {d.kehadiranCount} Check
+                                                                            </span>
+                                                                        )}
+                                                                        <CheckCircle weight={isActive ? "fill" : "bold"} className={`w-3.5 h-3.5 ${isActive ? 'text-amber-500' : 'text-slate-200'}`} />
+                                                                    </div>
                                                                 </div>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
+                                                                {isActive && (
+                                                                    <div className="ml-3 pl-4 border-l-2 border-amber-200 py-2 animate-fade-in">
+                                                                        <p className="text-[9px] text-amber-500 font-black uppercase tracking-widest mb-1.5">Detail Konsumsi:</p>
+                                                                        <div className="flex flex-wrap gap-1.5">
+                                                                            {d.petugas_konsumsi.length > 0 ? (
+                                                                                d.petugas_konsumsi.map((p: any) => (
+                                                                                    <span key={p.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-tight">
+                                                                                        {p.nama}
+                                                                                    </span>
+                                                                                ))
+                                                                            ) : (
+                                                                                <span className="text-[10px] text-slate-400 italic">Belum ditentukan</span>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     );
                                 })}
                             </div>
@@ -433,78 +442,103 @@ export default function RondaList() {
                         </div>
 
                         {/* MOBILE VIEW: CARD GRID */}
-                        <div className="md:hidden space-y-4 p-4 bg-gray-50">
+                        <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                             {!rondaItems && isLoading ? (
-                                <div className="text-center text-gray-500 py-8">Memuat data...</div>
+                                <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                                    <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <span>Sinkronisasi...</span>
+                                </div>
                             ) : filteredRonda.length === 0 ? (
-                                <div className="text-center text-gray-500 py-8 flex flex-col items-center">
-                                    <ShieldCheck className="w-10 h-10 text-gray-300 mb-2" />
-                                    <p>Belum ada jadwal ronda yang dibuat.</p>
+                                <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                        <ShieldCheck weight="duotone" className="w-8 h-8 text-slate-300" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Jadwal</p>
+                                        <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat jadwal ronda akan muncul di sini</p>
+                                    </div>
                                 </div>
                             ) : (
                                 filteredRonda.map((ronda) => (
-                                    <div key={ronda.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                                        <div className="p-4 flex gap-4">
-                                            <div className="flex-1">
-                                                <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3">
-                                                    <div>
-                                                        <p className="font-bold text-gray-900 text-sm">
-                                                            {dateUtils.toDisplay(ronda.tanggal)}
-                                                        </p>
+                                    <div key={ronda.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                                        <div className="p-4">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex flex-col items-center justify-center border border-slate-800 shadow-inner">
+                                                        <span className="text-[8px] font-bold leading-none uppercase">{new Date(ronda.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                        <span className="text-sm font-black leading-none mt-0.5">{new Date(ronda.tanggal).getDate()}</span>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 tracking-tight">
-                                                            {ronda.regu}
-                                                        </span>
+                                                    <div>
+                                                        <h3 className="font-bold text-slate-900 text-[14px] uppercase tracking-tight leading-tight mb-1">{ronda.regu}</h3>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <span className="text-[10px] font-mono text-slate-400 tracking-tighter uppercase italic">{dateUtils.toDisplay(ronda.tanggal)}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                {ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 && (
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
+                                                        Selesai
+                                                    </span>
+                                                )}
+                                            </div>
 
-                                                <div>
-                                                    <p className="text-[11px] text-slate-400 font-bold tracking-tight mb-2">Petugas Piket</p>
-                                                    <div className="flex flex-wrap gap-1.5 mb-3">
+                                            <div className="space-y-4">
+                                                <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
+                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Petugas Piket</p>
+                                                    <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_warga?.map((w: any) => (
-                                                            <span key={w.id} className="inline-flex items-center px-2 py-1 rounded bg-gray-50 text-gray-700 border border-gray-100 text-xs font-medium">
+                                                            <span key={w.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-slate-100 text-slate-700 text-[11px] font-bold shadow-sm">
                                                                 {w.nama}
                                                             </span>
                                                         ))}
                                                     </div>
-                                                    <p className="text-[11px] text-amber-600 font-bold tracking-tight mb-2">Bawa Konsumsi/Snack</p>
+                                                </div>
+
+                                                <div className="bg-amber-50/30 rounded-xl border border-amber-100 p-3">
+                                                    <p className="text-[10px] text-amber-500 font-black uppercase tracking-widest mb-2 leading-none">Bawa Konsumsi</p>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
                                                             ronda.anggota_konsumsi.map((w: any) => (
-                                                                <span key={`mob-k-${w.id}`} className="inline-flex items-center px-2 py-1 rounded bg-amber-50 text-amber-800 border border-amber-100 text-xs font-medium">
+                                                                <span key={`mob-k-${w.id}`} className="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-amber-100 text-amber-700 text-[11px] font-bold shadow-sm">
                                                                     {w.nama}
                                                                 </span>
                                                             ))
                                                         ) : (
-                                                            <span className="text-gray-400 italic text-xs">Belum ada</span>
+                                                            <span className="text-[11px] text-slate-300 italic font-medium tracking-tight">Belum ditentukan</span>
                                                         )}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="bg-gray-50 border-t border-gray-100 p-2 flex justify-end items-center gap-2">
-                                            <HasPermission module="Notulensi" action="Ubah">
-                                                <button
-                                                    onClick={() => handleOpenAttendance(ronda)}
-                                                    className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100' : 'text-gray-600 bg-white border border-gray-200 hover:bg-gray-50'}`} title="Catat Kehadiran">
-                                                    <CheckCircle weight={ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? "fill" : "duotone"} className="w-4 h-4" /> Kehadiran
-                                                </button>
-                                            </HasPermission>
-                                            <HasPermission module="Jadwal Ronda" action="Ubah">
-                                                <button
-                                                    onClick={() => navigate(`/ronda/edit/${ronda.id}`)}
-                                                    className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold" title="Edit Jadwal">
-                                                    <PencilSimple weight="duotone" className="w-4 h-4" /> Edit
-                                                </button>
-                                            </HasPermission>
-                                            <HasPermission module="Jadwal Ronda" action="Hapus">
-                                                <button
-                                                    onClick={() => handleDelete(ronda.id, ronda.tanggal)}
-                                                    className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold" title="Hapus">
-                                                    <Trash weight="duotone" className="w-4 h-4" /> Hapus
-                                                </button>
-                                            </HasPermission>
+
+                                            <div className="flex justify-end items-center pt-4 border-t border-slate-50 gap-2 mt-4">
+                                                <HasPermission module="Notulensi" action="Ubah">
+                                                    <button
+                                                        onClick={() => handleOpenAttendance(ronda)}
+                                                        className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-sm active:scale-95 border ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-slate-600 bg-white border-slate-200'}`}
+                                                    >
+                                                        <CheckCircle weight={ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? "fill" : "bold"} className="w-4 h-4" />
+                                                        Kehadiran
+                                                    </button>
+                                                </HasPermission>
+                                                <div className="flex gap-2">
+                                                    <HasPermission module="Jadwal Ronda" action="Ubah">
+                                                        <button
+                                                            onClick={() => navigate(`/ronda/edit/${ronda.id}`)}
+                                                            className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50"
+                                                        >
+                                                            <PencilSimple weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                    <HasPermission module="Jadwal Ronda" action="Hapus">
+                                                        <button
+                                                            onClick={() => handleDelete(ronda.id, ronda.tanggal)}
+                                                            className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm"
+                                                        >
+                                                            <Trash weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))

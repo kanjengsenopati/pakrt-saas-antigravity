@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { Plus, Funnel, PencilSimple, Trash, UserList, ListDashes, SquaresFour, WarningCircle } from '@phosphor-icons/react';
+import { Plus, Funnel, PencilSimple, Trash, UserList, ListDashes, SquaresFour, WarningCircle, Users, Briefcase } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 
@@ -79,80 +79,103 @@ export default function PengurusList() {
             return acc;
         }, {} as Record<string, typeof filteredPengurus>)
         : {};
+    const totalPositions = pengurusList.length;
+    const activePengurus = pengurusList.filter(p => p.status === 'aktif' || !p.status).length;
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">
-                        {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 'Riwayat Kepengurusan'}
-                    </h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-normal">
+                    <h1 className="page-title">{activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 'Riwayat Kepengurusan'}</h1>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                         {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
                     </p>
                 </div>
-                <HasPermission module="Data Pengurus" action="Buat">
-                    <button
-                        onClick={() => navigate('/pengurus/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
-                    >
-                        <Plus weight="bold" />
-                        <span>Tambah Jabatan</span>
-                    </button>
-                </HasPermission>
+                
+                <div className="flex flex-col w-full sm:w-auto gap-2">
+                    <HasPermission module="Data Pengurus" action="Buat">
+                        <button
+                            onClick={() => navigate('/pengurus/new')}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
+                        >
+                            <Plus weight="bold" />
+                            <span>Tambah Jabatan</span>
+                        </button>
+                    </HasPermission>
+                </div>
+            </div>
+
+            {/* STATS WIDGETS */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
+                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <Briefcase weight="fill" className="text-brand-500 w-3 h-3" />
+                            Total Jabatan
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
+                    </div>
+                </div>
+
+                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
+                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10 flex flex-col items-center text-center text-white">
+                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <Users weight="bold" className="text-amber-400 w-3 h-3" />
+                            Pengurus Aktif
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
+                    </div>
+                </div>
             </div>
 
             {/* TABS: AKTIF vs RIWAYAT */}
-            <div className="flex border-b border-gray-200 gap-8">
+            <div className="flex border-b border-gray-200">
                 <button
                     onClick={() => setActiveTab('aktif')}
-                    className={`pb-4 text-sm font-bold transition-all relative ${activeTab === 'aktif' ? 'text-brand-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'aktif' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                 >
                     Struktur Aktif
-                    {activeTab === 'aktif' && <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-600 rounded-t-full shadow-[0_-2px_8px_rgba(var(--brand-600-rgb),0.4)]" />}
                 </button>
                 <button
                     onClick={() => setActiveTab('riwayat')}
-                    className={`pb-4 text-sm font-bold transition-all relative ${activeTab === 'riwayat' ? 'text-brand-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'riwayat' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                 >
                     Riwayat Kepengurusan
-                    {activeTab === 'riwayat' && <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-600 rounded-t-full shadow-[0_-2px_8px_rgba(var(--brand-600-rgb),0.4)]" />}
                 </button>
             </div>
 
             {activeTab === 'aktif' ? (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
-                        <div className="relative w-full sm:w-96">
+                    <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                        <div className="relative flex-1">
                             <input
                                 type="text"
-                                placeholder="Cari berdasarkan Jabatan atau Nama..."
+                                placeholder="Cari Jabatan atau Nama..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                                className="w-full pl-4 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-sm"
                             />
                         </div>
-                        <div className="flex gap-2 w-full sm:w-auto">
-                            <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+                        <div className="flex gap-2">
+                            <div className="hidden sm:flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
                                 <button
                                     onClick={() => setViewMode('list')}
-                                    className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-brand-600' : 'text-gray-500 hover:text-gray-700'}`}
-                                    title="Tampilan List"
+                                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                 >
-                                    <ListDashes weight={viewMode === 'list' ? 'bold' : 'regular'} className="w-5 h-5" />
+                                    <ListDashes weight="bold" size={18} />
                                 </button>
                                 <button
                                     onClick={() => setViewMode('grid')}
-                                    className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-brand-600' : 'text-gray-500 hover:text-gray-700'}`}
-                                    title="Tampilan Grid"
+                                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                 >
-                                    <SquaresFour weight={viewMode === 'grid' ? 'bold' : 'regular'} className="w-5 h-5" />
+                                    <SquaresFour weight="bold" size={18} />
                                 </button>
                             </div>
-                            <button className="flex-1 sm:flex-none flex justify-center items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors">
-                                <Funnel weight="fill" className="text-gray-400" />
-                                <span className="hidden sm:inline">Filter Tambahan</span>
+                            <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-[14px] font-normal transition-all shadow-sm active-press">
+                                <Funnel weight="fill" className="text-brand-600 sm:text-slate-400" />
+                                <span className="hidden sm:inline">Filter</span>
                             </button>
                         </div>
                     </div>
@@ -249,58 +272,76 @@ export default function PengurusList() {
                     </div>
 
                     {/* MOBILE VIEW OR GRID CARD VIEW */}
-                    <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50' : 'md:hidden space-y-4 p-4 bg-gray-50'}`}>
+                    <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-slate-50/50' : 'md:hidden space-y-4 p-4 bg-slate-50/50'}`}>
                         {isLoading ? (
-                            <div className="text-center text-gray-500 py-8">Memuat data...</div>
+                            <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                                <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                                <span>Sinkronisasi...</span>
+                            </div>
                         ) : filteredPengurus.length === 0 ? (
-                            <div className="text-center text-gray-500 py-8 flex flex-col items-center">
-                                <UserList className="w-10 h-10 text-gray-300 mb-2" />
-                                <p>Belum ada struktur kepengurusan aktif.</p>
+                            <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                                    <UserList weight="duotone" className="w-8 h-8" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-slate-900 tracking-tight">Data Tidak Ditemukan</p>
+                                    <p className="text-[10px] text-slate-400 mt-1 font-medium italic">Belum ada struktur kepengurusan aktif.</p>
+                                </div>
                             </div>
                         ) : (
                             filteredPengurus.map((pengurus) => (
-                                <div key={pengurus.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                                    <div className="p-4 flex gap-4">
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-start">
+                                <div key={pengurus.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                                    <div className="p-4">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 rounded-2xl bg-slate-50 text-brand-600 flex items-center justify-center border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
+                                                    <Briefcase weight="duotone" className="w-6 h-6" />
+                                                </div>
                                                 <div>
-                                                    <h3 className="font-bold text-gray-900 text-lg">{pengurus.jabatan}</h3>
-                                                    <div className="mt-1 flex items-center gap-2">
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">
-                                                            Periode {pengurus.periode}
-                                                        </span>
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                                                            {pengurus.status || 'aktif'}
-                                                        </span>
+                                                    <h3 className="font-bold text-slate-900 text-[15px] tracking-tight leading-tight">{pengurus.jabatan}</h3>
+                                                    <div className="flex items-center gap-1.5 mt-1">
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Periode {pengurus.periode}</span>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-1">
-                                                    <HasPermission module="Data Pengurus" action="Ubah">
-                                                        <button onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                                                            <PencilSimple weight="duotone" className="w-5 h-5" />
-                                                        </button>
-                                                    </HasPermission>
-                                                    <HasPermission module="Data Pengurus" action="Hapus">
-                                                        <button onClick={() => handleDelete(pengurus.id, pengurus.jabatan)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                                                            <Trash weight="duotone" className="w-5 h-5" />
-                                                        </button>
-                                                    </HasPermission>
-                                                </div>
                                             </div>
+                                            <div className="text-right">
+                                                <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border flex items-center gap-1.5 shadow-sm uppercase tracking-wider ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+                                                    {pengurus.status || 'aktif'}
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                            <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100 flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold overflow-hidden border border-brand-200 shrink-0">
-                                                    {pengurus.warga?.avatar ? (
-                                                        <img src={getFullUrl(pengurus.warga.avatar)} alt={pengurus.warga.nama} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <span>{pengurus.warga?.nama?.charAt(0) || '?'}</span>
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-semibold text-gray-900 text-sm truncate">{pengurus.warga?.nama || <span className="text-red-500 italic">Data warga tidak ditemukan</span>}</p>
-                                                    {pengurus.warga?.kontak && <p className="text-xs text-gray-500 truncate">{pengurus.warga.kontak}</p>}
-                                                </div>
+                                        <div className="mt-4 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-white text-brand-600 flex items-center justify-center font-bold overflow-hidden border border-slate-200 shrink-0 shadow-sm">
+                                                {pengurus.warga?.avatar ? (
+                                                    <img src={getFullUrl(pengurus.warga.avatar)} alt={pengurus.warga.nama} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-sm">{pengurus.warga?.nama?.charAt(0) || '?'}</span>
+                                                )}
                                             </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-bold text-slate-900 text-[13px] truncate">{pengurus.warga?.nama || <span className="text-rose-500 italic">Data warga tidak ditemukan</span>}</p>
+                                                {pengurus.warga?.kontak && <p className="text-[11px] text-slate-500 font-medium truncate">{pengurus.warga.kontak}</p>}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex justify-end items-center pt-4 mt-4 border-t border-slate-50 gap-2">
+                                            <HasPermission module="Data Pengurus" action="Ubah">
+                                                <button
+                                                    onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)}
+                                                    className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all shadow-sm border border-blue-100/50"
+                                                >
+                                                    <PencilSimple weight="bold" size={18} />
+                                                </button>
+                                            </HasPermission>
+                                            <HasPermission module="Data Pengurus" action="Hapus">
+                                                <button
+                                                    onClick={() => handleDelete(pengurus.id, pengurus.jabatan)}
+                                                    className="p-2.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all shadow-sm border border-rose-100/50"
+                                                >
+                                                    <Trash weight="bold" size={18} />
+                                                </button>
+                                            </HasPermission>
                                         </div>
                                     </div>
                                 </div>

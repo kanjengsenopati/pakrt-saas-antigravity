@@ -140,31 +140,30 @@ export default function KeuanganList() {
                     </HasPermission>
                 </div>
             </div>
-
             {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 -mt-2">
                 {/* KAS MASUK */}
-                <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                <div className="bg-white py-3 px-2 sm:px-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-sm font-medium text-slate-500 tracking-normal leading-none mb-1.5">Kas Masuk</p>
-                        <p className="text-sm sm:text-xl font-medium text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kas Masuk</p>
+                        <p className="text-[11px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
                     </div>
                 </div>
 
                 {/* KAS KELUAR */}
-                <div className="bg-white py-2 px-2 sm:py-3 sm:px-4 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
+                <div className="bg-white py-3 px-2 sm:px-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-sm font-medium text-slate-500 tracking-normal leading-none mb-1.5">Kas Keluar</p>
-                        <p className="text-sm sm:text-xl font-medium text-slate-800 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kas Keluar</p>
+                        <p className="text-[11px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
                     </div>
                 </div>
 
                 {/* SALDO AKHIR */}
-                <div className={`py-2 px-2 sm:py-3 sm:px-4 rounded-xl border shadow-md relative overflow-hidden group transition-all duration-300 hover:shadow-lg ${summary.saldo >= 0 ? 'bg-emerald-600 border-emerald-500 hover:bg-emerald-700' : 'bg-red-600 border-red-500 hover:bg-red-700'}`}>
-                    <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
+                <div className={`py-3 px-2 sm:px-4 rounded-2xl border shadow-lg relative overflow-hidden group transition-all duration-300 hover:shadow-xl ${summary.saldo >= 0 ? 'bg-slate-900 border-slate-800' : 'bg-red-600 border-red-500'}`}>
+                    <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-sm font-medium text-white/90 tracking-normal leading-none mb-1.5">Saldo</p>
-                        <p className="text-sm sm:text-xl font-medium text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-white/60 uppercase tracking-widest mb-1.5">Saldo</p>
+                        <p className="text-[11px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
                     </div>
                 </div>
             </div>
@@ -302,74 +301,85 @@ export default function KeuanganList() {
                 </div>
 
                 {/* MOBILE VIEW: CARD GRID */}
-                <div className="md:hidden space-y-4 p-4 bg-gray-50">
+                <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {isLoading ? (
-                        <div className="text-center text-gray-500 py-12 font-semibold text-sm tracking-normal animate-pulse">Memuat riwayat transaksi...</div>
+                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                            <span>Sinkronisasi...</span>
+                        </div>
                     ) : filteredTransactions.length === 0 ? (
-                        <div className="text-center py-20 px-6 bg-white border border-slate-100 rounded-2xl flex flex-col items-center">
-                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border-2 border-dashed border-slate-200 mb-4">
+                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
                                 <ArrowDownRight weight="duotone" className="w-8 h-8 text-slate-300" />
                             </div>
-                            <p className="text-sm font-bold text-slate-900 tracking-normal">Data Kosong</p>
-                            <p className="text-sm text-slate-400 mt-1 tracking-normal font-medium">Belum ada transaksi tercatat</p>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Transaksi</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat transaksi anda akan muncul di sini</p>
+                            </div>
                         </div>
                     ) : (
                         filteredTransactions.map((trx) => (
-                            <div key={trx.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col hover:border-brand-300 transition-colors">
-                                <div className="p-4 flex gap-4">
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start mb-3 border-b border-slate-50 pb-3">
-                                            <div>
-                                                <div className={`text-sm font-semibold tracking-normal mb-1 ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-600'}`}>
-                                                    {toTitleCase(trx.kategori)}
-                                                </div>
-                                                <p className="text-sm text-slate-400 font-medium tracking-normal">
-                                                    {dateUtils.toDisplay(trx.tanggal)} &bull; <span className="font-mono text-[11px] bg-slate-100 px-1 py-0.5 rounded ml-1 tracking-normal inline-block">ID:{formatFormalId(trx.tanggal, trx.id)}</span>
-                                                </p>
+                            <div key={trx.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300">
+                                <div className="p-4">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center border shadow-inner ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'}`}>
+                                                <span className="text-[8px] font-bold leading-none uppercase">{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
                                             </div>
-                                            <div className={`text-lg font-bold ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-red-500'}`}>
-                                                {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
+                                            <div>
+                                                <h3 className={`font-bold text-[13px] uppercase tracking-tight leading-tight mb-1 ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>{toTitleCase(trx.kategori)}</h3>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-[10px] font-mono text-slate-400 tracking-tighter uppercase italic">ID: {formatFormalId(trx.tanggal, trx.id)}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className={`text-base font-black tabular-nums tracking-tight ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                            {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
+                                        </div>
+                                    </div>
 
-                                        <div className="text-sm font-bold text-slate-700 leading-relaxed">
+                                    <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3 mb-3">
+                                        <div className="text-[13px] font-medium text-slate-700 leading-relaxed">
                                             {(() => {
                                                 const parsed = parseKeterangan(trx.keterangan);
                                                 if (parsed.isIuran && parsed.wargaNama) {
                                                     return (
-                                                        <div className="space-y-1">
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-brand-50 text-brand-700 border border-brand-100">
-                                                                {parsed.wargaNama}
-                                                            </span>
-                                                            <div className="text-[12px] font-medium text-slate-500">
+                                                        <div className="flex flex-col gap-1.5">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-1.5 h-4 bg-brand-500 rounded-full" />
+                                                                <span className="font-bold text-slate-900">{parsed.wargaNama}</span>
+                                                            </div>
+                                                            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-3.5">
                                                                 {parsed.period}
                                                             </div>
                                                         </div>
                                                     );
                                                 }
-                                                return parsed.label || <span className="text-slate-300 italic font-medium tracking-normal text-sm">Tanpa Uraian</span>;
+                                                return parsed.label ? <span className="pl-1 uppercase tracking-tight">{parsed.label}</span> : <span className="text-slate-300 italic font-medium tracking-normal text-xs uppercase pl-1">Tanpa Uraian</span>;
                                             })()}
                                         </div>
                                     </div>
-                                </div>
-                                <div className="bg-slate-50 border-t border-slate-100 p-2 flex justify-end items-center gap-2">
-                                    {trx.url_bukti && (
-                                        <button
-                                            onClick={() => setSelectedProof(trx.url_bukti || null)}
-                                            className="p-2 text-brand-600 bg-white border border-brand-100 hover:bg-brand-50 rounded-lg transition-all flex items-center gap-1.5 text-sm font-semibold tracking-normal"
-                                        >
-                                            <ImageIcon weight="bold" className="w-3.5 h-3.5" /> Bukti
-                                        </button>
-                                    )}
-                                    <HasPermission module="Buku Kas / Transaksi" action="Hapus">
-                                        <button
-                                            onClick={() => handleDelete(trx.id)}
-                                            className="p-2 text-red-600 bg-white border border-red-100 hover:bg-red-50 rounded-lg transition-all flex items-center gap-1.5 text-sm font-semibold tracking-normal"
-                                            title="Hapus"
-                                        >
-                                            <Trash weight="bold" className="w-3.5 h-3.5" /> Hapus
-                                        </button>
-                                    </HasPermission>
+
+                                    <div className="flex justify-end items-center pt-3 border-t border-slate-50 gap-2">
+                                        {trx.url_bukti && (
+                                            <button
+                                                onClick={() => setSelectedProof(trx.url_bukti || null)}
+                                                className="flex-1 max-w-[100px] py-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter"
+                                            >
+                                                <ImageIcon weight="bold" className="w-3.5 h-3.5" /> Bukti
+                                            </button>
+                                        )}
+                                        <HasPermission module="Buku Kas / Transaksi" action="Hapus">
+                                            <button
+                                                onClick={() => handleDelete(trx.id)}
+                                                className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm"
+                                                title="Hapus"
+                                            >
+                                                <Trash weight="bold" className="w-4 h-4" />
+                                            </button>
+                                        </HasPermission>
+                                    </div>
                                 </div>
                             </div>
                         ))

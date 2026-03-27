@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { asetService } from '../../services/asetService';
 import { wargaService } from '../../services/wargaService';
 import { Aset, Warga } from '../../database/db';
-import { Plus, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X, CircleNotch } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -278,98 +278,119 @@ export default function AsetList() {
                 </div>
 
                 {/* MOBILE VIEW: CARD GRID */}
-                <div className="md:hidden space-y-4 p-4 bg-gray-50">
+                <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {!(asetItems && wargaServerData) && isLoading ? (
-                        <div className="text-center text-gray-500 py-8">Memuat data...</div>
+                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <CircleNotch size={32} className="animate-spin text-brand-500" />
+                            <span>Sinkronisasi...</span>
+                        </div>
                     ) : filteredAset.length === 0 ? (
-                        <div className="text-center text-gray-500 py-8 flex flex-col items-center">
-                            <Package className="w-10 h-10 text-gray-300 mb-2" />
-                            <p>Belum ada inventaris yang tercatat di scope ini.</p>
+                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                <Package weight="duotone" className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Aset</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Inventaris anda akan muncul di sini</p>
+                            </div>
                         </div>
                     ) : (
                         filteredAset.map((aset) => (
-                            <div key={aset.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                                <div className="p-4 flex gap-4">
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start mb-2 border-b border-gray-100 pb-2">
-                                            <div className="flex gap-3">
-                                                <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                                    {aset.foto_barang ? (
-                                                        <img src={`${IMAGE_BASE_URL}${aset.foto_barang}`} alt={aset.nama_barang} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <ImageIcon className="w-5 h-5 text-gray-400" />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-bold text-gray-900 text-base">{aset.nama_barang}</h3>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-tight 
-                                                            ${aset.kondisi === 'baik' ? 'bg-brand-50 text-brand-700 border border-brand-200' :
-                                                                aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                                                                aset.kondisi === 'rusak_berat' ? 'bg-red-50 text-red-700 border border-red-200' :
-                                                                'bg-gray-50 text-gray-700 border border-gray-200'}
-                                                        `}>
-                                                            {aset.kondisi === 'baik' ? 'Baik' :
-                                                                aset.kondisi === 'rusak_ringan' ? 'Rusak Ringan' :
-                                                                aset.kondisi === 'rusak_berat' ? 'Rusak Berat' :
-                                                                (aset.kondisi || 'Baik')}
-                                                        </span>
-                                                        <span className="text-xs font-semibold text-gray-500">• {aset.jumlah} Unit</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex justify-between items-center mt-3 mb-2">
-                                            {aset.status_pinjam === 'dipinjam' ? (
-                                                <div className="bg-amber-50 border border-amber-100 rounded-lg p-2.5 w-full flex justify-between items-center">
-                                                    <div>
-                                                        <div className="flex items-center gap-1.5 text-amber-800 font-bold text-[10px] tracking-tight mb-0.5">
-                                                            <Handshake className="w-3.5 h-3.5" /> Sedang Dipinjam
-                                                        </div>
-                                                        <p className="text-xs font-bold text-gray-900">{aset.peminjam?.nama || 'Warga (ID: ' + aset.peminjam_id + ')'}</p>
-                                                        <p className="text-[10px] text-amber-600 font-bold mt-0.5">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</p>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleReturn(aset)}
-                                                        className="flex items-center gap-1 bg-amber-200 text-amber-900 hover:bg-amber-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors">
-                                                        <ArrowUUpLeft weight="bold" /> Kembali
-                                                    </button>
-                                                </div>
+                            <div key={aset.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                                <div className="p-4">
+                                    <div className="flex gap-4 mb-4">
+                                        <div className="w-20 h-20 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-inner">
+                                            {aset.foto_barang ? (
+                                                <img src={`${IMAGE_BASE_URL}${aset.foto_barang}`} alt={aset.nama_barang} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="bg-emerald-50 border border-emerald-100 rounded-lg py-2 px-3 w-full flex justify-between items-center">
-                                                    <div className="flex items-center gap-1.5 text-emerald-800 font-semibold text-xs">
-                                                        <Package className="w-4 h-4" /> Tersedia
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleBorrowClick(aset)}
-                                                        className="flex items-center gap-1 bg-brand-600 text-white shadow-sm hover:bg-brand-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
-                                                        <Handshake weight="bold" /> Pinjamkan
-                                                    </button>
-                                                </div>
+                                                <ImageIcon className="w-8 h-8 text-slate-200" />
                                             )}
                                         </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start">
+                                                <h3 className="font-bold text-slate-900 text-[15px] capitalize tracking-tight leading-tight truncate pr-2">{aset.nama_barang}</h3>
+                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-bold tracking-tight border whitespace-nowrap
+                                                    ${aset.kondisi === 'baik' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                                        aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border-amber-100' :
+                                                        aset.kondisi === 'rusak_berat' ? 'bg-rose-50 text-rose-700 border-rose-100' :
+                                                        'bg-slate-50 text-slate-700 border-slate-100'}
+                                                `}>
+                                                    {aset.kondisi === 'baik' ? 'Baik' :
+                                                        aset.kondisi === 'rusak_ringan' ? 'Rusak Ringan' :
+                                                        aset.kondisi === 'rusak_berat' ? 'Rusak Berat' :
+                                                        (aset.kondisi || 'Baik')}
+                                                </span>
+                                            </div>
+                                            <p className="text-[11px] font-semibold text-slate-500 mt-1 tracking-tight flex items-center gap-1.5">
+                                                <Package weight="fill" className="text-slate-300 w-3.5 h-3.5" />
+                                                Stok: {aset.jumlah} Unit
+                                            </p>
+                                            <div className="mt-2 flex flex-wrap gap-1.5">
+                                                <span className="text-[10px] bg-slate-50 text-slate-500 px-2 py-0.5 rounded-md border border-slate-100 font-bold tracking-tight">
+                                                    {aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="bg-gray-50 border-t border-gray-100 p-2 flex justify-between items-center px-4">
-                                    <div className="text-xs text-gray-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis mr-4">
-                                        {aset.harga_beli ? formatRupiah(aset.harga_beli) : '-'} • {aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : ''}
+
+                                    {/* Status & Quick Action */}
+                                    <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3 mb-4">
+                                        {aset.status_pinjam === 'dipinjam' ? (
+                                            <div className="flex justify-between items-center gap-4">
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-1.5 text-amber-600 font-bold text-[10px] tracking-tight mb-1">
+                                                        <Handshake weight="fill" className="w-3.5 h-3.5" /> SEDANG DIPINJAM
+                                                    </div>
+                                                    <p className="text-xs font-bold text-slate-900 truncate">{aset.peminjam?.nama || (aset.peminjam_id ? 'Warga ID: ' + aset.peminjam_id : 'Unknown')}</p>
+                                                    <p className="text-[9px] text-slate-400 font-medium mt-0.5 italic">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</p>
+                                                </div>
+                                                <HasPermission module="Aset" action="Ubah">
+                                                    <button
+                                                        onClick={() => handleReturn(aset)}
+                                                        className="flex items-center justify-center gap-1.5 bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 shrink-0"
+                                                    >
+                                                        <ArrowUUpLeft weight="bold" /> Kembali
+                                                    </button>
+                                                </HasPermission>
+                                            </div>
+                                        ) : (
+                                            <div className="flex justify-between items-center gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                    <span className="text-[11px] font-bold text-emerald-600 tracking-tight uppercase">Tersedia Untuk Pinjam</span>
+                                                </div>
+                                                <HasPermission module="Aset" action="Ubah">
+                                                    <button
+                                                        onClick={() => handleBorrowClick(aset)}
+                                                        className="flex items-center justify-center gap-1.5 bg-brand-600 text-white shadow-md hover:bg-brand-700 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shrink-0"
+                                                    >
+                                                        <Handshake weight="bold" /> Pinjamkan
+                                                    </button>
+                                                </HasPermission>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="flex gap-1">
-                                        <HasPermission module="Aset" action="Ubah">
-                                            <button
-                                                onClick={() => navigate(`/aset/edit/${aset.id}`)}
-                                                className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold" title="Edit">
-                                                <PencilSimple weight="duotone" className="w-4 h-4" />
-                                            </button>
-                                        </HasPermission>
-                                        <HasPermission module="Aset" action="Hapus">
-                                            <button
-                                                onClick={() => handleDelete(aset.id, aset.nama_barang)}
-                                                className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold" title="Hapus">
-                                                <Trash weight="duotone" className="w-4 h-4" />
-                                            </button>
-                                        </HasPermission>
+
+                                    <div className="flex justify-between items-center pt-3 border-t border-slate-50">
+                                        <span className="text-[10px] font-medium text-slate-400 tracking-tight italic">
+                                            Dibeli: {aset.tanggal_beli ? dateUtils.toDisplay(aset.tanggal_beli) : '-'}
+                                        </span>
+                                        <div className="flex gap-2">
+                                            <HasPermission module="Aset" action="Ubah">
+                                                <button
+                                                    onClick={() => navigate(`/aset/edit/${aset.id}`)}
+                                                    className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50" title="Edit">
+                                                    <PencilSimple weight="bold" className="w-4 h-4" />
+                                                </button>
+                                            </HasPermission>
+                                            <HasPermission module="Aset" action="Hapus">
+                                                <button
+                                                    onClick={() => handleDelete(aset.id, aset.nama_barang)}
+                                                    className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm" title="Hapus">
+                                                    <Trash weight="bold" className="w-4 h-4" />
+                                                </button>
+                                            </HasPermission>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

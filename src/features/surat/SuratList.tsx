@@ -69,19 +69,41 @@ export default function SuratList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Surat Pengantar</h1>
-                    <p className="text-slate-500 text-[11px] sm:text-sm mt-0.5 font-medium flex items-center gap-1.5 tracking-normal">
-                        Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
-                    </p>
+                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">Kelola permohonan surat pengantar warga</p>
                 </div>
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button
                         onClick={() => navigate('/surat/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
                     >
                         <Plus weight="bold" />
-                        <span>Buat Permohonan</span>
+                        <span>Buat Permohonan Baru</span>
                     </button>
                 </HasPermission>
+            </div>
+
+            {/* STATS WIDGETS */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
+                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <FileText weight="fill" className="text-brand-500 w-3 h-3" />
+                            Total Surat
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{suratList.length} Permohonan</p>
+                    </div>
+                </div>
+
+                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
+                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10 flex flex-col items-center text-center text-white">
+                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <ClockCounterClockwise weight="bold" className="text-amber-400 w-3 h-3" />
+                            Menunggu Proses
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{suratList.filter(s => s.status === 'proses').length} Antrian</p>
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -193,72 +215,118 @@ export default function SuratList() {
                 </div>
 
                 {/* MOBILE VIEW: CARD GRID */}
-                <div className="md:hidden space-y-4 p-4 bg-gray-50">
+                <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {isLoading ? (
-                        <div className="text-center text-gray-500 py-8">Memuat data...</div>
+                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                            <span>Sinkronisasi...</span>
+                        </div>
                     ) : filteredSurat.length === 0 ? (
-                        <div className="text-center text-gray-500 py-8 flex flex-col items-center">
-                            <FileText className="w-10 h-10 text-gray-300 mb-2" />
-                            <p>Belum ada permohonan surat di scope ini.</p>
+                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                <FileText weight="duotone" className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Permohonan</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat permohonan surat akan muncul di sini</p>
+                            </div>
                         </div>
                     ) : (
                         filteredSurat.map((surat) => (
-                            <div key={surat.id} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                                <div className="p-4 flex gap-4">
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h3 className="font-bold text-gray-900 text-base">{surat.jenis_surat}</h3>
-                                                <p className="text-[11px] font-mono text-brand-600 font-medium mb-1">{surat.nomor_surat || '-'}</p>
-                                                <p className="text-xs text-gray-500">{dateUtils.toDisplay(surat.tanggal)}</p>
+                            <div key={surat.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                                <div className="p-4">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
+                                                <span className="text-[8px] font-bold leading-none uppercase">{new Date(surat.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</span>
                                             </div>
-                                            <div>{getStatusBadge(surat.status)}</div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-[14px] uppercase tracking-tight leading-tight mb-1">{surat.jenis_surat}</h3>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-[10px] font-mono text-slate-400 tracking-tighter uppercase italic">{surat.nomor_surat || 'DRAFT'}</span>
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <div className="bg-gray-50 rounded-lg p-3 my-3">
-                                            <p className="text-[10px] text-gray-400 font-semibold">Pemohon</p>
-                                            <p className="font-semibold text-gray-900">{surat.pemohon?.nama}</p>
-                                            <p className="text-xs text-gray-500">NIK: {surat.pemohon?.nik || '-'}</p>
-                                        </div>
-
-                                        <div className="text-sm text-gray-600 line-clamp-3">
-                                            <span className="font-semibold text-gray-800">Keperluan:</span> {surat.keperluan}
+                                        <div className="text-right">
+                                            {surat.status === 'proses' ? (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
+                                                    <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5" />
+                                                    Pending
+                                                </span>
+                                            ) : surat.status === 'selesai' ? (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                    <CheckCircle weight="fill" className="w-3.5 h-3.5" />
+                                                    Selesai
+                                                </span>
+                                            ) : (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                    <XCircle weight="bold" className="w-3.5 h-3.5" />
+                                                    Ditolak
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                                <div className="bg-gray-50 border-t border-gray-100 p-3 flex justify-end items-center gap-2">
-                                    {surat.status === 'proses' && (
-                                        <>
-                                            <HasPermission module="Surat Pengantar" action="Ubah">
-                                                <button
-                                                    onClick={() => handleUpdateStatus(surat.id, 'selesai')}
-                                                    className="flex-1 sm:flex-none justify-center flex items-center gap-1 p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors text-sm font-medium" title="Setujui">
-                                                    <CheckCircle weight="duotone" className="w-4 h-4" /> Setujui
-                                                </button>
-                                            </HasPermission>
-                                            <HasPermission module="Surat Pengantar" action="Ubah">
-                                                <button
-                                                    onClick={() => handleUpdateStatus(surat.id, 'ditolak')}
-                                                    className="flex-1 sm:flex-none justify-center flex items-center gap-1 p-2 text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors text-sm font-medium" title="Tolak">
-                                                    <XCircle weight="duotone" className="w-4 h-4" /> Tolak
-                                                </button>
-                                            </HasPermission>
-                                        </>
-                                    )}
-                                    {surat.status === 'selesai' && (
-                                        <button
-                                            onClick={() => navigate(`/surat/cetak/${surat.id}`)}
-                                            className="flex-1 sm:flex-none justify-center flex items-center gap-1 p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-sm font-medium" title="Cetak Surat">
-                                            <Printer weight="duotone" className="w-4 h-4" /> Cetak
-                                        </button>
-                                    )}
-                                    <HasPermission module="Surat Pengantar" action="Hapus">
-                                        <button
-                                            onClick={() => handleDelete(surat.id, surat.jenis_surat)}
-                                            className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors" title="Hapus">
-                                            <Trash weight="duotone" className="w-5 h-5" />
-                                        </button>
-                                    </HasPermission>
+
+                                    <div className="space-y-4">
+                                        <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
+                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Identitas Pemohon</p>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                                                    <span className="text-[10px] font-black text-brand-600">{surat.pemohon?.nama[0].toUpperCase()}</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[12px] font-bold text-slate-900 leading-none">{surat.pemohon?.nama}</p>
+                                                    <p className="text-[10px] text-slate-400 font-medium mt-1">NIK: {surat.pemohon?.nik || '-'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
+                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Tujuan / Keperluan</p>
+                                            <p className="text-[12px] text-slate-600 leading-relaxed italic font-medium">"{surat.keperluan}"</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end items-center pt-4 border-t border-slate-50 gap-2 mt-4">
+                                        {surat.status === 'proses' ? (
+                                            <>
+                                                <HasPermission module="Surat Pengantar" action="Ubah">
+                                                    <button
+                                                        onClick={() => handleUpdateStatus(surat.id, 'selesai')}
+                                                        className="flex-1 py-2 bg-brand-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-md active:scale-95"
+                                                    >
+                                                        <CheckCircle weight="bold" className="w-4 h-4" />
+                                                        SETUJUI
+                                                    </button>
+                                                </HasPermission>
+                                                <HasPermission module="Surat Pengantar" action="Ubah">
+                                                    <button
+                                                        onClick={() => handleUpdateStatus(surat.id, 'ditolak')}
+                                                        className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all shadow-sm border border-rose-100/50"
+                                                    >
+                                                        <XCircle weight="bold" className="w-4 h-4" />
+                                                    </button>
+                                                </HasPermission>
+                                            </>
+                                        ) : surat.status === 'selesai' ? (
+                                            <button
+                                                onClick={() => navigate(`/surat/cetak/${surat.id}`)}
+                                                className="flex-1 py-2 bg-blue-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-md active:scale-95"
+                                            >
+                                                <Printer weight="bold" className="w-4 h-4" />
+                                                CETAK SURAT
+                                            </button>
+                                        ) : null}
+                                        <HasPermission module="Surat Pengantar" action="Hapus">
+                                            <button
+                                                onClick={() => handleDelete(surat.id, surat.jenis_surat)}
+                                                className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm"
+                                            >
+                                                <Trash weight="bold" className="w-4 h-4" />
+                                            </button>
+                                        </HasPermission>
+                                    </div>
                                 </div>
                             </div>
                         ))

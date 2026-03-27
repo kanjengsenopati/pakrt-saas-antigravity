@@ -91,7 +91,7 @@ export default function NotulensiList() {
         }
 
         return (
-            <div className="p-8 bg-slate-50/80 border-t border-b border-slate-100 animate-in slide-in-from-top-4 duration-300">
+            <div className="p-6 md:p-8 bg-slate-50/80 border-t border-b border-slate-100 animate-in slide-in-from-top-4 duration-300">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Content Section */}
                     <div className="space-y-6">
@@ -115,12 +115,12 @@ export default function NotulensiList() {
                                 </div>
                                 <h4 className="text-sm font-bold tracking-tight text-slate-500">Daftar Kehadiran</h4>
                             </div>
-                            <div className="flex gap-2">
-                                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold tracking-tight rounded-full border border-emerald-100">
+                            <div className="flex flex-wrap gap-2">
+                                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold tracking-tight rounded-full border border-emerald-100">
                                     {data.kehadiran_list?.filter(k => k.status === 'hadir').length || 0} Hadir
                                 </span>
-                                <span className="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold tracking-tight rounded-full border border-amber-100">
-                                    {data.kehadiran_list?.filter(k => k.status !== 'hadir').length || 0} Berhalangan
+                                <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold tracking-tight rounded-full border border-amber-100">
+                                    {data.kehadiran_list?.filter(k => k.status !== 'hadir').length || 0} Izin/Sakit
                                 </span>
                             </div>
                         </div>
@@ -139,10 +139,10 @@ export default function NotulensiList() {
                                             <tr key={k.warga_id} className="hover:bg-slate-50/50 transition-colors">
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-[9px] text-slate-400">
+                                                        <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-[10px] text-slate-400">
                                                             {k.warga?.nama.charAt(0) || '?'}
                                                         </div>
-                                                        <span className="font-normal text-slate-900">{k.warga?.nama || 'Unknown'}</span>
+                                                        <span className="font-medium text-slate-900">{k.warga?.nama || 'Unknown'}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
@@ -170,8 +170,15 @@ export default function NotulensiList() {
         );
     };
 
+    const totalNotulensi = notulensiList.length;
+    const thisMonthNotulensi = notulensiList.filter(n => {
+        const date = new Date(n.tanggal);
+        const now = new Date();
+        return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    }).length;
+
     return (
-        <div className="space-y-6 animate-fade-in text-slate-800">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in text-slate-800">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="page-title">Notulensi Rapat</h1>
@@ -182,12 +189,36 @@ export default function NotulensiList() {
                 <HasPermission module="Notulensi" action="Buat">
                     <button
                         onClick={() => navigate('/notulensi/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Notulensi Baru</span>
                     </button>
                 </HasPermission>
+            </div>
+
+            {/* STATS WIDGETS */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
+                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <Notebook weight="fill" className="text-brand-500 w-3 h-3" />
+                            Total Arsip
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{totalNotulensi} Dokumen</p>
+                    </div>
+                </div>
+
+                <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden group hover:bg-slate-800 transition-all duration-300">
+                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10 flex flex-col items-center text-center text-white">
+                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
+                            <CalendarBlank weight="bold" className="text-amber-400 w-3 h-3" />
+                            Bulan Ini
+                        </p>
+                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{thisMonthNotulensi} Pertemuan</p>
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -364,86 +395,102 @@ export default function NotulensiList() {
                 </div>
 
                 {/* MOBILE VIEW: CARD GRID */}
-                <div className="md:hidden space-y-4 p-4 bg-slate-50">
+                <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {isLoading ? (
-                        <div className="text-center py-12 text-slate-400 font-bold text-[10px] capitalize tracking-widest animate-pulse">Syncing...</div>
+                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <CircleNotch size={32} className="animate-spin text-brand-500" />
+                            <span>Sinkronisasi...</span>
+                        </div>
                     ) : filteredNotulensi.length === 0 ? (
-                        <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center flex flex-col items-center">
-                            <Notebook weight="duotone" className="w-10 h-10 text-slate-200 mb-2" />
-                            <p className="text-[11px] font-bold tracking-tight text-slate-400">Data Kosong</p>
+                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                <Notebook weight="duotone" className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Notulensi</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Catatan pertemuan anda akan muncul di sini</p>
+                            </div>
                         </div>
                     ) : (
-                        filteredNotulensi.map((notulensi) => (
-                            <div key={notulensi.id} className={`bg-white border rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all ${expandedId === notulensi.id ? 'border-brand-500 ring-4 ring-brand-500/5' : 'border-slate-200 hover:border-brand-300'}`}>
-                                <div className="p-4" onClick={() => handleToggleExpand(notulensi.id)}>
-                                    <div className="flex justify-between items-start mb-4 border-b border-slate-50 pb-4">
-                                        <div className="flex flex-col gap-1">
+                        filteredNotulensi.map((notulensi) => {
+                            const isExpanded = expandedId === notulensi.id;
+                            
+                            return (
+                                <div key={notulensi.id} className={`bg-white border rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 ${isExpanded ? 'ring-2 ring-brand-500 shadow-lg border-transparent' : 'border-slate-100 shadow-sm'}`}>
+                                    <div className="p-4" onClick={() => handleToggleExpand(notulensi.id)}>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
+                                                    <span className="text-[8px] font-bold leading-none uppercase">{new Date(notulensi.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                    <span className="text-sm font-black leading-none mt-0.5">{new Date(notulensi.tanggal).getDate()}</span>
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-slate-900 text-[14px] capitalize tracking-tight leading-tight mb-1">{notulensi.judul}</h3>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <MapPin weight="fill" className="text-brand-400 w-3 h-3" />
+                                                        <span className="text-[10px] font-medium text-slate-400 tracking-tight truncate max-w-[120px]">{notulensi.lokasi || 'Lokasi Rapat'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
-                                                    <CalendarBlank weight="bold" className="w-4 h-4" />
+                                                {notulensi.url_foto && (
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); setZoomedImage(notulensi.url_foto || null); }}
+                                                        className="w-9 h-9 rounded-xl border border-slate-100 overflow-hidden cursor-zoom-in active:scale-95 transition-transform shadow-sm"
+                                                    >
+                                                        <img src={getFullUrl(notulensi.url_foto)} alt="Meeting" className="w-full h-full object-cover" />
+                                                    </button>
+                                                )}
+                                                <div className={`p-2 rounded-xl transition-all ${isExpanded ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400'}`}>
+                                                    {isExpanded ? <CaretUp size={16} weight="bold" /> : <CaretDown size={16} weight="bold" />}
                                                 </div>
-                                                <span className="text-[11px] font-bold capitalize tracking-tighter text-slate-900">
-    {dateUtils.toDisplay(notulensi.tanggal)}
-</span>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <div className={`p-2 rounded-lg ${expandedId === notulensi.id ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400'}`}>
-                                                {expandedId === notulensi.id ? <CaretUp size={16} /> : <CaretDown size={16} />}
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <p className={`text-[13px] font-normal text-slate-600 leading-relaxed ${!isExpanded ? 'line-clamp-2' : ''}`}>
+                                                    {notulensi.konten}
+                                                </p>
                                             </div>
-                                            {notulensi.url_foto && (
-                                                <div
-                                                    onClick={(e) => { e.stopPropagation(); setZoomedImage(notulensi.url_foto || null); }}
-                                                    className="w-10 h-10 rounded-xl border border-slate-100 overflow-hidden cursor-zoom-in active:scale-95 transition-transform shadow-sm"
-                                                >
-                                                    <img src={getFullUrl(notulensi.url_foto)} alt="Meeting" className="w-full h-full object-cover" />
+
+                                            <div className="flex items-center justify-between pt-3 border-t border-slate-50">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 items-center gap-1.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{notulensi.tuan_rumah || 'Tanpa Tuan Rumah'}</span>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div>
-                                            <h3 className="font-bold text-slate-900 text-sm capitalize tracking-tight leading-tight mb-1">{notulensi.judul}</h3>
-                                            {!expandedId && <p className="text-sm font-normal text-slate-700 leading-relaxed line-clamp-2">{notulensi.konten}</p>}
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                                                <p className="text-slate-400 font-bold text-[9px] tracking-tight mb-0.5">Tuan Rumah</p>
-                                                <p className="text-slate-900 font-normal text-[11px] truncate">{notulensi.tuan_rumah || '-'}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <HasPermission module="Notulensi" action="Ubah">
+                                                        <button 
+                                                            onClick={(e) => { e.stopPropagation(); navigate(`/notulensi/${notulensi.id}`); }} 
+                                                            className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50"
+                                                        >
+                                                            <Pencil weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                    <HasPermission module="Notulensi" action="Hapus">
+                                                        <button 
+                                                            onClick={(e) => { e.stopPropagation(); handleDelete(notulensi.id, notulensi.judul); }} 
+                                                            className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm"
+                                                        >
+                                                            <Trash weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                </div>
                                             </div>
-                                            <div className="bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                                                <p className="text-slate-400 font-bold text-[9px] tracking-tight mb-0.5">Lokasi</p>
-                                                <p className="text-slate-900 font-normal text-[11px] truncate">{notulensi.lokasi || '-'}</p>
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {expandedId === notulensi.id && (
-                                    <div className="border-t border-slate-100">
-                                        <AttendanceDetailPanel id={notulensi.id} />
-                                    </div>
-                                )}
-
-                                <div className="bg-slate-50 border-t border-slate-100 p-3 flex justify-end items-center gap-2">
-                                    <HasPermission module="Notulensi" action="Ubah">
-                                        <button
-                                            onClick={() => navigate(`/notulensi/${notulensi.id}`)}
-                                            className="px-4 py-2 text-amber-600 bg-white border border-amber-100 rounded-xl transition-all text-[11px] font-bold tracking-tight active:scale-95 shadow-sm">
-                                            Ubah
-                                        </button>
-                                    </HasPermission>
-                                    <HasPermission module="Notulensi" action="Hapus">
-                                        <button
-                                            onClick={() => handleDelete(notulensi.id, notulensi.judul)}
-                                            className="px-4 py-2 text-rose-500 bg-white border border-rose-100 rounded-xl transition-all text-[11px] font-bold tracking-tight active:scale-95 shadow-sm">
-                                            Hapus
-                                        </button>
-                                    </HasPermission>
+                                    {isExpanded && (
+                                        <div className="border-t border-slate-100 bg-white animate-in slide-in-from-top-2 duration-300">
+                                            <AttendanceDetailPanel id={notulensi.id} />
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
             </div>
