@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
 import { 
     Plus, 
-    MagnifyingGlass, 
     Funnel, 
     Trash, 
     CheckCircle, 

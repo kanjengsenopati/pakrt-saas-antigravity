@@ -8,7 +8,6 @@ import {
     Funnel, 
     Trash, 
     ArrowDownRight,
-    MagnifyingGlass,
     Image as ImageIcon,
     X
 } from '@phosphor-icons/react';

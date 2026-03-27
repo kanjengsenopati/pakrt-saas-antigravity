@@ -2,7 +2,6 @@ import api from './api';
 import { Notulensi, Kehadiran } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
-import { agendaService } from './agendaService';
 
 export type NotulensiWithKehadiran = Notulensi & { kehadiran?: Kehadiran[], kehadiran_list?: Kehadiran[] };
 
@@ -46,7 +45,8 @@ export const notulensiService = {
         try {
             const notulen = await this.getById(id);
             if (notulen && notulen.agenda_id) {
-                const agenda = await agendaService.getById(notulen.agenda_id);
+                const response = await api.get(`/agenda/${notulen.agenda_id}`);
+                const agenda = response.data;
                 if (agenda) {
                     await aktivitasService.logActivity(
                         notulen.tenant_id,
