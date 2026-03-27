@@ -12,6 +12,36 @@ export default async function wilayahRoutes(fastify: FastifyInstance) {
       return reply.code(500).send({ error: 'Database connection failed', message: (err as Error).message });
     }
   });
+  
+  // Specific routes for location service
+  fastify.get('/provinsi', async () => {
+    return await wilayahService.getAll(undefined, 'provinsi');
+  });
+
+  fastify.get('/kabkota/:parentId', async (request) => {
+    const { parentId } = request.params as any;
+    return await wilayahService.getAll(undefined, 'kabkota', parentId);
+  });
+
+  fastify.get('/kecamatan/:parentId', async (request) => {
+    const { parentId } = request.params as any;
+    return await wilayahService.getAll(undefined, 'kecamatan', parentId);
+  });
+
+  fastify.get('/keldesa/:parentId', async (request) => {
+    const { parentId } = request.params as any;
+    return await wilayahService.getAll(undefined, 'keldesa', parentId);
+  });
+
+  fastify.get('/rw/:parentId', async (request) => {
+    const { parentId } = request.params as any;
+    return await wilayahService.getAll(undefined, 'rw', parentId);
+  });
+
+  fastify.get('/rt/:parentId', async (request) => {
+    const { parentId } = request.params as any;
+    return await wilayahService.getAll(undefined, 'rt', parentId);
+  });
 
   fastify.get('/:id', async (request, reply) => {
     const { id } = request.params as any;
