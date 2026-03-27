@@ -54,7 +54,8 @@ export const iuranService = {
     async verify(id: string, status: string, alasan?: string): Promise<void> {
         // Backend expects: { action: 'VERIFY' | 'REJECT', alasan?: string }
         const action = (status === 'VERIFY' || status === 'VERIFIED') ? 'VERIFY' : 'REJECT';
-        await api.post(`/iuran/${id}/verify`, { action, alasan });
+        console.log(`[IuranService] Verifying ${id} with action: ${action}`);
+        await api.post(`/iuran/${id}/verify`, { action, alasan, _t: Date.now() }); // Cache buster param
     },
 
     async resubmit(id: string, updateData?: { url_bukti?: string }): Promise<void> {
