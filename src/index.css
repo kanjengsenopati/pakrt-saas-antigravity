@@ -164,23 +164,45 @@ select:focus {
 }
 
 /* RichText Editor & Content Styles */
+.rte-content {
+    @apply font-serif text-[16px] leading-[1.8] text-slate-800 antialiased;
+    text-align: justify;
+    text-justify: inter-word;
+}
 .rte-content ul {
-    @apply list-disc list-inside mb-2 ml-4;
+    @apply list-disc list-outside mb-4 ml-6;
 }
 .rte-content ol {
-    @apply list-decimal list-inside mb-2 ml-4;
+    @apply list-decimal list-outside mb-4 ml-6;
 }
 .rte-content p {
-    @apply mb-2;
+    @apply mb-4;
 }
-.rte-content h1 { @apply text-2xl font-bold mb-4; }
-.rte-content h2 { @apply text-xl font-bold mb-3; }
-.rte-content h3 { @apply text-lg font-bold mb-2; }
-.rte-content b, .rte-content strong { @apply font-bold; }
+.rte-content h1 { @apply text-3xl font-bold mb-6 mt-8 text-slate-900 border-b pb-2 tracking-tight; }
+.rte-content h2 { @apply text-2xl font-bold mb-4 mt-6 text-slate-900 tracking-tight; }
+.rte-content h3 { @apply text-xl font-bold mb-3 mt-4 text-slate-800; }
+.rte-content b, .rte-content strong { @apply font-bold text-slate-950; }
 .rte-content i, .rte-content em { @apply italic; }
-.rte-content u { @apply underline; }
+.rte-content u { @apply underline decoration-slate-300 underline-offset-2; }
+
+.rte-content blockquote {
+    @apply border-l-4 border-slate-200 pl-4 py-1 italic text-slate-500 mb-4;
+}
 
 .rte-editor:empty:before {
     content: attr(data-placeholder);
     @apply text-slate-400 italic pointer-events-none;
+}
+
+/* Paper view container */
+.paper-container {
+    @apply bg-slate-100 min-h-[600px] p-8 md:p-12 flex justify-center;
+}
+
+.paper-sheet {
+    @apply bg-white shadow-[0_0_50px_rgba(0,0,0,0.05)] w-full max-w-[800px] min-h-[1056px] p-[2cm] border border-slate-200/50 relative transition-all;
+}
+
+.paper-sheet:focus-within {
+    @apply shadow-[0_0_80px_rgba(0,0,0,0.08)] border-brand-300;
 }

@@ -18,7 +18,9 @@ import {
     FloppyDisk,
     PlusCircle,
     CaretRight,
-    TrashSimple
+    TrashSimple,
+    X,
+    User
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
@@ -33,13 +35,17 @@ export default function PengurusList() {
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
     const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat' | 'ad-art'>('aktif');
-    const [adArtData, setAdArtData] = useState<{ categories: Record<string, string> }>({ 
-        categories: {
-            'Status Kependudukan': '',
-            'Hak dan Kewajiban': '',
-            'Pemilihan Ketua RT & Pengurus': ''
-        } 
+    const [adArtData, setAdArtData] = useState<any>({ 
+        active: {
+            categories: {
+                'Status Kependudukan': '',
+                'Hak dan Kewajiban': '',
+                'Pemilihan Ketua RT & Pengurus': ''
+            }
+        },
+        archives: []
     });
+    const [showVersionHistory, setShowVersionHistory] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string>('Status Kependudukan');
     const [isSavingAdArt, setIsSavingAdArt] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -76,9 +82,17 @@ export default function PengurusList() {
 
             if (adArtRaw && adArtRaw.value) {
                 const val = adArtRaw.value as any;
-                if (val.categories) {
-                    setAdArtData(val);
+                // Auto-migration for old flat structure
+                if (val.categories && !val.active) {
+                    setAdArtData({
+                        active: val,
+                        archives: []
+                    });
                     const categories = Object.keys(val.categories);
+                    if (categories.length > 0) setActiveCategory(categories[0]);
+                } else if (val.active) {
+                    setAdArtData(val);
+                    const categories = Object.keys(val.active.categories);
                     if (categories.length > 0) setActiveCategory(categories[0]);
                 }
             }
@@ -102,10 +116,37 @@ export default function PengurusList() {
 
     const saveAdArt = async () => {
         if (!currentTenant) return;
+        
+        const versionName = window.prompt("Berikan nama untuk versi perubahan ini (contoh: Amandemen 2026):", "Pembaruan AD/ART");
+        if (versionName === null) return; // User cancelled
+
+        const chairman = pengurusList.find(p => p.jabatan?.toLowerCase().includes('ketua') && p.jabatan?.toLowerCase().includes(currentScope.toLowerCase()))?.warga?.nama || "Tidak Diketahui";
+        
         setIsSavingAdArt(true);
         try {
-            await pengaturanService.save(currentTenant.id, currentScope, 'ad_art', adArtData);
-            alert("AD/ART berhasil disimpan");
+            const newArchive = {
+                id: crypto.randomUUID(),
+                name: adArtData.active.metadata?.version || "Versi Sebelumnya",
+                date: adArtData.active.metadata?.date || new Date().toISOString(),
+                chairman: adArtData.active.metadata?.chairman || chairman,
+                content: { ...adArtData.active.categories }
+            };
+
+            const updatedData = {
+                active: {
+                    categories: adArtData.active.categories,
+                    metadata: {
+                        version: versionName,
+                        date: new Date().toISOString(),
+                        chairman: chairman
+                    }
+                },
+                archives: [newArchive, ...(adArtData.archives || [])]
+            };
+
+            await pengaturanService.save(currentTenant.id, currentScope, 'ad_art', updatedData);
+            setAdArtData(updatedData);
+            alert("AD/ART Berhasil Diperbarui & Diarsipkan.");
         } catch (error) {
             console.error("Failed to save AD/ART:", error);
             alert("Gagal menyimpan AD/ART");
@@ -114,17 +155,37 @@ export default function PengurusList() {
         }
     };
 
+    const restoreArchive = (archive: any) => {
+        if (window.confirm(`Pulihkan versi "${archive.name}"? Perubahan saat ini akan hilang jika belum disimpan.`)) {
+            setAdArtData((prev: any) => ({
+                ...prev,
+                active: {
+                    categories: { ...archive.content },
+                    metadata: {
+                        version: `Pemulihan: ${archive.name}`,
+                        date: new Date().toISOString(),
+                        chairman: archive.chairman
+                    }
+                }
+            }));
+            setShowVersionHistory(false);
+        }
+    };
+
     const addCategory = () => {
         if (!newCategoryName.trim()) return;
-        if (adArtData.categories[newCategoryName]) {
+        if (adArtData.active.categories[newCategoryName]) {
             alert("Kategori sudah ada");
             return;
         }
-        setAdArtData(prev => ({
+        setAdArtData((prev: any) => ({
             ...prev,
-            categories: {
-                ...prev.categories,
-                [newCategoryName]: ''
+            active: {
+                ...prev.active,
+                categories: {
+                    ...prev.active.categories,
+                    [newCategoryName]: ''
+                }
             }
         }));
         setActiveCategory(newCategoryName);
@@ -134,12 +195,18 @@ export default function PengurusList() {
 
     const deleteCategory = (catName: string) => {
         if (window.confirm(`Hapus kategori "${catName}"?`)) {
-            setAdArtData(prev => {
-                const newCats = { ...prev.categories };
+            setAdArtData((prev: any) => {
+                const newCats = { ...prev.active.categories };
                 delete newCats[catName];
-                return { ...prev, categories: newCats };
+                return {
+                    ...prev,
+                    active: {
+                        ...prev.active,
+                        categories: newCats
+                    }
+                };
             });
-            const remaining = Object.keys(adArtData.categories).filter(c => c !== catName);
+            const remaining = Object.keys(adArtData.active.categories).filter(c => c !== catName);
             if (activeCategory === catName) {
                 setActiveCategory(remaining[0] || '');
             }
@@ -546,26 +613,35 @@ export default function PengurusList() {
                                     <BookOpen weight="duotone" className="text-brand-600" />
                                     Kategori AD/ART
                                 </h3>
-                                <HasPermission module="Data Pengurus" action="Ubah">
+                                <div className="flex items-center gap-1">
                                     <button 
-                                        onClick={() => setIsAddingCategory(true)}
-                                        className="text-brand-600 hover:bg-brand-50 p-1 rounded-lg transition-colors"
-                                        title="Tambah Kategori"
+                                        onClick={() => setShowVersionHistory(!showVersionHistory)}
+                                        className={`p-1.5 rounded-lg transition-all ${showVersionHistory ? 'bg-brand-50 text-brand-600' : 'text-slate-400 hover:bg-slate-50'}`}
+                                        title="Histori Versi & Arsip"
                                     >
-                                        <PlusCircle weight="fill" size={20} />
+                                        <ListDashes weight="bold" size={20} />
                                     </button>
-                                </HasPermission>
+                                    <HasPermission module="Data Pengurus" action="Ubah">
+                                        <button 
+                                            onClick={() => setIsAddingCategory(true)}
+                                            className="text-brand-600 hover:bg-brand-50 p-1.5 rounded-xl transition-colors"
+                                            title="Tambah Kategori"
+                                        >
+                                            <PlusCircle weight="fill" size={22} />
+                                        </button>
+                                    </HasPermission>
+                                </div>
                             </div>
                             
                             <div className="p-2 space-y-1">
-                                {Object.keys(adArtData.categories).map((cat) => (
+                                {Object.keys(adArtData.active?.categories || {}).map((cat) => (
                                     <div key={cat} className="group flex items-center gap-1">
                                         <button
-                                            onClick={() => setActiveCategory(cat)}
-                                            className={`flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${activeCategory === cat ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
+                                            className={`flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
                                         >
                                             <span className="truncate">{cat}</span>
-                                            {activeCategory === cat ? <CaretRight weight="bold" /> : <div className="w-4" />}
+                                            {activeCategory === cat && !showVersionHistory ? <CaretRight weight="bold" /> : <div className="w-4" />}
                                         </button>
                                         <HasPermission module="Data Pengurus" action="Ubah">
                                             <button 
@@ -578,6 +654,21 @@ export default function PengurusList() {
                                         </HasPermission>
                                     </div>
                                 ))}
+
+                                {adArtData.archives?.length > 0 && (
+                                    <div className="pt-2 mt-2 border-t border-slate-100">
+                                        <button
+                                            onClick={() => setShowVersionHistory(true)}
+                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${showVersionHistory ? 'bg-amber-100 text-amber-700 shadow-sm' : 'text-amber-600 hover:bg-amber-50'}`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <ListDashes weight="bold" />
+                                                <span>Arsip Dokumentasi ({adArtData.archives.length})</span>
+                                            </div>
+                                            {showVersionHistory && <CaretRight weight="bold" />}
+                                        </button>
+                                    </div>
+                                )}
 
                                 {isAddingCategory && (
                                     <div className="p-2 pt-4 border-t border-slate-100 mt-2 space-y-2">
@@ -613,37 +704,95 @@ export default function PengurusList() {
 
                     {/* Content Area */}
                     <div className="flex-1 min-w-0">
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
-                            <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
-                                <div>
-                                    <h2 className="font-bold text-slate-900 leading-tight">{activeCategory}</h2>
-                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5 uppercase tracking-wider">Konten Aturan & Regulasi</p>
+                        {showVersionHistory ? (
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full animate-fade-in">
+                                <div className="p-4 border-b border-slate-50 bg-amber-50/30 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="font-bold text-slate-900 leading-tight">Histori & Arsip AD/ART</h2>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5 uppercase tracking-wider">Daftar perubahan amandemen versi lampau</p>
+                                    </div>
+                                    <button onClick={() => setShowVersionHistory(false)} className="text-slate-400 hover:text-slate-600 p-2">
+                                        <X size={20} weight="bold" />
+                                    </button>
+                                </div>
+                                <div className="p-6 space-y-4 max-h-[600px] overflow-y-auto">
+                                    {adArtData.archives?.map((archive: any) => (
+                                        <div key={archive.id} className="group bg-slate-50 rounded-2xl p-4 border border-slate-200 hover:border-brand-300 hover:shadow-md transition-all">
+                                            <div className="flex justify-between items-start">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <h4 className="font-bold text-slate-900">{archive.name}</h4>
+                                                        <span className="px-2 py-0.5 bg-slate-200 text-slate-600 text-[10px] font-bold rounded-lg uppercase tracking-wider">Archive</span>
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                                                        <FloppyDisk weight="fill" className="text-slate-400" />
+                                                        Disimpan pada {new Date(archive.date).toLocaleString('id-ID')}
+                                                    </p>
+                                                    <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                                                        <User weight="fill" className="text-slate-400" />
+                                                        Ketua RT: <span className="text-brand-700 font-bold">{archive.chairman}</span>
+                                                    </p>
+                                                </div>
+                                                <button 
+                                                    onClick={() => restoreArchive(archive)}
+                                                    className="px-3 py-1.5 bg-brand-600 text-white text-[11px] font-bold rounded-xl shadow-md hover:bg-brand-700 transition-all opacity-0 group-hover:opacity-100 active:scale-95"
+                                                >
+                                                    Pulihkan Versi
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
+                        ) : (
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
+                                <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="font-bold text-slate-900 leading-tight">{activeCategory}</h2>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Konten Aturan & Regulasi</p>
+                                            {adArtData.active.metadata && (
+                                                <>
+                                                    <span className="text-slate-300">•</span>
+                                                    <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[9px] font-bold rounded-md border border-brand-100/50">
+                                                        {adArtData.active.metadata.version}
+                                                    </span>
+                                                    <span className="text-[9px] text-slate-400 font-medium italic">
+                                                        Oleh {adArtData.active.metadata.chairman}
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="p-4">
-                                <HasPermission
-                                    module="Data Pengurus"
-                                    action="Ubah"
-                                    fallback={
+                                <div className="p-0 sm:p-4">
+                                    <HasPermission
+                                        module="Data Pengurus"
+                                        action="Ubah"
+                                        fallback={
+                                            <RichTextEditor
+                                                readOnly 
+                                                value={adArtData.active.categories[activeCategory] || ''} 
+                                                onChange={() => {}} 
+                                            />
+                                        }
+                                    >
                                         <RichTextEditor
-                                            readOnly 
-                                            value={adArtData.categories[activeCategory] || ''} 
-                                            onChange={() => {}} 
+                                            value={adArtData.active.categories[activeCategory] || ''}
+                                            onChange={(val) => setAdArtData((prev: any) => ({
+                                                ...prev,
+                                                active: {
+                                                    ...prev.active,
+                                                    categories: { ...prev.active.categories, [activeCategory]: val }
+                                                }
+                                            }))}
+                                            placeholder={`Tulis aturan untuk ${activeCategory} di sini...`}
                                         />
-                                    }
-                                >
-                                    <RichTextEditor
-                                        value={adArtData.categories[activeCategory] || ''}
-                                        onChange={(val) => setAdArtData(prev => ({
-                                            ...prev,
-                                            categories: { ...prev.categories, [activeCategory]: val }
-                                        }))}
-                                        placeholder={`Tulis aturan untuk ${activeCategory} di sini...`}
-                                    />
-                                </HasPermission>
+                                    </HasPermission>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             )}

@@ -7,7 +7,12 @@ import {
     ListNumbers, 
     TextAlignLeft, 
     TextAlignCenter, 
-    TextAlignRight 
+    TextAlignRight,
+    TextAlignJustify,
+    TextHOne,
+    TextHTwo,
+    TextHThree,
+    TextT
 } from '@phosphor-icons/react';
 
 interface RichTextEditorProps {
@@ -30,8 +35,8 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
     const handleInput = () => {
         if (editorRef.current) {
             const html = editorRef.current.innerHTML;
-            // Avoid empty <p><br></p> if possible
-            if (html === '<p><br></p>' || html === '<br>') {
+            // Clean up empty states
+            if (html === '<p><br></p>' || html === '<br>' || html === '<div><br></div>') {
                 onChange('');
             } else {
                 onChange(html);
@@ -40,73 +45,102 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
     };
 
     const execCommand = (command: string, cmdValue?: string) => {
+        if (readOnly) return;
         document.execCommand(command, false, cmdValue);
         handleInput();
-        // Return focus to editor
         editorRef.current?.focus();
+    };
+
+    const applyHeading = (tag: string) => {
+        // execCommand 'formatBlock' with <tag>
+        execCommand('formatBlock', `<${tag}>`);
     };
 
     if (readOnly) {
         return (
-            <div 
-                className="rte-content p-6 min-h-[300px] border border-slate-100 rounded-2xl bg-slate-50/30 text-slate-800 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: value || '<p class="text-slate-400 italic">Belum ada konten peraturan untuk kategori ini.</p>' }}
-            />
+            <div className="paper-container rounded-2xl overflow-hidden border border-slate-200">
+                <div 
+                    className="paper-sheet rte-content"
+                    dangerouslySetInnerHTML={{ __html: value || '<p class="text-slate-400 italic">Belum ada konten peraturan untuk kategori ini.</p>' }}
+                />
+            </div>
         );
     }
 
     return (
-        <div className="flex flex-col border border-slate-200 rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-brand-500/10 focus-within:border-brand-500 transition-all bg-white shadow-sm">
-            {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-1 p-2 bg-slate-50 border-b border-slate-200">
-                <div className="flex items-center gap-0.5 bg-white p-1 rounded-lg border border-slate-200 shadow-sm mr-2">
-                    <button type="button" onClick={() => execCommand('bold')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Bold">
-                        <TextB size={18} weight="bold" />
+        <div className="flex flex-col border border-slate-200 rounded-2xl overflow-hidden focus-within:ring-4 focus-within:ring-brand-500/10 focus-within:border-brand-500 transition-all bg-slate-50 shadow-inner">
+            {/* Toolbar - Floating/Sticky */}
+            <div className="sticky top-0 z-20 flex flex-wrap items-center gap-2 p-3 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <button type="button" onClick={() => execCommand('bold')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Bold">
+                        <TextB size={20} weight="bold" />
                     </button>
-                    <button type="button" onClick={() => execCommand('italic')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Italic">
-                        <TextItalic size={18} weight="bold" />
+                    <button type="button" onClick={() => execCommand('italic')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Italic">
+                        <TextItalic size={20} weight="bold" />
                     </button>
-                    <button type="button" onClick={() => execCommand('underline')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Underline">
-                        <TextUnderline size={18} weight="bold" />
-                    </button>
-                </div>
-
-                <div className="flex items-center gap-0.5 bg-white p-1 rounded-lg border border-slate-200 shadow-sm mr-2">
-                    <button type="button" onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Bullet List">
-                        <ListBullets size={18} weight="bold" />
-                    </button>
-                    <button type="button" onClick={() => execCommand('insertOrderedList')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Numbered List">
-                        <ListNumbers size={18} weight="bold" />
+                    <button type="button" onClick={() => execCommand('underline')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Underline">
+                        <TextUnderline size={20} weight="bold" />
                     </button>
                 </div>
 
-                <div className="flex items-center gap-0.5 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                    <button type="button" onClick={() => execCommand('justifyLeft')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Align Left">
-                        <TextAlignLeft size={18} weight="bold" />
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <button type="button" onClick={() => applyHeading('h1')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Heading 1">
+                        <TextHOne size={20} weight="bold" />
                     </button>
-                    <button type="button" onClick={() => execCommand('justifyCenter')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Align Center">
-                        <TextAlignCenter size={18} weight="bold" />
+                    <button type="button" onClick={() => applyHeading('h2')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Heading 2">
+                        <TextHTwo size={20} weight="bold" />
                     </button>
-                    <button type="button" onClick={() => execCommand('justifyRight')} className="p-2 hover:bg-slate-100 rounded-md transition-colors text-slate-600" title="Align Right">
-                        <TextAlignRight size={18} weight="bold" />
+                    <button type="button" onClick={() => applyHeading('h3')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Heading 3">
+                        <TextHThree size={20} weight="bold" />
+                    </button>
+                    <button type="button" onClick={() => applyHeading('p')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Normal Text">
+                        <TextT size={20} weight="bold" />
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <button type="button" onClick={() => execCommand('insertUnorderedList')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Bullet List">
+                        <ListBullets size={20} weight="bold" />
+                    </button>
+                    <button type="button" onClick={() => execCommand('insertOrderedList')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Numbered List">
+                        <ListNumbers size={20} weight="bold" />
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <button type="button" onClick={() => execCommand('justifyLeft')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Align Left">
+                        <TextAlignLeft size={20} weight="bold" />
+                    </button>
+                    <button type="button" onClick={() => execCommand('justifyCenter')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Align Center">
+                        <TextAlignCenter size={20} weight="bold" />
+                    </button>
+                    <button type="button" onClick={() => execCommand('justifyRight')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Align Right">
+                        <TextAlignRight size={20} weight="bold" />
+                    </button>
+                    <button type="button" onClick={() => execCommand('justifyFull')} className="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-700 active:scale-95" title="Justify">
+                        <TextAlignJustify size={20} weight="bold" />
                     </button>
                 </div>
             </div>
 
-            {/* Editor Area */}
-            <div
-                ref={editorRef}
-                contentEditable
-                onInput={handleInput}
-                onBlur={handleInput}
-                className="rte-content p-6 min-h-[400px] outline-none text-slate-800 leading-relaxed bg-white overflow-y-auto rte-editor"
-                data-placeholder={placeholder}
-                style={{ WebkitUserModify: 'read-write-plaintext-only' } as any}
-            />
+            {/* Editor Area - Paper Look */}
+            <div className="paper-container">
+                <div
+                    ref={editorRef}
+                    contentEditable
+                    onInput={handleInput}
+                    onBlur={handleInput}
+                    className="paper-sheet rte-content rte-editor outline-none"
+                    data-placeholder={placeholder}
+                />
+            </div>
             
-            <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 text-[10px] text-slate-400 font-medium italic flex justify-between items-center">
-                <span>Tip: Gunakan toolbar di atas untuk memformat teks.</span>
-                <span>RichText Editor v1.0</span>
+            <div className="px-6 py-3 bg-white border-t border-slate-100 text-[11px] text-slate-500 font-bold uppercase tracking-widest flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+                    <span>Mode Penyuntingan Dokumen</span>
+                </div>
+                <span className="bg-slate-100 px-3 py-1 rounded-full text-slate-600">RichText Editor v2.0</span>
             </div>
         </div>
     );
