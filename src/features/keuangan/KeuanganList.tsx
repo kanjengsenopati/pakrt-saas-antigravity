@@ -146,7 +146,7 @@ export default function KeuanganList() {
                 <div className="bg-white py-3 px-2 sm:px-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
                         <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kas Masuk</p>
-                        <p className="text-[11px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
+                        <p className="text-[11px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasMasuk)}</p>
                     </div>
                 </div>
 
@@ -154,7 +154,7 @@ export default function KeuanganList() {
                 <div className="bg-white py-3 px-2 sm:px-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 hover:shadow-md border-l-4 border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
                         <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kas Keluar</p>
-                        <p className="text-[11px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
+                        <p className="text-[11px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{formatRupiah(summary.kasKeluar)}</p>
                     </div>
                 </div>
 
@@ -163,7 +163,7 @@ export default function KeuanganList() {
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/5 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
                         <p className="text-[10px] sm:text-xs font-bold text-white/60 uppercase tracking-widest mb-1.5">Saldo</p>
-                        <p className="text-[11px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
+                        <p className="text-[11px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{formatRupiah(summary.saldo)}</p>
                     </div>
                 </div>
             </div>
@@ -256,12 +256,12 @@ export default function KeuanganList() {
                                             })()}
                                         </td>
                                         <td className="p-3 text-right whitespace-nowrap">
-                                            <span className={`text-[14px] font-bold ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-slate-200'}`}>
+                                            <span className={`text-[14px] font-normal ${trx.tipe === 'pemasukan' ? 'text-brand-600' : 'text-slate-200'}`}>
                                                 {trx.tipe === 'pemasukan' ? formatRupiah(trx.nominal) : 'Rp 0'}
                                             </span>
                                         </td>
                                         <td className="p-3 text-right whitespace-nowrap">
-                                            <span className={`text-[14px] font-bold ${trx.tipe === 'pengeluaran' ? 'text-red-600' : 'text-slate-200'}`}>
+                                            <span className={`text-[14px] font-normal ${trx.tipe === 'pengeluaran' ? 'text-red-600' : 'text-slate-200'}`}>
                                                 {trx.tipe === 'pengeluaran' ? formatRupiah(trx.nominal) : 'Rp 0'}
                                             </span>
                                         </td>
@@ -325,7 +325,7 @@ export default function KeuanganList() {
                                         <div className="flex items-center gap-3">
                                             <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center border shadow-inner ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'}`}>
                                                 <span className="text-[8px] font-bold leading-none uppercase">{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
+                                                <span className="text-sm font-bold leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
                                             </div>
                                             <div>
                                                 <h3 className={`font-bold text-[13px] uppercase tracking-tight leading-tight mb-1 ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>{toTitleCase(trx.kategori)}</h3>
@@ -334,7 +334,7 @@ export default function KeuanganList() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={`text-base font-black tabular-nums tracking-tight ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                        <div className={`text-base font-bold tabular-nums tracking-tight ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
                                             {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
                                         </div>
                                     </div>
