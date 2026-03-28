@@ -25,10 +25,50 @@ interface RichTextEditorProps {
 export default function RichTextEditor({ value, onChange, readOnly = false, placeholder }: RichTextEditorProps) {
     const editorRef = useRef<HTMLDivElement>(null);
 
+    // Simple Markdown to HTML converter for legacy data
+    const convertMarkdownToHtml = (text: string) => {
+        if (!text) return '';
+        // If it already looks like HTML, don't convert
+        if (text.includes('<p>') || text.includes('<div>') || text.includes('<b>') || text.includes('<strong>')) {
+            return text;
+        }
+
+        let html = text
+            // Block alignment - detect some custom patterns or just defaults
+            .replace(/^#{1} (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^#{2} (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^#{3} (.*$)/gim, '<h3>$1</h3>')
+            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+            .replace(/__(.*)__/gim, '<b>$1</b>')
+            .replace(/\*(.*)\*/gim, '<i>$1</i>')
+            .replace(/_(.*)_/gim, '<i>$1</i>')
+            .replace(/^\s*[\-\*] (.*)/gim, '<li>$1</li>')
+            .replace(/^\s*\d+\. (.*)/gim, '<li>$1</li>')
+            .replace(/\n\s*\n/g, '</p><p>')
+            .replace(/\n/g, '<br />');
+
+        // Wrap list items
+        if (html.includes('<li>')) {
+            // Very simple wrap - might need improvement but good enough for migration
+            if (text.match(/^\s*\d+\./im)) {
+                html = `<ol>${html}</ol>`;
+            } else {
+                html = `<ul>${html}</ul>`;
+            }
+        }
+
+        return `<p>${html}</p>`.replace(/<p><p>/g, '<p>').replace(/<\/p><\/p>/g, '</p>');
+    };
+
     // Sync editor content with value prop only if changed externally
     useEffect(() => {
-        if (editorRef.current && editorRef.current.innerHTML !== value) {
-            editorRef.current.innerHTML = value || '';
+        if (editorRef.current) {
+            const currentHtml = editorRef.current.innerHTML;
+            // Only update if value is different AND not just an internal update
+            if (currentHtml !== value) {
+                const processedValue = convertMarkdownToHtml(value || '');
+                editorRef.current.innerHTML = processedValue;
+            }
         }
     }, [value]);
 
@@ -36,7 +76,7 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
         if (editorRef.current) {
             const html = editorRef.current.innerHTML;
             // Clean up empty states
-            if (html === '<p><br></p>' || html === '<br>' || html === '<div><br></div>') {
+            if (html === '<p><br></p>' || html === '<br>' || html === '<div><br></div>' || html === '<p></p>') {
                 onChange('');
             } else {
                 onChange(html);
@@ -46,9 +86,20 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
 
     const execCommand = (command: string, cmdValue?: string) => {
         if (readOnly) return;
-        document.execCommand(command, false, cmdValue);
-        handleInput();
+        
+        // Ensure editor is focused and we have a selection
         editorRef.current?.focus();
+        
+        // Execute the command
+        document.execCommand(command, false, cmdValue);
+        
+        // Trigger update
+        handleInput();
+        
+        // Keep focus
+        setTimeout(() => {
+            editorRef.current?.focus();
+        }, 10);
     };
 
     const applyHeading = (tag: string) => {

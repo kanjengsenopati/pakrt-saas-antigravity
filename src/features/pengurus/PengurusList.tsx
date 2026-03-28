@@ -22,6 +22,7 @@ import {
     X,
     User
 } from '@phosphor-icons/react';
+import { useAuth } from '../../contexts/AuthContext';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import RichTextEditor from '../../components/ui/RichTextEditor';
@@ -34,7 +35,10 @@ export default function PengurusList() {
     const [periodeSettings, setPeriodeSettings] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-    const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat' | 'ad-art'>('aktif');
+    const { hasRole } = useAuth();
+    const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat' | 'ad-art'>(
+        hasRole('Warga') ? 'ad-art' : 'aktif'
+    );
     const [adArtData, setAdArtData] = useState<any>({ 
         active: {
             categories: {
@@ -638,7 +642,7 @@ export default function PengurusList() {
                                     <div key={cat} className="group flex items-center gap-1">
                                         <button
                                             onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                            className={`flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
                                         >
                                             <span className="truncate">{cat}</span>
                                             {activeCategory === cat && !showVersionHistory ? <CaretRight weight="bold" /> : <div className="w-4" />}
