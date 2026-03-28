@@ -19,6 +19,16 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
     return result;
   });
 
+  fastify.get('/export', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const buffer = await pembayaranIuranService.exportToXlsx(user.tenant_id, scope);
+    
+    reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    reply.header('Content-Disposition', `attachment; filename=Data_Iuran_${scope || 'Semua'}_${new Date().toISOString().split('T')[0]}.xlsx`);
+    return buffer;
+  });
+
   fastify.get('/:id', { preHandler: [requirePermission('Iuran Warga', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;

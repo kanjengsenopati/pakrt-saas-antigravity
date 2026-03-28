@@ -69,5 +69,21 @@ export const iuranService = {
     async getPendingCount(scope?: ScopeType): Promise<number> {
         const response = await api.get('/iuran/pending-count', { params: { scope } });
         return response.data.count || 0;
+    },
+
+    async exportToXlsx(tenantId: string, scope?: ScopeType): Promise<void> {
+        const response = await api.get('/iuran/export', {
+            params: { tenant_id: tenantId, scope },
+            responseType: 'blob'
+        });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        const fileName = `Data_Iuran_${scope}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 };

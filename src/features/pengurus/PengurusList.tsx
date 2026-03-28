@@ -3,9 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { Plus, Funnel, PencilSimple, Trash, UserList, ListDashes, SquaresFour, WarningCircle, Users, Briefcase } from '@phosphor-icons/react';
+import { 
+    Plus, 
+    Funnel, 
+    PencilSimple, 
+    Trash, 
+    UserList, 
+    ListDashes, 
+    SquaresFour, 
+    WarningCircle, 
+    Users, 
+    Briefcase,
+    BookOpen,
+    FloppyDisk,
+    PlusCircle,
+    CaretRight,
+    TrashSimple
+} from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
+import RichTextEditor from '../../components/ui/RichTextEditor';
 
 export default function PengurusList() {
     const { currentTenant, currentScope } = useTenant();
@@ -15,7 +32,18 @@ export default function PengurusList() {
     const [periodeSettings, setPeriodeSettings] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-    const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat'>('aktif');
+    const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat' | 'ad-art'>('aktif');
+    const [adArtData, setAdArtData] = useState<{ categories: Record<string, string> }>({ 
+        categories: {
+            'Status Kependudukan': '',
+            'Hak dan Kewajiban': '',
+            'Pemilihan Ketua RT & Pengurus': ''
+        } 
+    });
+    const [activeCategory, setActiveCategory] = useState<string>('Status Kependudukan');
+    const [isSavingAdArt, setIsSavingAdArt] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState('');
+    const [isAddingCategory, setIsAddingCategory] = useState(false);
     const navigate = useNavigate();
 
 
@@ -23,10 +51,11 @@ export default function PengurusList() {
         if (!currentTenant) return;
         setIsLoading(true);
         try {
-            const [data, jabSettingsRaw, perSettingsRaw] = await Promise.all([
+            const [data, jabSettingsRaw, perSettingsRaw, adArtRaw] = await Promise.all([
                 pengurusService.getAll(currentTenant.id, currentScope),
                 pengaturanService.getByKey(currentTenant.id, currentScope, 'jabatan_pengurus'),
-                pengaturanService.getByKey(currentTenant.id, currentScope, 'periode_pengurus')
+                pengaturanService.getByKey(currentTenant.id, currentScope, 'periode_pengurus'),
+                pengaturanService.getByKey(currentTenant.id, currentScope, 'ad_art')
             ]);
             setPengurusList(data);
 
@@ -41,6 +70,15 @@ export default function PengurusList() {
                     const parsed = typeof perSettingsRaw === 'string' ? JSON.parse(perSettingsRaw) : perSettingsRaw;
                     if (Array.isArray(parsed)) setPeriodeSettings(parsed);
                 } catch (e) { console.error("Error parsing periode settings:", e); }
+            }
+
+            if (adArtRaw && adArtRaw.value) {
+                const val = adArtRaw.value as any;
+                if (val.categories) {
+                    setAdArtData(val);
+                    const categories = Object.keys(val.categories);
+                    if (categories.length > 0) setActiveCategory(categories[0]);
+                }
             }
         } catch (error) {
             console.error("Failed to load data:", error);
@@ -57,6 +95,52 @@ export default function PengurusList() {
         if (window.confirm(`Hapus data jabatan ${namaJabatan}?`)) {
             await pengurusService.delete(id);
             loadData();
+        }
+    };
+
+    const saveAdArt = async () => {
+        if (!currentTenant) return;
+        setIsSavingAdArt(true);
+        try {
+            await pengaturanService.save(currentTenant.id, currentScope, 'ad_art', adArtData);
+            alert("AD/ART berhasil disimpan");
+        } catch (error) {
+            console.error("Failed to save AD/ART:", error);
+            alert("Gagal menyimpan AD/ART");
+        } finally {
+            setIsSavingAdArt(false);
+        }
+    };
+
+    const addCategory = () => {
+        if (!newCategoryName.trim()) return;
+        if (adArtData.categories[newCategoryName]) {
+            alert("Kategori sudah ada");
+            return;
+        }
+        setAdArtData(prev => ({
+            ...prev,
+            categories: {
+                ...prev.categories,
+                [newCategoryName]: ''
+            }
+        }));
+        setActiveCategory(newCategoryName);
+        setNewCategoryName('');
+        setIsAddingCategory(false);
+    };
+
+    const deleteCategory = (catName: string) => {
+        if (window.confirm(`Hapus kategori "${catName}"?`)) {
+            setAdArtData(prev => {
+                const newCats = { ...prev.categories };
+                delete newCats[catName];
+                return { ...prev, categories: newCats };
+            });
+            const remaining = Object.keys(adArtData.categories).filter(c => c !== catName);
+            if (activeCategory === catName) {
+                setActiveCategory(remaining[0] || '');
+            }
         }
     };
 
@@ -144,6 +228,12 @@ export default function PengurusList() {
                 >
                     Riwayat Kepengurusan
                 </button>
+                <button
+                    onClick={() => setActiveTab('ad-art')}
+                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'ad-art' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                >
+                    AD / ART
+                </button>
             </div>
 
             {activeTab === 'aktif' ? (
@@ -209,7 +299,7 @@ export default function PengurusList() {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredPengurus.map((pengurus) => (
+                                    filteredPengurus.map((pengurus: any) => (
                                         <tr key={pengurus.id} className="hover:bg-gray-50/50 transition-colors group">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
@@ -289,7 +379,7 @@ export default function PengurusList() {
                                 </div>
                             </div>
                         ) : (
-                            filteredPengurus.map((pengurus) => (
+                            filteredPengurus.map((pengurus: any) => (
                                 <div key={pengurus.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
                                     <div className="p-4">
                                         <div className="flex justify-between items-start mb-4">
@@ -349,7 +439,7 @@ export default function PengurusList() {
                         )}
                     </div>
                 </div>
-            ) : (
+            ) : activeTab === 'riwayat' ? (
                 <div className="space-y-6">
                     {isLoading ? (
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500">Memuat data...</div>
@@ -365,7 +455,7 @@ export default function PengurusList() {
                     ) : (
                         Object.entries(groupedRiwayat)
                             .sort(([a], [b]) => b.localeCompare(a)) // Sort by period descending
-                            .map(([periode, members]) => (
+                            .map(([periode, members]: [string, any]) => (
                                 <div key={periode} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                     <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
                                         <h3 className="font-bold text-gray-900 flex items-center gap-2">
@@ -392,7 +482,7 @@ export default function PengurusList() {
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
-                                                {members.map((p) => (
+                                                {members.map((p: any) => (
                                                     <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-2">
@@ -440,6 +530,116 @@ export default function PengurusList() {
                                 </div>
                             ))
                     )}
+                </div>
+            ) : (
+                <div className="flex flex-col lg:flex-row gap-6 animate-fade-in">
+                    {/* Category Sidebar */}
+                    <div className="w-full lg:w-72 flex-none space-y-4">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                            <div className="p-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                    <BookOpen weight="duotone" className="text-brand-600" />
+                                    Kategori AD/ART
+                                </h3>
+                                <HasPermission module="Data Pengurus" action="Ubah">
+                                    <button 
+                                        onClick={() => setIsAddingCategory(true)}
+                                        className="text-brand-600 hover:bg-brand-50 p-1 rounded-lg transition-colors"
+                                        title="Tambah Kategori"
+                                    >
+                                        <PlusCircle weight="fill" size={20} />
+                                    </button>
+                                </HasPermission>
+                            </div>
+                            
+                            <div className="p-2 space-y-1">
+                                {Object.keys(adArtData.categories).map((cat) => (
+                                    <div key={cat} className="group flex items-center gap-1">
+                                        <button
+                                            onClick={() => setActiveCategory(cat)}
+                                            className={`flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${activeCategory === cat ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        >
+                                            <span className="truncate">{cat}</span>
+                                            {activeCategory === cat ? <CaretRight weight="bold" /> : <div className="w-4" />}
+                                        </button>
+                                        <HasPermission module="Data Pengurus" action="Ubah">
+                                            <button 
+                                                onClick={() => deleteCategory(cat)}
+                                                className={`p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 ${activeCategory === cat ? 'text-white/70 hover:bg-white/10' : ''}`}
+                                                title="Hapus Kategori"
+                                            >
+                                                <TrashSimple size={16} />
+                                            </button>
+                                        </HasPermission>
+                                    </div>
+                                ))}
+
+                                {isAddingCategory && (
+                                    <div className="p-2 pt-4 border-t border-slate-100 mt-2 space-y-2">
+                                        <input 
+                                            autoFocus
+                                            type="text"
+                                            placeholder="Nama kategori baru..."
+                                            value={newCategoryName}
+                                            onChange={(e) => setNewCategoryName(e.target.value)}
+                                            className="w-full text-xs"
+                                            onKeyDown={(e) => e.key === 'Enter' && addCategory()}
+                                        />
+                                        <div className="flex gap-2">
+                                            <button onClick={addCategory} className="flex-1 text-[10px] bg-brand-600 text-white py-1.5 rounded-lg">Tambah</button>
+                                            <button onClick={() => setIsAddingCategory(false)} className="flex-1 text-[10px] bg-slate-100 text-slate-600 py-1.5 rounded-lg">Batal</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <HasPermission module="Data Pengurus" action="Ubah">
+                            <button
+                                onClick={saveAdArt}
+                                disabled={isSavingAdArt}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
+                            >
+                                <FloppyDisk weight="bold" />
+                                <span>{isSavingAdArt ? 'Menyimpan...' : 'Simpan Perubahan'}</span>
+                            </button>
+                        </HasPermission>
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="flex-1 min-w-0">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
+                                <div>
+                                    <h2 className="font-bold text-slate-900 leading-tight">{activeCategory}</h2>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5 uppercase tracking-wider">Konten Aturan & Regulasi</p>
+                                </div>
+                            </div>
+
+                            <div className="p-4">
+                                <HasPermission
+                                    module="Data Pengurus"
+                                    action="Ubah"
+                                    fallback={
+                                        <RichTextEditor
+                                            readOnly 
+                                            value={adArtData.categories[activeCategory] || ''} 
+                                            onChange={() => {}} 
+                                        />
+                                    }
+                                >
+                                    <RichTextEditor
+                                        value={adArtData.categories[activeCategory] || ''}
+                                        onChange={(val) => setAdArtData(prev => ({
+                                            ...prev,
+                                            categories: { ...prev.categories, [activeCategory]: val }
+                                        }))}
+                                        placeholder={`Tulis aturan untuk ${activeCategory} di sini...`}
+                                    />
+                                </HasPermission>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

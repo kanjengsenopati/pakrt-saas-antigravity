@@ -497,5 +497,58 @@ export const pembayaranIuranService = {
     if (scope) where.scope = scope;
     
     return await prisma.pembayaranIuran.count({ where });
+  },
+
+  async exportToXlsx(tenantId: string, scope?: string) {
+    const where: any = { tenant_id: tenantId };
+    if (scope) where.scope = scope;
+
+    const items = await prisma.pembayaranIuran.findMany({
+      where,
+      include: { warga: true },
+      orderBy: { tanggal_bayar: 'desc' }
+    });
+
+    const ExcelJS = await import('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Data Iuran');
+
+    const headers = [
+      'Tanggal Bayar', 'Nama Warga', 'NIK', 'Kategori', 'Periode', 'Nominal', 'Status', 'Keterangan'
+    ];
+
+    sheet.addRow(headers);
+    const headerRow = sheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    items.forEach((item) => {
+      const periode = Array.isArray(item.periode_bulan) 
+        ? `${item.periode_bulan.map(m => MONTH_NAMES_ID[m-1]).join(', ')} ${item.periode_tahun}`
+        : `${item.periode_tahun}`;
+
+      sheet.addRow([
+        item.tanggal_bayar,
+        item.warga?.nama || '-',
+        item.warga?.nik || '-',
+        item.kategori,
+        periode,
+        item.nominal,
+        item.status,
+        item.alasan_penolakan || '-'
+      ]);
+    });
+
+    sheet.columns.forEach(col => col.width = 20);
+    // Specific widths
+    sheet.getColumn(2).width = 30; // Nama
+    sheet.getColumn(5).width = 40; // Periode
+    sheet.getColumn(8).width = 40; // Keterangan/Alasan
+
+    return await workbook.xlsx.writeBuffer();
   }
 };

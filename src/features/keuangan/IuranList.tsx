@@ -5,14 +5,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
 import { 
     Plus, 
-    Funnel, 
     Trash, 
     CheckCircle, 
     Eye, 
     X, 
     Image as ImageIcon,
     PencilSimple,
-    CircleNotch
+    CircleNotch,
+    FileArrowDown
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
@@ -52,6 +52,20 @@ export default function IuranList() {
     const [rejectReason, setRejectReason] = useState('');
     const [isRejecting, setIsRejecting] = useState(false);
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
+
+    const handleExport = async () => {
+        if (!currentTenant) return;
+        setIsExporting(true);
+        try {
+            await iuranService.exportToXlsx(currentTenant.id, currentScope);
+        } catch (error) {
+            console.error("Export failed:", error);
+            alert("Gagal melakukan export data.");
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
 
     useEffect(() => {
@@ -208,9 +222,15 @@ export default function IuranList() {
                                 <span>Sinkron Data Kas</span>
                             </button>
                         </HasPermission>
-                        <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto shadow-sm">
-                            <Funnel className="w-4 h-4" />
-                            <span>Export</span>
+                        <button 
+                            onClick={handleExport}
+                            disabled={isExporting}
+                            className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all w-full sm:w-auto shadow-sm border ${
+                                isExporting ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                            }`}
+                        >
+                            {isExporting ? <CircleNotch weight="bold" className="w-4 h-4 animate-spin" /> : <FileArrowDown weight="bold" className="w-4 h-4" />}
+                            <span>{isExporting ? 'Exporting...' : 'Export'}</span>
                         </button>
                     </div>
                 </div>

@@ -119,8 +119,14 @@ export default function SetupPage() {
             const existingAsets = await asetService.getAll(tenantId, currentScope);
             const asets: Array<Omit<Aset, 'id'>> = [
                 { nama_barang: 'Tenda Sarnafil 3x3', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Kursi Lipat Chitose', jumlah: 50, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Sound System Portable', jumlah: 1, kondisi: 'rusak_ringan', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Kursi Chitose', jumlah: 100, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Sound System Wireless', jumlah: 1, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Tenda Cafe 2x2', jumlah: 5, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Meja Lipat HPL', jumlah: 10, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Taplak Meja PKK', jumlah: 10, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Timbangan Bayi Digital', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Alat Ukur Tinggi Badan', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Tiket Antrian', jumlah: 1, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
             ];
             for (const aset of asets) {
                 if (!existingAsets.find(a => a.nama_barang === aset.nama_barang)) {
