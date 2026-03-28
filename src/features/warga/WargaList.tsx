@@ -260,7 +260,7 @@ export default function WargaList() {
                             <Users weight="fill" className="text-brand-500 w-3 h-3" />
                             Total Warga
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{wargaList.length} Jiwa</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{wargaList.length} Jiwa</p>
                     </div>
                 </div>
 
@@ -271,7 +271,7 @@ export default function WargaList() {
                             <UserPlus weight="bold" className="text-amber-400 w-3 h-3" />
                             Menunggu Verifikasi
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{pendingWarga.length} Antrian</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{pendingWarga.length} Antrian</p>
                     </div>
                 </div>
             </div>
