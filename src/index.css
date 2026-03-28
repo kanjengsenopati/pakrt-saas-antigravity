@@ -165,45 +165,45 @@ select:focus {
 
 /* RichText Editor & Content Styles */
 .rte-content {
-    @apply font-serif text-[18px] leading-[2.1] text-slate-800 antialiased;
+    font-family: Georgia, "Times New Roman", serif;
+    @apply text-[1.15rem] sm:text-[1.25rem] leading-[1.8] text-slate-900 antialiased;
     text-align: justify;
     text-justify: inter-word;
-    word-spacing: 0.05em;
 }
 .rte-content ul {
-    @apply list-disc list-outside mb-6 ml-10;
+    @apply list-disc list-outside mb-8 ml-10;
 }
 .rte-content ol {
-    @apply list-decimal list-outside mb-6 ml-10;
+    @apply list-decimal list-outside mb-8 ml-10;
 }
 .rte-content p {
-    @apply mb-6;
+    @apply mb-8;
 }
-.rte-content h1 { @apply text-4xl font-bold mb-10 mt-12 text-slate-900 border-b-2 border-slate-900 pb-3 tracking-tight; }
-.rte-content h2 { @apply text-3xl font-bold mb-8 mt-10 text-slate-900 tracking-tight underline underline-offset-8; }
-.rte-content h3 { @apply text-2xl font-bold mb-6 mt-8 text-slate-800; }
-.rte-content b, .rte-content strong { @apply font-bold text-slate-950; }
+.rte-content h1 { @apply text-[2.5rem] font-bold mb-12 mt-16 text-slate-950 border-b-4 border-slate-900 pb-4 tracking-tight uppercase text-center; }
+.rte-content h2 { @apply text-[2rem] font-bold mb-10 mt-14 text-slate-950 tracking-tight underline underline-offset-8 decoration-2; }
+.rte-content h3 { @apply text-[1.5rem] font-bold mb-8 mt-12 text-slate-900 uppercase tracking-wide; }
+.rte-content b, .rte-content strong { @apply font-bold text-black; }
 .rte-content i, .rte-content em { @apply italic; }
-.rte-content u { @apply underline decoration-slate-400 underline-offset-4; }
+.rte-content u { @apply underline decoration-black underline-offset-4 decoration-1; }
 
 .rte-content blockquote {
-    @apply border-l-8 border-slate-100 pl-6 py-2 italic text-slate-600 mb-8 bg-slate-50/50 rounded-r-xl;
+    @apply border-l-[10px] border-slate-200 pl-8 py-3 italic text-slate-700 mb-10 bg-slate-100/30 rounded-r-2xl;
 }
 
 .rte-editor:empty:before {
     content: attr(data-placeholder);
-    @apply text-slate-400 italic pointer-events-none;
+    @apply text-slate-400 italic pointer-events-none font-sans text-sm;
 }
 
-/* Paper view container */
+/* Paper view container - Redesign for Full Width */
 .paper-container {
-    @apply bg-slate-100/50 min-h-[800px] p-4 md:p-16 flex justify-center backdrop-blur-sm;
+    @apply bg-white min-h-[900px] p-0 sm:p-2 lg:p-6 flex justify-center;
 }
 
 .paper-sheet {
-    @apply bg-white shadow-[0_10px_60px_-15px_rgba(0,0,0,0.1)] w-full max-w-[850px] min-h-[1100px] p-[1.5cm] md:p-[2.5cm] border border-slate-200/40 relative transition-all;
+    @apply bg-white w-full max-w-none min-h-[1200px] p-[1.5cm] sm:p-[2cm] lg:p-[3cm] border-x border-slate-100 relative transition-all;
 }
 
 .paper-sheet:focus-within {
-    @apply shadow-[0_20px_80px_-20px_rgba(0,0,0,0.15)] border-brand-300 ring-0;
+    @apply ring-0 border-brand-200;
 }

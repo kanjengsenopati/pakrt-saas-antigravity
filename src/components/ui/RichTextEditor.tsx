@@ -35,13 +35,13 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
 
         let html = text
             // Block alignment - detect some custom patterns or just defaults
-            .replace(/^#{1} (.*$)/gim, '<h1>$1</h1>')
-            .replace(/^#{2} (.*$)/gim, '<h2>$1</h2>')
-            .replace(/^#{3} (.*$)/gim, '<h3>$1</h3>')
-            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
-            .replace(/__(.*)__/gim, '<b>$1</b>')
-            .replace(/\*(.*)\*/gim, '<i>$1</i>')
-            .replace(/_(.*)_/gim, '<i>$1</i>')
+            .replace(/^#{1} (.*?$)/gim, '<h1>$1</h1>')
+            .replace(/^#{2} (.*?$)/gim, '<h2>$1</h2>')
+            .replace(/^#{3} (.*?$)/gim, '<h3>$1</h3>')
+            .replace(/\*\*(.*?)\*\*/gim, '<b>$1</b>')
+            .replace(/__(.*?)__/gim, '<b>$1</b>')
+            .replace(/\*(.*?)\*/gim, '<i>$1</i>')
+            .replace(/_(.*?)_/gim, '<i>$1</i>')
             .replace(/^\s*[\-\*] (.*)/gim, '<li>$1</li>')
             .replace(/^\s*\d+\. (.*)/gim, '<li>$1</li>')
             .replace(/\n\s*\n/g, '</p><p>')
@@ -112,7 +112,7 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
             <div className="paper-container rounded-2xl overflow-hidden border border-slate-200">
                 <div 
                     className="paper-sheet rte-content"
-                    dangerouslySetInnerHTML={{ __html: value || '<p class="text-slate-400 italic">Belum ada konten peraturan untuk kategori ini.</p>' }}
+                    dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(value) || '<p class="text-slate-400 italic">Belum ada konten peraturan untuk kategori ini.</p>' }}
                 />
             </div>
         );
