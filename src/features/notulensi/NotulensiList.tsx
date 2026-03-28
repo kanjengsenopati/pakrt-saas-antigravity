@@ -205,7 +205,7 @@ export default function NotulensiList() {
                             <Notebook weight="fill" className="text-brand-500 w-3 h-3" />
                             Total Arsip
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{totalNotulensi} Dokumen</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{totalNotulensi} Dokumen</p>
                     </div>
                 </div>
 
@@ -216,7 +216,7 @@ export default function NotulensiList() {
                             <CalendarBlank weight="bold" className="text-amber-400 w-3 h-3" />
                             Bulan Ini
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{thisMonthNotulensi} Pertemuan</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{thisMonthNotulensi} Pertemuan</p>
                     </div>
                 </div>
             </div>
@@ -429,7 +429,7 @@ export default function NotulensiList() {
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner min-w-[50px]">
                                                     <span className="text-[8px] font-bold leading-none uppercase">{new Date(notulensi.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                    <span className="text-sm font-black leading-none mt-0.5">{new Date(notulensi.tanggal).getDate()}</span>
+                                                    <span className="text-sm font-bold leading-none mt-0.5">{new Date(notulensi.tanggal).getDate()}</span>
                                                     {notulensi.jam_mulai && (
                                                         <span className="text-[8px] font-bold mt-1 text-slate-500 bg-white/50 px-1 rounded border border-slate-200/50">
                                                             {notulensi.jam_mulai}

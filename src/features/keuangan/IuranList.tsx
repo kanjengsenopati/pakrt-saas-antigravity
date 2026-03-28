@@ -156,7 +156,7 @@ export default function IuranList() {
                             <CheckCircle weight="fill" className="text-brand-500 w-3 h-3" />
                             Total Kolektif {filterYear || 'Semua'}
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{formatRupiah(totalCollectedYear)}</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{formatRupiah(totalCollectedYear)}</p>
                     </div>
                 </div>
 
@@ -168,7 +168,7 @@ export default function IuranList() {
                             <Plus weight="bold" className="text-white w-3 h-3" />
                             Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{formatRupiah(totalCollectedMonth)}</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{formatRupiah(totalCollectedMonth)}</p>
                     </div>
                 </div>
             </div>
@@ -432,7 +432,7 @@ export default function IuranList() {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-base font-black text-brand-600 tabular-nums tracking-tight">
+                                            <div className="text-base font-bold text-brand-600 tabular-nums tracking-tight">
                                                 {formatRupiah(iuran.nominal)}
                                             </div>
                                             <p className="text-[9px] text-brand-500 font-bold uppercase tracking-tight mt-0.5">{toTitleCase(iuran.kategori || 'Iuran Bulanan')}</p>
@@ -471,7 +471,7 @@ export default function IuranList() {
                                                 return (
                                                     <div 
                                                         key={month} 
-                                                        className={`flex flex-col items-center justify-center p-1 rounded-lg border text-[10px] font-black transition-all duration-300 shadow-sm
+                                                        className={`flex flex-col items-center justify-center p-1 rounded-lg border text-[10px] font-bold transition-all duration-300 shadow-sm
                                                             ${isPaid 
                                                                 ? (iuran.status === 'VERIFIED' ? 'bg-emerald-500 text-white border-emerald-400' 
                                                                  : iuran.status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300'

@@ -514,15 +514,15 @@ export default function WargaList() {
 
                                     <div className="grid grid-cols-2 gap-3 mb-4">
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5">
-                                            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1 leading-none">Agama</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Agama</p>
                                             <p className="text-[11px] font-bold text-slate-700">{warga.agama || '-'}</p>
                                         </div>
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5">
-                                            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1 leading-none">Kontak</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Kontak</p>
                                             <p className="text-[11px] font-bold text-slate-700 truncate">{warga.kontak || '-'}</p>
                                         </div>
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5 col-span-2">
-                                            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1 leading-none">Alamat Domisili</p>
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Alamat Domisili</p>
                                             <p className="text-[11px] font-medium text-slate-600 italic leading-relaxed">"{warga.alamat}"</p>
                                         </div>
                                     </div>

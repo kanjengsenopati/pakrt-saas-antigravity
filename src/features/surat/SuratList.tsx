@@ -90,7 +90,7 @@ export default function SuratList() {
                             <FileText weight="fill" className="text-brand-500 w-3 h-3" />
                             Total Surat
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{suratList.length} Permohonan</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{suratList.length} Permohonan</p>
                     </div>
                 </div>
 
@@ -101,7 +101,7 @@ export default function SuratList() {
                             <ClockCounterClockwise weight="bold" className="text-amber-400 w-3 h-3" />
                             Menunggu Proses
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{suratList.filter(s => s.status === 'proses').length} Antrian</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{suratList.filter(s => s.status === 'proses').length} Antrian</p>
                     </div>
                 </div>
             </div>
@@ -239,7 +239,7 @@ export default function SuratList() {
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
                                                 <span className="text-[8px] font-bold leading-none uppercase">{new Date(surat.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</span>
+                                                <span className="text-sm font-bold leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</span>
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-slate-900 text-[14px] uppercase tracking-tight leading-tight mb-1">{surat.jenis_surat}</h3>

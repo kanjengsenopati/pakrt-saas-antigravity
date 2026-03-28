@@ -725,7 +725,7 @@ export default function AgendaList() {
                                                     : 'bg-emerald-50 border-emerald-100 text-emerald-600'
                                             } shadow-sm min-w-[65px]`}>
                                                 <span className="text-[0.625rem] font-bold leading-none uppercase">{new Date(agenda.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(agenda.tanggal).getDate()}</span>
+                                                <span className="text-sm font-bold leading-none mt-0.5">{new Date(agenda.tanggal).getDate()}</span>
                                                 {(agenda.jam_mulai || agenda.jam_selesai) && (
                                                     <span className="text-[8px] font-bold mt-1 text-slate-500 bg-white/50 px-1 rounded border border-slate-200/50">
                                                         {agenda.jam_mulai || '--:--'}

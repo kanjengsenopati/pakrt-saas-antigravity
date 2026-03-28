@@ -207,7 +207,7 @@ export default function RondaList() {
                                         <div key={group.name} className={`bg-white border-2 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden relative group/card ${isMyGroup ? 'border-brand-500 ring-4 ring-brand-500/10' : 'border-slate-100'}`}>
                                             
                                             {isMyGroup && (
-                                                <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-bl-xl z-20 shadow-sm flex items-center gap-1.5 tracking-widest">
+                                                <div className="absolute top-0 right-0 bg-brand-600 text-white text-[10px] font-bold uppercase px-3 py-1.5 rounded-bl-xl z-20 shadow-sm flex items-center gap-1.5 tracking-widest text-shadow-sm">
                                                     <CheckCircle weight="fill" className="w-3 h-3" /> Regu Anda
                                                 </div>
                                             )}
@@ -215,11 +215,11 @@ export default function RondaList() {
                                             <div className={`p-5 border-b border-slate-50 relative ${isMyGroup ? 'bg-slate-50/50' : 'bg-white'}`}>
                                                 <div className="flex justify-between items-center mb-5">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black shadow-inner border ${isMyGroup ? 'bg-brand-600 text-white border-brand-500' : 'bg-slate-900 text-white border-slate-800'}`}>
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-inner border ${isMyGroup ? 'bg-brand-600 text-white border-brand-500' : 'bg-slate-900 text-white border-slate-800'}`}>
                                                             {group.name.charAt(0).toUpperCase()}
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-[15px] font-black text-slate-900 uppercase tracking-tight leading-none">{group.name}</h3>
+                                                            <h3 className="text-[15px] font-bold text-slate-900 uppercase tracking-tight leading-none truncate">{group.name}</h3>
                                                             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Siskamling Unit</p>
                                                         </div>
                                                     </div>
@@ -227,7 +227,7 @@ export default function RondaList() {
 
                                                 <div className="space-y-4">
                                                     <div>
-                                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
+                                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
                                                             <div className="w-1 h-3 bg-brand-500 rounded-full" />
                                                             Petugas Utama
                                                         </p>
@@ -263,8 +263,8 @@ export default function RondaList() {
 
                                             <div className="p-5 bg-slate-50/30 flex-1">
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-none">Status & Jadwal</p>
-                                                    <span className="text-[9px] font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full uppercase tracking-widest">{group.dates.length} Titik</span>
+                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">Status & Jadwal</p>
+                                                    <span className="text-[9px] font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full uppercase tracking-widest">{group.dates.length} Titik</span>
                                                 </div>
                                                 <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
                                                     {group.dates.sort((a: any, b: any) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map((d: any) => {
@@ -279,16 +279,16 @@ export default function RondaList() {
                                                                 >
                                                                     <div className="flex items-center gap-3">
                                                                         <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-slate-300' : isNext ? 'bg-emerald-500 animate-pulse' : 'bg-brand-500'}`}></div>
-                                                                        <span className={`text-[11px] tracking-tight ${isPast ? 'text-slate-400 font-medium' : isNext ? 'text-emerald-700 font-black' : 'text-slate-700 font-bold'}`}>
+                                                                        <span className={`text-[11px] tracking-tight ${isPast ? 'text-slate-400 font-medium' : isNext ? 'text-emerald-700 font-bold' : 'text-slate-700 font-bold'}`}>
                                                                             {dateUtils.toDisplay(d.tanggal)}
                                                                         </span>
                                                                         {isNext && (
-                                                                            <span className="text-[8px] bg-brand-600 text-white px-1.5 py-0.5 rounded-lg font-black uppercase tracking-widest ml-1 shadow-sm">Next</span>
+                                                                            <span className="text-[8px] bg-brand-600 text-white px-1.5 py-0.5 rounded-lg font-bold uppercase tracking-widest ml-1 shadow-sm">Next</span>
                                                                         )}
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         {d.kehadiranCount > 0 && (
-                                                                            <span className="text-[9px] text-emerald-600 font-black bg-emerald-50 px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
+                                                                            <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
                                                                                 {d.kehadiranCount} Check
                                                                             </span>
                                                                         )}
@@ -297,11 +297,11 @@ export default function RondaList() {
                                                                 </div>
                                                                 {isActive && (
                                                                     <div className="ml-3 pl-4 border-l-2 border-amber-200 py-2 animate-fade-in">
-                                                                        <p className="text-[9px] text-amber-500 font-black uppercase tracking-widest mb-1.5">Detail Konsumsi:</p>
+                                                                        <p className="text-[9px] text-amber-500 font-bold uppercase tracking-widest mb-1.5">Detail Konsumsi:</p>
                                                                         <div className="flex flex-wrap gap-1.5">
                                                                             {d.petugas_konsumsi.length > 0 ? (
                                                                                 d.petugas_konsumsi.map((p: any) => (
-                                                                                    <span key={p.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-tight">
+                                                                                    <span key={p.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-tight">
                                                                                         {p.nama}
                                                                                     </span>
                                                                                 ))
@@ -476,7 +476,7 @@ export default function RondaList() {
                                                     </div>
                                                 </div>
                                                 {ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 && (
-                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
                                                         Selesai
                                                     </span>
                                                 )}
@@ -484,7 +484,7 @@ export default function RondaList() {
 
                                             <div className="space-y-4">
                                                 <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Petugas Piket</p>
+                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 leading-none">Petugas Piket</p>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_warga?.map((w: any) => (
                                                             <span key={w.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-slate-100 text-slate-700 text-[11px] font-bold shadow-sm">
@@ -495,7 +495,7 @@ export default function RondaList() {
                                                 </div>
 
                                                 <div className="bg-amber-50/30 rounded-xl border border-amber-100 p-3">
-                                                    <p className="text-[10px] text-amber-500 font-black uppercase tracking-widest mb-2 leading-none">Bawa Konsumsi</p>
+                                                    <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest mb-2 leading-none">Bawa Konsumsi</p>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
                                                             ronda.anggota_konsumsi.map((w: any) => (
