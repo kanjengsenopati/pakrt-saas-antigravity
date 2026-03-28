@@ -21,10 +21,7 @@ export default async function pengaturanRoutes(fastify: FastifyInstance) {
     }
 
     const item = await pengaturanService.getByKey(tId, scope || 'RT', key);
-    if (!item) {
-        return reply.code(404).send({ error: 'Setting not found' });
-    }
-    return item;
+    return item || null;
   });
 
   fastify.get('/:id', async (request, reply) => {
@@ -44,11 +41,29 @@ export default async function pengaturanRoutes(fastify: FastifyInstance) {
       const data = request.body as any;
       data.tenant_id = user.tenant_id;
       
-      const item = await pengaturanService.create(data);
-      return reply.code(201).send(item);
+      const item = await pengaturanService.upsert(data);
+      return reply.code(200).send(item);
     } catch (err: any) {
       fastify.log.error(err);
-      return reply.code(400).send({ error: err.message || 'Failed to create' });
+      return reply.code(400).send({ error: err.message || 'Failed to save' });
+    }
+  });
+
+  fastify.post('/batch', { preHandler: [requirePermission('Setup / Pengaturan', 'Buat')] }, async (request, reply) => {
+    try {
+      const user = (request as any).user;
+      const { items } = request.body as any;
+      const { scope } = request.query as any;
+
+      if (!Array.isArray(items)) {
+          return reply.code(400).send({ error: 'items must be an array' });
+      }
+
+      await pengaturanService.batchUpsert(user.tenant_id, scope || 'RT', items);
+      return { success: true };
+    } catch (err: any) {
+      fastify.log.error(err);
+      return reply.code(400).send({ error: err.message || 'Failed to batch save' });
     }
   });
 
