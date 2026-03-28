@@ -59,7 +59,7 @@ export default async function pengaturanRoutes(fastify: FastifyInstance) {
           return reply.code(400).send({ error: 'items must be an array' });
       }
 
-      await pengaturanService.batchUpsert(user.tenant_id, scope || 'RT', items);
+      await pengaturanService.batchUpsert(user.tenant_id, scope, items);
       return { success: true };
     } catch (err: any) {
       fastify.log.error(err);

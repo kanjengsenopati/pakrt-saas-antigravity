@@ -41,16 +41,26 @@ export const pengaturanService = {
   },
 
   async batchUpsert(tenantId: string, scope: string, items: any[]) {
-    return await prisma.$transaction(
-        items.map(item => {
-            // Since we don't have a unique constraint, we have to find and then update/create
-            // But transaction-wise, doing find+update/create in a map for $transaction 
-            // is tricky if we don't know IDs.
-            // Alternative: Delete existing keys and recreate, or use raw for performance.
-            // For now, let's keep it simple: Loop and upsert.
-            return this.upsert({ ...item, tenant_id: tenantId, scope });
-        })
-    );
+    return await prisma.$transaction(async (tx) => {
+        for (const item of items) {
+            const { key, value } = item;
+            const targetScope = item.scope || scope || 'RT';
+            const existing = await tx.pengaturan.findFirst({
+                where: { tenant_id: tenantId, scope: targetScope, key }
+            });
+
+            if (existing) {
+                await tx.pengaturan.update({
+                    where: { id: existing.id },
+                    data: { value }
+                });
+            } else {
+                await tx.pengaturan.create({
+                    data: { tenant_id: tenantId, scope: targetScope, key, value }
+                });
+            }
+        }
+    });
   },
 
   async update(id: string, data: any) {

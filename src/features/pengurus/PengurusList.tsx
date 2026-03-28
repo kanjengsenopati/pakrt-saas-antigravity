@@ -61,13 +61,15 @@ export default function PengurusList() {
 
             if (jabSettingsRaw) {
                 try {
-                    const parsed = typeof jabSettingsRaw === 'string' ? JSON.parse(jabSettingsRaw) : jabSettingsRaw;
+                    const rawValue = (jabSettingsRaw as any).value || jabSettingsRaw;
+                    const parsed = typeof rawValue === 'string' ? JSON.parse(rawValue) : rawValue;
                     if (Array.isArray(parsed)) setJabatanSettings(parsed);
                 } catch (e) { console.error("Error parsing jabatan settings:", e); }
             }
             if (perSettingsRaw) {
                 try {
-                    const parsed = typeof perSettingsRaw === 'string' ? JSON.parse(perSettingsRaw) : perSettingsRaw;
+                    const rawValue = (perSettingsRaw as any).value || perSettingsRaw;
+                    const parsed = typeof rawValue === 'string' ? JSON.parse(rawValue) : rawValue;
                     if (Array.isArray(parsed)) setPeriodeSettings(parsed);
                 } catch (e) { console.error("Error parsing periode settings:", e); }
             }
