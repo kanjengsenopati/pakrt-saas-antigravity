@@ -170,7 +170,10 @@ export default function PengurusList() {
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">{activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 'Riwayat Kepengurusan'}</h1>
+                    <h1 className="page-title">
+                        {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 
+                         activeTab === 'riwayat' ? 'Riwayat Kepengurusan' : 'AD / ART (Aturan & Regulasi)'}
+                    </h1>
                     <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
                         Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                         {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
@@ -198,7 +201,7 @@ export default function PengurusList() {
                             <Briefcase weight="fill" className="text-brand-500 w-3 h-3" />
                             Total Jabatan
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
                     </div>
                 </div>
 
@@ -209,7 +212,7 @@ export default function PengurusList() {
                             <Users weight="bold" className="text-amber-400 w-3 h-3" />
                             Pengurus Aktif
                         </p>
-                        <p className="text-[13px] sm:text-lg font-black text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
+                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
                     </div>
                 </div>
             </div>
