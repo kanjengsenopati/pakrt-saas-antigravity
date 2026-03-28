@@ -272,7 +272,7 @@ export default function Dashboard() {
                             <div className="text-white">
                                 <h3 className="text-lg font-bold tracking-tight flex items-center gap-2">
                                     Aktifkan Notifikasi Pintar
-                                    <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/30">PWA</span>
+                                    <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-medium uppercase tracking-widest border border-white/30">PWA</span>
                                 </h3>
                                 <p className="text-sm text-brand-50/90 font-medium leading-relaxed max-w-md mt-0.5">
                                     <span>Dapatkan info terbaru, agenda RT, dan notulensi secara </span>
@@ -292,7 +292,7 @@ export default function Dashboard() {
                             <button 
                                 onClick={handleSubscribe}
                                 disabled={isSubscribing}
-                                className="flex-1 md:flex-none px-6 py-2.5 bg-white text-brand-700 hover:bg-brand-50 font-black text-sm rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
+                                className="flex-1 md:flex-none px-6 py-2.5 bg-white text-brand-700 hover:bg-brand-50 font-normal text-sm rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
                             >
                                 {isSubscribing ? (
                                     <div className="w-4 h-4 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
@@ -357,10 +357,10 @@ export default function Dashboard() {
                             </div>
 
                             <div className={`relative z-10 flex-1 flex flex-col justify-center mb-2 overflow-hidden ${['Agenda', 'Surat Saya', 'Total Warga', 'Surat Pending', 'Verifikasi Iuran'].includes(card.title) ? 'items-center text-center' : 'items-start text-left'}`}>
-                                <div className="text-[1.625rem] font-semibold text-white leading-none tracking-tight drop-shadow-sm w-full truncate">
+                                <div className="text-[1.625rem] font-normal text-white leading-none tracking-tight drop-shadow-sm w-full truncate">
                                     {card.isCurrency ? (
                                         <div className="flex flex-col items-start gap-1">
-                                            <span className="text-2xl font-semibold">{formatRupiah(card.count as number)}</span>
+                                            <span className="text-2xl font-normal">{formatRupiah(card.count as number)}</span>
                                             {(card as any).subtitle && (
                                                 <span className="text-[0.625rem] text-white/90 font-medium italic drop-shadow-sm leading-none">{(card as any).subtitle}</span>
                                             )}
@@ -521,7 +521,7 @@ export default function Dashboard() {
                                             </p>
                                         </div>
                                         <div className="flex flex-col items-end gap-1.5 shrink-0">
-                                            <span className={`${isFirst ? 'text-base py-1.5 px-4' : 'text-xs py-1 px-2.5'} bg-blue-600 text-white rounded-full font-black tracking-wide shadow-sm`}>
+                                            <span className={`${isFirst ? 'text-base py-1.5 px-4' : 'text-xs py-1 px-2.5'} bg-blue-600 text-white rounded-full font-medium tracking-wide shadow-sm`}>
                                                 {ronda.regu}
                                             </span>
                                         </div>
