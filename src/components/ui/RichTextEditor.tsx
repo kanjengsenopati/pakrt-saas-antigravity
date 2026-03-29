@@ -25,39 +25,64 @@ interface RichTextEditorProps {
 export default function RichTextEditor({ value, onChange, readOnly = false, placeholder }: RichTextEditorProps) {
     const editorRef = useRef<HTMLDivElement>(null);
 
-    // Simple Markdown to HTML converter for legacy data
+    // Robust Markdown to HTML converter for legacy data and migration
     const convertMarkdownToHtml = (text: string) => {
         if (!text) return '';
-        // If it already looks like HTML, don't convert
-        if (text.includes('<p>') || text.includes('<div>') || text.includes('<b>') || text.includes('<strong>')) {
+        
+        // If it's already complete HTML with paragraphs, return as is
+        if (text.includes('<p>') || text.includes('<div') || text.includes('<h1')) {
             return text;
         }
 
         let html = text
-            // Block alignment - detect some custom patterns or just defaults
-            .replace(/^#{1} (.*?$)/gim, '<h1>$1</h1>')
-            .replace(/^#{2} (.*?$)/gim, '<h2>$1</h2>')
-            .replace(/^#{3} (.*?$)/gim, '<h3>$1</h3>')
-            .replace(/\*\*(.*?)\*\*/gim, '<b>$1</b>')
-            .replace(/__(.*?)__/gim, '<b>$1</b>')
-            .replace(/\*(.*?)\*/gim, '<i>$1</i>')
-            .replace(/_(.*?)_/gim, '<i>$1</i>')
-            .replace(/^\s*[\-\*] (.*)/gim, '<li>$1</li>')
-            .replace(/^\s*\d+\. (.*)/gim, '<li>$1</li>')
-            .replace(/\n\s*\n/g, '</p><p>')
-            .replace(/\n/g, '<br />');
+            // Escape any existing lone HTML-like brackets that aren't tags
+            // .replace(/<(?![a-zA-Z/!])/g, '&lt;')
+            
+            // Headings
+            .replace(/^#{1}\s+(.*?)$/gim, '<h1>$1</h1>')
+            .replace(/^#{2}\s+(.*?)$/gim, '<h2>$1</h2>')
+            .replace(/^#{3}\s+(.*?)$/gim, '<h3>$1</h3>')
+            
+            // Bold
+            .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+            .replace(/__(.*?)__/gim, '<strong>$1</strong>')
+            
+            // Italic
+            .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+            .replace(/_(.*?)_/gim, '<em>$1</em>')
+            
+            // Underline (not standard markdown but often used in our legacy)
+            .replace(/<u>(.*?)<\/u>/gim, '<u>$1</u>')
+            
+            // Lists - detect and group
+            .replace(/^\s*[\-\*]\s+(.*)/gim, '<li>$1</li>')
+            .replace(/^\s*\d+\.\s+(.*)/gim, '<li data-list="ordered">$1</li>');
 
-        // Wrap list items
-        if (html.includes('<li>')) {
-            // Very simple wrap - might need improvement but good enough for migration
-            if (text.match(/^\s*\d+\./im)) {
-                html = `<ol>${html}</ol>`;
-            } else {
-                html = `<ul>${html}</ul>`;
+        // Wrap list items in appropriate tags
+        html = html.replace(/(<li>(?:.|\n)*?<\/li>)/g, (match) => {
+            if (match.includes('data-list="ordered"')) {
+                return `<ol>${match.replace(/ data-list="ordered"/g, '')}</ol>`;
             }
-        }
+            return `<ul>${match}</ul>`;
+        });
+        
+        // Clean up adjacent same-type lists
+        html = html.replace(/<\/ul>\s*<ul>/g, '').replace(/<\/ol>\s*<ol>/g, '');
 
-        return `<p>${html}</p>`.replace(/<p><p>/g, '<p>').replace(/<\/p><\/p>/g, '</p>');
+        // Paragraphs: Split by double newline, wrap non-blocks in <p>
+        const blocks = html.split(/\n\s*\n/);
+        const finalHtml = blocks.map(block => {
+            const trimmed = block.trim();
+            if (!trimmed) return '';
+            // If it starts with a block tag, leave it
+            if (/^<(h1|h2|h3|ul|ol|li|blockquote|div|p)/i.test(trimmed)) {
+                return trimmed;
+            }
+            // Otherwise wrap in p and convert single newlines to br
+            return `<p>${trimmed.replace(/\n/g, '<br />')}</p>`;
+        }).join('');
+
+        return finalHtml;
     };
 
     // Sync editor content with value prop only if changed externally

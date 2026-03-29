@@ -608,196 +608,172 @@ export default function PengurusList() {
                     )}
                 </div>
             ) : (
-                <div className="flex flex-col lg:flex-row gap-6 animate-fade-in">
-                    {/* Category Sidebar */}
-                    <div className="w-full lg:w-72 flex-none space-y-4">
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                            <div className="p-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                                    <BookOpen weight="duotone" className="text-brand-600" />
-                                    Kategori AD/ART
-                                </h3>
-                                <div className="flex items-center gap-1">
+                <div className="space-y-6 animate-fade-in">
+                    {/* Full Width Category Navigation */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                <BookOpen weight="duotone" className="text-brand-600" />
+                                Pilih Kategori AD/ART
+                            </h3>
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <button 
+                                    onClick={() => setShowVersionHistory(!showVersionHistory)}
+                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                                >
+                                    <ListDashes weight="bold" size={16} />
+                                    <span>{adArtData.archives?.length || 0} Arsip</span>
+                                </button>
+                                <HasPermission module="Data Pengurus" action="Ubah">
                                     <button 
-                                        onClick={() => setShowVersionHistory(!showVersionHistory)}
-                                        className={`p-1.5 rounded-lg transition-all ${showVersionHistory ? 'bg-brand-50 text-brand-600' : 'text-slate-400 hover:bg-slate-50'}`}
-                                        title="Histori Versi & Arsip"
+                                        onClick={() => setIsAddingCategory(true)}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition-all shadow-sm"
                                     >
-                                        <ListDashes weight="bold" size={20} />
+                                        <PlusCircle weight="fill" size={16} />
+                                        <span>Tambah Kategori</span>
                                     </button>
-                                    <HasPermission module="Data Pengurus" action="Ubah">
-                                        <button 
-                                            onClick={() => setIsAddingCategory(true)}
-                                            className="text-brand-600 hover:bg-brand-50 p-1.5 rounded-xl transition-colors"
-                                            title="Tambah Kategori"
-                                        >
-                                            <PlusCircle weight="fill" size={22} />
-                                        </button>
-                                    </HasPermission>
-                                </div>
+                                </HasPermission>
                             </div>
-                            
-                            <div className="p-2 space-y-1">
+                        </div>
+                        
+                        <div className="p-2 overflow-x-auto scrollbar-hide">
+                            <div className="flex items-center gap-2 min-w-max px-2">
                                 {Object.keys(adArtData.active?.categories || {}).map((cat) => (
-                                    <div key={cat} className="group flex items-center gap-1">
+                                    <div key={cat} className="group relative flex items-center">
                                         <button
                                             onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all border ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-md shadow-brand-500/20' : 'bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:bg-brand-50/30'}`}
                                         >
-                                            <span className="truncate">{cat}</span>
-                                            {activeCategory === cat && !showVersionHistory ? <CaretRight weight="bold" /> : <div className="w-4" />}
+                                            {cat}
                                         </button>
                                         <HasPermission module="Data Pengurus" action="Ubah">
                                             <button 
                                                 onClick={() => deleteCategory(cat)}
-                                                className={`p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 ${activeCategory === cat ? 'text-white/70 hover:bg-white/10' : ''}`}
-                                                title="Hapus Kategori"
+                                                className="absolute -top-1 -right-1 p-1 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover:opacity-100 hover:bg-rose-50 transition-all shadow-sm z-10"
                                             >
-                                                <TrashSimple size={16} />
+                                                <X size={10} weight="bold" />
                                             </button>
                                         </HasPermission>
                                     </div>
                                 ))}
-
-                                {adArtData.archives?.length > 0 && (
-                                    <div className="pt-2 mt-2 border-t border-slate-100">
-                                        <button
-                                            onClick={() => setShowVersionHistory(true)}
-                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${showVersionHistory ? 'bg-amber-100 text-amber-700 shadow-sm' : 'text-amber-600 hover:bg-amber-50'}`}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <ListDashes weight="bold" />
-                                                <span>Arsip Dokumentasi ({adArtData.archives.length})</span>
-                                            </div>
-                                            {showVersionHistory && <CaretRight weight="bold" />}
-                                        </button>
-                                    </div>
-                                )}
-
-                                {isAddingCategory && (
-                                    <div className="p-2 pt-4 border-t border-slate-100 mt-2 space-y-2">
-                                        <input 
-                                            autoFocus
-                                            type="text"
-                                            placeholder="Nama kategori baru..."
-                                            value={newCategoryName}
-                                            onChange={(e) => setNewCategoryName(e.target.value)}
-                                            className="w-full text-xs"
-                                            onKeyDown={(e) => e.key === 'Enter' && addCategory()}
-                                        />
-                                        <div className="flex gap-2">
-                                            <button onClick={addCategory} className="flex-1 text-[10px] bg-brand-600 text-white py-1.5 rounded-lg">Tambah</button>
-                                            <button onClick={() => setIsAddingCategory(false)} className="flex-1 text-[10px] bg-slate-100 text-slate-600 py-1.5 rounded-lg">Batal</button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         </div>
 
-                        <HasPermission module="Data Pengurus" action="Ubah">
-                            <button
-                                onClick={saveAdArt}
-                                disabled={isSavingAdArt}
-                                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
-                            >
-                                <FloppyDisk weight="bold" />
-                                <span>{isSavingAdArt ? 'Menyimpan...' : 'Simpan Perubahan'}</span>
-                            </button>
-                        </HasPermission>
+                        {isAddingCategory && (
+                            <div className="p-4 bg-brand-50/50 border-t border-brand-100 flex items-center gap-3 animate-slide-down">
+                                <input 
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Nama kategori baru..."
+                                    value={newCategoryName}
+                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                    className="flex-1 text-sm bg-white"
+                                    onKeyDown={(e) => e.key === 'Enter' && addCategory()}
+                                />
+                                <button onClick={addCategory} className="px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-xl">Simpan</button>
+                                <button onClick={() => setIsAddingCategory(false)} className="px-4 py-2 bg-white text-slate-600 border border-slate-200 text-xs font-bold rounded-xl">Batal</button>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Content Area */}
-                    <div className="flex-1 min-w-0">
+                    <div className="w-full">
                         {showVersionHistory ? (
-                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full animate-fade-in">
-                                <div className="p-4 border-b border-slate-50 bg-amber-50/30 flex justify-between items-center">
-                                    <div>
-                                        <h2 className="font-bold text-slate-900 leading-tight">Histori & Arsip AD/ART</h2>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5 uppercase tracking-wider">Daftar perubahan amandemen versi lampau</p>
-                                    </div>
-                                    <button onClick={() => setShowVersionHistory(false)} className="text-slate-400 hover:text-slate-600 p-2">
-                                        <X size={20} weight="bold" />
-                                    </button>
+                            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in">
+                                <div className="p-6 border-b border-slate-100 bg-amber-50/30">
+                                    <h2 className="font-bold text-slate-900 text-lg">Arsip & Dokumentasi Perubahan</h2>
+                                    <p className="text-xs text-slate-500 mt-1">Daftar versi AD/ART yang pernah diterbitkan sebelumnya.</p>
                                 </div>
-                                <div className="p-6 space-y-4 max-h-[600px] overflow-y-auto">
+                                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {adArtData.archives?.map((archive: any) => (
-                                        <div key={archive.id} className="group bg-slate-50 rounded-2xl p-4 border border-slate-200 hover:border-brand-300 hover:shadow-md transition-all">
-                                            <div className="flex justify-between items-start">
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <h4 className="font-bold text-slate-900">{archive.name}</h4>
-                                                        <span className="px-2 py-0.5 bg-slate-200 text-slate-600 text-[10px] font-bold rounded-lg uppercase tracking-wider">Archive</span>
-                                                    </div>
-                                                    <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                                        <div key={archive.id} className="group bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all relative">
+                                            <div className="flex flex-col h-full">
+                                                <div className="mb-4">
+                                                    <span className="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2 inline-block">Archived Version</span>
+                                                    <h4 className="font-bold text-slate-900 text-base">{archive.name}</h4>
+                                                </div>
+                                                <div className="space-y-2 mb-6">
+                                                    <p className="text-xs text-slate-500 flex items-center gap-2">
                                                         <FloppyDisk weight="fill" className="text-slate-400" />
-                                                        Disimpan pada {new Date(archive.date).toLocaleString('id-ID')}
+                                                        {new Date(archive.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                                                     </p>
-                                                    <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                                                    <p className="text-xs text-slate-500 flex items-center gap-2">
                                                         <User weight="fill" className="text-slate-400" />
-                                                        Ketua RT: <span className="text-brand-700 font-bold">{archive.chairman}</span>
+                                                        Ketua: <span className="font-bold text-slate-700">{archive.chairman}</span>
                                                     </p>
                                                 </div>
                                                 <button 
                                                     onClick={() => restoreArchive(archive)}
-                                                    className="px-3 py-1.5 bg-brand-600 text-white text-[11px] font-bold rounded-xl shadow-md hover:bg-brand-700 transition-all opacity-0 group-hover:opacity-100 active:scale-95"
+                                                    className="w-full mt-auto py-2.5 bg-white border border-brand-200 text-brand-600 text-xs font-bold rounded-xl hover:bg-brand-600 hover:text-white transition-all shadow-sm active:scale-95"
                                                 >
-                                                    Pulihkan Versi
+                                                    Pulihkan Versi Ini
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
+                                    {(!adArtData.archives || adArtData.archives.length === 0) && (
+                                        <div className="col-span-full py-12 text-center text-slate-400 italic">Belum ada arsip versi terdahulu.</div>
+                                    )}
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
-                                <div className="p-4 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
-                                    <div>
-                                        <h2 className="font-bold text-slate-900 leading-tight">{activeCategory}</h2>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Konten Aturan & Regulasi</p>
+                            <div className="flex flex-col gap-6">
+                                <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
+                                    {/* Document Header Info - Breadcrumb style */}
+                                    <div className="px-10 py-8 border-b border-slate-100 bg-slate-50/30 flex justify-between items-end">
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black text-brand-600 uppercase tracking-[0.2em]">Dokumen Aturan & Regulasi</p>
+                                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeCategory}</h2>
                                             {adArtData.active.metadata && (
-                                                <>
-                                                    <span className="text-slate-300">•</span>
-                                                    <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[9px] font-bold rounded-md border border-brand-100/50">
-                                                        {adArtData.active.metadata.version}
-                                                    </span>
-                                                    <span className="text-[9px] text-slate-400 font-medium italic">
-                                                        Oleh {adArtData.active.metadata.chairman}
-                                                    </span>
-                                                </>
+                                                <div className="flex items-center gap-3 mt-4 text-[11px] text-slate-500 font-medium">
+                                                    <span className="flex items-center gap-1.5"><ListDashes className="text-slate-400" /> Versi {adArtData.active.metadata.version}</span>
+                                                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                                    <span className="flex items-center gap-1.5"><PlusCircle className="text-slate-400" /> Pembaruan Terakhir: {new Date(adArtData.active.metadata.date).toLocaleDateString('id-ID')}</span>
+                                                </div>
                                             )}
                                         </div>
+                                        <HasPermission module="Data Pengurus" action="Ubah">
+                                            <button
+                                                onClick={saveAdArt}
+                                                disabled={isSavingAdArt}
+                                                className="flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 active:scale-95 mb-1"
+                                            >
+                                                <FloppyDisk weight="bold" size={18} />
+                                                <span>{isSavingAdArt ? 'Menyimpan...' : 'Terbitkan Amandemen'}</span>
+                                            </button>
+                                        </HasPermission>
                                     </div>
-                                </div>
 
-                                <div className="p-0">
-                                    <HasPermission
-                                        module="Data Pengurus"
-                                        action="Ubah"
-                                        fallback={
+                                    <div className="p-0">
+                                        <HasPermission
+                                            module="Data Pengurus"
+                                            action="Ubah"
+                                            fallback={
+                                                <RichTextEditor
+                                                    readOnly 
+                                                    value={adArtData.active.categories[activeCategory] || ''} 
+                                                    onChange={() => {}} 
+                                                />
+                                            }
+                                        >
                                             <RichTextEditor
-                                                readOnly 
-                                                value={adArtData.active.categories[activeCategory] || ''} 
-                                                onChange={() => {}} 
+                                                value={adArtData.active.categories[activeCategory] || ''}
+                                                onChange={(val) => setAdArtData((prev: any) => ({
+                                                    ...prev,
+                                                    active: {
+                                                        ...prev.active,
+                                                        categories: { ...prev.active.categories, [activeCategory]: val }
+                                                    }
+                                                }))}
+                                                placeholder={`Uraikan aturan dan ketentuan untuk ${activeCategory} di sini...`}
                                             />
-                                        }
-                                    >
-                                        <RichTextEditor
-                                            value={adArtData.active.categories[activeCategory] || ''}
-                                            onChange={(val) => setAdArtData((prev: any) => ({
-                                                ...prev,
-                                                active: {
-                                                    ...prev.active,
-                                                    categories: { ...prev.active.categories, [activeCategory]: val }
-                                                }
-                                            }))}
-                                            placeholder={`Tulis aturan untuk ${activeCategory} di sini...`}
-                                        />
-                                    </HasPermission>
+                                        </HasPermission>
+                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
+                </div>
+            )}
                 </div>
             )}
         </div>

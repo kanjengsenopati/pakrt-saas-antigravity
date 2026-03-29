@@ -165,29 +165,28 @@ select:focus {
 
 /* RichText Editor & Content Styles */
 .rte-content {
-    font-family: Georgia, "Times New Roman", serif;
-    @apply text-[1.15rem] sm:text-[1.25rem] leading-[1.8] text-slate-900 antialiased;
-    text-align: justify;
-    text-justify: inter-word;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply text-[1rem] leading-[1.8] text-slate-800 antialiased font-normal;
+    text-align: left; /* Better for modern sans-serif documents */
 }
 .rte-content ul {
-    @apply list-disc list-outside mb-8 ml-10;
+    @apply list-disc list-outside mb-6 ml-6;
 }
 .rte-content ol {
-    @apply list-decimal list-outside mb-8 ml-10;
+    @apply list-decimal list-outside mb-6 ml-6;
 }
 .rte-content p {
-    @apply mb-8;
+    @apply mb-6;
 }
-.rte-content h1 { @apply text-[2.5rem] font-bold mb-12 mt-16 text-slate-950 border-b-4 border-slate-900 pb-4 tracking-tight uppercase text-center; }
-.rte-content h2 { @apply text-[2rem] font-bold mb-10 mt-14 text-slate-950 tracking-tight underline underline-offset-8 decoration-2; }
-.rte-content h3 { @apply text-[1.5rem] font-bold mb-8 mt-12 text-slate-900 uppercase tracking-wide; }
-.rte-content b, .rte-content strong { @apply font-bold text-black; }
+.rte-content h1 { @apply text-[2rem] font-extrabold mb-8 mt-12 text-slate-900 border-b-2 border-slate-200 pb-3 tracking-tight text-center; }
+.rte-content h2 { @apply text-[1.5rem] font-bold mb-6 mt-10 text-slate-900 tracking-tight; }
+.rte-content h3 { @apply text-[1.25rem] font-bold mb-4 mt-8 text-slate-800 tracking-wide; }
+.rte-content b, .rte-content strong { @apply font-bold text-slate-950; }
 .rte-content i, .rte-content em { @apply italic; }
-.rte-content u { @apply underline decoration-black underline-offset-4 decoration-1; }
+.rte-content u { @apply underline decoration-slate-400 underline-offset-4 decoration-1; }
 
 .rte-content blockquote {
-    @apply border-l-[10px] border-slate-200 pl-8 py-3 italic text-slate-700 mb-10 bg-slate-100/30 rounded-r-2xl;
+    @apply border-l-[6px] border-brand-500/20 pl-6 py-2 italic text-slate-600 mb-8 bg-brand-50/30 rounded-r-xl;
 }
 
 .rte-editor:empty:before {
