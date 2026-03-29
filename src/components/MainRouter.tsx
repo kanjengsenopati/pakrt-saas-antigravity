@@ -298,10 +298,6 @@ const router = createBrowserRouter([
                 element: <Profile />
             },
             {
-                path: 'warga-portal',
-                element: <WargaPortal />
-            },
-            {
                 path: 'aduan',
                 element: (
                     <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Lihat' }}>
@@ -334,6 +330,14 @@ const router = createBrowserRouter([
                 )
             }
         ]
+    },
+    {
+        path: 'warga-portal',
+        element: (
+            <ProtectedRoute>
+                <WargaPortal />
+            </ProtectedRoute>
+        )
     }
 ]);
 
