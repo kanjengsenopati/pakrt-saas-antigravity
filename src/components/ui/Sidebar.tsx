@@ -19,7 +19,8 @@ import {
     CaretLeft,
     CaretRight,
     DotsThree,
-    UserCircle
+    UserCircle,
+    ChatDots
 } from '@phosphor-icons/react';
 
 interface MenuItem {
@@ -56,6 +57,7 @@ const MENU_GROUPS: MenuGroup[] = [
     {
         label: 'Operasional',
         items: [
+            { path: '/aduan', label: 'Aduan & Usulan', icon: ChatDots, permission: { module: 'Aduan & Usulan', action: 'Lihat' } },
             { path: '/ronda', label: 'Jadwal Ronda', icon: ShieldCheck, permission: { module: 'Jadwal Ronda', action: 'Lihat' } },
             { path: '/notulensi', label: 'Notulensi', icon: Notebook, permission: { module: 'Notulensi', action: 'Lihat' } },
             { path: '/agenda', label: 'Agenda', icon: CalendarCheck, permission: { module: 'Agenda', action: 'Lihat' } },

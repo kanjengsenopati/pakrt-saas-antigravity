@@ -8,22 +8,37 @@ import {
     Users, 
     MapPin, 
     IdentificationCard,
-    CaretRight
+    CaretRight,
+    ChatDots,
+    ChartPieSlice,
+    Plus,
+    Clock
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { useNavigate } from 'react-router-dom';
+import { aduanService } from '../../services/aduanService';
+import { pollingService } from '../../services/pollingService';
+import PollingParticipation from '../aduan/PollingParticipation';
 
 export default function WargaPortal() {
     const { currentScope } = useTenant();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [activePolls, setActivePolls] = useState<any[]>([]);
+    const [myAspirations, setMyAspirations] = useState<any[]>([]);
 
     useEffect(() => {
         const load = async () => {
             try {
-                const res = await statsService.getWargaPersonalStats();
+                const [res, polls, aspirations] = await Promise.all([
+                    statsService.getWargaPersonalStats(),
+                    pollingService.getAll('Aktif', currentScope),
+                    aduanService.getAll({ scope: currentScope, limit: 3 })
+                ]);
                 setData(res);
+                setActivePolls(polls);
+                setMyAspirations(aspirations.items);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -31,7 +46,7 @@ export default function WargaPortal() {
             }
         };
         load();
-    }, []);
+    }, [currentScope]);
 
     if (isLoading) return <div className="p-8 text-center animate-pulse">Memuat Profil Warga...</div>;
     if (!data?.warga) return <div className="p-8 text-center text-red-500">Data warga tidak ditemukan. Hubungi Admin RT.</div>;
@@ -180,6 +195,73 @@ export default function WargaPortal() {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                 {/* Aspirasi Section */}
+                 <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col">
+                    <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+                        <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                            <ChatDots weight="duotone" className="text-brand-500" size={24} />
+                            Aspirasi & Laporan Anda
+                        </h3>
+                        <button onClick={() => navigate('/aduan')} className="text-brand-600 font-bold text-sm hover:underline">Semua</button>
+                    </div>
+                    <div className="p-6 flex-1 space-y-4">
+                        {myAspirations?.length > 0 ? (
+                            myAspirations.map((a: any) => (
+                                <div key={a.id} className="flex flex-col p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all decoration-none cursor-pointer" onClick={() => navigate('/aduan')}>
+                                    <div className="flex justify-between items-start">
+                                        <h4 className="font-bold text-slate-900 text-sm leading-tight">{a.judul}</h4>
+                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest ${
+                                            a.status === 'Selesai' ? 'bg-emerald-100 text-emerald-700' :
+                                            a.status === 'Proses' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
+                                        }`}>
+                                            {a.status}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] text-slate-500 mt-2 line-clamp-1">{a.deskripsi}</p>
+                                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-200/50">
+                                        <Clock weight="bold" size={12} className="text-slate-400" />
+                                        <span className="text-[10px] font-medium text-slate-400 font-mono italic">Diposting: {a.tanggal}</span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="py-10 text-center flex flex-col items-center gap-2">
+                                <div className="p-3 bg-slate-50 rounded-full">
+                                    <ChatDots weight="duotone" className="text-slate-300 w-8 h-8" />
+                                </div>
+                                <p className="text-xs text-slate-400 font-medium italic">Anda belum mengirim aspirasi maupun aduan.</p>
+                            </div>
+                        )}
+                        <button 
+                            onClick={() => navigate('/aduan/new')}
+                            className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <Plus weight="bold" />
+                            Kirim Aspirasi / Aduan
+                        </button>
+                    </div>
+                 </div>
+
+                 {/* Active Polls Section */}
+                 <div className="space-y-6">
+                    <div className="flex items-center gap-2 px-2">
+                        <ChartPieSlice weight="fill" className="text-brand-600" size={20} />
+                        <h3 className="font-black text-slate-900 text-xs uppercase tracking-tight">Jajak Pendapat Aktif</h3>
+                    </div>
+                    {activePolls?.length > 0 ? (
+                        activePolls.map((p: any) => (
+                            <PollingParticipation key={p.id} pollingId={p.id} />
+                        ))
+                    ) : (
+                        <div className="p-8 bg-slate-50 rounded-3xl border border-dashed border-slate-200 text-center flex flex-col items-center gap-3">
+                            <Clock weight="duotone" className="text-slate-300 w-10 h-10" />
+                            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">Belum ada jajak pendapat aktif untuk saat ini.</p>
+                        </div>
+                    )}
+                 </div>
             </div>
         </div>
     );

@@ -76,6 +76,8 @@ model Warga {
   pembayaran_iurans PembayaranIuran[]
   aset_dipinjam     Aset[] @relation("WargaPeminjam")
   push_subscriptions PushSubscription[]
+  aduan_usulans     AduanUsulan[]
+  polling_votes     PollingVote[]
   user              User?
 
   @@unique([tenant_id, nik])
@@ -315,4 +317,63 @@ model Wilayah {
   level     String   // 'provinsi' | 'kabkota' | 'kecamatan' | 'keldesa'
 
   @@index([parent_id, level])
+}
+
+model AduanUsulan {
+  id            String   @id @default(uuid())
+  tenant_id     String
+  scope         String   @default("RT")
+  warga_id      String
+  tipe          String   // 'Aduan' | 'Usulan'
+  judul         String
+  deskripsi     String
+  status        String   @default("Menunggu") // 'Menunggu' | 'Proses' | 'Selesai'
+  tanggal       String
+  foto_url      String?
+  tanggapan     String?
+  is_anonymous  Boolean  @default(false)
+  
+  warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+  polling       Polling?
+
+  @@index([tenant_id, scope, status, tipe])
+}
+
+model Polling {
+  id              String   @id @default(uuid())
+  tenant_id       String
+  scope           String   @default("RT")
+  aduan_usulan_id String   @unique
+  pertanyaan      String
+  status          String   @default("Aktif") // 'Aktif' | 'Selesai'
+  tanggal_mulai   String
+  tanggal_selesai String?
+  
+  aduan_usulan    AduanUsulan @relation(fields: [aduan_usulan_id], references: [id], onDelete: Cascade)
+  opsi            PollingOpsi[]
+  votes           PollingVote[]
+
+  @@index([tenant_id, scope, status])
+}
+
+model PollingOpsi {
+  id          String   @id @default(uuid())
+  polling_id  String
+  teks        String
+  
+  polling     Polling  @relation(fields: [polling_id], references: [id], onDelete: Cascade)
+  votes       PollingVote[]
+}
+
+model PollingVote {
+  id          String   @id @default(uuid())
+  polling_id  String
+  opsi_id     String
+  warga_id    String
+  
+  polling     Polling    @relation(fields: [polling_id], references: [id], onDelete: Cascade)
+  opsi        PollingOpsi @relation(fields: [opsi_id], references: [id], onDelete: Cascade)
+  warga       Warga      @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@unique([polling_id, warga_id])
 }

@@ -33,6 +33,9 @@ import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
 import JoinRT from '../features/auth/JoinRT';
 import WargaPortal from '../features/warga/WargaPortal';
+import AduanList from '../features/aduan/AduanList';
+import AduanForm from '../features/aduan/AduanForm';
+import PollingForm from '../features/aduan/PollingForm';
 
 const router = createBrowserRouter([
     {
@@ -297,6 +300,38 @@ const router = createBrowserRouter([
             {
                 path: 'warga-portal',
                 element: <WargaPortal />
+            },
+            {
+                path: 'aduan',
+                element: (
+                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Lihat' }}>
+                        <AduanList />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: 'aduan/new',
+                element: (
+                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Buat' }}>
+                        <AduanForm />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: 'aduan/edit/:id',
+                element: (
+                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
+                        <AduanForm />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: 'aduan/polling/new/:id',
+                element: (
+                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
+                        <PollingForm />
+                    </ProtectedRoute>
+                )
             }
         ]
     }

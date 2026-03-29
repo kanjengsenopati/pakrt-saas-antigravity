@@ -21,6 +21,8 @@ import userRoutes from './routes/userRoutes';
 import roleRoutes from './routes/roleRoutes';
 import pushRoutes from './routes/pushRoutes';
 import statsRoutes from './routes/statsRoutes';
+import aduanRoutes from './routes/aduanRoutes';
+import pollingRoutes from './routes/pollingRoutes';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
@@ -96,6 +98,8 @@ fastify.register(async (protectedRoutes) => {
   protectedRoutes.register(suratPengantarRoutes, { prefix: '/surat' });
   protectedRoutes.register(pushRoutes, { prefix: '/push' });
   protectedRoutes.register(statsRoutes, { prefix: '/stats' });
+  protectedRoutes.register(aduanRoutes, { prefix: '/aduan' });
+  protectedRoutes.register(pollingRoutes, { prefix: '/polling' });
   protectedRoutes.register(uploadRoutes);
 }, { prefix: '/api' });
 
