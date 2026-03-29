@@ -176,8 +176,9 @@ select:focus {
 /* RichText Editor & Content Styles */
 .rte-content {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    @apply text-[1rem] leading-[1.8] text-slate-800 antialiased font-normal;
-    text-align: left; /* Better for modern sans-serif documents */
+    @apply text-[1rem] leading-[2.1] text-slate-800 antialiased font-normal;
+    text-align: justify;
+    hyphens: auto;
 }
 .rte-content ul {
     @apply list-disc list-outside mb-6 ml-6;
@@ -186,7 +187,7 @@ select:focus {
     @apply list-decimal list-outside mb-6 ml-6;
 }
 .rte-content p {
-    @apply mb-6;
+    @apply mb-10;
 }
 .rte-content h1 { @apply text-[2rem] font-extrabold mb-8 mt-12 text-slate-900 border-b-2 border-slate-200 pb-3 tracking-tight text-center; }
 .rte-content h2 { @apply text-[1.5rem] font-bold mb-6 mt-10 text-slate-900 tracking-tight; }
@@ -210,7 +211,7 @@ select:focus {
 }
 
 .paper-sheet {
-    @apply bg-white w-full max-w-none min-h-[1200px] p-[1.5cm] sm:p-[2cm] lg:p-[3cm] border-x border-slate-100 relative transition-all;
+    @apply bg-white w-full max-w-none min-h-[1200px] p-6 sm:p-12 md:p-[2cm] lg:p-[3cm] border-x border-slate-100 relative transition-all;
 }
 
 .paper-sheet:focus-within {

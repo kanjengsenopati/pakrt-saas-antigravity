@@ -35,21 +35,24 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
         }
 
         let html = text
-            // Escape any existing lone HTML-like brackets that aren't tags
-            // .replace(/<(?![a-zA-Z/!])/g, '&lt;')
+            // bab header detection (e.g. BAB II - ...)
+            .replace(/^(BAB\s+[IVXLCDM]+.*?)$/gim, '<h2 class="text-brand-700 border-b border-brand-100 pb-2 mb-8 uppercase tracking-widest">$1</h2>')
             
+            // pasal detection (e.g. Pasal 1) - also handles case where it's at start of line
+            .replace(/^(Pasal\s+\d+.*?)$/gim, '<h3 class="font-black text-slate-900 mt-10 mb-4">$1</h3>')
+
             // Headings
             .replace(/^#{1}\s+(.*?)$/gim, '<h1>$1</h1>')
             .replace(/^#{2}\s+(.*?)$/gim, '<h2>$1</h2>')
             .replace(/^#{3}\s+(.*?)$/gim, '<h3>$1</h3>')
             
-            // Bold
-            .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-            .replace(/__(.*?)__/gim, '<strong>$1</strong>')
+            // Bold (improved to be more resilient with non-greedy and word boundaries)
+            .replace(/\*\*((?!\*\*).*?)\*\*/gim, '<strong>$1</strong>')
+            .replace(/__((?!__).*?)__/gim, '<strong>$1</strong>')
             
             // Italic
-            .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-            .replace(/_(.*?)_/gim, '<em>$1</em>')
+            .replace(/\*((?!\*).*?)\*/gim, '<em>$1</em>')
+            .replace(/_((?!_).*?)_/gim, '<em>$1</em>')
             
             // Underline (not standard markdown but often used in our legacy)
             .replace(/<u>(.*?)<\/u>/gim, '<u>$1</u>')
@@ -78,7 +81,8 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
             if (/^<(h1|h2|h3|ul|ol|li|blockquote|div|p)/i.test(trimmed)) {
                 return trimmed;
             }
-            // Otherwise wrap in p and convert single newlines to br
+            // Otherwise wrap in p and convert single newlines to br if they look like list continuations or tight text
+            // But for AD/ART, sometimes single newlines should be paragraphs if they are distinct lines
             return `<p>${trimmed.replace(/\n/g, '<br />')}</p>`;
         }).join('');
 
