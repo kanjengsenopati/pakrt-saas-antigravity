@@ -153,8 +153,8 @@ export default function WargaPortal() {
 
             {/* Hero Section */}
             <div className="px-6 pt-4 pb-2">
-                <p className="text-lg font-bold text-[#004D40] tracking-tight leading-none mb-1">
-                    {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ')[0]}
+                <p className="text-xl font-bold text-[#004D40] tracking-tight leading-none mb-1">
+                    {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
                 </p>
                 <div className="mt-4 mb-8 p-5 bg-white border border-teal-600/5 rounded-[28px] shadow-sm">
                     <p className="text-[13px] text-[#004D40]/70 leading-relaxed font-medium">
@@ -230,8 +230,8 @@ export default function WargaPortal() {
             {/* Announcement Section */}
             <div className="px-6 py-8">
                 <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-xs font-black text-[#004D40] uppercase tracking-[0.2em] font-outfit opacity-60">Pengumuman Terbaru</h3>
-                    <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[#004D40]/80 underline decoration-[#004D40]/30 offset-2">Lihat Semua</button>
+                    <h3 className="text-sm font-bold text-[#004D40] tracking-tight font-outfit opacity-80">Pengumuman Terbaru</h3>
+                    <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[#004D40]/80 underline decoration-[#004D40]/30 underline-offset-4">Lihat Semua</button>
                 </div>
                 
                 <div className="space-y-4">
@@ -259,7 +259,7 @@ export default function WargaPortal() {
                     ) : (
                         <div className="bg-white p-6 rounded-[28px] text-center border-2 border-dashed border-teal-100 py-12">
                             <Megaphone size={40} weight="duotone" className="mx-auto text-teal-100 mb-2" />
-                            <p className="text-xs font-bold text-teal-200 uppercase tracking-widest">Belum ada pengumuman.</p>
+                            <p className="text-sm font-bold text-teal-300 tracking-tight">Belum ada pengumuman.</p>
                         </div>
                     )}
                 </div>
