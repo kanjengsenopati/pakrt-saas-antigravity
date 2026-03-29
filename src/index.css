@@ -221,3 +221,34 @@ select:focus {
 .paper-sheet:focus-within {
     @apply ring-0 border-brand-200;
 }
+
+/* Premium UI Utilities */
+.glass-card {
+    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+}
+
+.pill-tab {
+    @apply relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300;
+}
+
+.pill-tab-active {
+    @apply bg-white text-brand-600 shadow-sm ring-1 ring-black/5;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.snap-x {
+    scroll-snap-type: x mandatory;
+}
+
+.snap-center {
+    scroll-snap-align: center;
+}
+

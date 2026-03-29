@@ -4,7 +4,6 @@ import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { 
-    Plus, 
     Funnel, 
     PencilSimple, 
     Trash, 
@@ -243,76 +242,88 @@ export default function PengurusList() {
     const activePengurus = pengurusList.filter(p => p.status === 'aktif' || !p.status).length;
 
     return (
-        <div className="space-y-4 sm:space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h1 className="text-[18px] font-medium text-slate-900 tracking-tight leading-tight">
-                        {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 
-                         activeTab === 'riwayat' ? 'Riwayat Kepengurusan' : 'Ad / Art (Aturan & Regulasi)'}
+        <div className="space-y-4 sm:space-y-8 animate-fade-in max-w-7xl mx-auto px-1 sm:px-0">
+            {/* COMPACT MOBILE-FIRST HEADER */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-3 sm:px-0">
+                <div className="space-y-1">
+                    <h1 className="text-[18px] sm:text-[22px] font-medium text-slate-900 tracking-tight leading-tight">
+                        {activeTab === 'aktif' ? 'Struktur Pengurus' : 
+                         activeTab === 'riwayat' ? 'Riwayat Pejabat' : 'Aturan & Regulasi'}
                     </h1>
-                    <p className="text-slate-500 text-[14px] mt-1 font-normal flex items-center gap-1.5 tracking-tight">
-                        Scope: <span className="font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
-                        {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
-                    </p>
+                    <div className="flex items-center gap-2 text-slate-500 text-[13px] sm:text-[14px]">
+                        <span className="flex items-center gap-1.5 opacity-70">
+                            <Briefcase size={14} /> {currentScope}
+                        </span>
+                        {activeTab === 'riwayat' && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                <span className="opacity-70">Arsip Historis</span>
+                            </>
+                        )}
+                    </div>
                 </div>
                 
-                <div className="flex flex-col w-full sm:w-auto gap-2">
-                    <HasPermission module="Data Pengurus" action="Buat">
-                        <button
-                            onClick={() => navigate('/pengurus/new')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium text-[16px] transition-all shadow-lg shadow-brand-500/10 active-press"
-                        >
-                            <Plus weight="bold" />
-                            <span>Tambah Jabatan</span>
-                        </button>
-                    </HasPermission>
+                <HasPermission module="Data Pengurus" action="Buat">
+                    <button
+                        onClick={() => navigate('/pengurus/new')}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-full font-medium text-[15px] transition-all shadow-md shadow-brand-500/20 active:scale-95"
+                    >
+                        <PlusCircle weight="fill" size={18} />
+                        <span>Tambah Jabatan</span>
+                    </button>
+                </HasPermission>
+            </div>
+
+            {/* PREMIUM SNAP-TO-CARD SUMMARY (MOBILE) / GRID (DESKTOP) */}
+            <div className="relative">
+                <div className="flex sm:grid sm:grid-cols-2 gap-3 sm:gap-6 overflow-x-auto sm:overflow-visible no-scrollbar snap-x px-3 sm:px-0 pb-2 sm:pb-0">
+                    {/* Card 1: Total Position */}
+                    <div className="min-w-[85%] sm:min-w-0 snap-center glass-card p-4 sm:p-6 rounded-[2rem] flex items-center gap-4 transition-all hover:scale-[1.02] cursor-default border-l-4 border-l-brand-500">
+                        <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 shrink-0 shadow-inner">
+                            <Briefcase weight="duotone" size={24} />
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-[13px] sm:text-[14px] font-medium text-slate-400 leading-none mb-1">Total Struktur</p>
+                            <p className="text-[20px] sm:text-[24px] font-medium text-slate-900 tabular-nums">{totalPositions} <span className="text-[14px] opacity-50">Posisi</span></p>
+                        </div>
+                    </div>
+
+                    {/* Card 2: Active Members */}
+                    <div className="min-w-[85%] sm:min-w-0 snap-center bg-brand-600 p-4 sm:p-6 rounded-[2rem] flex items-center gap-4 shadow-xl shadow-brand-500/20 transition-all hover:scale-[1.02] cursor-default relative overflow-hidden group">
+                        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
+                        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white shrink-0 shadow-inner">
+                            <Users weight="duotone" size={24} />
+                        </div>
+                        <div className="relative z-10 min-w-0">
+                            <p className="text-[13px] sm:text-[14px] font-medium text-white/70 leading-none mb-1">Pejabat Aktif</p>
+                            <p className="text-[20px] sm:text-[24px] font-medium text-white tabular-nums">{activePengurus} <span className="text-[14px] opacity-70">Orang</span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* STATS WIDGETS - Premium Refined */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
-                <div className="bg-white p-4 sm:p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[14px] font-medium text-slate-400 mb-2 flex items-center gap-2 justify-center">
-                            <Briefcase weight="fill" className="text-brand-500 w-4 h-4" />
-                            Total Jabatan
-                        </p>
-                        <p className="text-[18px] font-normal text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
-                    </div>
+            {/* PILL-STYLE TAB NAVIGATION (SEGMENTED CONTROL) */}
+            <div className="px-3 sm:px-0">
+                <div className="bg-slate-100/80 p-1.5 rounded-[1.5rem] flex items-center gap-1 w-full sm:w-max">
+                    <button
+                        onClick={() => setActiveTab('aktif')}
+                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'aktif' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Struktur Aktif
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('riwayat')}
+                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'riwayat' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Riwayat
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('ad-art')}
+                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'ad-art' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                        Ad / Art
+                    </button>
                 </div>
-
-                <div className="bg-brand-600 p-4 sm:p-5 rounded-3xl border border-brand-500 shadow-xl relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[14px] font-medium text-white/70 mb-2 flex items-center gap-2 justify-center">
-                            <Users weight="bold" className="text-amber-400 w-4 h-4" />
-                            Pengurus Aktif
-                        </p>
-                        <p className="text-[18px] font-normal text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* TABS: AKTIF vs RIWAYAT vs AD/ART */}
-            <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
-                <button
-                    onClick={() => setActiveTab('aktif')}
-                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'aktif' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
-                >
-                    Struktur Aktif
-                </button>
-                <button
-                    onClick={() => setActiveTab('riwayat')}
-                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'riwayat' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
-                >
-                    Riwayat Kepengurusan
-                </button>
-                <button
-                    onClick={() => setActiveTab('ad-art')}
-                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'ad-art' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
-                >
-                    Ad / Art
-                </button>
             </div>
 
             {activeTab === 'aktif' ? (
@@ -612,52 +623,48 @@ export default function PengurusList() {
                 </div>
             ) : (
                 <div className="space-y-6 animate-fade-in">
-                    {/* Full Width Category Navigation */}
-                    <div className="sticky top-[73px] z-30 bg-white border-b border-slate-100 shadow-sm sm:static sm:bg-transparent sm:border-none sm:shadow-none">
-                        <div className="p-3 sm:px-4 sm:py-2 border-b border-slate-100 sm:border-none bg-slate-50/50 sm:bg-transparent flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <h3 className="font-medium text-slate-800 text-[16px] flex items-center gap-2">
+                    {/* Full Width Category Navigation */}                    {/* CATEGORY NAV: PILL STYLE WITH SCROLL MASK */}
+                    <div className="sticky top-[73px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 sm:static sm:bg-transparent sm:border-none">
+                        <div className="p-3 sm:px-0 sm:py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <h3 className="font-medium text-slate-800 text-[15px] flex items-center gap-2 px-1">
                                 <BookOpen weight="fill" className="text-brand-600" />
-                                Pilih Kategori
+                                Kategori Aturan
                             </h3>
-                            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+                            <div className="flex items-center gap-2 w-full sm:w-auto px-1">
                                 <button 
                                     onClick={() => setShowVersionHistory(!showVersionHistory)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all border shrink-0 ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all border shrink-0 ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                                 >
-                                    <ListDashes weight="bold" size={16} />
+                                    <ListDashes weight="bold" size={14} />
                                     <span>{adArtData.archives?.length || 0} Arsip</span>
                                 </button>
                                 <HasPermission module="Data Pengurus" action="Ubah">
                                     <button 
                                         onClick={() => setIsAddingCategory(true)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-medium hover:bg-brand-700 transition-all shadow-sm shrink-0 ${isAddingCategory ? 'opacity-50' : ''}`}
+                                        className={`flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-medium hover:bg-black transition-all shadow-sm shrink-0 ${isAddingCategory ? 'opacity-50' : ''}`}
                                     >
-                                        <PlusCircle weight="fill" size={16} />
-                                        <span>Tambah</span>
+                                        <PlusCircle weight="fill" size={14} />
+                                        <span>Kategori Baru</span>
                                     </button>
                                 </HasPermission>
                             </div>
                         </div>
                         
-                        <div className="relative group">
-                            {/* Scroll Indicators */}
-                            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
-                            
-                            <div className="p-3 sm:p-2 overflow-x-auto scrollbar-hide bg-white sm:bg-transparent">
-                                <div className="flex items-center gap-2 min-w-max px-2">
+                        <div className="relative group overflow-hidden">
+                            <div className="overflow-x-auto hide-scrollbar snap-x px-3 sm:px-0">
+                                <div className="flex items-center gap-2 min-w-max pb-3 pt-1">
                                     {Object.keys(adArtData.active?.categories || {}).map((cat) => (
-                                        <div key={cat} className="group/tab relative flex items-center">
+                                        <div key={cat} className="group/tab relative flex items-center snap-center">
                                             <button
                                                 onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                                className={`px-5 py-2.5 rounded-2xl text-[16px] font-medium transition-all shadow-sm ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-brand-500/20' : 'bg-white border border-slate-100 text-slate-600 hover:bg-slate-50'}`}
+                                                className={`px-5 py-2 rounded-full text-[14px] font-medium transition-all border ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-lg shadow-brand-500/20' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
                                             >
                                                 {cat}
                                             </button>
                                             <HasPermission module="Data Pengurus" action="Ubah">
                                                 <button 
                                                     onClick={() => deleteCategory(cat)}
-                                                    className="absolute -top-1.5 -right-1.5 p-1.5 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-md z-10"
+                                                    className="absolute -top-1 -right-1 p-1 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-md z-10"
                                                 >
                                                     <X size={10} weight="bold" />
                                                 </button>
@@ -669,18 +676,18 @@ export default function PengurusList() {
                         </div>
 
                         {isAddingCategory && (
-                            <div className="p-4 bg-brand-50/50 border-t border-brand-100 flex items-center gap-3 animate-slide-down">
+                            <div className="p-4 mx-3 mb-4 bg-brand-50/50 rounded-2xl border border-brand-100 flex items-center gap-3 animate-slide-down">
                                 <input 
                                     autoFocus
                                     type="text"
-                                    placeholder="Nama kategori baru..."
+                                    placeholder="Nama kategori..."
                                     value={newCategoryName}
                                     onChange={(e) => setNewCategoryName(e.target.value)}
-                                    className="flex-1 text-sm bg-white"
+                                    className="flex-1 text-sm bg-white rounded-xl py-2 px-3 border-transparent focus:ring-2 focus:ring-brand-500"
                                     onKeyDown={(e) => e.key === 'Enter' && addCategory()}
                                 />
-                                <button onClick={addCategory} className="px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-xl">Simpan</button>
-                                <button onClick={() => setIsAddingCategory(false)} className="px-4 py-2 bg-white text-slate-600 border border-slate-200 text-xs font-bold rounded-xl">Batal</button>
+                                <button onClick={addCategory} className="px-4 py-2 bg-brand-600 text-white text-xs font-medium rounded-xl">Simpan</button>
+                                <button onClick={() => setIsAddingCategory(false)} className="px-4 py-2 bg-white text-slate-600 border border-slate-200 text-xs font-medium rounded-xl">Batal</button>
                             </div>
                         )}
                     </div>
