@@ -82,7 +82,7 @@ export const requirePermission = (moduleName: string, action: string) => {
                 return;
             }
 
-            request.log.warn(`Forbidden: User ${(user as any).id} attempting '${action}' on '${moduleName}'`);
+            request.log.warn(`Forbidden: User ${(user as any).id} [Role: ${user.role_entity?.name}] attempting '${action}' on '${moduleName}' - Scope: User:${JSON.stringify(userPerms[moduleName])} Role:${JSON.stringify(rolePerms[moduleName])}`);
             return reply.code(403).send({ error: 'Forbidden', message: `You do not have permission to ${action} ${moduleName}` });
         } catch (error) {
             request.log.error(error);
