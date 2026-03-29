@@ -29,17 +29,16 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
     const convertMarkdownToHtml = (text: string) => {
         if (!text) return '';
         
-        // If it's already complete HTML with paragraphs, return as is
-        if (text.includes('<p>') || text.includes('<div') || text.includes('<h1')) {
-            return text;
-        }
-
         let html = text
-            // bab header detection (e.g. BAB II - ...)
-            .replace(/^(BAB\s+[IVXLCDM]+.*?)$/gim, '<h2 class="text-brand-700 border-b border-brand-100 pb-2 mb-8 uppercase tracking-widest">$1</h2>')
+            // bab header detection (e.g. BAB II - ...) - handle cases where it might be wrapped in <p>
+            .replace(/(?:^|\n|>)(BAB\s+[IVXLCDM]+.*?)(?:$|\n|<)/gim, (_, p1) => {
+                return `<h2 class="text-brand-700 border-b border-brand-100 pb-2 mb-8 uppercase tracking-widest text-center font-black mt-12">${p1}</h2>`;
+            })
             
-            // pasal detection (e.g. Pasal 1) - also handles case where it's at start of line
-            .replace(/^(Pasal\s+\d+.*?)$/gim, '<h3 class="font-black text-slate-900 mt-10 mb-4">$1</h3>')
+            // pasal detection (e.g. Pasal 1) - handle cases where it might be wrapped or mid-text
+            .replace(/(?:^|\n|>|\s)(Pasal\s+\d+.*?)(?:$|\n|<)/gim, (_, p1) => {
+                return `<h3 class="font-black text-slate-900 mt-10 mb-4 text-center border-t border-slate-100 pt-8">${p1}</h3>`;
+            })
 
             // Headings
             .replace(/^#{1}\s+(.*?)$/gim, '<h1>$1</h1>')
@@ -71,22 +70,19 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
         
         // Clean up adjacent same-type lists
         html = html.replace(/<\/ul>\s*<ul>/g, '').replace(/<\/ol>\s*<ol>/g, '');
+        
+        // If we still have raw newlines and no block tags, we need to paragraph-ize
+        if (!html.includes('<p>') && !html.includes('<div') && !html.includes('<h2')) {
+            const blocks = html.split(/\n\s*\n/);
+            html = blocks.map(block => {
+                const trimmed = block.trim();
+                if (!trimmed) return '';
+                if (/^<(h1|h2|h3|ul|ol|li|blockquote|div|p)/i.test(trimmed)) return trimmed;
+                return `<p>${trimmed.replace(/\n/g, '<br />')}</p>`;
+            }).join('');
+        }
 
-        // Paragraphs: Split by double newline, wrap non-blocks in <p>
-        const blocks = html.split(/\n\s*\n/);
-        const finalHtml = blocks.map(block => {
-            const trimmed = block.trim();
-            if (!trimmed) return '';
-            // If it starts with a block tag, leave it
-            if (/^<(h1|h2|h3|ul|ol|li|blockquote|div|p)/i.test(trimmed)) {
-                return trimmed;
-            }
-            // Otherwise wrap in p and convert single newlines to br if they look like list continuations or tight text
-            // But for AD/ART, sometimes single newlines should be paragraphs if they are distinct lines
-            return `<p>${trimmed.replace(/\n/g, '<br />')}</p>`;
-        }).join('');
-
-        return finalHtml;
+        return html;
     };
 
     // Sync editor content with value prop only if changed externally
