@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
+import { StickyHomeButton } from '../../components/ui/StickyHomeButton';
 
 export default function WargaPortal() {
     const { user, logout, isLoading: authLoading } = useAuth();
@@ -118,7 +119,7 @@ export default function WargaPortal() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F5F7F6] font-inter pb-24 transition-all duration-500 overflow-x-hidden" translate="no">
+        <div className="min-h-screen bg-[#F5F7F6] font-inter pb-6 transition-all duration-500 overflow-x-hidden" translate="no">
             {/* Top Navigation Bar */}
             <div className="sticky top-0 z-50 bg-[#F5F7F6]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-black/5">
                 <button onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-[#004D40] flex items-center gap-2 group">
@@ -284,6 +285,7 @@ export default function WargaPortal() {
                 </div>
             )}
 
+            <StickyHomeButton />
         </div>
     );
 }
