@@ -93,11 +93,11 @@ body {
 }
 
 .page-title {
-    @apply text-[1.25rem] font-semibold text-gray-900 tracking-tight leading-tight;
+    @apply text-[1.25rem] font-medium text-gray-900 tracking-tight leading-tight;
 }
 
 .section-label {
-    @apply text-sm font-semibold text-gray-500 tracking-normal;
+    @apply text-sm font-medium text-gray-500 tracking-normal;
 }
 
 .input-label {
@@ -109,7 +109,7 @@ body {
 }
 
 .text-highlight {
-    @apply text-lg font-semibold text-gray-900 tracking-tight;
+    @apply text-lg font-medium text-gray-900 tracking-tight;
 }
 
 /* Table styling standardized */
@@ -127,7 +127,7 @@ tr:last-child td {
 
 /* Components Defaults */
 button {
-    @apply text-sm font-semibold;
+    @apply text-sm font-medium;
 }
 
 /* Input Fields Focus States */

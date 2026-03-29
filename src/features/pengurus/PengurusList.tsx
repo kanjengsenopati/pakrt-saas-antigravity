@@ -689,7 +689,7 @@ export default function PengurusList() {
                         {showVersionHistory ? (
                             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in">
                                 <div className="p-6 border-b border-slate-100 bg-amber-50/30">
-                                    <h2 className="font-bold text-slate-900 text-lg">Arsip & Dokumentasi Perubahan</h2>
+                                    <h2 className="font-medium text-slate-900 text-lg">Arsip & Dokumentasi Perubahan</h2>
                                     <p className="text-xs text-slate-500 mt-1">Daftar versi AD/ART yang pernah diterbitkan sebelumnya.</p>
                                 </div>
                                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -697,8 +697,8 @@ export default function PengurusList() {
                                         <div key={archive.id} className="group bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all relative">
                                             <div className="flex flex-col h-full">
                                                 <div className="mb-4">
-                                                    <span className="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2 inline-block">Archived Version</span>
-                                                    <h4 className="font-bold text-slate-900 text-base">{archive.name}</h4>
+                                                    <span className="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-medium rounded-lg tracking-wider mb-2 inline-block">Archived Version</span>
+                                                    <h4 className="font-medium text-slate-900 text-base">{archive.name}</h4>
                                                 </div>
                                                 <div className="space-y-2 mb-6">
                                                     <p className="text-xs text-slate-500 flex items-center gap-2">
@@ -707,12 +707,12 @@ export default function PengurusList() {
                                                     </p>
                                                     <p className="text-xs text-slate-500 flex items-center gap-2">
                                                         <User weight="fill" className="text-slate-400" />
-                                                        Ketua: <span className="font-bold text-slate-700">{archive.chairman}</span>
+                                                        Ketua: <span className="font-medium text-slate-700">{archive.chairman}</span>
                                                     </p>
                                                 </div>
                                                 <button 
                                                     onClick={() => restoreArchive(archive)}
-                                                    className="w-full mt-auto py-2.5 bg-white border border-brand-200 text-brand-600 text-xs font-bold rounded-xl hover:bg-brand-600 hover:text-white transition-all shadow-sm active:scale-95"
+                                                    className="w-full mt-auto py-2.5 bg-white border border-brand-200 text-brand-600 text-xs font-medium rounded-xl hover:bg-brand-600 hover:text-white transition-all shadow-sm active:scale-95"
                                                 >
                                                     Pulihkan Versi Ini
                                                 </button>
@@ -735,7 +735,7 @@ export default function PengurusList() {
                                             </div>
                                             <h2 className="text-[18px] font-medium text-slate-900 tracking-tight leading-tight">{activeCategory}</h2>
                                             {adArtData.active.metadata && (
-                                                <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
+                                                <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] text-slate-500 font-medium tracking-wider">
                                                     <span className="flex items-center gap-1.5"><ListDashes className="text-slate-400" /> Versi {adArtData.active.metadata.version}</span>
                                                     <span className="w-1 h-1 rounded-full bg-slate-300 hidden sm:block" />
                                                     <span className="flex items-center gap-1.5"><PlusCircle className="text-slate-400" /> {new Date(adArtData.active.metadata.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
@@ -746,7 +746,7 @@ export default function PengurusList() {
                                             <button
                                                 onClick={saveAdArt}
                                                 disabled={isSavingAdArt}
-                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-[24px] font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-brand-500/40 active:scale-95 mb-1"
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-[24px] font-medium text-xs tracking-widest transition-all shadow-xl shadow-brand-500/40 active:scale-95 mb-1"
                                             >
                                                 <FloppyDisk weight="bold" size={20} />
                                                 <span>{isSavingAdArt ? 'Menyimpan...' : 'Terbitkan Amandemen'}</span>
