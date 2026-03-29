@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTenant } from '../../contexts/TenantContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { statsService } from '../../services/statsService';
 import { 
     User, 
@@ -21,6 +22,7 @@ import { pollingService } from '../../services/pollingService';
 import PollingParticipation from '../aduan/PollingParticipation';
 
 export default function WargaPortal() {
+    const { user } = useAuth();
     const { currentScope } = useTenant();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
@@ -30,6 +32,11 @@ export default function WargaPortal() {
 
     useEffect(() => {
         const load = async () => {
+            if (!user?.warga_id) {
+                // Not a warga, maybe an admin
+                setIsLoading(false);
+                return;
+            }
             try {
                 const [res, polls, aspirations] = await Promise.all([
                     statsService.getWargaPersonalStats(),
@@ -49,7 +56,21 @@ export default function WargaPortal() {
     }, [currentScope]);
 
     if (isLoading) return <div className="p-8 text-center animate-pulse">Memuat Profil Warga...</div>;
-    if (!data?.warga) return <div className="p-8 text-center text-red-500">Data warga tidak ditemukan. Hubungi Admin RT.</div>;
+    
+    if (!user?.warga_id || !data?.warga) {
+        return (
+            <div className="p-12 text-center bg-white rounded-3xl border border-slate-100 shadow-xl space-y-4">
+                <div className="mx-auto w-20 h-20 bg-slate-50 flex items-center justify-center rounded-full text-slate-300">
+                    <User size={40} weight="duotone" />
+                </div>
+                <div>
+                    <h2 className="text-lg font-bold text-slate-900">Akun Belum Terhubung</h2>
+                    <p className="text-sm text-slate-500 max-w-xs mx-auto">Akun Anda belum terhubung ke data warga. Silakan hubungi pengurus RT untuk sinkronisasi data.</p>
+                </div>
+                <button onClick={() => navigate('/dashboard')} className="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold">Kembali ke Dashboard</button>
+            </div>
+        );
+    }
 
     const { warga, iuranHeader, surat } = data;
 

@@ -44,7 +44,7 @@ export default async function statsRoutes(fastify: FastifyInstance) {
 
     fastify.get('/warga-personal', async (request, reply) => {
         const user = (request as any).user;
-        if (!user.warga_id) return reply.code(400).send({ error: 'User is not linked to a Warga record' });
+        if (!user.warga_id) return { warga: null, iuranHeader: [], surat: [] };
 
         const [warga, iuranHeader, surat] = await Promise.all([
             prisma.warga.findUnique({ 

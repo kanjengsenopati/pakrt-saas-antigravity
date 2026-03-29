@@ -25,7 +25,9 @@ export const SYSTEM_ROLES = [
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" },
+            "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah", "Hapus", "manage"], scope: "all" },
+            "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
@@ -42,39 +44,33 @@ export const SYSTEM_ROLES = [
             "Jadwal Ronda": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Setup / Pengaturan": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
             "Manajemen User / Role": { actions: ["Lihat", "Buat", "Ubah", "Hapus"], scope: "all" },
-            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" },
+            "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah", "Hapus", "manage"], scope: "all" },
+            "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
         name: 'Sekretaris',
         permissions: {
-            "Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Surat / Cetak": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Notulensi": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Agenda": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" },
-            "Log Aktivitas": { actions: ["Lihat"], scope: "all" }
+            "Log Aktivitas": { actions: ["Lihat"], scope: "all" },
+            "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
         name: 'Bendahara',
         permissions: {
-            "Buku Kas / Transaksi": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Iuran Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
-            "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" }
+            "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" },
+            "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     },
     {
         name: 'Warga',
         permissions: {
-            "Warga": { actions: ["Lihat", "Ubah"], scope: "personal" },
-            "Iuran Warga": { actions: ["Lihat", "Buat"], scope: "personal" },
-            "Surat / Cetak": { actions: ["Lihat", "Buat"], scope: "personal" },
-            "Agenda": { actions: ["Lihat"], scope: "all" },
-            "Jadwal Ronda": { actions: ["Lihat"], scope: "all" },
-            "Aset": { actions: ["Lihat"], scope: "all" },
-            "Buku Kas / Transaksi": { actions: ["Lihat"], scope: "all" },
-            "Pengurus": { actions: ["Lihat"], scope: "all" }
+            "Pengurus": { actions: ["Lihat"], scope: "all" },
+            "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
+            "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     }
 ];
