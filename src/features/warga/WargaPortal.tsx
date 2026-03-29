@@ -11,8 +11,6 @@ import {
     ChartPieSlice, 
     Plus, 
     House, 
-    Bell, 
-    Envelope, 
     Wallet, 
     Lightbulb, 
     Checks, 
@@ -22,7 +20,6 @@ import {
     SignOut,
     Megaphone
 } from '@phosphor-icons/react';
-import { formatRupiah } from '../../utils/currency';
 import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
@@ -36,7 +33,6 @@ export default function WargaPortal() {
     const [isLoading, setIsLoading] = useState(true);
     const [activePolls, setActivePolls] = useState<any[]>([]);
     const [agendas, setAgendas] = useState<any[]>([]);
-    const [totalKas, setTotalKas] = useState(0);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -61,7 +57,6 @@ export default function WargaPortal() {
 
                 setData(res);
                 setAgendas(upcomingAgendas);
-                if (res.kasRT !== undefined) setTotalKas(res.kasRT);
 
                 // Attempt fetching polls, but don't fail the whole dashboard on 403/errors
                 try {
@@ -122,10 +117,13 @@ export default function WargaPortal() {
         <div className="min-h-screen bg-[#F5F7F6] font-inter pb-24 transition-all duration-500 overflow-x-hidden" translate="no">
             {/* Top Navigation Bar */}
             <div className="sticky top-0 z-50 bg-[#F5F7F6]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-black/5">
-                <button onClick={() => navigate('/')} className="p-2 -ml-2 text-[#004D40]">
+                <button onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-[#004D40] flex items-center gap-1">
                     <CaretLeft size={24} weight="bold" />
+                    <span className="text-xs font-bold font-outfit uppercase tracking-wider">Kembali</span>
                 </button>
-                <h2 className="text-sm font-black text-[#004D40] uppercase tracking-widest font-outfit">Dashboard Warga</h2>
+                <div className="absolute left-1/2 -translate-x-1/2">
+                    <h2 className="text-sm font-black text-[#004D40] uppercase tracking-widest font-outfit whitespace-nowrap">Dashboard Warga</h2>
+                </div>
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={() => { if(window.confirm('Keluar dari aplikasi?')) logout(); }}
@@ -150,20 +148,45 @@ export default function WargaPortal() {
             </div>
 
             {/* Hero Section */}
-            <div className="px-6 pt-6 pb-4">
-                <p className="text-[10px] font-bold text-[#546E7A] uppercase tracking-[0.2em]">{getGreeting()}, {warga.nama.split(' ')[0]}</p>
-                <h1 className="text-3xl font-black text-[#004D40] leading-[1.15] mt-2 mb-6 font-outfit tracking-tight">
-                    Lingkungan Aman,<br />Hati Tenang.
-                </h1>
+            <div className="px-6 pt-6 pb-2">
+                <p className="text-[10px] font-bold text-[#546E7A] uppercase tracking-[0.2em]">
+                    {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ')[0]}
+                </p>
+                <div className="mt-3 mb-6 p-4 bg-white/50 border border-teal-600/10 rounded-2xl shadow-sm backdrop-blur-sm">
+                    <p className="text-[13px] text-[#004D40] leading-relaxed font-medium">
+                        Anda terdaftar sebagai warga <strong>RT {currentTenant?.config?.rt || '-'}</strong>, <strong>RW {currentTenant?.config?.rw || '-'}</strong>, Kel {currentTenant?.config?.kelurahan || '-'}, Kec {currentTenant?.config?.kecamatan || '-'}, {currentTenant?.config?.kota || '-'}.
+                    </p>
+                </div>
 
-                <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    <div className="flex items-center gap-2.5 px-4 py-2 bg-[#FFF3E0] rounded-full shrink-0 shadow-sm border border-amber-100">
-                        <ShieldCheck size={16} weight="fill" className="text-[#5D4037]" />
-                        <span className="text-[11px] font-bold text-[#5D4037] whitespace-nowrap">Security Guard on Patrol</span>
+                <div className="grid grid-cols-2 gap-3 mb-2">
+                    <div className="flex flex-col gap-1 px-5 py-4 bg-white rounded-3xl shadow-sm border border-teal-600/5 group active:scale-95 transition-all">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="p-2 bg-amber-50 rounded-xl">
+                                <Wallet size={20} weight="fill" className="text-amber-600" />
+                            </div>
+                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${data.iuranPendingCount > 0 ? 'bg-red-100 text-red-600' : 'bg-teal-100 text-teal-600'}`}>
+                                {data.iuranPendingCount > 0 ? 'Tertunggak' : 'Lancar'}
+                            </span>
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tagihan Iuran</p>
+                        <h4 className="text-sm font-bold text-[#004D40]">
+                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Belum Bayar` : 'Semua Sudah Terbayar'}
+                        </h4>
                     </div>
-                    <div className="flex items-center gap-2.5 px-4 py-2 bg-[#E0F2F1] rounded-full shrink-0 shadow-sm border border-teal-100">
-                        <Wallet size={16} weight="fill" className="text-[#004D40]" />
-                        <span className="text-[11px] font-bold text-[#004D40] whitespace-nowrap">Kas {currentScope}: {formatRupiah(totalKas)}</span>
+                    
+                    <div className="flex flex-col gap-1 px-5 py-4 bg-white rounded-3xl shadow-sm border border-teal-600/5 group active:scale-95 transition-all">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="p-2 bg-blue-50 rounded-xl">
+                                <FileText size={20} weight="fill" className="text-blue-600" />
+                            </div>
+                            <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">
+                                {data.suratProsesCount > 0 ? 'Proses' : 'Selesai'}
+                            </span>
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Surat Keterangan</p>
+                        <h4 className="text-sm font-bold text-[#004D40]">
+                            {data.suratProsesCount > 0 ? `${data.suratProsesCount} Surat Diproses` : 'Tidak Ada Ajuan Aktif'}
+                        </h4>
                     </div>
                 </div>
             </div>
@@ -186,7 +209,7 @@ export default function WargaPortal() {
                             <div className={`w-full aspect-square md:w-16 md:h-16 ${item.color} rounded-[24px] flex items-center justify-center shadow-lg shadow-teal-900/5 group-active:scale-90 transition-all border border-white`}>
                                 <item.icon size={28} weight="duotone" />
                             </div>
-                            <span className="text-[11px] font-bold text-[#004D40]/80 uppercase tracking-tighter text-center leading-none mt-1">{item.label}</span>
+                            <span className="text-[12px] font-bold text-[#004D40]/80 tracking-tight text-center leading-none mt-1">{item.label}</span>
                         </div>
                     ))}
                 </div>
@@ -245,45 +268,6 @@ export default function WargaPortal() {
                 </div>
             )}
 
-            {/* Bottom Navigation */}
-            <div className="fixed bottom-6 left-6 right-6 z-[60]">
-                <div className="bg-[#004D40] rounded-[32px] p-2 flex items-center justify-between shadow-2xl shadow-teal-950/40">
-                    <button 
-                        onClick={() => navigate('/dashboard')}
-                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-white transition-all scale-110"
-                    >
-                        <div className="p-2.5 bg-white/10 rounded-2xl">
-                             <House size={22} weight="fill" />
-                        </div>
-                        <span className="text-[9px] font-bold uppercase tracking-widest">Beranda</span>
-                    </button>
-                    
-                    <button 
-                        onClick={() => navigate('/aduan')}
-                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
-                    >
-                        <Bell size={22} weight="bold" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100">Notif</span>
-                    </button>
-
-                    <button 
-                        onClick={() => navigate('/surat')}
-                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
-                    >
-                        <Envelope size={22} weight="bold" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0">Pesan</span>
-                    </button>
-
-                    <button 
-                        onClick={() => navigate('/profile')}
-                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
-                    >
-                        <UserCircle size={22} weight="bold" />
-                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0">Profil</span>
-                    </button>
-                </div>
-            </div>
         </div>
     );
 }
-
