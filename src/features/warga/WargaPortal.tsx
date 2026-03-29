@@ -8,44 +8,70 @@ import {
     FileText, 
     Users, 
     MapPin, 
-    IdentificationCard,
-    CaretRight,
-    ChatDots,
-    ChartPieSlice,
-    Plus,
-    Clock
+    ShieldCheck, 
+    ChatDots, 
+    ChartPieSlice, 
+    Plus, 
+    Clock, 
+    House, 
+    Bell, 
+    Envelope, 
+    Wallet, 
+    Lightbulb, 
+    Checklist, 
+    Package, 
+    UserCircle, 
+    CaretLeft,
+    SignOut,
+    Megaphone,
+    CurrencyCircleDollar
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { useNavigate } from 'react-router-dom';
 import { aduanService } from '../../services/aduanService';
 import { pollingService } from '../../services/pollingService';
+import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
 
 export default function WargaPortal() {
-    const { user } = useAuth();
-    const { currentScope } = useTenant();
+    const { user, logout } = useAuth();
+    const { currentScope, currentTenant } = useTenant();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [activePolls, setActivePolls] = useState<any[]>([]);
-    const [myAspirations, setMyAspirations] = useState<any[]>([]);
+    const [agendas, setAgendas] = useState<any[]>([]);
+    const [totalKas, setTotalKas] = useState(0);
+
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 11) return 'SELAMAT PAGI';
+        if (hour < 15) return 'SELAMAT SIANG';
+        if (hour < 19) return 'SELAMAT SORE';
+        return 'SELAMAT MALAM';
+    };
 
     useEffect(() => {
         const load = async () => {
-            if (!user?.warga_id) {
-                // Not a warga, maybe an admin
+            if (!user?.warga_id || !currentTenant) {
                 setIsLoading(false);
                 return;
             }
             try {
-                const [res, polls, aspirations] = await Promise.all([
+                const [res, polls, upcomingAgendas, dashboardStats] = await Promise.all([
                     statsService.getWargaPersonalStats(),
                     pollingService.getAll('Aktif', currentScope),
-                    aduanService.getAll({ scope: currentScope, limit: 3 })
+                    agendaService.getUpcoming(currentTenant.id, currentScope, 2),
+                    statsService.getDashboardStats(currentScope)
                 ]);
                 setData(res);
                 setActivePolls(polls);
-                setMyAspirations(aspirations.items);
+                setAgendas(upcomingAgendas);
+                
+                // Calculate total kas (Pemasukan - Pengeluaran)
+                const kas = dashboardStats.financialTrend?.reduce((acc: any, curr: any) => 
+                    curr.tipe === 'pemasukan' ? acc + (curr._sum.nominal || 0) : acc - (curr._sum.nominal || 0), 0) || 0;
+                setTotalKas(kas);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -53,237 +79,198 @@ export default function WargaPortal() {
             }
         };
         load();
-    }, [currentScope]);
+    }, [currentScope, currentTenant, user?.warga_id]);
 
-    if (isLoading) return <div className="p-8 text-center animate-pulse">Memuat Profil Warga...</div>;
+    if (isLoading) return <div className="min-h-screen bg-[#F5F7F6] p-8 text-center animate-pulse flex items-center justify-center text-[#004D40] font-bold">Memuat Dashboard Warga...</div>;
     
     if (!user?.warga_id || !data?.warga) {
         return (
-            <div className="p-12 text-center bg-white rounded-3xl border border-slate-100 shadow-xl space-y-4">
-                <div className="mx-auto w-20 h-20 bg-slate-50 flex items-center justify-center rounded-full text-slate-300">
-                    <User size={40} weight="duotone" />
+            <div className="min-h-screen bg-[#F5F7F6] p-6 flex flex-col items-center justify-center space-y-6">
+                <div className="w-24 h-24 bg-white shadow-xl rounded-3xl flex items-center justify-center text-slate-300">
+                    <User size={48} weight="duotone" />
                 </div>
-                <div>
-                    <h2 className="text-lg font-bold text-slate-900">Akun Belum Terhubung</h2>
-                    <p className="text-sm text-slate-500 max-w-xs mx-auto">Akun Anda belum terhubung ke data warga. Silakan hubungi pengurus RT untuk sinkronisasi data.</p>
+                <div className="text-center">
+                    <h2 className="text-xl font-bold text-slate-900 font-outfit uppercase tracking-tight">Akun Belum Terhubung</h2>
+                    <p className="text-sm text-slate-500 max-w-xs mx-auto mt-2">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda.</p>
                 </div>
-                <button onClick={() => navigate('/dashboard')} className="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold">Kembali ke Dashboard</button>
+                <button 
+                  onClick={() => navigate('/login')} 
+                  className="px-8 py-3 bg-[#004D40] text-white rounded-2xl text-sm font-bold shadow-lg shadow-teal-900/20 active:scale-95 transition-all"
+                >
+                  Masuk Kembali
+                </button>
             </div>
         );
     }
 
-    const { warga, iuranHeader, surat } = data;
+    const { warga } = data;
+
+    const menuItems = [
+        { label: 'Depan', icon: House, path: '/dashboard', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Profil', icon: UserCircle, path: '/profile', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Bayar', icon: HandCoins, path: '/iuran/baru', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Keuangan', icon: Wallet, path: '/iuran', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Aduan', icon: Megaphone, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Usulan', icon: Lightbulb, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Surat', icon: Checklist, path: '/surat', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Ronda', icon: ShieldCheck, path: '/ronda', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Aset', icon: Package, path: '/aset', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Pengurus', icon: Users, path: '/pengurus', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'AD/ART', icon: FileText, path: '/pengurus', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Lapor Tamu', icon: User, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
+    ];
 
     return (
-        <div className="space-y-6 animate-fade-in pb-10">
-            <div className="relative overflow-hidden bg-white rounded-3xl border border-slate-100 shadow-xl p-6 sm:p-8">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-                
-                <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6">
-                    <div className="w-24 h-24 rounded-full bg-slate-100 border-4 border-white shadow-lg overflow-hidden shrink-0">
-                        {warga.avatar ? (
-                            <img src={warga.avatar} alt={warga.nama} className="w-full h-full object-cover" />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-brand-600 text-white text-3xl font-bold">
-                                {warga.nama.charAt(0)}
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div className="text-center sm:text-left flex-1">
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{warga.nama}</h1>
-                        <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
-                            <span className="px-3 py-1 bg-brand-50 text-brand-700 text-xs font-bold rounded-full border border-brand-100 uppercase tracking-wider">
-                                {warga.status_penduduk}
-                            </span>
-                            <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full border border-slate-200">
-                                {currentScope} {warga.tenant_id.split('.').pop()}
-                            </span>
+        <div className="min-h-screen bg-[#F5F7F6] font-inter pb-24 transition-all duration-500 overflow-x-hidden" translate="no">
+            {/* Top Navigation Bar */}
+            <div className="sticky top-0 z-50 bg-[#F5F7F6]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-black/5">
+                <button onClick={() => navigate('/')} className="p-2 -ml-2 text-[#004D40]">
+                    <CaretLeft size={24} weight="bold" />
+                </button>
+                <h2 className="text-sm font-black text-[#004D40] uppercase tracking-widest font-outfit">Dashboard Warga</h2>
+                <div 
+                    onClick={() => navigate('/profile')} 
+                    className="w-10 h-10 rounded-full border-2 border-[#004D40] overflow-hidden cursor-pointer shadow-sm active:scale-90 transition-transform"
+                >
+                    {warga.avatar ? (
+                        <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
+                    ) : (
+                        <div className="w-full h-full bg-[#E0F2F1] text-[#004D40] flex items-center justify-center font-bold">
+                            {warga.nama.charAt(0)}
                         </div>
-                        <p className="text-slate-500 text-sm mt-3 flex items-center justify-center sm:justify-start gap-1.5 font-medium">
-                            <MapPin weight="fill" className="text-brand-500" />
-                            {warga.alamat}
-                        </p>
-                    </div>
-
-                    <button 
-                        onClick={() => navigate('/settings/profile')}
-                        className="px-6 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-2"
-                    >
-                        <User size={18} />
-                        Edit Profil
-                    </button>
+                    )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Iuran Section */}
-                <div className="bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                        <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                            <HandCoins weight="duotone" className="text-emerald-600" size={24} />
-                            Riwayat Iuran Terakhir
-                        </h3>
-                        <button onClick={() => navigate('/iuran')} className="text-brand-600 font-bold text-sm hover:underline">Semua</button>
-                    </div>
-                    <div className="p-6 flex-1 space-y-4">
-                        {iuranHeader?.length > 0 ? (
-                            iuranHeader.map((i: any) => (
-                                <div key={i.id} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
-                                    <div>
-                                        <p className="font-bold text-slate-900 text-sm">{i.kategori}</p>
-                                        <p className="text-xs text-slate-500 font-medium mt-1">Bulan {i.periode_bulan.join(', ')} {i.periode_tahun}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-bold text-emerald-600">{formatRupiah(i.nominal)}</p>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${i.status === 'VERIFIED' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                                            {i.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="py-10 text-center text-slate-400 italic">Belum ada riwayat pembayaran.</div>
-                        )}
-                        <button 
-                            onClick={() => navigate('/iuran/baru')}
-                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
-                        >
-                            Bayar Iuran Baru
-                        </button>
-                    </div>
-                </div>
+            {/* Hero Section */}
+            <div className="px-6 pt-6 pb-4">
+                <p className="text-[10px] font-bold text-[#546E7A] uppercase tracking-[0.2em]">{getGreeting()}, {warga.nama.split(' ')[0]}</p>
+                <h1 className="text-3xl font-black text-[#004D40] leading-[1.15] mt-2 mb-6 font-outfit tracking-tight">
+                    Lingkungan Aman,<br />Hati Tenang.
+                </h1>
 
-                {/* Surat Section */}
-                <div className="bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                        <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                            <FileText weight="duotone" className="text-blue-600" size={24} />
-                            Pengajuan Surat RT
-                        </h3>
-                        <button onClick={() => navigate('/surat')} className="text-brand-600 font-bold text-sm hover:underline">Riwayat</button>
+                <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    <div className="flex items-center gap-2.5 px-4 py-2 bg-[#FFF3E0] rounded-full shrink-0 shadow-sm border border-amber-100">
+                        <ShieldCheck size={16} weight="fill" className="text-[#5D4037]" />
+                        <span className="text-[11px] font-bold text-[#5D4037] whitespace-nowrap">Security Guard on Patrol</span>
                     </div>
-                    <div className="p-6 flex-1 space-y-4">
-                        {surat?.length > 0 ? (
-                            surat.map((s: any) => (
-                                <div key={s.id} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-xl ${s.status === 'selesai' ? 'bg-emerald-100 text-emerald-600' : s.status === 'ditolak' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'}`}>
-                                            <FileText size={20} weight="fill" />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-slate-900 text-sm">{s.jenis_surat}</p>
-                                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">{s.status}</p>
-                                        </div>
-                                    </div>
-                                    <CaretRight weight="bold" className="text-slate-300" />
-                                </div>
-                            ))
-                        ) : (
-                            <div className="py-10 text-center text-slate-400 italic">Belum ada pengajuan surat.</div>
-                        )}
-                        <button 
-                            onClick={() => navigate('/surat/baru')}
-                            className="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/20 transition-all active:scale-95"
-                        >
-                            Ajukan Surat RT
-                        </button>
+                    <div className="flex items-center gap-2.5 px-4 py-2 bg-[#E0F2F1] rounded-full shrink-0 shadow-sm border border-teal-100">
+                        <Wallet size={16} weight="fill" className="text-[#004D40]" />
+                        <span className="text-[11px] font-bold text-[#004D40] whitespace-nowrap">Kas {currentScope}: {formatRupiah(totalKas)}</span>
                     </div>
                 </div>
             </div>
 
-            {/* KK Section */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden">
-                <div className="p-6 border-b border-slate-50 bg-slate-50/30">
-                    <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                        <Users weight="duotone" className="text-orange-500" size={24} />
-                        Data Anggota Keluarga
-                    </h3>
+            {/* Grid Menu Actions */}
+            <div className="px-6 py-4">
+                <div className="grid grid-cols-3 gap-4">
+                    {menuItems.map((item, idx) => (
+                        <div 
+                            key={idx} 
+                            onClick={() => navigate(item.path)}
+                            className="flex flex-col items-center gap-2 group cursor-pointer"
+                        >
+                            <div className={`w-full aspect-square md:w-16 md:h-16 ${item.color} rounded-[24px] flex items-center justify-center shadow-lg shadow-teal-900/5 group-active:scale-90 transition-all border border-white`}>
+                                <item.icon size={28} weight="duotone" />
+                            </div>
+                            <span className="text-[11px] font-bold text-[#004D40]/80 uppercase tracking-tighter text-center leading-none mt-1">{item.label}</span>
+                        </div>
+                    ))}
                 </div>
-                <div className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {warga.anggota?.map((a: any) => (
-                            <div key={a.id} className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-start gap-3">
-                                <div className="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
-                                    <IdentificationCard size={20} weight="duotone" />
-                                </div>
-                                <div>
-                                    <p className="font-bold text-slate-900 text-sm">{a.nama}</p>
-                                    <p className="text-xs text-slate-500 font-medium mt-0.5">{a.hubungan}</p>
-                                    <p className="text-[10px] text-slate-400 mt-1 font-bold tracking-wider">{a.nik}</p>
+            </div>
+
+            {/* Announcement Section */}
+            <div className="px-6 py-8">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xs font-black text-[#004D40] uppercase tracking-widest font-outfit">Pengumuman Terbaru</h3>
+                    <button onClick={() => navigate('/agenda')} className="text-[10px] font-bold text-[#004D40]/60 uppercase tracking-wider">Lihat Semua</button>
+                </div>
+                
+                <div className="space-y-4">
+                    {agendas.length > 0 ? (
+                        agendas.map((agenda: any) => (
+                            <div 
+                                key={agenda.id} 
+                                onClick={() => navigate('/agenda')}
+                                className="bg-[#004D40] p-6 rounded-[28px] text-white relative overflow-hidden group shadow-2xl shadow-teal-950/20 active:scale-[0.98] transition-all"
+                            >
+                                <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+                                <div className="relative z-10">
+                                    <div className="inline-flex px-3 py-1 bg-[#4DB6AC] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                        Penting
+                                    </div>
+                                    <h4 className="text-xl font-bold leading-tight mb-2 font-outfit">{agenda.judul}</h4>
+                                    <p className="text-teal-50/70 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
+                                    <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest group/btn">
+                                        Lihat Detail
+                                        <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
+                                    </button>
                                 </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="bg-white p-6 rounded-[28px] text-center border-2 border-dashed border-teal-100 py-12">
+                            <Megaphone size={40} weight="duotone" className="mx-auto text-teal-100 mb-2" />
+                            <p className="text-xs font-bold text-teal-200 uppercase tracking-widest">Belum ada pengumuman.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Active Polling (If exists) */}
+            {activePolls.length > 0 && (
+                <div className="px-6 py-6 border-t border-black/5">
+                    <div className="flex items-center gap-2 mb-4">
+                        <ChartPieSlice size={18} weight="fill" className="text-brand-500" />
+                        <h3 className="text-xs font-black text-[#004D40] uppercase tracking-widest font-outfit">Jajak Pendapat Aktif</h3>
+                    </div>
+                    <div className="space-y-4">
+                        {activePolls.map((p: any) => (
+                           <PollingParticipation key={p.id} pollingId={p.id} />
                         ))}
                     </div>
                 </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                 {/* Aspirasi Section */}
-                 <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                        <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                            <ChatDots weight="duotone" className="text-brand-500" size={24} />
-                            Aspirasi & Laporan Anda
-                        </h3>
-                        <button onClick={() => navigate('/aduan')} className="text-brand-600 font-bold text-sm hover:underline">Semua</button>
-                    </div>
-                    <div className="p-6 flex-1 space-y-4">
-                        {myAspirations?.length > 0 ? (
-                            myAspirations.map((a: any) => (
-                                <div key={a.id} className="flex flex-col p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all decoration-none cursor-pointer" onClick={() => navigate('/aduan')}>
-                                    <div className="flex justify-between items-start">
-                                        <h4 className="font-bold text-slate-900 text-sm leading-tight">{a.judul}</h4>
-                                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest ${
-                                            a.status === 'Selesai' ? 'bg-emerald-100 text-emerald-700' :
-                                            a.status === 'Proses' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
-                                        }`}>
-                                            {a.status}
-                                        </span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 mt-2 line-clamp-1">{a.deskripsi}</p>
-                                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-200/50">
-                                        <Clock weight="bold" size={12} className="text-slate-400" />
-                                        <span className="text-[10px] font-medium text-slate-400 font-mono italic">Diposting: {a.tanggal}</span>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="py-10 text-center flex flex-col items-center gap-2">
-                                <div className="p-3 bg-slate-50 rounded-full">
-                                    <ChatDots weight="duotone" className="text-slate-300 w-8 h-8" />
-                                </div>
-                                <p className="text-xs text-slate-400 font-medium italic">Anda belum mengirim aspirasi maupun aduan.</p>
-                            </div>
-                        )}
-                        <button 
-                            onClick={() => navigate('/aduan/new')}
-                            className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl shadow-xl shadow-slate-200 transition-all active:scale-95 flex items-center justify-center gap-2"
-                        >
-                            <Plus weight="bold" />
-                            Kirim Aspirasi / Aduan
-                        </button>
-                    </div>
-                 </div>
-
-                 {/* Active Polls Section */}
-                 <div className="space-y-6">
-                    <div className="flex items-center gap-2 px-2">
-                        <ChartPieSlice weight="fill" className="text-brand-600" size={20} />
-                        <h3 className="font-black text-slate-900 text-xs uppercase tracking-tight">Jajak Pendapat Aktif</h3>
-                    </div>
-                    {activePolls?.length > 0 ? (
-                        activePolls.map((p: any) => (
-                            <PollingParticipation key={p.id} pollingId={p.id} />
-                        ))
-                    ) : (
-                        <div className="p-8 bg-slate-50 rounded-3xl border border-dashed border-slate-200 text-center flex flex-col items-center gap-3">
-                            <Clock weight="duotone" className="text-slate-300 w-10 h-10" />
-                            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">Belum ada jajak pendapat aktif untuk saat ini.</p>
+            {/* Bottom Navigation */}
+            <div className="fixed bottom-6 left-6 right-6 z-[60]">
+                <div className="bg-[#004D40] rounded-[32px] p-2 flex items-center justify-between shadow-2xl shadow-teal-950/40">
+                    <button 
+                        onClick={() => navigate('/dashboard')}
+                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-white transition-all scale-110"
+                    >
+                        <div className="p-2.5 bg-white/10 rounded-2xl">
+                             <House size={22} weight="fill" />
                         </div>
-                    )}
-                 </div>
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Beranda</span>
+                    </button>
+                    
+                    <button 
+                        onClick={() => navigate('/aduan')}
+                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
+                    >
+                        <Bell size={22} weight="bold" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100">Notif</span>
+                    </button>
+
+                    <button 
+                        onClick={() => navigate('/surat')}
+                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
+                    >
+                        <Envelope size={22} weight="bold" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0">Pesan</span>
+                    </button>
+
+                    <button 
+                        onClick={() => navigate('/profile')}
+                        className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-teal-50/50 hover:text-white transition-all"
+                    >
+                        <UserCircle size={22} weight="bold" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest opacity-0">Profil</span>
+                    </button>
+                </div>
             </div>
         </div>
     );
 }
+

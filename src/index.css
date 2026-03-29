@@ -61,6 +61,16 @@
     textarea {
         font-family: inherit;
     }
+
+    /* Warga Dashboard Premium Theme Colors */
+    :root {
+        --warga-primary: #004D40;
+        --warga-primary-light: #00695C;
+        --warga-accent: #E0F2F1;
+        --warga-bg: #F5F7F6;
+        --warga-text-muted: #546E7A;
+        --warga-card-shadow: 0 4px 20px -4px rgba(0, 77, 64, 0.08);
+    }
 }
 
 body {
