@@ -173,12 +173,13 @@ select:focus {
     animation: scaleIn 0.2s ease-out forwards;
 }
 
-/* RichText Editor & Content Styles - Premium Reader Mode */
+/* RichText Editor & Content Styles - Premium Reader Mode Refined */
 .rte-content {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-    @apply text-[1.1rem] leading-[2.1] text-slate-800 antialiased font-normal !important;
+    @apply text-[16px] leading-[2.1] text-slate-700 antialiased font-normal !important;
     text-align: justify !important;
     text-justify: inter-word !important;
+    text-transform: none !important;
     hyphens: auto;
 }
 
@@ -187,19 +188,22 @@ select:focus {
 }
 
 .rte-content h1 { 
-    @apply text-[2.2rem] font-black mb-10 mt-14 text-slate-900 border-b-4 border-brand-100 pb-5 tracking-tight text-center uppercase !important; 
+    @apply text-[18px] font-medium mb-10 mt-14 text-slate-900 border-b-2 border-brand-100 pb-5 tracking-tight text-center !important; 
+    text-transform: none !important;
 }
 
 .rte-content h2 { 
-    @apply text-[1.6rem] font-black mb-8 mt-12 text-brand-800 tracking-widest text-center uppercase border-y border-brand-50 py-4 !important; 
+    @apply text-[18px] font-medium mb-8 mt-12 text-brand-800 tracking-tight text-center border-y border-brand-50 py-4 !important; 
+    text-transform: none !important;
 }
 
 .rte-content h3 { 
-    @apply text-[1.3rem] font-extrabold mb-6 mt-10 text-slate-900 tracking-tight text-center !important; 
+    @apply text-[18px] font-medium mb-6 mt-10 text-slate-900 tracking-tight text-center !important; 
+    text-transform: none !important;
 }
 
 .rte-content strong, .rte-content b { 
-    @apply font-bold text-slate-950 !important; 
+    @apply font-medium text-slate-950 !important; 
 }
 
 .rte-content ul { @apply list-disc list-outside mb-8 ml-8 !important; }

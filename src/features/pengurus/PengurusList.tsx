@@ -246,12 +246,12 @@ export default function PengurusList() {
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">
+                    <h1 className="text-[18px] font-medium text-slate-900 tracking-tight leading-tight">
                         {activeTab === 'aktif' ? 'Struktur Pengurus Aktif' : 
-                         activeTab === 'riwayat' ? 'Riwayat Kepengurusan' : 'AD / ART (Aturan & Regulasi)'}
+                         activeTab === 'riwayat' ? 'Riwayat Kepengurusan' : 'Ad / Art (Aturan & Regulasi)'}
                     </h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">
-                        Scope: <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
+                    <p className="text-slate-500 text-[14px] mt-1 font-normal flex items-center gap-1.5 tracking-tight">
+                        Scope: <span className="font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
                         {activeTab === 'riwayat' && ' • Arsip Pejabat Terdahulu'}
                     </p>
                 </div>
@@ -260,7 +260,7 @@ export default function PengurusList() {
                     <HasPermission module="Data Pengurus" action="Buat">
                         <button
                             onClick={() => navigate('/pengurus/new')}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium text-[16px] transition-all shadow-lg shadow-brand-500/10 active-press"
                         >
                             <Plus weight="bold" />
                             <span>Tambah Jabatan</span>
@@ -269,49 +269,49 @@ export default function PengurusList() {
                 </div>
             </div>
 
-            {/* STATS WIDGETS */}
+            {/* STATS WIDGETS - Premium Refined */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
-                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                <div className="bg-white p-4 sm:p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Briefcase weight="fill" className="text-brand-500 w-3 h-3" />
+                        <p className="text-[14px] font-medium text-slate-400 mb-2 flex items-center gap-2 justify-center">
+                            <Briefcase weight="fill" className="text-brand-500 w-4 h-4" />
                             Total Jabatan
                         </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
+                        <p className="text-[18px] font-normal text-slate-900 leading-none truncate tabular-nums">{totalPositions} Posisi</p>
                     </div>
                 </div>
 
-                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                <div className="bg-brand-600 p-4 sm:p-5 rounded-3xl border border-brand-500 shadow-xl relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
+                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Users weight="bold" className="text-amber-400 w-3 h-3" />
+                        <p className="text-[14px] font-medium text-white/70 mb-2 flex items-center gap-2 justify-center">
+                            <Users weight="bold" className="text-amber-400 w-4 h-4" />
                             Pengurus Aktif
                         </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
+                        <p className="text-[18px] font-normal text-white leading-none truncate tabular-nums">{activePengurus} Orang</p>
                     </div>
                 </div>
             </div>
 
-            {/* TABS: AKTIF vs RIWAYAT */}
-            <div className="flex border-b border-gray-200">
+            {/* TABS: AKTIF vs RIWAYAT vs AD/ART */}
+            <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
                 <button
                     onClick={() => setActiveTab('aktif')}
-                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'aktif' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'aktif' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                 >
                     Struktur Aktif
                 </button>
                 <button
                     onClick={() => setActiveTab('riwayat')}
-                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'riwayat' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'riwayat' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                 >
                     Riwayat Kepengurusan
                 </button>
                 <button
                     onClick={() => setActiveTab('ad-art')}
-                    className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'ad-art' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                    className={`px-6 py-4 text-[16px] font-medium transition-all border-b-2 whitespace-nowrap ${activeTab === 'ad-art' ? 'border-brand-600 text-brand-600 bg-brand-50/30' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
                 >
-                    AD / ART
+                    Ad / Art
                 </button>
             </div>
 
@@ -353,12 +353,12 @@ export default function PengurusList() {
                     <div className={`overflow-x-auto ${viewMode === 'list' ? 'hidden md:block' : 'hidden'}`}>
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50 text-slate-500 text-[14px] font-bold border-b border-slate-200">
-                                    <th className="p-4 font-semibold">Nama Jabatan</th>
-                                    <th className="p-4 font-semibold">Dijabat Oleh</th>
-                                    <th className="p-4 font-semibold">Periode</th>
-                                    <th className="p-4 font-semibold text-center">Status</th>
-                                    <th className="p-4 font-semibold text-right">Aksi</th>
+                                <tr className="bg-slate-50 text-slate-500 text-[14px] font-medium border-b border-slate-200">
+                                    <th className="p-4 font-medium">Nama Jabatan</th>
+                                    <th className="p-4 font-medium">Dijabat Oleh</th>
+                                    <th className="p-4 font-medium">Periode</th>
+                                    <th className="p-4 font-medium text-center">Status</th>
+                                    <th className="p-4 font-medium text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -382,7 +382,7 @@ export default function PengurusList() {
                                         <tr key={pengurus.id} className="hover:bg-gray-50/50 transition-colors group">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
-                                                    <p className="text-[14px] font-bold text-brand-700">{pengurus.jabatan}</p>
+                                                    <p className="text-[14px] font-medium text-brand-700">{pengurus.jabatan}</p>
                                                     {!jabatanSettings.includes(pengurus.jabatan) && pengurus.status === 'aktif' && (
                                                         <span className="group relative">
                                                             <WarningCircle size={14} className="text-amber-500 animate-pulse" weight="fill" />
@@ -394,7 +394,7 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <p className="text-[14px] font-bold text-slate-800">{pengurus.warga?.nama || <span className="text-red-500 italic">Data warga tidak ditemukan</span>}</p>
+                                                <p className="text-[14px] font-medium text-slate-800">{pengurus.warga?.nama || <span className="text-red-500 italic">Data warga tidak ditemukan</span>}</p>
                                                 {pengurus.warga?.kontak && <p className="text-[12px] text-slate-500 mt-0.5">{pengurus.warga.kontak}</p>}
                                             </td>
                                             <td className="p-4 text-slate-600 text-[14px]">
@@ -411,7 +411,7 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4 text-center">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
                                                     {pengurus.status || 'aktif'}
                                                 </span>
                                             </td>
@@ -443,7 +443,7 @@ export default function PengurusList() {
                     {/* MOBILE VIEW OR GRID CARD VIEW */}
                     <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-slate-50/50' : 'md:hidden space-y-4 p-4 bg-slate-50/50'}`}>
                         {isLoading ? (
-                            <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <div className="py-20 text-center text-slate-400 font-medium text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
                                 <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
                                 <span>Sinkronisasi...</span>
                             </div>
@@ -453,7 +453,7 @@ export default function PengurusList() {
                                     <UserList weight="duotone" className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-slate-900 tracking-tight">Data Tidak Ditemukan</p>
+                                    <p className="text-sm font-medium text-slate-900 tracking-tight">Data Tidak Ditemukan</p>
                                     <p className="text-[10px] text-slate-400 mt-1 font-medium italic">Belum ada struktur kepengurusan aktif.</p>
                                 </div>
                             </div>
@@ -467,21 +467,21 @@ export default function PengurusList() {
                                                     <Briefcase weight="duotone" className="w-6 h-6" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-bold text-slate-900 text-[15px] tracking-tight leading-tight">{pengurus.jabatan}</h3>
+                                                    <h3 className="font-medium text-slate-900 text-[15px] tracking-tight leading-tight">{pengurus.jabatan}</h3>
                                                     <div className="flex items-center gap-1.5 mt-1">
-                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Periode {pengurus.periode}</span>
+                                                        <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Periode {pengurus.periode}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border flex items-center gap-1.5 shadow-sm uppercase tracking-wider ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+                                                <span className={`px-2.5 py-1 rounded-lg text-[10px] font-medium border flex items-center gap-1.5 shadow-sm uppercase tracking-wider ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
                                                     {pengurus.status || 'aktif'}
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div className="mt-4 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-white text-brand-600 flex items-center justify-center font-bold overflow-hidden border border-slate-200 shrink-0 shadow-sm">
+                                            <div className="w-10 h-10 rounded-full bg-white text-brand-600 flex items-center justify-center font-medium overflow-hidden border border-slate-200 shrink-0 shadow-sm">
                                                 {pengurus.warga?.avatar ? (
                                                     <img src={getFullUrl(pengurus.warga.avatar)} alt={pengurus.warga.nama} className="w-full h-full object-cover" />
                                                 ) : (
@@ -489,7 +489,7 @@ export default function PengurusList() {
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="font-bold text-slate-900 text-[13px] truncate">{pengurus.warga?.nama || <span className="text-rose-500 italic">Data warga tidak ditemukan</span>}</p>
+                                                <p className="font-medium text-slate-900 text-[13px] truncate">{pengurus.warga?.nama || <span className="text-rose-500 italic">Data warga tidak ditemukan</span>}</p>
                                                 {pengurus.warga?.kontak && <p className="text-[11px] text-slate-500 font-medium truncate">{pengurus.warga.kontak}</p>}
                                             </div>
                                         </div>
@@ -537,7 +537,7 @@ export default function PengurusList() {
                             .map(([periode, members]: [string, any]) => (
                                 <div key={periode} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                     <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                                        <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                        <h3 className="font-medium text-gray-900 flex items-center gap-2">
                                             <div className="w-2 h-6 bg-brand-500 rounded-full" />
                                             Periode {periode}
                                             {!periodeSettings.includes(periode) && periode !== 'Tanpa Periode' && (
@@ -554,10 +554,10 @@ export default function PengurusList() {
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left border-collapse">
                                             <thead>
-                                                <tr className="text-gray-500 text-[10px] font-bold border-b border-gray-100 bg-white">
-                                                    <th className="px-6 py-3 font-semibold">Nama Jabatan</th>
-                                                    <th className="px-6 py-3 font-semibold">Pejabat</th>
-                                                    <th className="px-6 py-3 font-semibold text-right">Aksi</th>
+                                                <tr className="text-gray-500 text-[10px] font-medium border-b border-gray-100 bg-white">
+                                                    <th className="px-6 py-3 font-medium">Nama Jabatan</th>
+                                                    <th className="px-6 py-3 font-medium">Pejabat</th>
+                                                    <th className="px-6 py-3 font-medium text-right">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
@@ -565,7 +565,7 @@ export default function PengurusList() {
                                                     <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-2">
-                                                                <p className="font-semibold text-gray-700">{p.jabatan}</p>
+                                                                <p className="font-medium text-gray-700">{p.jabatan}</p>
                                                                 {!jabatanSettings.includes(p.jabatan) && (
                                                                     <span className="group relative">
                                                                         <WarningCircle size={13} className="text-amber-500/70" weight="fill" />
@@ -578,7 +578,7 @@ export default function PengurusList() {
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs font-bold shrink-0">
+                                                                <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs font-medium shrink-0">
                                                                     {p.warga?.nama?.charAt(0) || '?'}
                                                                 </div>
                                                                 <div>
@@ -615,14 +615,14 @@ export default function PengurusList() {
                     {/* Full Width Category Navigation */}
                     <div className="sticky top-[73px] z-30 bg-white border-b border-slate-100 shadow-sm sm:static sm:bg-transparent sm:border-none sm:shadow-none">
                         <div className="p-3 sm:px-4 sm:py-2 border-b border-slate-100 sm:border-none bg-slate-50/50 sm:bg-transparent flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <h3 className="font-bold text-slate-800 text-[13px] uppercase tracking-wider flex items-center gap-2">
+                            <h3 className="font-medium text-slate-800 text-[16px] flex items-center gap-2">
                                 <BookOpen weight="fill" className="text-brand-600" />
                                 Pilih Kategori
                             </h3>
                             <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar pb-1 sm:pb-0">
                                 <button 
                                     onClick={() => setShowVersionHistory(!showVersionHistory)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border shrink-0 ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all border shrink-0 ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                                 >
                                     <ListDashes weight="bold" size={16} />
                                     <span>{adArtData.archives?.length || 0} Arsip</span>
@@ -630,7 +630,7 @@ export default function PengurusList() {
                                 <HasPermission module="Data Pengurus" action="Ubah">
                                     <button 
                                         onClick={() => setIsAddingCategory(true)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition-all shadow-sm shrink-0 ${isAddingCategory ? 'opacity-50' : ''}`}
+                                        className={`flex items-center gap-2 px-3 py-1.5 bg-brand-600 text-white rounded-xl text-xs font-medium hover:bg-brand-700 transition-all shadow-sm shrink-0 ${isAddingCategory ? 'opacity-50' : ''}`}
                                     >
                                         <PlusCircle weight="fill" size={16} />
                                         <span>Tambah</span>
@@ -650,7 +650,7 @@ export default function PengurusList() {
                                         <div key={cat} className="group/tab relative flex items-center">
                                             <button
                                                 onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                                className={`px-6 py-2.5 rounded-2xl text-[13.5px] font-bold transition-all border ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-lg shadow-brand-500/30 active:scale-95' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-brand-300 hover:bg-brand-50/50'}`}
+                                                className={`px-5 py-2.5 rounded-2xl text-[16px] font-medium transition-all shadow-sm ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white shadow-brand-500/20' : 'bg-white border border-slate-100 text-slate-600 hover:bg-slate-50'}`}
                                             >
                                                 {cat}
                                             </button>
@@ -730,10 +730,10 @@ export default function PengurusList() {
                                     {/* Document Header Info - Breadcrumb style */}
                                     <div className="px-6 py-10 sm:px-10 sm:py-12 border-b border-slate-100 bg-slate-50/40 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-4">
                                         <div className="space-y-3">
-                                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 text-brand-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-lg">
+                                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 text-brand-700 text-[14px] font-medium rounded-lg">
                                                 Dokumen Aturan & Regulasi
                                             </div>
-                                            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">{activeCategory}</h2>
+                                            <h2 className="text-[18px] font-medium text-slate-900 tracking-tight leading-tight">{activeCategory}</h2>
                                             {adArtData.active.metadata && (
                                                 <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] text-slate-500 font-bold uppercase tracking-wider">
                                                     <span className="flex items-center gap-1.5"><ListDashes className="text-slate-400" /> Versi {adArtData.active.metadata.version}</span>
