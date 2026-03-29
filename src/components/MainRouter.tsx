@@ -32,6 +32,7 @@ import IuranForm from '../features/keuangan/IuranForm';
 import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
 import JoinRT from '../features/auth/JoinRT';
+import WargaPortal from '../features/warga/WargaPortal';
 
 const router = createBrowserRouter([
     {
@@ -292,6 +293,10 @@ const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <Profile />
+            },
+            {
+                path: 'warga-portal',
+                element: <WargaPortal />
             }
         ]
     }

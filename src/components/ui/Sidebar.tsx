@@ -18,7 +18,8 @@ import {
     CaretDown,
     CaretLeft,
     CaretRight,
-    DotsThree
+    DotsThree,
+    UserCircle
 } from '@phosphor-icons/react';
 
 interface MenuItem {
@@ -41,6 +42,7 @@ const MENU_GROUPS: MenuGroup[] = [
         label: 'Menu Utama',
         items: [
             { path: '/dashboard', label: 'Dashboard', icon: SquaresFour },
+            { path: '/warga-portal', label: 'Portal Warga', icon: UserCircle },
         ]
     },
     {

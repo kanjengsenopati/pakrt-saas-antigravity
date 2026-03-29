@@ -19,17 +19,14 @@ import {
     SpeakerHigh
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
+import { dateUtils } from '../../utils/date';
 import { aktivitasService } from '../../services/aktivitasService';
 import { rondaService, RondaWithWarga } from '../../services/rondaService';
-import { wargaService } from '../../services/wargaService';
-import { pengurusService } from '../../services/pengurusService';
-import { asetService } from '../../services/asetService';
 import { agendaService } from '../../services/agendaService';
-import { keuanganService } from '../../services/keuanganService';
-import { suratService } from '../../services/suratService';
 import { iuranService, IuranWithWarga } from '../../services/iuranService';
-import { dateUtils } from '../../utils/date';
 import { pushNotificationUtil } from '../../utils/pushNotification';
+import { statsService } from '../../services/statsService';
+import { pengurusService } from '../../services/pengurusService';
 
 const toTitleCase = (str: string) => {
     if (!str) return '';
@@ -63,54 +60,33 @@ export default function Dashboard() {
         if (!currentTenant) return;
         try {
             if (!isWarga) {
-                // Use Promise.allSettled to ensure that even if one fetching fails (e.g. returns 404), 
-                // the rest of the dashboard stats still display correctly.
-                const results = await Promise.allSettled([
-                    wargaService.count(currentTenant.id, currentScope),
-                    pengurusService.count(currentTenant.id, currentScope),
-                    asetService.count(currentTenant.id, currentScope),
-                    agendaService.count(currentTenant.id, currentScope),
-                    keuanganService.getSummary(currentTenant.id, currentScope),
-                    suratService.getAll(currentTenant.id, currentScope),
-                    iuranService.getPendingCount(currentScope),
-                ]);
-
-                const getVal = (res: PromiseSettledResult<any>, fallback: any) => 
-                    res.status === 'fulfilled' ? res.value : fallback;
-
-                const wargaCount = getVal(results[0], 0);
-                const pengurusCount = getVal(results[1], 0);
-                const asetCount = getVal(results[2], 0);
-                const agendaCount = getVal(results[3], 0);
-                const finSummary = getVal(results[4], { saldo: 0 });
-                const allSurat = getVal(results[5], []);
-                const pendingIuranCount = getVal(results[6], 0);
-
-                // Log any failures for debugging
-                results.forEach((res, idx) => {
-                    if (res.status === 'rejected') {
-                        const labels = ['Warga', 'Pengurus', 'Aset', 'Agenda', 'Keuangan', 'Surat', 'Iuran'];
-                        console.warn(`Dashboard: Failed to fetch ${labels[idx]} stats:`, res.reason);
-                    }
-                });
-
+                const data = await statsService.getDashboardStats(currentScope);
                 setStats({
-                    warga: wargaCount || 0,
-                    pengurus: pengurusCount || 0,
-                    aset: asetCount || 0,
-                    agenda: agendaCount || 0,
-                    saldo: finSummary?.saldo || 0,
-                    pendingSurat: (allSurat || []).filter((s: any) => s.status === 'proses').length,
-                    pendingIuran: pendingIuranCount
+                    warga: data.totalWarga || 0,
+                    pengurus: stats.pengurus, // Keep existing or fetch from pService if needed
+                    aset: data.totalAset || 0,
+                    agenda: stats.agenda,
+                    saldo: data.financialTrend?.reduce((acc: any, curr: any) => 
+                        curr.tipe === 'pemasukan' ? acc + (curr._sum.nominal || 0) : acc - (curr._sum.nominal || 0), 0) || 0,
+                    pendingSurat: data.totalSuratPending || 0,
+                    pendingIuran: data.iuranPending || 0
                 });
-            } else if (wargaId) {
-                const results = await Promise.allSettled([
-                    iuranService.getBillingSummary(wargaId, new Date().getFullYear(), undefined, currentScope),
-                    suratService.getAll(currentTenant.id, currentScope)
+                
+                // Fetch the rest (agenda, pengurus) via their specific counts if needed
+                const [pengurusCount, agendaCount] = await Promise.all([
+                    pengurusService.count(currentTenant.id, currentScope),
+                    agendaService.count(currentTenant.id, currentScope)
                 ]);
                 
-                const billing = results[0].status === 'fulfilled' ? results[0].value : { totalPaid: 0, expectedTotal: 0, rate: 0, paidMonths: [] };
-                const allSurat = results[1].status === 'fulfilled' ? results[1].value : [];
+                setStats(prev => ({
+                    ...prev,
+                    pengurus: pengurusCount || 0,
+                    agenda: agendaCount || 0
+                }));
+
+            } else if (wargaId) {
+                const data = await statsService.getWargaPersonalStats();
+                const billing = await iuranService.getBillingSummary(wargaId, new Date().getFullYear(), undefined, currentScope);
                 
                 setWargaIuranStats({
                     totalPaid: billing.totalPaid || 0,
@@ -121,13 +97,13 @@ export default function Dashboard() {
                 
                 setStats(prev => ({
                     ...prev,
-                    pendingSurat: (allSurat || []).filter((s: any) => s.warga_id === wargaId && s.status === 'proses').length
+                    pendingSurat: (data.surat || []).filter((s: any) => s.status === 'proses').length
                 }));
             }
         } catch (error) {
             console.error("Dashboard: Unexpected error in fetchStats:", error);
         }
-    }, [currentTenant, currentScope, isWarga, wargaId]);
+    }, [currentTenant, currentScope, isWarga, wargaId, stats.pengurus, stats.agenda]);
 
     const fetchActivities = useCallback(async () => {
         if (!currentTenant) return;

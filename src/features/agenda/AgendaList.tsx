@@ -432,7 +432,7 @@ export default function AgendaList() {
                                             <Tooltip 
                                                 cursor={{ fill: '#f8fafc' }}
                                                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                                formatter={(value: any) => [formatRupiah(Number(value) || 0), 'Total']}
+                                                formatter={(value: any) => [formatRupiah(Number(value) || 0), 'Total'] as [string, string]}
                                             />
                                             <Bar dataKey="Total" fill="#0ea5e9" radius={[6, 6, 0, 0]} barSize={40} />
                                         </BarChart>

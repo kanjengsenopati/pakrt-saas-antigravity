@@ -20,6 +20,7 @@ import uploadRoutes from './routes/uploadRoutes';
 import userRoutes from './routes/userRoutes';
 import roleRoutes from './routes/roleRoutes';
 import pushRoutes from './routes/pushRoutes';
+import statsRoutes from './routes/statsRoutes';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
@@ -94,6 +95,7 @@ fastify.register(async (protectedRoutes) => {
   protectedRoutes.register(jadwalRondaRoutes, { prefix: '/ronda' });
   protectedRoutes.register(suratPengantarRoutes, { prefix: '/surat' });
   protectedRoutes.register(pushRoutes, { prefix: '/push' });
+  protectedRoutes.register(statsRoutes, { prefix: '/stats' });
   protectedRoutes.register(uploadRoutes);
 }, { prefix: '/api' });
 

@@ -127,7 +127,11 @@ export default function SetupPage() {
                 { nama_barang: 'Timbangan Bayi Digital', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
                 { nama_barang: 'Alat Ukur Tinggi Badan', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
                 { nama_barang: 'Tiket Antrian', jumlah: 1, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-            ];
+            ].map(a => ({ 
+                ...a, 
+                status_pinjam: a.status_pinjam as 'tersedia' | 'dipinjam',
+                kondisi: a.kondisi as 'baik' | 'rusak_ringan' | 'rusak_berat'
+            }));
             for (const aset of asets) {
                 if (!existingAsets.find(a => a.nama_barang === aset.nama_barang)) {
                     await asetService.create(aset);
