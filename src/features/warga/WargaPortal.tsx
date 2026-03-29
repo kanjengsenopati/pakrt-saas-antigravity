@@ -7,28 +7,23 @@ import {
     HandCoins, 
     FileText, 
     Users, 
-    MapPin, 
     ShieldCheck, 
-    ChatDots, 
     ChartPieSlice, 
     Plus, 
-    Clock, 
     House, 
     Bell, 
     Envelope, 
     Wallet, 
     Lightbulb, 
-    Checklist, 
+    Checks, 
     Package, 
     UserCircle, 
     CaretLeft,
     SignOut,
-    Megaphone,
-    CurrencyCircleDollar
+    Megaphone
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { useNavigate } from 'react-router-dom';
-import { aduanService } from '../../services/aduanService';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
@@ -106,17 +101,17 @@ export default function WargaPortal() {
     const { warga } = data;
 
     const menuItems = [
-        { label: 'Depan', icon: House, path: '/dashboard', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Depan', icon: House, path: '/warga-portal', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Profil', icon: UserCircle, path: '/profile', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Bayar', icon: HandCoins, path: '/iuran/baru', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Keuangan', icon: Wallet, path: '/iuran', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Aduan', icon: Megaphone, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Usulan', icon: Lightbulb, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
-        { label: 'Surat', icon: Checklist, path: '/surat', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'Surat', icon: Checks, path: '/surat', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Ronda', icon: ShieldCheck, path: '/ronda', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Aset', icon: Package, path: '/aset', color: 'bg-[#E0F2F1] text-[#004D40]' },
         { label: 'Pengurus', icon: Users, path: '/pengurus', color: 'bg-[#E0F2F1] text-[#004D40]' },
-        { label: 'AD/ART', icon: FileText, path: '/pengurus', color: 'bg-[#E0F2F1] text-[#004D40]' },
+        { label: 'AD/ART', icon: FileText, path: '/pengurus', color: 'bg-[#E0F2F1] text-[#004D40]', extra: { tab: 'ad-art' } },
         { label: 'Lapor Tamu', icon: User, path: '/aduan/new', color: 'bg-[#E0F2F1] text-[#004D40]' },
     ];
 
@@ -128,17 +123,26 @@ export default function WargaPortal() {
                     <CaretLeft size={24} weight="bold" />
                 </button>
                 <h2 className="text-sm font-black text-[#004D40] uppercase tracking-widest font-outfit">Dashboard Warga</h2>
-                <div 
-                    onClick={() => navigate('/profile')} 
-                    className="w-10 h-10 rounded-full border-2 border-[#004D40] overflow-hidden cursor-pointer shadow-sm active:scale-90 transition-transform"
-                >
-                    {warga.avatar ? (
-                        <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
-                    ) : (
-                        <div className="w-full h-full bg-[#E0F2F1] text-[#004D40] flex items-center justify-center font-bold">
-                            {warga.nama.charAt(0)}
-                        </div>
-                    )}
+                <div className="flex items-center gap-3">
+                    <button 
+                        onClick={() => { if(window.confirm('Keluar dari aplikasi?')) logout(); }}
+                        className="p-2 text-[#004D40] hover:bg-[#E0F2F1] rounded-full transition-colors"
+                        title="Keluar"
+                    >
+                        <SignOut size={22} weight="bold" />
+                    </button>
+                    <div 
+                        onClick={() => navigate('/profile')} 
+                        className="w-10 h-10 rounded-full border-2 border-[#004D40] overflow-hidden cursor-pointer shadow-sm active:scale-90 transition-transform"
+                    >
+                        {warga.avatar ? (
+                            <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
+                        ) : (
+                            <div className="w-full h-full bg-[#E0F2F1] text-[#004D40] flex items-center justify-center font-bold">
+                                {warga.nama.charAt(0)}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -167,7 +171,13 @@ export default function WargaPortal() {
                     {menuItems.map((item, idx) => (
                         <div 
                             key={idx} 
-                            onClick={() => navigate(item.path)}
+                            onClick={() => {
+                                if (item.extra?.tab) {
+                                    navigate(item.path, { state: { activeTab: item.extra.tab } });
+                                } else {
+                                    navigate(item.path);
+                                }
+                            }}
                             className="flex flex-col items-center gap-2 group cursor-pointer"
                         >
                             <div className={`w-full aspect-square md:w-16 md:h-16 ${item.color} rounded-[24px] flex items-center justify-center shadow-lg shadow-teal-900/5 group-active:scale-90 transition-all border border-white`}>

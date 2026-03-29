@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
@@ -27,15 +27,22 @@ import RichTextEditor from '../../components/ui/RichTextEditor';
 
 export default function PengurusList() {
     const { currentTenant, currentScope } = useTenant();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { hasRole } = useAuth();
+    
+    // Check for tab hint in navigation state
+    const stateTab = location.state?.activeTab;
+
     const [pengurusList, setPengurusList] = useState<PengurusWithWarga[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [jabatanSettings, setJabatanSettings] = useState<string[]>([]);
     const [periodeSettings, setPeriodeSettings] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-    const { hasRole } = useAuth();
+    
     const [activeTab, setActiveTab] = useState<'aktif' | 'riwayat' | 'ad-art'>(
-        hasRole('Warga') ? 'ad-art' : 'aktif'
+        stateTab || (hasRole('Warga') ? 'ad-art' : 'aktif')
     );
     const [adArtData, setAdArtData] = useState<any>({ 
         active: {
@@ -52,8 +59,6 @@ export default function PengurusList() {
     const [isSavingAdArt, setIsSavingAdArt] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [isAddingCategory, setIsAddingCategory] = useState(false);
-    const navigate = useNavigate();
-
 
     const loadData = async () => {
         if (!currentTenant) return;

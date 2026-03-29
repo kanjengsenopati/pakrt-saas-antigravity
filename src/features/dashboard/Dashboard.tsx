@@ -168,11 +168,17 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (currentTenant?.id && authUser?.id) {
-            // Initial fetch
+            // Protective redirect for Warga to the new Warga Portal
+            if (isWarga) {
+                navigate('/warga-portal', { replace: true });
+                return;
+            }
+
+            // Initial fetch for non-warga
             fetchStats();
             fetchActivities();
         }
-    }, [currentTenant?.id, currentScope, authUser?.id]); // Only refetch if core context changes meaningfully
+    }, [currentTenant?.id, currentScope, authUser?.id, isWarga, navigate, fetchStats, fetchActivities]); // Only refetch if core context changes meaningfully
 
     useEffect(() => {
         // Setup background refresh interval (e.g. every 2 minutes for dashboard)

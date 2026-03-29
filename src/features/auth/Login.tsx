@@ -50,7 +50,16 @@ export default function Login() {
             if (result.user && result.token) {
                 authLogin(result.token, result.user);
                 await refreshTenant();
-                navigate('/dashboard');
+                
+                // Role-based redirection
+                const isWarga = result.user.role?.toLowerCase() === 'warga' || 
+                                result.user.role_entity?.name?.toLowerCase() === 'warga';
+                
+                if (isWarga) {
+                    navigate('/warga-portal');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setLoginError("Kredensial tidak valid. Silakan coba lagi.");
             }
