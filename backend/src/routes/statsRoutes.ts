@@ -46,7 +46,7 @@ export default async function statsRoutes(fastify: FastifyInstance) {
         const user = (request as any).user;
         if (!user.warga_id) return { warga: null, iuranHeader: [], surat: [] };
 
-        const [warga, iuranHeader, surat] = await Promise.all([
+        const [warga, iuranHeader, surat, financials] = await Promise.all([
             prisma.warga.findUnique({ 
                 where: { id: user.warga_id },
                 include: { anggota: true }
@@ -60,9 +60,17 @@ export default async function statsRoutes(fastify: FastifyInstance) {
                 where: { warga_id: user.warga_id },
                 orderBy: { tanggal: 'desc' },
                 take: 5
+            }),
+            prisma.keuangan.groupBy({
+                by: ['tipe'],
+                where: { tenant_id: user.tenant_id },
+                _sum: { nominal: true }
             })
         ]);
 
-        return { warga, iuranHeader, surat };
+        const kasRT = financials.reduce((acc: number, curr: any) => 
+            curr.tipe === 'pemasukan' ? acc + (curr._sum.nominal || 0) : acc - (curr._sum.nominal || 0), 0) || 0;
+
+        return { warga, iuranHeader, surat, kasRT };
     });
 }

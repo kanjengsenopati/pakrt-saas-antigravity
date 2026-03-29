@@ -53,22 +53,25 @@ export default function WargaPortal() {
                 return;
             }
             try {
-                const [res, polls, upcomingAgendas, dashboardStats] = await Promise.all([
+                // Fetch essential data. Wrap Polling in a separate try to isolate 403s.
+                const [res, upcomingAgendas] = await Promise.all([
                     statsService.getWargaPersonalStats(),
-                    pollingService.getAll('Aktif', currentScope),
-                    agendaService.getUpcoming(currentTenant.id, currentScope, 2),
-                    statsService.getDashboardStats(currentScope)
+                    agendaService.getUpcoming(currentTenant.id, currentScope, 2)
                 ]);
+
                 setData(res);
-                setActivePolls(polls);
                 setAgendas(upcomingAgendas);
-                
-                // Calculate total kas (Pemasukan - Pengeluaran)
-                const kas = dashboardStats.financialTrend?.reduce((acc: any, curr: any) => 
-                    curr.tipe === 'pemasukan' ? acc + (curr._sum.nominal || 0) : acc - (curr._sum.nominal || 0), 0) || 0;
-                setTotalKas(kas);
+                if (res.kasRT !== undefined) setTotalKas(res.kasRT);
+
+                // Attempt fetching polls, but don't fail the whole dashboard on 403/errors
+                try {
+                    const polls = await pollingService.getAll('Aktif', currentScope);
+                    setActivePolls(polls);
+                } catch (pe) {
+                    console.log("Polling permission restricted or unavailable:", pe);
+                }
             } catch (err) {
-                console.error(err);
+                console.error("Critical dashboard data fetch failed:", err);
             } finally {
                 setIsLoading(false);
             }
