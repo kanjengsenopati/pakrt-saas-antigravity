@@ -26,8 +26,8 @@ import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
 
 export default function WargaPortal() {
-    const { user, logout } = useAuth();
-    const { currentScope, currentTenant } = useTenant();
+    const { user, logout, isLoading: authLoading } = useAuth();
+    const { currentScope, currentTenant, isLoading: tenantLoading } = useTenant();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +44,11 @@ export default function WargaPortal() {
 
     useEffect(() => {
         const load = async () => {
+            // Wait for core contexts to resolve before we even try to load dashboard data
+            if (authLoading || tenantLoading) return;
+            
             if (!user?.warga_id || !currentTenant) {
+                // Once contexts are ready, if we still have no data, we stop local loading
                 setIsLoading(false);
                 return;
             }
@@ -72,9 +76,9 @@ export default function WargaPortal() {
             }
         };
         load();
-    }, [currentScope, currentTenant, user?.warga_id]);
+    }, [currentScope, currentTenant, user?.warga_id, authLoading, tenantLoading]);
 
-    if (isLoading) return <div className="min-h-screen bg-[#F5F7F6] p-8 text-center animate-pulse flex items-center justify-center text-[#004D40] font-bold">Memuat Dashboard Warga...</div>;
+    if (isLoading || authLoading || tenantLoading) return <div className="min-h-screen bg-[#F5F7F6] p-8 text-center animate-pulse flex items-center justify-center text-[#004D40] font-bold">Memuat Dashboard Warga...</div>;
     
     if (!user?.warga_id || !data?.warga) {
         return (
