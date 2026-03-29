@@ -17,8 +17,6 @@ import {
     BookOpen,
     FloppyDisk,
     PlusCircle,
-    CaretRight,
-    TrashSimple,
     X,
     User
 } from '@phosphor-icons/react';
@@ -772,8 +770,6 @@ export default function PengurusList() {
                             </div>
                         )}
                     </div>
-                </div>
-            )}
                 </div>
             )}
         </div>
