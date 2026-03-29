@@ -46,7 +46,7 @@ export const pollingService = {
         scope: usulan.scope,
         aduan_usulan_id: aduanUsulanId,
         pertanyaan,
-        tanggal_mulai: dateUtils.normalize(tanggal_mulai || new Date().toISOString()),
+        tanggal_mulai: dateUtils.normalize(tanggal_mulai || new Date().toISOString())!,
         tanggal_selesai: tanggal_selesai ? dateUtils.normalize(tanggal_selesai) : null,
         opsi: {
           create: (opsi || []).map((teks: string) => ({ teks }))
