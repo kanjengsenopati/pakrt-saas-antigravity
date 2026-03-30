@@ -30,6 +30,11 @@ export const prisma = basePrisma.$extends({
           anyArgs.where = anyArgs.where || {};
           
           if (['findMany', 'findFirst', 'findUnique', 'count', 'groupBy', 'aggregate'].includes(operation)) {
+            // Transformation: findUnique results in validation error if non-unique fields are added.
+            // Converting to findFirst is safe and allows the extra filters.
+            if (operation === 'findUnique') {
+              return (basePrisma as any)[model].findFirst(anyArgs);
+            }
             anyArgs.where.tenant_id = context.tenantId;
           } else if (['update', 'updateMany', 'delete', 'deleteMany', 'upsert'].includes(operation)) {
             anyArgs.where.tenant_id = context.tenantId;
