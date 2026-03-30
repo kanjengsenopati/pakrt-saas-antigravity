@@ -5,6 +5,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Aktivitas } from '../../database/db';
 import { 
     Users, 
+    ShieldCheck,
+    Package,
+    ChatDots,
+    Notebook,
+    Money,
+    UserCircle,
+    Gear,
     CalendarBlank, 
     CalendarCheck,
     ClockCounterClockwise,
@@ -12,7 +19,6 @@ import {
     FileText,
     ArrowRight,
     Bell,
-    ChartLineUp,
     House
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
@@ -153,127 +159,135 @@ export default function Dashboard() {
                 </p>
             </div>
 
-            {/* Summary Grid - Stitch High-Impact Style */}
-            <div className="grid grid-cols-1 gap-4">
+            {/* Summary Grid - Compact & Dense for Management Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 {/* 1. Total Iuran Card (Royal Blue) */}
                 <div 
                     onClick={() => navigate('/iuran')}
-                    className="bg-brand-600 rounded-[2rem] p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-brand-600 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-brand-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <Wallet weight="fill" className="w-40 h-40" />
+                        <Wallet weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
                     </div>
-                    <div className="relative z-10">
-                        <p className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Total Iuran Terkumpul</p>
-                        <div className="flex items-baseline gap-2 mb-1">
-                            <span className="text-3xl font-bold tracking-tight">{formatRupiah(stats.saldo)}</span>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-2 shrink-0 border border-white/30 ml-auto">
-                                <Wallet weight="fill" className="w-6 h-6" />
-                            </div>
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Total Iuran</p>
+                            <span className="text-xl md:text-3xl font-bold tracking-tight">{formatRupiah(stats.saldo)}</span>
+                            <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic">85% Warga Membayar</p>
                         </div>
-                        <p className="text-xs font-medium opacity-90 italic">Bulan {new Intl.DateTimeFormat('id-ID', { month: 'long' }).format(new Date())} • 85% Warga Membayar</p>
+                        <div className="bg-white/20 backdrop-blur-md rounded-xl p-2 shrink-0 border border-white/30">
+                            <Wallet weight="fill" className="w-5 h-5 md:w-7 md:h-7" />
+                        </div>
                     </div>
                 </div>
 
                 {/* 2. Aduan Card (Coral/Red Alert) */}
                 <div 
                     onClick={() => navigate('/surat')}
-                    className="bg-[#ef5350] rounded-[2rem] p-6 text-white shadow-xl shadow-red-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-coral-500 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-coral-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <FileText weight="fill" className="w-40 h-40" />
+                        <FileText weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
                     </div>
-                    <div className="relative z-10">
-                        <p className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Aduan Belum Selesai</p>
-                        <div className="flex items-baseline gap-2 mb-1">
-                            <span className="text-3xl font-bold tracking-tight">{stats.pendingSurat} Laporan</span>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-2 shrink-0 border border-white/30 ml-auto">
-                                <Bell weight="fill" className="w-6 h-6 animate-bounce-subtle" />
-                            </div>
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Aduan Pending</p>
+                            <span className="text-xl md:text-3xl font-bold tracking-tight">{stats.pendingSurat} Laporan</span>
+                            <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic">Tindak Lanjut Segera</p>
                         </div>
-                        <p className="text-xs font-medium opacity-90 italic">Butuh Tindak Lanjut Segera</p>
+                        <div className="bg-white/20 backdrop-blur-md rounded-xl p-2 shrink-0 border border-white/30">
+                            <Bell weight="fill" className="w-5 h-5 md:w-7 md:h-7 animate-bounce-subtle" />
+                        </div>
                     </div>
                 </div>
 
                 {/* 3. Community Spotlight (Deep Navy/Blue) */}
                 <div 
                     onClick={() => navigate('/agenda')}
-                    className="bg-[#1e3a8a] rounded-[2rem] p-6 text-white shadow-xl shadow-blue-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-navy-900 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-navy-900/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <CalendarCheck weight="fill" className="w-40 h-40" />
+                        <CalendarCheck weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
                     </div>
-                    <div className="relative z-10">
-                        <p className="text-xs font-bold uppercase tracking-wider opacity-80 mb-2">Community Spotlight</p>
-                        <div className="flex items-baseline gap-2 mb-2">
-                            <h3 className="text-2xl font-bold tracking-tight leading-tight">
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div className="max-w-[70%]">
+                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Spotlight Agenda</p>
+                            <h3 className="text-base md:text-xl font-bold tracking-tight leading-tight truncate">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
                             </h3>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-2 shrink-0 border border-white/30 ml-auto">
-                                <CalendarCheck weight="fill" className="w-6 h-6" />
-                            </div>
+                            <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic truncate">
+                                {upcomingAgenda.length > 0 ? upcomingAgenda[0].deskripsi : 'Pembersihan saluran air.'}
+                            </p>
                         </div>
-                        <p className="text-sm font-medium opacity-90 leading-relaxed mb-3 line-clamp-2 max-w-[80%]">
-                            {upcomingAgenda.length > 0 ? upcomingAgenda[0].deskripsi : 'Pembersihan saluran air di wilayah RT untuk persiapan musim hujan.'}
-                        </p>
-                        <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Kegiatan Mendatang</span>
+                        <div className="bg-white/20 backdrop-blur-md rounded-xl p-2 shrink-0 border border-white/30">
+                            <CalendarCheck weight="fill" className="w-5 h-5 md:w-7 md:h-7" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Quick Action Grid - Stitch Style Squares */}
-            <div className="grid grid-cols-4 gap-4 px-2">
-                {[
-                    { label: 'Warga', icon: Users, color: 'bg-blue-50 text-blue-600', link: '/warga', badge: 5 },
-                    { label: 'Surat', icon: FileText, color: 'bg-slate-50 text-slate-600', link: '/surat' },
-                    { label: 'Stats', icon: ChartLineUp, color: 'bg-slate-50 text-slate-600', link: '/keuangan' },
-                    { label: 'Agenda', icon: CalendarBlank, color: 'bg-slate-50 text-slate-600', link: '/agenda', badge: 3 },
-                ].map((action, i) => (
-                    <div key={i} className="flex flex-col items-center gap-2">
-                        <button 
-                            onClick={() => navigate(action.link)}
-                            className={`w-16 h-16 ${action.color} rounded-2xl flex items-center justify-center relative shadow-sm border border-slate-100 hover:shadow-md hover:scale-105 active:scale-95 transition-all`}
-                        >
-                            <action.icon weight="duotone" className="w-7 h-7" />
-                            {action.badge && (
-                                <span className="absolute -top-1.5 -right-1.5 bg-[#ef5350] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                                    {action.badge}
-                                </span>
-                            )}
-                        </button>
-                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">{action.label}</span>
-                    </div>
-                ))}
+            {/* Comprehensive Multi-Action Grid (12 Items) - Dense Style */}
+            <div className="px-1 md:px-0 mt-2">
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-6 md:gap-6">
+                    {[
+                        // Group 1: Kependudukan
+                        { label: 'Warga', icon: Users, color: 'bg-blue-50 text-blue-600', link: '/warga' },
+                        { label: 'Pengurus', icon: UserCircle, color: 'bg-slate-50 text-slate-600', link: '/pengurus' },
+                        { label: 'Surat', icon: FileText, color: 'bg-slate-50 text-slate-600', link: '/surat' },
+                        { label: 'Ronda', icon: ShieldCheck, color: 'bg-slate-50 text-slate-600', link: '/ronda' },
+                        
+                        // Group 2: Operasional
+                        { label: 'Aduan', icon: ChatDots, color: 'bg-coral-50 text-coral-600', link: '/aduan' },
+                        { label: 'Agenda', icon: CalendarBlank, color: 'bg-slate-50 text-slate-600', link: '/agenda' },
+                        { label: 'Aset RT', icon: Package, color: 'bg-slate-50 text-slate-600', link: '/aset' },
+                        { label: 'Notulen', icon: Notebook, color: 'bg-slate-50 text-slate-600', link: '/notulensi' },
+                        
+                        // Group 3: Keuangan & Admin
+                        { label: 'Buku Kas', icon: Money, color: 'bg-emerald-50 text-emerald-600', link: '/keuangan' },
+                        { label: 'Iuran', icon: Wallet, color: 'bg-slate-50 text-slate-600', link: '/iuran' },
+                        { label: 'Profile', icon: UserCircle, color: 'bg-slate-50 text-slate-600', link: '/profile' },
+                        { label: 'Setting', icon: Gear, color: 'bg-slate-50 text-slate-600', link: '/pengaturan' },
+                    ].map((action, i) => (
+                        <div key={i} className="flex flex-col items-center gap-1.5 md:gap-3 group">
+                            <button 
+                                onClick={() => navigate(action.link)}
+                                className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-2xl md:rounded-3xl flex items-center justify-center relative shadow-sm border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                            >
+                                <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
+                            </button>
+                            <span className="text-[9px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wide text-center truncate w-full px-1">
+                                {action.label}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            {/* Bottom Navigation Mock - Mobile Experience Refinement */}
-            <div className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 px-6 flex items-center justify-around z-50 md:hidden">
+            {/* Fixed Bottom Navigation - Mobile Experience Refinement */}
+            <div className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around z-50 md:hidden pb-1">
                 <div className="flex flex-col items-center gap-1.5 text-brand-600">
                     <div className="bg-brand-50 px-5 py-1.5 rounded-full">
                         <House weight="fill" className="w-6 h-6" />
                     </div>
                     <span className="text-[10px] font-extrabold uppercase tracking-widest">Beranda</span>
                 </div>
-                <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400">
+                <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <Users weight="bold" className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Warga</span>
                 </div>
-                <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400">
+                <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <FileText weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Laporan</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Surat</span>
                 </div>
-                <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400">
-                    <Users weight="bold" className="w-6 h-6" />
+                <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
+                    <UserCircle weight="bold" className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Akun</span>
                 </div>
             </div>
 
-            {/* Existing Sections Merged Below */}
+            {/* Hidden Activities Section on Mobile (only md:block) */}
             {!isWarga && (
-                <div className="mt-8 space-y-6">
+                <div className="mt-8 space-y-6 hidden md:block">
                     <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
                         <div className="flex items-center justify-between mb-5">
                             <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold uppercase tracking-widest">
