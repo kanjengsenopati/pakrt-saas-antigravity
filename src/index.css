@@ -101,7 +101,15 @@ body {
 }
 
 .section-label {
-    @apply text-sm font-medium text-gray-500 tracking-normal;
+    @apply text-[11px] font-medium text-slate-500 tracking-tight;
+}
+
+.text-label {
+    @apply text-[11px] font-medium text-slate-500 tracking-tight;
+}
+
+.text-body-sm {
+    @apply text-sm font-medium text-slate-500 leading-relaxed;
 }
 
 .input-label {

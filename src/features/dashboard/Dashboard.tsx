@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
                     Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
                 </h1>
-                <p className="text-sm md:text-base text-slate-500 font-medium mt-1 leading-relaxed">
+                <p className="text-body-sm mt-1">
                     Anda tercatat sebagai {authUser?.role_entity?.name || authUser?.role || 'Pengurus'} di {currentScope}, {currentTenant?.name}.
                 </p>
             </div>
@@ -255,7 +255,7 @@ export default function Dashboard() {
                             >
                                 <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
                             </button>
-                            <span className="text-[9px] md:text-[11px] font-bold text-slate-500 tracking-wide text-center truncate w-full px-1">
+                            <span className="text-label text-center truncate w-full px-1">
                                 {action.label}
                             </span>
                         </div>
@@ -269,19 +269,19 @@ export default function Dashboard() {
                     <div className="bg-brand-50 px-5 py-1.5 rounded-full">
                         <House weight="fill" className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-extrabold tracking-widest">Beranda</span>
+                    <span className="text-label !text-brand-600 !font-extrabold tracking-widest">Beranda</span>
                 </div>
                 <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <Users weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold tracking-widest">Warga</span>
+                    <span className="text-label tracking-widest">Warga</span>
                 </div>
                 <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <FileText weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold tracking-widest">Surat</span>
+                    <span className="text-label tracking-widest">Surat</span>
                 </div>
                 <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <UserCircle weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold tracking-widest">Akun</span>
+                    <span className="text-label tracking-widest">Akun</span>
                 </div>
             </div>
 
