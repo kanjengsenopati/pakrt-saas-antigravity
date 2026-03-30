@@ -100,7 +100,7 @@ export default function Profile() {
                 {/* Visual Identity Card */}
                 <div className="lg:col-span-1 space-y-5">
                     <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-                        <div className="h-24 bg-gradient-to-br from-brand-500 to-emerald-600"></div>
+                        <div className="h-24 bg-gradient-to-br from-brand-500 to-brand-800"></div>
                         <div className="px-5 pb-6 -mt-10 text-center">
                             <div className="inline-flex relative">
                                 <div className="w-20 h-20 rounded-[1.5rem] bg-white p-1 shadow-xl ring-1 ring-slate-100">
@@ -108,7 +108,7 @@ export default function Profile() {
                                         {user?.name ? user.name.substring(0, 2) : '??'}
                                     </div>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-emerald-500 border-2 border-white flex items-center justify-center text-white shadow-lg">
+                                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-brand-600 border-2 border-white flex items-center justify-center text-white shadow-lg">
                                     <ShieldCheck weight="fill" className="w-3.5 h-3.5" />
                                 </div>
                             </div>

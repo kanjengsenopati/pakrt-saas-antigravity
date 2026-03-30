@@ -243,7 +243,7 @@ export default function Dashboard() {
                         { label: 'Notulen', icon: Notebook, color: 'bg-slate-50 text-slate-600', link: '/notulensi' },
                         
                         // Group 3: Keuangan & Admin
-                        { label: 'Buku Kas', icon: Money, color: 'bg-emerald-50 text-emerald-600', link: '/keuangan' },
+                        { label: 'Buku Kas', icon: Money, color: 'bg-brand-50 text-brand-600', link: '/keuangan' },
                         { label: 'Iuran', icon: Wallet, color: 'bg-slate-50 text-slate-600', link: '/iuran' },
                         { label: 'Profile', icon: UserCircle, color: 'bg-slate-50 text-slate-600', link: '/profile' },
                         { label: 'Setting', icon: Gear, color: 'bg-slate-50 text-slate-600', link: '/pengaturan' },

@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom';
 const STATUS_COLORS = {
     'Menunggu': '#f59e0b',
     'Proses': '#3b82f6',
-    'Selesai': '#10b981'
+    'Selesai': '#2563eb'
 };
 
 export default function AduanList() {
@@ -137,7 +137,7 @@ export default function AduanList() {
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Diproses</p>
                         <p className="text-2xl font-bold text-slate-900">{stats?.processing || 0}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-emerald-500">
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-brand-600">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Selesai</p>
                         <p className="text-2xl font-bold text-slate-900">{stats?.completed || 0}</p>
                     </div>
@@ -180,7 +180,7 @@ export default function AduanList() {
 
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                         <h3 className="text-sm font-bold text-slate-900 mb-6 flex items-center gap-2">
-                            <ChartPie weight="duotone" className="text-emerald-500" /> Status Penyelesaian
+                            <ChartPie weight="duotone" className="text-brand-500" /> Status Penyelesaian
                         </h3>
                         <div className="h-[250px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
@@ -247,7 +247,7 @@ export default function AduanList() {
                         ) : (
                             items.map((item) => (
                                 <div key={item.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col md:flex-row">
-                                    <div className={`w-full md:w-2 ${item.status === 'Menunggu' ? 'bg-amber-500' : item.status === 'Proses' ? 'bg-blue-500' : 'bg-emerald-500'}`} />
+                                    <div className={`w-full md:w-2 ${item.status === 'Menunggu' ? 'bg-amber-500' : item.status === 'Proses' ? 'bg-blue-500' : 'bg-brand-600'}`} />
                                     <div className="p-5 flex-1 space-y-4">
                                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                                             <div className="flex items-center gap-3">
@@ -267,7 +267,7 @@ export default function AduanList() {
                                                 <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border flex items-center gap-1.5 ${
                                                     item.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                     item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                    'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                    'bg-brand-50 text-brand-600 border-brand-100'
                                                 }`}>
                                                     {item.status === 'Menunggu' ? <Clock weight="bold" /> : item.status === 'Proses' ? <ArrowRight weight="bold" /> : <CheckCircle weight="fill" />}
                                                     {item.status}
@@ -377,7 +377,7 @@ export default function AduanList() {
                                             <button 
                                                 onClick={() => handleUpdateStatus(selectedItem.id, 'Selesai')}
                                                 disabled={isUpdating || !tanggapanText}
-                                                className="flex-1 py-2.5 bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 disabled:opacity-50"
+                                                className="flex-1 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 disabled:opacity-50"
                                             >
                                                 Selesaikan
                                             </button>

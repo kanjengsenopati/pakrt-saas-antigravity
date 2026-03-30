@@ -130,7 +130,7 @@ export default function NotulensiForm() {
 
     const getStatusTheme = (status: Kehadiran['status']) => {
         switch (status) {
-            case 'hadir': return 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100';
+            case 'hadir': return 'bg-brand-50 text-brand-700 border-brand-100 hover:bg-brand-100';
             case 'izin': return 'bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100';
             case 'sakit': return 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100';
             case 'alfa': return 'bg-rose-50 text-rose-700 border-rose-100 hover:bg-rose-100';
@@ -475,7 +475,7 @@ export default function NotulensiForm() {
                             <div className="grid grid-cols-2 gap-2 p-4 bg-slate-50 border-b border-slate-100">
                                 <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
                                     <span className="text-[10px] font-bold text-slate-400 tracking-tight mb-1 leading-none text-left">Hadir</span>
-                                    <span className="text-xl font-bold text-emerald-600 leading-none">{Object.values(kehadiranState).filter(s => s === 'hadir').length}</span>
+                                    <span className="text-xl font-bold text-brand-600 leading-none">{Object.values(kehadiranState).filter(s => s === 'hadir').length}</span>
                                 </div>
                                 <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
                                     <span className="text-[10px] font-bold text-slate-400 tracking-tight mb-1 leading-none text-left">Izin / Sakit</span>
@@ -508,7 +508,7 @@ export default function NotulensiForm() {
                                                     {selectedWargaIds.has(warga.id) && <CheckCircle weight="bold" className="text-white w-3 h-3" />}
                                                 </div>
 
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${kehadiranState[warga.id] === 'hadir' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${kehadiranState[warga.id] === 'hadir' ? 'bg-brand-100 text-brand-600' : 'bg-slate-100 text-slate-400'}`}>
                                                     {warga.nama.charAt(0)}
                                                 </div>
                                                 <div className="truncate">
@@ -536,9 +536,9 @@ export default function NotulensiForm() {
                                     <span className="text-[10px] font-bold text-slate-500 tracking-tight mb-0.5">Total Warga</span>
                                     <span className="text-white font-bold text-sm">{wargaList.length} Jiwa</span>
                                 </div>
-                                <div className="flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[11px] font-bold text-emerald-400 tracking-tight">Ready to Sync</span>
+                                <div className="flex items-center gap-1.5 bg-brand-500/10 px-3 py-1.5 rounded-lg border border-brand-500/20">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></div>
+                                    <span className="text-[11px] font-bold text-brand-400 tracking-tight">Ready to Sync</span>
                                 </div>
                             </div>
                         </div>

@@ -48,22 +48,22 @@ export function PWAInstallBanner({ show }: PWAInstallBannerProps) {
             aria-label="Install PAKRT App"
         >
             {/* Backdrop blur effect at bottom */}
-            <div className="bg-white/80 backdrop-blur-xl border-t border-emerald-100 shadow-2xl shadow-emerald-900/20">
+            <div className="bg-white/80 backdrop-blur-xl border-t border-brand-100 shadow-2xl shadow-brand-900/20">
                 <div className="max-w-md mx-auto px-4 py-4">
                     {justInstalled ? (
                         // Success State
                         <div className="flex items-center gap-3 justify-center py-1 animate-fade-in">
-                            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center shadow-md shadow-emerald-200">
+                            <div className="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200">
                                 <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="white" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <span className="text-sm font-semibold text-emerald-700">PAKRT berhasil diinstall!</span>
+                            <span className="text-sm font-semibold text-brand-700">PAKRT berhasil diinstall!</span>
                         </div>
                     ) : (
                         <div className="flex items-center gap-3">
                             {/* PAKRT Logo */}
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-200 shrink-0">
+                            <div className="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-200 shrink-0">
                                 <span className="text-white font-bold text-lg tracking-tight leading-none">P</span>
                             </div>
 
@@ -86,7 +86,7 @@ export function PWAInstallBanner({ show }: PWAInstallBannerProps) {
                                 <button
                                     onClick={handleInstall}
                                     disabled={isInstalling}
-                                    className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-200 transition-all disabled:opacity-70"
+                                    className="flex items-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-md shadow-brand-200 transition-all disabled:opacity-70"
                                 >
                                     {isInstalling ? (
                                         <>

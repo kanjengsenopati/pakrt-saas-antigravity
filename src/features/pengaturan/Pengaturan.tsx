@@ -795,9 +795,9 @@ export default function Pengaturan() {
                                         <div>
                                             <p className="text-sm text-gray-600 mb-4">Pilih warna primer yang mewakili identitas wilayah <span className="font-bold uppercase text-brand-700">{currentScope}</span>.</p>
                                             <div className="flex flex-wrap gap-3">
-                                                {['emerald', 'rose', 'indigo', 'amber', 'sky', 'slate'].map((color) => {
+                                                {['blue', 'rose', 'indigo', 'amber', 'sky', 'slate'].map((color) => {
                                                     const colorMap: Record<string, string> = {
-                                                        emerald: 'bg-emerald-500',
+                                                        blue: 'bg-brand-500',
                                                         rose: 'bg-rose-500',
                                                         indigo: 'bg-indigo-500',
                                                         amber: 'bg-amber-500',
@@ -810,7 +810,7 @@ export default function Pengaturan() {
                                                             key={color}
                                                             type="button"
                                                             onClick={() => reset({ ...watch(), warna_tema: color })}
-                                                            className={`w-10 h-10 rounded-full ${colorMap[color]} transition-all flex items-center justify-center hover:scale-110 shadow-sm ${activeColor === color ? 'ring-4 ring-offset-2 ring-gray-300 scale-110' : ''}`}
+                                                            className={`w-10 h-10 rounded-full ${colorMap[color]} transition-all flex items-center justify-center hover:scale-110 shadow-sm ${activeColor === color || (color === 'blue' && (activeColor === 'emerald' || !activeColor)) ? 'ring-4 ring-offset-2 ring-gray-300 scale-110' : ''}`}
                                                         >
                                                             {activeColor === color && <CheckCircle weight="bold" className="text-white w-6 h-6" />}
                                                         </button>
@@ -842,8 +842,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 tracking-normal">Daftar Jabatan {currentScope}</label>
-                                            {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
-                                            {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
+                                            {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
+                                            {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-brand-600 font-bold">✓ Tersimpan</span>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -861,10 +861,10 @@ export default function Pengaturan() {
                                             {jabatanOptions.map(jab => {
                                                 const usageCount = allPengurus.filter(p => p.jabatan === jab && p.status === 'aktif').length;
                                                 return (
-                                                    <span key={jab} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${usageCount > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-white text-gray-700 border-gray-200'
+                                                    <span key={jab} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${usageCount > 0 ? 'bg-brand-50 text-brand-700 border-brand-200' : 'bg-white text-gray-700 border-gray-200'
                                                         }`}>
                                                         {jab}
-                                                        {usageCount > 0 && <span className="ml-1 text-[9px] bg-emerald-200 text-emerald-800 rounded-full px-1 font-bold">{usageCount}</span>}
+                                                        {usageCount > 0 && <span className="ml-1 text-[9px] bg-brand-200 text-brand-800 rounded-full px-1 font-bold">{usageCount}</span>}
                                                         <button type="button" onClick={() => removeCategory('jabatan', jab)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
                                                     </span>
                                                 );
@@ -876,8 +876,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 tracking-normal">Periode ({currentScope})</label>
-                                            {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">ΓùÅ Menyimpan...</span>}
-                                            {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-emerald-500 font-bold">Γ£ô Tersimpan</span>}
+                                            {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
+                                            {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-brand-600 font-bold">✓ Tersimpan</span>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -896,10 +896,10 @@ export default function Pengaturan() {
                                                 const total = allPengurus.filter(p => p.periode === per).length;
                                                 const aktif = allPengurus.filter(p => p.periode === per && p.status === 'aktif').length;
                                                 return (
-                                                    <span key={per} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${aktif > 0 ? 'bg-blue-50 text-blue-700 border-blue-200' : total > 0 ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-white text-gray-700 border-gray-200'
+                                                    <span key={per} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${aktif > 0 ? 'bg-brand-50 text-brand-700 border-brand-200' : total > 0 ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-white text-gray-700 border-gray-200'
                                                         }`}>
                                                         {per}
-                                                        {total > 0 && <span className={`ml-1 text-[9px] rounded-full px-1 font-bold ${aktif > 0 ? 'bg-blue-200 text-blue-800' : 'bg-gray-200 text-gray-600'
+                                                        {total > 0 && <span className={`ml-1 text-[9px] rounded-full px-1 font-bold ${aktif > 0 ? 'bg-brand-200 text-brand-800' : 'bg-gray-200 text-gray-600'
                                                             }`}>{aktif > 0 ? `${aktif} aktif` : `${total} riwayat`}</span>}
                                                         <button type="button" onClick={() => removeCategory('periode', per)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
                                                     </span>
@@ -918,7 +918,7 @@ export default function Pengaturan() {
                                     <div className="space-y-8">
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Money weight="fill" className="text-emerald-500 w-5 h-5" />
+                                                <Money weight="fill" className="text-brand-600 w-5 h-5" />
                                                 <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pemasukan</h3>
                                             </div>
                                             <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
@@ -941,12 +941,12 @@ export default function Pengaturan() {
                                                 </div>
                                                 <div className="flex flex-wrap gap-2 min-h-[40px]">
                                                     {pemasukanCategories.map((cat, i) => (
-                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-100 group hover:bg-emerald-100 transition-all">
+                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
                                                             <span>{cat}</span>
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeCategory('masuk', cat)}
-                                                                className="text-emerald-400 hover:text-red-500 transition-colors"
+                                                                className="text-brand-400 hover:text-red-500 transition-colors"
                                                             >
                                                                 <X weight="bold" className="w-3 h-3" />
                                                             </button>
@@ -959,7 +959,7 @@ export default function Pengaturan() {
 
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Money weight="fill" className="text-rose-500 w-5 h-5" />
+                                                <Money weight="fill" className="text-brand-500 w-5 h-5" />
                                                 <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pengeluaran</h3>
                                             </div>
                                             <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
@@ -982,12 +982,12 @@ export default function Pengaturan() {
                                                 </div>
                                                 <div className="flex flex-wrap gap-2 min-h-[40px]">
                                                     {pengeluaranCategories.map((cat, i) => (
-                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-700 rounded-full text-xs font-bold border border-rose-100 group hover:bg-rose-100 transition-all">
+                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
                                                             <span>{cat}</span>
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeCategory('keluar', cat)}
-                                                                className="text-rose-400 hover:text-red-500 transition-colors"
+                                                                className="text-brand-400 hover:text-red-500 transition-colors"
                                                             >
                                                                 <X weight="bold" className="w-3 h-3" />
                                                             </button>
@@ -1082,7 +1082,7 @@ export default function Pengaturan() {
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
                                                     <input type="checkbox" {...register('denda_ronda_aktif')} className="sr-only peer" />
-                                                    <div className="w-12 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                                                    <div className="w-12 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
                                                 </label>
                                             </div>
 
@@ -1093,7 +1093,7 @@ export default function Pengaturan() {
                                                         name="denda_ronda_nominal"
                                                         control={control}
                                                         render={({ field }) => (
-                                                            <CurrencyInput {...field} className="bg-slate-800 border-slate-700 text-white placeholder-slate-500 rounded-xl p-4 focus:ring-emerald-500" />
+                                                            <CurrencyInput {...field} className="bg-slate-800 border-slate-700 text-white placeholder-slate-500 rounded-xl p-4 focus:ring-brand-500" />
                                                         )}
                                                     />
                                                 </div>
@@ -1123,7 +1123,7 @@ export default function Pengaturan() {
                                                         onClick={handleSyncOfficialKop}
                                                         className="text-[10px] font-bold bg-brand-50 text-brand-600 px-3 py-1 rounded-full border border-brand-100 hover:bg-brand-100 transition-colors flex items-center gap-1"
                                                     >
-                                                        Γ£¿ Sinkron Data Resmi
+                                                        ✓ Sinkron Data Resmi
                                                     </button>
                                                 </div>
                                                 <textarea
@@ -1186,7 +1186,7 @@ export default function Pengaturan() {
                                                     onClick={handleSyncOfficialSignatory}
                                                     className="text-[10px] font-bold bg-brand-50 text-brand-600 px-3 py-1 rounded-full border border-brand-100 hover:bg-brand-100 transition-colors flex items-center gap-1"
                                                 >
-                                                    ≡ƒæñ Ambil Pengurus
+                                                    ≡ Ambil Pengurus
                                                 </button>
                                             </div>
                                             <div className="space-y-4">
@@ -1288,8 +1288,8 @@ export default function Pengaturan() {
                                         {/* Preview Surat */}
                                         <div className="bg-gray-100/50 p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden border border-gray-200 shadow-inner">
                                             <div className="absolute top-4 right-4 z-30">
-                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur rounded-full text-[9px] font-bold text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
-                                                    <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
+                                                <span className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur rounded-full text-[9px] font-bold text-brand-600 border border-brand-100 uppercase tracking-widest shadow-sm">
+                                                    <div className="w-1 h-1 rounded-full bg-brand-600 animate-pulse"></div>
                                                     Live Preview
                                                 </span>
                                             </div>
@@ -1592,7 +1592,7 @@ export default function Pengaturan() {
                                                             <p className="text-[12px] mt-0.5 flex items-center gap-1 font-bold tracking-normal text-slate-400">{user.scope || 'RT'}</p>
                                                         </td>
                                                         <td className="p-4 text-center">
-                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-normal border ${user.verification_status === 'VERIFIED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-normal border ${user.verification_status === 'VERIFIED' ? 'bg-brand-50 text-brand-600 border-brand-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                                                                 {user.verification_status || 'Unverified'}
                                                             </span>
                                                         </td>
@@ -1637,7 +1637,7 @@ export default function Pengaturan() {
                                                                                 </div>
                                                                                 <div>
                                                                                     <label className="block text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Status Verifikasi</label>
-                                                                                    <p className={`text-[12px] font-bold uppercase ${user.verification_status === 'VERIFIED' ? 'text-emerald-600' : 'text-amber-600'}`}>{user.verification_status || 'PENDING'}</p>
+                                                                                    <p className={`text-[12px] font-bold uppercase ${user.verification_status === 'VERIFIED' ? 'text-brand-600' : 'text-amber-600'}`}>{user.verification_status || 'PENDING'}</p>
                                                                                 </div>
                                                                                 {user.kontak && (
                                                                                     <div>

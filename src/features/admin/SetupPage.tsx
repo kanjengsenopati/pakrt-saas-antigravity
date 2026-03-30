@@ -282,9 +282,9 @@ export default function SetupPage() {
                     </div>
 
                     {status === 'success' && (
-                        <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex gap-3 animate-fade-in">
-                            <CheckCircle className="text-emerald-500 flex-shrink-0 mt-1" size={20} />
-                            <p className="text-sm text-emerald-700 leading-relaxed font-medium">{message}</p>
+                        <div className="bg-brand-50 border border-brand-100 p-4 rounded-xl flex gap-3 animate-fade-in text-brand-700">
+                            <CheckCircle className="text-brand-600 flex-shrink-0 mt-1" size={20} />
+                            <p className="text-sm leading-relaxed font-semibold">{message}</p>
                         </div>
                     )}
 

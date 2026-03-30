@@ -63,8 +63,8 @@ export default function VerifySurat() {
         <div className="min-h-screen bg-slate-50 py-12 px-6 font-sans">
             <div className="max-w-2xl mx-auto">
                 {/* Header Card */}
-                <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-emerald-100 mb-8 animate-scale-in">
-                    <div className="bg-emerald-500 p-10 text-center relative overflow-hidden">
+                <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-brand-100 mb-8 animate-scale-in">
+                    <div className="bg-brand-600 p-10 text-center relative overflow-hidden">
                         {/* Decorative Background */}
                         <div className="absolute top-0 left-0 w-full h-full opacity-10">
                             <SealCheck weight="fill" className="absolute -right-10 -top-10 w-64 h-64 rotate-12" />
@@ -76,16 +76,16 @@ export default function VerifySurat() {
                             </div>
                             <div>
                                 <h1 className="text-3xl font-bold text-white tracking-tight">Dokumen Sah</h1>
-                                <p className="text-emerald-50 font-bold tracking-normal text-xs">Terkonfirmasi Sistem PakRT</p>
+                                <p className="text-brand-50 font-bold tracking-normal text-xs">Terkonfirmasi Sistem PakRT</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="p-10 space-y-8">
                         {/* Status Alert */}
-                        <div className="flex items-center gap-4 p-5 bg-emerald-50 rounded-3xl border border-emerald-100 text-emerald-800">
+                        <div className="flex items-center gap-4 p-5 bg-brand-50 rounded-3xl border border-brand-100 text-brand-800">
                             <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                                <CheckCircle weight="fill" className="w-6 h-6 text-emerald-500" />
+                                <CheckCircle weight="fill" className="w-6 h-6 text-brand-600" />
                             </div>
                             <p className="text-sm font-bold leading-tight">
                                 Data ini ditarik langsung dari database resmi Kelurahan/RT melalui sistem digital.

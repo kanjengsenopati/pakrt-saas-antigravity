@@ -286,7 +286,7 @@ export default function IuranList() {
                                             <div className="flex flex-wrap gap-1 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
                                                     <span key={b} className={`inline-flex px-1.5 py-0.5 rounded-lg text-sm font-semibold tracking-normal shadow-sm border ${
-                                                        iuran.status === 'VERIFIED' ? 'bg-emerald-500 text-white border-emerald-600' :
+                                                    iuran.status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' :
                                                         iuran.status === 'PENDING' ? 'bg-yellow-400 text-black border-yellow-500' :
                                                         'bg-red-50 border-red-200 text-red-600'
                                                     }`}>
@@ -303,7 +303,7 @@ export default function IuranList() {
                                         <td className="p-3">
                                             <div className="flex flex-col items-center gap-1">
                                                 {iuran.status === 'VERIFIED' ? (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white border border-emerald-600 flex items-center gap-1 shadow-sm">
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-brand-600 text-white border border-brand-700 flex items-center gap-1 shadow-sm">
                                                         <CheckCircle weight="fill" className="w-3 h-3" />
                                                         Diterima
                                                     </span>
@@ -441,7 +441,7 @@ export default function IuranList() {
 
                                     <div className="flex items-center gap-2 mb-4">
                                         {iuran.status === 'VERIFIED' ? (
-                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 border border-brand-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
                                                 <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                 Verified
                                             </span>
@@ -473,7 +473,7 @@ export default function IuranList() {
                                                         key={month} 
                                                         className={`flex flex-col items-center justify-center p-1 rounded-lg border text-[10px] font-bold transition-all duration-300 shadow-sm
                                                             ${isPaid 
-                                                                ? (iuran.status === 'VERIFIED' ? 'bg-emerald-500 text-white border-emerald-400' 
+                                                                ? (iuran.status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' 
                                                                  : iuran.status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300'
                                                                  : 'bg-rose-500 text-white border-rose-400')
                                                                 : 'bg-white text-slate-200 border-slate-100'

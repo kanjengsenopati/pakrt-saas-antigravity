@@ -66,14 +66,14 @@
         font-family: inherit;
     }
 
-    /* Warga Dashboard Premium Theme Colors */
+    /* Warga Dashboard Premium Theme Colors (Modern Blue / Navy) */
     :root {
-        --warga-primary: #004D40;
-        --warga-primary-light: #00695C;
-        --warga-accent: #E0F2F1;
-        --warga-bg: #F5F7F6;
-        --warga-text-muted: #546E7A;
-        --warga-card-shadow: 0 4px 20px -4px rgba(0, 77, 64, 0.08);
+        --warga-primary: #1e3a8a;
+        --warga-primary-light: #2563eb;
+        --warga-accent: #eff6ff;
+        --warga-bg: #f8fafc;
+        --warga-text-muted: #64748b;
+        --warga-card-shadow: 0 4px 20px -4px rgba(30, 58, 138, 0.08);
     }
 }
 

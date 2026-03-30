@@ -275,11 +275,11 @@ export default function RondaList() {
                                                             <div key={d.id} className="flex flex-col gap-1">
                                                                 <div
                                                                     onClick={() => setActiveSnackId(isActive ? null : d.id)}
-                                                                    className={`flex items-center justify-between text-[11px] p-2.5 rounded-xl transition-all cursor-pointer border ${isActive ? 'bg-amber-50 border-amber-200 shadow-sm' : isNext ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-slate-100 hover:border-slate-200'}`}
+                                                                    className={`flex items-center justify-between text-[11px] p-2.5 rounded-xl transition-all cursor-pointer border ${isActive ? 'bg-amber-50 border-amber-200 shadow-sm' : isNext ? 'bg-brand-50 border-brand-100' : 'bg-white border-slate-100 hover:border-slate-200'}`}
                                                                 >
                                                                     <div className="flex items-center gap-3">
-                                                                        <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-slate-300' : isNext ? 'bg-emerald-500 animate-pulse' : 'bg-brand-500'}`}></div>
-                                                                        <span className={`text-[11px] tracking-tight ${isPast ? 'text-slate-400 font-medium' : isNext ? 'text-emerald-700 font-bold' : 'text-slate-700 font-bold'}`}>
+                                                                        <div className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-slate-300' : isNext ? 'bg-brand-600 animate-pulse' : 'bg-brand-500'}`}></div>
+                                                                        <span className={`text-[11px] tracking-tight ${isPast ? 'text-slate-400 font-medium' : isNext ? 'text-brand-700 font-bold' : 'text-slate-700 font-bold'}`}>
                                                                             {dateUtils.toDisplay(d.tanggal)}
                                                                         </span>
                                                                         {isNext && (
@@ -288,7 +288,7 @@ export default function RondaList() {
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         {d.kehadiranCount > 0 && (
-                                                                            <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
+                                                                            <span className="text-[9px] text-brand-600 font-bold bg-brand-50 px-1.5 py-0.5 rounded-lg uppercase tracking-wider">
                                                                                 {d.kehadiranCount} Check
                                                                             </span>
                                                                         )}
@@ -414,7 +414,7 @@ export default function RondaList() {
                                                         <HasPermission module="Notulensi" action="Ubah">
                                                             <button
                                                                 onClick={() => handleOpenAttendance(ronda)}
-                                                                className={`p-1.5 rounded-md transition-colors ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100' : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'}`} title="Catat Kehadiran">
+                                                                className={`p-1.5 rounded-md transition-colors ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-brand-600 bg-brand-50 hover:bg-brand-100' : 'text-gray-400 hover:text-brand-600 hover:bg-brand-50'}`} title="Catat Kehadiran">
                                                                 <CheckCircle weight={ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? "fill" : "duotone"} className="w-5 h-5" />
                                                             </button>
                                                         </HasPermission>
@@ -476,7 +476,7 @@ export default function RondaList() {
                                                     </div>
                                                 </div>
                                                 {ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 && (
-                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest shadow-sm">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 border border-brand-100 uppercase tracking-widest shadow-sm">
                                                         Selesai
                                                     </span>
                                                 )}
@@ -514,7 +514,7 @@ export default function RondaList() {
                                                 <HasPermission module="Notulensi" action="Ubah">
                                                     <button
                                                         onClick={() => handleOpenAttendance(ronda)}
-                                                        className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-sm active:scale-95 border ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-slate-600 bg-white border-slate-200'}`}
+                                                        className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-sm active:scale-95 border ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-brand-600 bg-brand-50 border-brand-100' : 'text-slate-600 bg-white border-slate-200'}`}
                                                     >
                                                         <CheckCircle weight={ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? "fill" : "bold"} className="w-4 h-4" />
                                                         Kehadiran
@@ -579,9 +579,9 @@ export default function RondaList() {
                                     return (
                                         <label
                                             key={warga.id}
-                                            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${isAttended ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-gray-200 hover:bg-gray-50'}`}
+                                            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${isAttended ? 'border-brand-500 bg-brand-50 shadow-sm' : 'border-gray-200 hover:bg-gray-50'}`}
                                         >
-                                            <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isAttended ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-gray-300'}`}>
+                                            <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isAttended ? 'bg-brand-600 border-brand-600' : 'bg-white border-gray-300'}`}>
                                                 <input
                                                     type="checkbox"
                                                     className="sr-only"
@@ -591,7 +591,7 @@ export default function RondaList() {
                                                 {isAttended && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                             </div>
                                             <div>
-                                                <p className={`text-sm font-medium ${isAttended ? 'text-emerald-900' : 'text-gray-900'}`}>{warga.nama}</p>
+                                                <p className={`text-sm font-medium ${isAttended ? 'text-brand-900' : 'text-gray-900'}`}>{warga.nama}</p>
                                                 <p className="text-xs text-gray-500">{warga.alamat}</p>
                                             </div>
                                         </label>
@@ -613,7 +613,7 @@ export default function RondaList() {
                             </button>
                             <button
                                 onClick={handleSaveAttendance}
-                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg flex items-center gap-2 transition-all shadow-sm hover:shadow-md active-press"
+                                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg flex items-center gap-2 transition-all shadow-sm hover:shadow-md active-press"
                             >
                                 <CheckCircle weight="bold" />
                                 <span>Simpan Kehadiran</span>
