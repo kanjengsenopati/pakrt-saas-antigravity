@@ -89,7 +89,7 @@ export default function Login() {
             {/* Left Panel - Brand Display */}
             <div className="hidden md:flex flex-col justify-between w-[45%] bg-slate-50 p-10 lg:p-14 text-slate-900 relative overflow-hidden shrink-0 border-r border-slate-100">
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[30rem] h-[30rem] bg-brand-50 rounded-full blur-[120px] opacity-60"></div>
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[24rem] h-[24rem] bg-blue-50 rounded-full blur-[100px] opacity-40"></div>
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[24rem] h-[24rem] bg-brand-50 rounded-full blur-[100px] opacity-40"></div>
 
                 <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center justify-between mb-10">

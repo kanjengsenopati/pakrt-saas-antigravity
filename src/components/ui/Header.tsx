@@ -77,7 +77,7 @@ export function Header() {
                             onClick={() => setIsProfileOpen(!isProfileOpen)}
                             className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-xl transition-colors group"
                         >
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-emerald-500 flex items-center justify-center shadow-sm text-white font-bold text-xs ring-2 ring-white">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-indigo-600 flex items-center justify-center shadow-sm text-white font-bold text-xs ring-2 ring-white">
                                 {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : 'AD'}
                             </div>
                             <div className="hidden md:block text-left">
