@@ -21,6 +21,13 @@ export default {
                     700: 'rgb(var(--color-brand-700) / <alpha-value>)',
                     800: 'rgb(var(--color-brand-800) / <alpha-value>)',
                     900: 'rgb(var(--color-brand-900) / <alpha-value>)',
+                },
+                coral: {
+                    500: 'rgb(var(--color-coral-500) / <alpha-value>)',
+                    600: 'rgb(var(--color-coral-600) / <alpha-value>)',
+                },
+                navy: {
+                    900: 'rgb(var(--color-brand-900) / <alpha-value>)',
                 }
             }
         },

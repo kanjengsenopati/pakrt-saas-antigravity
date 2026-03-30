@@ -129,7 +129,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in pb-10 max-w-4xl mx-auto md:px-0" translate="no">
+        <div className="space-y-6 animate-fade-in pb-32 max-w-4xl mx-auto md:px-0" translate="no">
             {/* Header / Top Navigation Mock (Mobile Style) */}
             <div className="flex items-center justify-between mt-2 md:mt-0">
                 <div className="flex items-center gap-3">
@@ -171,7 +171,7 @@ export default function Dashboard() {
                     </div>
                     <div className="relative z-10 flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Total Iuran</p>
+                            <p className="text-[10px] md:text-xs font-bold tracking-wider opacity-80 mb-1">Total Iuran</p>
                             <span className="text-xl md:text-3xl font-bold tracking-tight">{formatRupiah(stats.saldo)}</span>
                             <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic">85% Warga Membayar</p>
                         </div>
@@ -191,7 +191,7 @@ export default function Dashboard() {
                     </div>
                     <div className="relative z-10 flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Aduan Pending</p>
+                            <p className="text-[10px] md:text-xs font-bold tracking-wider opacity-80 mb-1">Aduan Pending</p>
                             <span className="text-xl md:text-3xl font-bold tracking-tight">{stats.pendingSurat} Laporan</span>
                             <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic">Tindak Lanjut Segera</p>
                         </div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
                     </div>
                     <div className="relative z-10 flex items-center justify-between">
                         <div className="max-w-[70%]">
-                            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Spotlight Agenda</p>
+                            <p className="text-[10px] md:text-xs font-bold tracking-wider opacity-80 mb-1">Spotlight Agenda</p>
                             <h3 className="text-base md:text-xl font-bold tracking-tight leading-tight truncate">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
                             </h3>
@@ -255,7 +255,7 @@ export default function Dashboard() {
                             >
                                 <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
                             </button>
-                            <span className="text-[9px] md:text-[11px] font-bold text-slate-500 uppercase tracking-wide text-center truncate w-full px-1">
+                            <span className="text-[9px] md:text-[11px] font-bold text-slate-500 tracking-wide text-center truncate w-full px-1">
                                 {action.label}
                             </span>
                         </div>
@@ -269,19 +269,19 @@ export default function Dashboard() {
                     <div className="bg-brand-50 px-5 py-1.5 rounded-full">
                         <House weight="fill" className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest">Beranda</span>
+                    <span className="text-[10px] font-extrabold tracking-widest">Beranda</span>
                 </div>
                 <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <Users weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Warga</span>
+                    <span className="text-[10px] font-bold tracking-widest">Warga</span>
                 </div>
                 <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <FileText weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Surat</span>
+                    <span className="text-[10px] font-bold tracking-widest">Surat</span>
                 </div>
                 <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <UserCircle weight="bold" className="w-6 h-6" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Akun</span>
+                    <span className="text-[10px] font-bold tracking-widest">Akun</span>
                 </div>
             </div>
 
@@ -290,7 +290,7 @@ export default function Dashboard() {
                 <div className="mt-8 space-y-6 hidden md:block">
                     <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
                         <div className="flex items-center justify-between mb-5">
-                            <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold uppercase tracking-widest">
+                            <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold tracking-widest">
                                 <ClockCounterClockwise size={20} className="text-brand-600" />
                                 Aktivitas Terbaru
                             </h3>
