@@ -67,6 +67,7 @@ model Warga {
   pj_nama           String?
   pj_kontak         String?
   verification_status String @default("VERIFIED") // 'PENDING' | 'VERIFIED' | 'REJECTED'
+  deletedAt           DateTime?
 
   tenant        Tenant   @relation(fields: [tenant_id], references: [id])
   anggota       AnggotaKeluarga[]
@@ -83,6 +84,7 @@ model Warga {
   @@unique([tenant_id, nik])
   @@index([tenant_id, scope])
   @@index([nik])
+  @@index([deletedAt])
 }
 
 model AnggotaKeluarga {
@@ -96,10 +98,12 @@ model AnggotaKeluarga {
   tanggal_lahir String?
   pendidikan    String?
   pekerjaan     String?
+  deletedAt     DateTime?
   warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
 
   @@unique([tenant_id, nik])
   @@index([tenant_id, warga_id])
+  @@index([deletedAt])
 }
 
 model Pengaturan {
@@ -120,10 +124,12 @@ model Pengurus {
   jabatan   String
   periode   String
   status    String   @default("aktif") // 'aktif' | 'tidak aktif'
+  deletedAt DateTime?
 
   warga     Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
 
   @@index([tenant_id, scope, warga_id])
+  @@index([deletedAt])
 }
 
 model Notulensi {
@@ -203,10 +209,12 @@ model SuratPengantar {
   tanggal     String
   nomor_surat String?
   status      String   // 'proses' | 'selesai' | 'ditolak'
+  deletedAt   DateTime?
 
   warga       Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
 
   @@index([tenant_id, scope, warga_id, status])
+  @@index([deletedAt])
 }
 
 model JadwalRonda {
@@ -259,11 +267,13 @@ model Keuangan {
   tanggal    String
   keterangan String
   url_bukti  String?
+  deletedAt  DateTime?
 
   pembayaranIuranId String? @unique
   pembayaranIuran   PembayaranIuran? @relation(fields: [pembayaranIuranId], references: [id])
 
   @@index([tenant_id, scope, tipe, kategori, tanggal])
+  @@index([deletedAt])
 }
 
 model PembayaranIuran {
@@ -279,11 +289,13 @@ model PembayaranIuran {
   url_bukti     String?
   status        String   @default("PENDING") // 'PENDING' | 'VERIFIED' | 'REJECTED'
   alasan_penolakan String?
+  deletedAt        DateTime?
 
   warga         Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
   keuangan      Keuangan?
 
   @@index([tenant_id, scope, warga_id, kategori, periode_tahun, status])
+  @@index([deletedAt])
 }
 
 model Aktivitas {
