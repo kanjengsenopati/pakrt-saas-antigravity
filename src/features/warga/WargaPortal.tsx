@@ -10,7 +10,6 @@ import {
     ShieldCheck, 
     ChartPieSlice, 
     Plus, 
-    House, 
     Wallet, 
     Lightbulb, 
     Checks, 
@@ -34,6 +33,7 @@ export default function WargaPortal() {
     const [isLoading, setIsLoading] = useState(true);
     const [activePolls, setActivePolls] = useState<any[]>([]);
     const [agendas, setAgendas] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState<'utama' | 'lainnya'>('utama');
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -103,20 +103,6 @@ export default function WargaPortal() {
  
     const { warga } = data;
  
-    const menuItems = [
-        { label: 'Depan', icon: House, path: '/warga-portal', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Profil', icon: UserCircle, path: '/profile', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Bayar', icon: HandCoins, path: '/iuran/baru', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Keuangan', icon: Wallet, path: '/iuran', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Aduan', icon: Megaphone, path: '/aduan/new', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Usulan', icon: Lightbulb, path: '/aduan/new', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Surat', icon: Checks, path: '/surat', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Ronda', icon: ShieldCheck, path: '/ronda', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Aset', icon: Package, path: '/aset', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'Pengurus', icon: Users, path: '/pengurus', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-        { label: 'AD/ART', icon: FileText, path: '/pengurus', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]', extra: { tab: 'ad-art' } },
-        { label: 'Lapor Tamu', icon: User, path: '/aduan/new', color: 'bg-[var(--warga-accent)] text-[var(--warga-primary)]' },
-    ];
  
     return (
         <div className="min-h-screen bg-[var(--warga-bg)] font-inter pb-6 transition-all duration-500 overflow-x-hidden" translate="no">
@@ -208,66 +194,125 @@ export default function WargaPortal() {
                 </div>
             </div>
 
-            {/* Grid Menu Actions (4 Columns) */}
+            {/* Tabbed Menu Redesign */}
             <div className="px-6 py-6">
-                <div className="grid grid-cols-4 gap-x-3 gap-y-6">
-                    {menuItems.map((item, idx) => (
-                        <div 
-                            key={idx} 
-                            onClick={() => {
-                                if (item.extra?.tab) {
-                                    navigate(item.path, { state: { activeTab: item.extra.tab } });
-                                } else {
-                                    navigate(item.path);
-                                }
-                            }}
-                            className="flex flex-col items-center gap-1.5 group cursor-pointer"
-                        >
-                            <div className={`w-full aspect-square bg-[var(--warga-primary)]/5 rounded-[22px] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10`}>
-                                <item.icon size={26} weight="duotone" className="text-[var(--warga-primary)]/80" />
-                            </div>
-                            <span className="text-[13.8px] font-bold text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
-                        </div>
-                    ))}
+                {/* Tabs Switcher */}
+                <div className="flex items-center gap-2 mb-6 p-1 bg-white/50 backdrop-blur-sm rounded-2xl w-fit">
+                    <button 
+                        onClick={() => setActiveTab('utama')}
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                            activeTab === 'utama' 
+                            ? 'bg-[var(--warga-primary)] text-white shadow-md' 
+                            : 'text-[var(--warga-primary)]/60 hover:bg-[var(--warga-primary)]/5'
+                        }`}
+                    >
+                        Menu Utama
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('lainnya')}
+                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                            activeTab === 'lainnya' 
+                            ? 'bg-[var(--warga-primary)] text-white shadow-md' 
+                            : 'text-[var(--warga-primary)]/60 hover:bg-[var(--warga-primary)]/5'
+                        }`}
+                    >
+                        Lainnya
+                    </button>
                 </div>
-            </div>
 
-            {/* Announcement Section */}
-            <div className="px-6 py-8">
-                <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-sm font-bold text-[var(--warga-primary)] tracking-tight font-outfit opacity-80">Pengumuman Terbaru</h3>
-                    <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[var(--warga-primary)]/80 underline decoration-[var(--warga-primary)]/30 underline-offset-4">Lihat Semua</button>
-                </div>
-                
-                <div className="space-y-4">
-                    {agendas.length > 0 ? (
-                        agendas.map((agenda: any) => (
-                            <div 
-                                key={agenda.id} 
-                                onClick={() => navigate('/agenda')}
-                                className="bg-[var(--warga-primary)] p-6 rounded-[28px] text-white relative overflow-hidden group shadow-2xl shadow-blue-950/20 active:scale-[0.98] transition-all"
-                            >
-                                <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                                <div className="relative z-10">
-                                    <div className="inline-flex px-3 py-1 bg-[var(--warga-primary-light)] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
-                                        Penting
+                {activeTab === 'utama' ? (
+                    <div className="space-y-10 animate-fade-in">
+                        {/* 4 Column Menu Utama */}
+                        <div className="grid grid-cols-4 gap-x-3 gap-y-6">
+                            {[
+                                { label: 'Iuran', icon: HandCoins, path: '/iuran/baru' },
+                                { label: 'Kas', icon: Wallet, path: '/iuran' },
+                                { label: 'Agenda', icon: Checks, path: '/agenda' },
+                                { label: 'Surat', icon: FileText, path: '/surat' },
+                            ].map((item, idx) => (
+                                <div 
+                                    key={idx} 
+                                    onClick={() => navigate(item.path)}
+                                    className="flex flex-col items-center gap-1.5 group cursor-pointer"
+                                >
+                                    <div className={`w-full aspect-square bg-[var(--warga-primary)]/5 rounded-[22px] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10`}>
+                                        <item.icon size={26} weight="duotone" className="text-[var(--warga-primary)]/80" />
                                     </div>
-                                    <h4 className="text-xl font-bold leading-tight mb-2 font-outfit">{agenda.judul}</h4>
-                                    <p className="text-white/70 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
-                                    <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest group/btn">
-                                        Lihat Detail
-                                        <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
-                                    </button>
+                                    <span className="text-[14px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
                                 </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="bg-white p-6 rounded-[28px] text-center border-2 border-dashed border-blue-100 py-12">
-                            <Megaphone size={40} weight="duotone" className="mx-auto text-blue-100 mb-2" />
-                            <p className="text-sm font-bold text-blue-300 tracking-tight">Belum ada pengumuman.</p>
+                            ))}
                         </div>
-                    )}
-                </div>
+
+                        {/* Announcement Section moved here for Menu Utama */}
+                        <div className="py-2 animate-fade-in-up">
+                            <div className="flex items-center justify-between mb-5">
+                                <h3 className="text-sm font-bold text-[var(--warga-primary)] tracking-tight font-outfit opacity-80">Informasi Terbaru</h3>
+                                <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[var(--warga-primary)]/80 underline decoration-[var(--warga-primary)]/30 underline-offset-4">Lihat Semua</button>
+                            </div>
+                            
+                            <div className="space-y-4">
+                                {agendas.length > 0 ? (
+                                    agendas.map((agenda: any) => (
+                                        <div 
+                                            key={agenda.id} 
+                                            onClick={() => navigate('/agenda')}
+                                            className="bg-[var(--warga-primary)] p-6 rounded-[28px] text-white relative overflow-hidden group shadow-2xl shadow-blue-950/20 active:scale-[0.98] transition-all"
+                                        >
+                                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+                                            <div className="relative z-10">
+                                                <div className="inline-flex px-3 py-1 bg-[var(--warga-primary-light)] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                                    Penting
+                                                </div>
+                                                <h4 className="text-xl font-bold leading-tight mb-2 font-outfit">{agenda.judul}</h4>
+                                                <p className="text-white/70 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
+                                                <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest group/btn">
+                                                    Lihat Detail
+                                                    <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="bg-white p-6 rounded-[28px] text-center border-2 border-dashed border-blue-100 py-12">
+                                        <Megaphone size={40} weight="duotone" className="mx-auto text-blue-100 mb-2" />
+                                        <p className="text-sm font-bold text-blue-300 tracking-tight">Belum ada pengumuman.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* Tab Lainnya: 2 Columns x 4 Rows with 1.5x Scale */
+                    <div className="grid grid-cols-2 gap-y-12 gap-x-6 animate-fade-in">
+                        {[
+                            { label: 'Warga', icon: Users, path: '/warga' },
+                            { label: 'Pengurus', icon: Users, path: '/pengurus' },
+                            { label: 'Profile', icon: UserCircle, path: '/profile' },
+                            { label: 'Aduan', icon: Megaphone, path: '/aduan/new' },
+                            { label: 'Usulan', icon: Lightbulb, path: '/aduan/new' },
+                            { label: 'Ronda', icon: ShieldCheck, path: '/ronda' },
+                            { label: 'Aset', icon: Package, path: '/aset' },
+                            { label: 'AD/ART', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' } },
+                        ].map((item, idx) => (
+                            <div 
+                                key={idx} 
+                                onClick={() => {
+                                    if (item.extra?.tab) {
+                                        navigate(item.path, { state: { activeTab: item.extra.tab } });
+                                    } else {
+                                        navigate(item.path);
+                                    }
+                                }}
+                                className="flex flex-col items-center gap-4 group cursor-pointer"
+                            >
+                                <div className={`w-[84px] h-[84px] bg-[var(--warga-primary)]/5 rounded-[2.5rem] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10 shadow-sm`}>
+                                    <item.icon size={36} weight="duotone" className="text-[var(--warga-primary)]/80" />
+                                </div>
+                                <span className="text-[16.8px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Active Polling (If exists) */}
