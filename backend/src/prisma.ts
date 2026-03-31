@@ -24,19 +24,21 @@ export const prisma = basePrisma.$extends({
         const softDeleteModels = ['Warga', 'AnggotaKeluarga', 'Pengurus', 'SuratPengantar', 'Keuangan', 'PembayaranIuran'];
 
         const anyArgs = args as any;
-        anyArgs.where = anyArgs.where || {};
-
+        
         // 1. Transformation: findUnique results in validation error if non-unique fields (like tenant_id or deletedAt) are added.
         // Converting to findFirst is safe and allows the extra filters.
         if (operation === 'findUnique' && (multiTenantModels.includes(model) || softDeleteModels.includes(model))) {
+            anyArgs.where = anyArgs.where || {};
             return (basePrisma as any)[model].findFirst(anyArgs);
         }
 
         // 2. Tenant Isolation Injection
         if (context?.tenantId && multiTenantModels.includes(model)) {
           if (['findMany', 'findFirst', 'count', 'groupBy', 'aggregate'].includes(operation)) {
+            anyArgs.where = anyArgs.where || {};
             anyArgs.where.tenant_id = context.tenantId;
           } else if (['update', 'updateMany', 'delete', 'deleteMany', 'upsert'].includes(operation)) {
+            anyArgs.where = anyArgs.where || {};
             anyArgs.where.tenant_id = context.tenantId;
           } else if (['create', 'createMany'].includes(operation)) {
             if (operation === 'create') {
@@ -50,7 +52,7 @@ export const prisma = basePrisma.$extends({
           }
         }
 
-        // 2. Soft Delete: Filtering (Exclude deleted records from READ)
+        // 3. Soft Delete: Filtering (Exclude deleted records from READ)
         if (softDeleteModels.includes(model)) {
           if (['findMany', 'findFirst', 'findUnique', 'count', 'groupBy', 'aggregate'].includes(operation)) {
             anyArgs.where = anyArgs.where || {};
