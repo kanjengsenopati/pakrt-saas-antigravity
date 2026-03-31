@@ -324,56 +324,6 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* Demo Login Quick Access Section */}
-            <section className="py-12 bg-gray-50/50 border-y border-gray-100 relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-brand-900/5 border border-brand-100">
-                        <div className="max-w-md text-center md:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-100">
-                                <Flashlight weight="fill" className="w-4 h-4" /> Quick Demo Login
-                            </div>
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-3 tracking-tight">Coba Demo Sistem Sekarang</h2>
-                            <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                                Gunakan kredensial di samping untuk masuk ke <strong>RT 100 SendangMulyo</strong> dengan berbagai hak akses untuk merasakan pengalaman penuh PAKRT.
-                            </p>
-                            <button
-                                onClick={() => navigate('/login')}
-                                className="px-6 py-3 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20"
-                            >
-                                Pergi ke Halaman Login <ArrowRight weight="bold" />
-                            </button>
-                        </div>
-
-                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                            {[
-                                { role: 'Ketua RT', email: 'ketuart@pakrt.id', pass: 'password123', icon: <House weight="duotone" className="w-6 h-6 text-brand-600" />, bg: 'bg-brand-50' },
-                                { role: 'Sekretaris', email: 'sekretaris@pakrt.id', pass: 'password123', icon: <Article weight="duotone" className="w-6 h-6 text-blue-600" />, bg: 'bg-blue-50' },
-                                { role: 'Bendahara', email: 'bendahara@pakrt.id', pass: 'password123', icon: <Wallet weight="duotone" className="w-6 h-6 text-brand-600" />, bg: 'bg-brand-50' },
-                                { role: 'Warga', email: 'warga@pakrt.id', pass: 'password123', icon: <Users weight="duotone" className="w-6 h-6 text-purple-600" />, bg: 'bg-purple-50' },
-                            ].map((user, i) => (
-                                <div key={i} className="p-4 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md transition-all group flex items-center gap-4">
-                                    <div className={`w-12 h-12 ${user.bg} rounded-xl flex items-center justify-center shadow-sm shrink-0`}>
-                                        {user.icon}
-                                    </div>
-                                    <div className="flex-1 overflow-hidden">
-                                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">{user.role}</div>
-                                        <div className="text-xs font-bold text-gray-900 mb-1 truncate">{user.email}</div>
-                                        <div className="text-[10px] text-gray-500 font-medium">Password: <span className="font-mono bg-gray-200 px-1 py-0.5 rounded text-gray-700">{user.pass}</span></div>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            navigate('/login');
-                                        }}
-                                        className="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 opacity-0 group-hover:opacity-100 transition-all hover:text-brand-600 hover:border-brand-200"
-                                    >
-                                        <SignIn weight="bold" className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             {/* Features Section */}
             <section id="fitur" className="py-24 bg-gray-50 border-t border-gray-100 relative">

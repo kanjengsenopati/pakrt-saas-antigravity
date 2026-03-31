@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
-import { Eye, EyeSlash, SignIn, ArrowLeft, Flashlight, House, Article, Wallet, Users } from '@phosphor-icons/react';
+import { Eye, EyeSlash, SignIn, ArrowLeft, Flashlight, House, Article, Wallet, Users, Buildings, CurrencyCircleDollar, Envelope } from '@phosphor-icons/react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
@@ -31,10 +31,6 @@ export default function Login() {
         }
     }, [setValue]);
 
-    const fillDemo = (email: string, pass: string) => {
-        setValue('contactOrEmail', email);
-        setValue('password', pass);
-    };
 
     const onSubmit = async (data: LoginFormData) => {
         setIsLoading(true);
@@ -111,39 +107,49 @@ export default function Login() {
                             </p>
                         </div>
 
-                        {/* Compact Demo Box */}
+                        {/* Platform Info Box */}
                         <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-slate-100 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 text-slate-400 uppercase text-[9px] font-bold tracking-widest">
-                                <Flashlight weight="fill" className="w-3.5 h-3.5 text-yellow-500" /> Quick Access Login
+                            <div className="flex items-center gap-2 mb-4 text-slate-400 uppercase text-[9px] font-bold tracking-widest text-left">
+                                <Buildings weight="fill" className="w-3.5 h-3.5 text-brand-600" /> Platform PakRT
                             </div>
 
-                            <div className="grid grid-cols-1 gap-2">
-                                {[
-                                    { role: 'Ketua RT', email: 'ketuart@pakrt.id', icon: <House weight="duotone" /> },
-                                    { role: 'Sekretaris', email: 'sekretaris@pakrt.id', icon: <Article weight="duotone" /> },
-                                    { role: 'Bendahara', email: 'bendahara@pakrt.id', icon: <Wallet weight="duotone" /> },
-                                    { role: 'Warga', email: 'warga@pakrt.id', icon: <Users weight="duotone" /> },
-                                ].map((demo, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => fillDemo(demo.email, 'password123')}
-                                        className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/50 border border-slate-100 hover:bg-white hover:border-brand-200 hover:shadow-md hover:shadow-brand-500/5 transition-all group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-brand-600 transition-colors">
-                                                {demo.icon}
-                                            </div>
-                                            <div className="text-left">
-                                                <div className="text-[14px] font-bold text-slate-900 leading-none mb-1">{demo.role}</div>
-                                                <div className="text-[12px] font-medium text-slate-500 leading-none">{demo.email}</div>
-                                            </div>
-                                        </div>
-                                        <SignIn weight="bold" className="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-600 transition-colors" />
-                                    </button>
-                                ))}
+                            <div className="space-y-4 text-left">
+                                <div className="flex items-start gap-3 group">
+                                    <div className="w-8 h-8 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-600 shrink-0 group-hover:bg-brand-600 group-hover:text-white transition-all">
+                                        <CurrencyCircleDollar weight="duotone" className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Transparansi Keuangan</div>
+                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Pencatatan kas dan iuran secara akurat & real-time di wilayah Anda.</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3 group">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                        <Envelope weight="duotone" className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Administrasi Digital</div>
+                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Layanan permohonan surat pengantar RT secara mandiri & otomatis.</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3 group">
+                                    <div className="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                        <Users weight="duotone" className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Layanan Mandiri Warga</div>
+                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Portal warga untuk bayar iuran, cek agenda, hingga lapor keluhan.</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="mt-4 text-center">
-                                <span className="text-[9px] text-slate-400 font-bold italic bg-slate-50 px-2 py-1 rounded-full border border-slate-100">Password: password123</span>
+                            
+                            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 text-slate-400 text-[10px] font-bold border border-slate-100">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                    Sistem Berbasis Cloud & Multi-Tenant
+                                </div>
                             </div>
                         </div>
                     </div>
