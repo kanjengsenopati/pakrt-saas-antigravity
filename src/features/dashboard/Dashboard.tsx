@@ -136,7 +136,7 @@ export default function Dashboard() {
                     <button className="p-2 rounded-xl hover:bg-gray-100 transition-colors md:hidden">
                         <Users weight="bold" className="w-6 h-6 text-slate-800" />
                     </button>
-                    <h2 className="text-xl font-bold text-slate-800 tracking-tight">Dashboard Pengurus</h2>
+                    <h2 className="text-[14px] font-normal text-slate-800 tracking-tight">Dashboard Pengurus</h2>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -151,7 +151,7 @@ export default function Dashboard() {
 
             {/* Greeting Section */}
             <div className="pt-2">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+                <h1 className="text-[17px] md:text-[21px] font-normal text-slate-900 tracking-tight">
                     Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
                 </h1>
                 <p className="text-body-sm mt-1">

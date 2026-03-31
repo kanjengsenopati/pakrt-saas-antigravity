@@ -105,11 +105,11 @@ body {
 }
 
 .text-label {
-    @apply text-[11px] font-medium text-slate-500 tracking-tight;
+    @apply text-[14px] font-normal text-slate-500 tracking-tight;
 }
 
 .text-body-sm {
-    @apply text-sm font-medium text-slate-500 leading-relaxed;
+    @apply text-[14px] font-normal text-slate-500 leading-relaxed;
 }
 
 .input-label {
