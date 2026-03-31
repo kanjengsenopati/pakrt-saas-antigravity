@@ -4,7 +4,7 @@ import {
     CheckCircle, Users, CurrencyCircleDollar,
     ArrowRight, MapPinLine,
     ChartLineUp, Wallet, Bell, House, Envelope,
-    Article, Calendar, Package, Heart, Flashlight, Megaphone, CaretDown, CaretUp, Buildings, SignIn
+    Article, Calendar, Package, Heart, Flashlight, Megaphone, CaretDown, CaretUp, Buildings
 } from '@phosphor-icons/react';
 import { useTenant } from '../../contexts/TenantContext';
 

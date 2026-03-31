@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
-import { Eye, EyeSlash, SignIn, ArrowLeft, Flashlight, House, Article, Wallet, Users, Buildings, CurrencyCircleDollar, Envelope } from '@phosphor-icons/react';
+import { Eye, EyeSlash, SignIn, ArrowLeft, Users, Buildings, CurrencyCircleDollar, Envelope } from '@phosphor-icons/react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
