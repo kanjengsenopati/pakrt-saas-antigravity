@@ -148,59 +148,59 @@ export const pembayaranIuranService = {
                 data: sanitizedData
             });
             
-            if (_autoVerify) {
-                const wargaRecord = await tx.warga.findUnique({ where: { id: processedData.warga_id } });
-                const wargaNama = wargaRecord?.nama || 'Warga';
-                
-                console.log("DEBUG - Creating keuangan entry for:", result.id);
-            try {
-                await tx.keuangan.create({
-                    data: {
-                        tenant_id: result.tenant_id,
-                        scope: result.scope || 'RT',
-                        tipe: 'pemasukan',
-                        kategori: 'Iuran Warga',
-                        nominal: result.nominal,
-                        tanggal: result.tanggal_bayar,
-                        pembayaranIuranId: result.id,
-                        keterangan: buildKeterangan(
-                            wargaNama,
-                            result.kategori,
-                            Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
-                            result.periode_tahun,
-                            result.id
-                        )
-                    }
-                });
-            } catch (kErr) {
-                console.error("DEBUG - Failed to create Keuangan entry:", kErr);
-                throw kErr;
-            }
+            const wargaRecord = await tx.warga.findUnique({ where: { id: processedData.warga_id } });
+            const wargaNama = wargaRecord?.nama || 'Warga';
 
-            try {
-                await aktivitasService.create({
-                    tenant_id: processedData.tenant_id,
-                    scope: processedData.scope || 'RT',
-                    action: 'Bayar Iuran',
-                    details: `Pembayaran iuran tunai warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Otomatis Terverifikasi`,
-                    timestamp: Date.now()
-                });
-            } catch (aErr) {
-                console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
+            if (_autoVerify) {
+                console.log("DEBUG - Creating keuangan entry for:", result.id);
+                try {
+                    await tx.keuangan.create({
+                        data: {
+                            tenant_id: result.tenant_id,
+                            scope: result.scope || 'RT',
+                            tipe: 'pemasukan',
+                            kategori: 'Iuran Warga',
+                            nominal: result.nominal,
+                            tanggal: result.tanggal_bayar,
+                            pembayaranIuranId: result.id,
+                            keterangan: buildKeterangan(
+                                wargaNama,
+                                result.kategori,
+                                Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
+                                result.periode_tahun,
+                                result.id
+                            )
+                        }
+                    });
+                } catch (kErr) {
+                    console.error("DEBUG - Failed to create Keuangan entry:", kErr);
+                    throw kErr;
+                }
+
+                try {
+                    await aktivitasService.create({
+                        tenant_id: processedData.tenant_id,
+                        scope: processedData.scope || 'RT',
+                        action: 'Bayar Iuran',
+                        details: `Pembayaran iuran tunai oleh ${wargaNama}: ${processedData.kategori} [${metadataMode || 'Manual'}] - Terverifikasi`,
+                        timestamp: Date.now()
+                    });
+                } catch (aErr) {
+                    console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
+                }
+            } else {
+                try {
+                    await aktivitasService.create({
+                        tenant_id: processedData.tenant_id,
+                        scope: processedData.scope || 'RT',
+                        action: 'Bayar Iuran',
+                        details: `Pembayaran iuran oleh ${wargaNama}: ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                        timestamp: Date.now()
+                    });
+                } catch (aErr) {
+                    console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
+                }
             }
-        } else {
-            try {
-                await aktivitasService.create({
-                    tenant_id: processedData.tenant_id,
-                    scope: processedData.scope || 'RT',
-                    action: 'Bayar Iuran',
-                    details: `Pembayaran iuran dari warga (ID: ${processedData.warga_id}): ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
-                    timestamp: Date.now()
-                });
-            } catch (aErr) {
-                console.warn("DEBUG - Optional Aktivitas log failed:", aErr);
-            }
-        }
 
             return result;
         });
@@ -246,11 +246,13 @@ export const pembayaranIuranService = {
                 }
             });
 
+            const wargaNama = iuran?.warga?.nama || 'Warga';
+
             await aktivitasService.create({
                 tenant_id: result.tenant_id,
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
-                details: `Verifikasi pembayaran iuran ID ${id} [DITERIMA]`,
+                details: `Verifikasi pembayaran iuran oleh ${wargaNama} [DITERIMA]`,
                 timestamp: Date.now()
             });
 
@@ -264,11 +266,13 @@ export const pembayaranIuranService = {
                 }
             });
 
+            const wargaNama = iuran?.warga?.nama || 'Warga';
+
             await aktivitasService.create({
                 tenant_id: result.tenant_id,
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
-                details: `Verifikasi pembayaran iuran ID ${id} [DITOLAK]: ${alasan}`,
+                details: `Verifikasi pembayaran iuran oleh ${wargaNama} [DITOLAK]: ${alasan}`,
                 timestamp: Date.now()
             });
 
@@ -382,7 +386,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: 'RT',
             action: 'Edit Iuran',
-            details: `Mengubah data pembayaran iuran: ${result.kategori} [${metadataMode || 'Manual'}]`,
+            details: `Mengubah data pembayaran iuran oleh ${(result as any).warga?.nama || 'Warga'}: ${result.kategori} [${metadataMode || 'Manual'}]`,
             timestamp: Date.now()
         });
         return result;
@@ -391,6 +395,12 @@ export const pembayaranIuranService = {
 
   async delete(id: string) {
     return await prisma.$transaction(async (tx) => {
+        const iuranToDelete = await tx.pembayaranIuran.findUnique({
+            where: { id },
+            include: { warga: true }
+        });
+        const wargaNama = iuranToDelete?.warga?.nama || 'Warga';
+
         const result = await tx.pembayaranIuran.delete({ where: { id } });
         
         // Sync to Keuangan: Delete existing record by relation ID
@@ -402,7 +412,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: 'RT',
             action: 'Batal Iuran',
-            details: `Membatalkan/Menghapus pembayaran iuran: ${result.kategori}`,
+            details: `Membatalkan/Menghapus pembayaran iuran oleh ${wargaNama}: ${result.kategori}`,
             timestamp: Date.now()
         });
         return result;
@@ -411,9 +421,13 @@ export const pembayaranIuranService = {
 
   async resubmit(id: string, updateData?: { url_bukti?: string }) {
     return await prisma.$transaction(async (tx) => {
-        const iuran = await tx.pembayaranIuran.findUnique({ where: { id } });
+        const iuran = await tx.pembayaranIuran.findUnique({ 
+            where: { id },
+            include: { warga: true }
+        });
 
         if (!iuran) throw new Error('Data iuran tidak ditemukan');
+        const wargaNama = iuran?.warga?.nama || 'Warga';
         if (iuran.status !== 'REJECTED') throw new Error('Hanya pembayaran yang ditolak yang dapat diajukan ulang');
 
         const result = await tx.pembayaranIuran.update({
@@ -429,7 +443,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: result.scope || 'RT',
             action: 'Ajukan Ulang Iuran',
-            details: `Warga mengajukan ulang pembayaran iuran yang ditolak: ${result.kategori}`,
+            details: `Warga (${wargaNama}) mengajukan ulang pembayaran iuran yang ditolak: ${result.kategori}`,
             timestamp: Date.now()
         });
 
