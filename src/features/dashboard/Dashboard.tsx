@@ -309,8 +309,8 @@ export default function Dashboard() {
                         )}
                     </div>
                 ) : (
-                    /* Tab Lainnya: 2 Columns x 4 Rows with 1.5x Scale */
-                    <div className="grid grid-cols-2 gap-y-10 gap-x-4 md:gap-x-12 animate-fade-in">
+                    /* Tab Lainnya: 4 Columns x 2 Rows with 1.5x Scale */
+                    <div className="grid grid-cols-4 gap-4 md:gap-8 animate-fade-in">
                         {[
                             { label: 'Warga', icon: Users, color: 'bg-blue-50 text-blue-600', link: '/warga' },
                             { label: 'Pengurus', icon: UserCircle, color: 'bg-slate-50 text-slate-600', link: '/pengurus' },
@@ -321,14 +321,14 @@ export default function Dashboard() {
                             { label: 'Profile', icon: UserCircle, color: 'bg-slate-50 text-slate-600', link: '/profile' },
                             { label: 'Setting', icon: Gear, color: 'bg-slate-50 text-slate-600', link: '/pengaturan' },
                         ].map((action, i) => (
-                            <div key={i} className="flex flex-col items-center gap-4 group">
+                            <div key={i} className="flex flex-col items-center gap-2 md:gap-3 group">
                                 <button 
                                     onClick={() => navigate(action.link)}
-                                    className={`w-[84px] h-[84px] md:w-[120px] md:h-[120px] ${action.color} rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center relative shadow-md border border-slate-100 group-hover:shadow-lg group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-2xl md:rounded-3xl flex items-center justify-center relative shadow-sm border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
                                 >
-                                    <action.icon weight="duotone" className="w-[36px] h-[36px] md:w-[54px] md:h-[54px]" />
+                                    <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
                                 </button>
-                                <span className="text-[16.8px] font-normal text-slate-600 text-center truncate w-full px-1">
+                                <span className="text-label text-center truncate w-full px-1">
                                     {action.label}
                                 </span>
                             </div>

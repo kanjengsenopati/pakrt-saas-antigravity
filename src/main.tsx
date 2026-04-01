@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 
 // --- Force Update & Cache Cleanup Logic ---
-const APP_VERSION = '1.5.6';
+const APP_VERSION = '1.5.7';
 const storedVersion = localStorage.getItem('app_version');
 
 if (storedVersion !== APP_VERSION) {
