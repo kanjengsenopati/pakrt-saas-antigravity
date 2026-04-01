@@ -60,8 +60,8 @@ export default function AduanForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight uppercase">Kirim Aspirasi Baru</h1>
-                    <p className="text-slate-500 text-xs font-medium uppercase tracking-widest mt-0.5">Scope: <span className="text-brand-600 font-black">{currentScope}</span></p>
+                    <h1 className="text-xl font-bold text-slate-900 tracking-tight">Kirim Aspirasi Baru</h1>
+                    <p className="text-slate-500 text-xs font-medium mt-1">Scope: <span className="text-brand-600 font-bold">{currentScope}</span></p>
                 </div>
             </div>
 
@@ -77,8 +77,8 @@ export default function AduanForm() {
                             <ChatTeardropDots weight="fill" className="w-6 h-6" />
                         </div>
                         <div className="text-center">
-                            <p className={`text-sm font-black uppercase tracking-tight ${selectedTipe === 'Aduan' ? 'text-rose-700' : 'text-slate-500'}`}>Aduan</p>
-                            <p className="text-[10px] text-slate-400 font-medium">Laporkan masalah</p>
+                            <p className={`text-sm font-semibold tracking-tight ${selectedTipe === 'Aduan' ? 'text-rose-700' : 'text-slate-600'}`}>Aduan</p>
+                            <p className="text-xs text-slate-400 font-medium">Laporkan masalah</p>
                         </div>
                     </button>
 
@@ -91,8 +91,8 @@ export default function AduanForm() {
                             <Lightbulb weight="fill" className="w-6 h-6" />
                         </div>
                         <div className="text-center">
-                            <p className={`text-sm font-black uppercase tracking-tight ${selectedTipe === 'Usulan' ? 'text-brand-700' : 'text-slate-500'}`}>Usulan</p>
-                            <p className="text-[10px] text-slate-400 font-medium">Ide & Saran warga</p>
+                            <p className={`text-sm font-semibold tracking-tight ${selectedTipe === 'Usulan' ? 'text-brand-700' : 'text-slate-600'}`}>Usulan</p>
+                            <p className="text-xs text-slate-400 font-medium">Ide & Saran warga</p>
                         </div>
                     </button>
                     <input type="hidden" {...register('tipe', { required: true })} />
@@ -102,7 +102,7 @@ export default function AduanForm() {
                 <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 leading-none">Judul Aspirasi</label>
+                            <label className="block text-sm font-medium text-slate-700 tracking-tight mb-2">Judul Aspirasi</label>
                             <input
                                 placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu jalan mati di Blok A" : "Contoh: Usul pengadaan taman bermain"}
                                 {...register('judul', { required: 'Judul wajib diisi' })}
@@ -112,14 +112,14 @@ export default function AduanForm() {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 leading-none">Deskripsi Lengkap</label>
+                            <label className="block text-sm font-medium text-slate-700 tracking-tight mb-2">Deskripsi Lengkap</label>
                             <textarea
                                 rows={5}
                                 placeholder="Jelaskan detail aspirasi Anda di sini..."
                                 {...register('deskripsi', { required: 'Deskripsi wajib diisi' })}
                                 className={`w-full rounded-2xl border-2 p-4 text-sm font-medium text-slate-700 outline-none transition-all placeholder:text-slate-300 leading-relaxed ${errors.deskripsi ? 'border-rose-100 bg-rose-50/30' : 'border-slate-50 bg-slate-50/50 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/5'}`}
                             />
-                            {errors.deskripsi && <p className="text-rose-500 text-[10px] font-bold mt-2 uppercase tracking-tight">{errors.deskripsi.message}</p>}
+                            {errors.deskripsi && <p className="text-rose-500 text-xs font-semibold mt-2">{errors.deskripsi.message}</p>}
                         </div>
 
                         <div className="pt-2">
@@ -144,17 +144,17 @@ export default function AduanForm() {
                                     {isAnonymous ? <ShieldCheck weight="fill" className="w-5 h-5" /> : <ShieldSlash weight="bold" className="w-5 h-5" />}
                                 </div>
                                 <div className="space-y-0.5">
-                                    <p className={`text-xs font-black uppercase tracking-tight ${isAnonymous ? 'text-brand-700' : 'text-slate-600'}`}>Sembunyikan Identitas Saya</p>
-                                    <p className="text-[10px] text-slate-400 font-medium leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</p>
+                                    <p className={`text-sm font-semibold tracking-tight ${isAnonymous ? 'text-brand-700' : 'text-slate-700'}`}>Sembunyikan Identitas Saya</p>
+                                    <p className="text-xs text-slate-500 font-medium leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</p>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isAnonymous ? 'bg-brand-500 border-brand-500 text-white' : 'border-slate-300 bg-white'}`}>
                                 {isAnonymous && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                             </div>
                         </div>
-                        <div className="mt-4 flex items-start gap-2 px-2">
-                            <Info weight="fill" className="text-amber-500 w-4 h-4 mt-0.5" />
-                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed italic">
+                        <div className="mt-4 flex items-start gap-2 px-2 py-3 bg-amber-50/50 rounded-xl border border-amber-100/50">
+                            <Info weight="fill" className="text-amber-500 w-4 h-4 mt-0.5 shrink-0" />
+                            <p className="text-[11px] text-amber-800/80 font-medium leading-relaxed italic">
                                 Catatan: Pengurus RT akan tetap memiliki akses ke identitas Anda untuk keperluan koordinasi dan tindak lanjut laporan.
                             </p>
                         </div>
@@ -171,7 +171,7 @@ export default function AduanForm() {
                         <button
                             type="submit"
                             disabled={isSubmitting || isUploading}
-                            className="flex-[2] py-4 bg-slate-900 border-b-4 border-slate-950 text-white rounded-2xl flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest shadow-lg shadow-slate-200 transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-[2] py-4 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-3 text-sm font-bold shadow-xl shadow-slate-200 transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

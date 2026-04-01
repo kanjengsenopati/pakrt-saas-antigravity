@@ -128,31 +128,14 @@ export const FileUpload = ({
     };
 
     return (
-        <div className="space-y-3">
-            {/* Header with tab toggle */}
-            <div className="flex items-center justify-between gap-2">
-                {label && (
-                    <label className="block text-sm font-bold text-slate-700 tracking-tight">{label}</label>
-                )}
-                <div className="flex gap-1 p-0.5 bg-gray-100 rounded-lg ml-auto">
-                    <button
-                        type="button"
-                        onClick={() => setMode('upload')}
-                        className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md transition-all ${mode === 'upload' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                        <Camera className="w-3 h-3" /> Upload
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setMode('link')}
-                        className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-md transition-all ${mode === 'link' ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                        <GoogleDriveLogo className="w-3 h-3" /> G. Drive
-                    </button>
-                </div>
-            </div>
+        <div className="space-y-4">
+            {label && (
+                <label className="block text-sm font-semibold text-slate-700 tracking-tight leading-none mb-1">{label}</label>
+            )}
 
-            {mode === 'upload' ? (
+            <div className="flex gap-4 items-start">
+                <div className="flex-1">
+                    {mode === 'upload' ? (
                 <div className="space-y-3">
                     <div className="flex flex-wrap gap-3">
                         {/* Existing image previews */}
@@ -291,7 +274,29 @@ export const FileUpload = ({
                         </div>
                     )}
                 </div>
-            )}
+                    )}
+                </div>
+
+                {/* Vertical Mode Switcher Buttons */}
+                <div className="flex flex-col gap-2 p-1 bg-slate-50 border border-slate-100 rounded-2xl shadow-sm shrink-0 min-w-[90px]">
+                    <button
+                        type="button"
+                        onClick={() => setMode('upload')}
+                        className={`flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl transition-all duration-300 ${mode === 'upload' ? 'bg-white shadow-md text-brand-600 scale-100 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 border border-transparent active:scale-95'}`}
+                    >
+                        <Camera weight={mode === 'upload' ? "fill" : "bold"} className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Upload</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setMode('link')}
+                        className={`flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl transition-all duration-300 ${mode === 'link' ? 'bg-white shadow-md text-brand-600 scale-100 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 border border-transparent active:scale-95'}`}
+                    >
+                        <GoogleDriveLogo weight={mode === 'link' ? "fill" : "bold"} className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest leading-none">G. Drive</span>
+                    </button>
+                </div>
+            </div>
 
             <input
                 type="file"
