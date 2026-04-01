@@ -17,7 +17,8 @@ import {
     UserCircle, 
     CaretLeft,
     SignOut,
-    Megaphone
+    Megaphone,
+    ClockCounterClockwise
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
@@ -137,14 +138,14 @@ export default function WargaPortal() {
 
             {/* Dashboard Title Row */}
             <div className="px-6 pt-4 pb-2">
-                <h2 className="text-sm font-black text-[var(--warga-primary)] uppercase tracking-[0.2em] font-outfit opacity-60">
+                <h2 className="text-[14px] font-normal text-slate-800 tracking-tight">
                     Dashboard Warga
                 </h2>
             </div>
  
             {/* Hero Section */}
             <div className="px-6 pt-4 pb-2">
-                <p className="text-xl font-bold text-[var(--warga-primary)] tracking-tight leading-none mb-1">
+                <p className="text-[17px] md:text-[21px] font-normal text-slate-900 tracking-tight mb-1">
                     {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
                 </p>
                 <div className="mt-4 mb-8 p-5 bg-white border border-blue-600/5 rounded-[28px] shadow-sm">
@@ -170,8 +171,8 @@ export default function WargaPortal() {
                                 {data.iuranPendingCount > 0 ? 'Tertunggak' : 'Lancar'}
                             </span>
                         </div>
-                        <p className={`text-[10px] font-black uppercase tracking-widest opacity-60 mb-0.5`}>Tagihan Iuran</p>
-                        <h4 className="text-[15px] font-bold leading-tight font-outfit">
+                        <p className={`text-[10px] font-bold tracking-wider opacity-80 mb-1`}>Tagihan Iuran</p>
+                        <h4 className="text-xl font-bold leading-tight tracking-tight">
                             {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Belum Bayar` : 'Semua Sudah Terbayar'}
                         </h4>
                     </div>
@@ -186,8 +187,8 @@ export default function WargaPortal() {
                                 {data.suratProsesCount > 0 ? 'Proses' : 'Selesai'}
                             </span>
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-0.5">Surat Keterangan</p>
-                        <h4 className="text-[15px] font-bold leading-tight font-outfit">
+                        <p className="text-[10px] font-bold tracking-wider opacity-80 mb-1">Surat Keterangan</p>
+                        <h4 className="text-xl font-bold leading-tight tracking-tight">
                             {data.suratProsesCount > 0 ? `${data.suratProsesCount} Surat Diproses` : 'Tidak Ada Ajuan Aktif'}
                         </h4>
                     </div>
@@ -246,7 +247,10 @@ export default function WargaPortal() {
                         {/* Announcement Section moved here for Menu Utama */}
                         <div className="py-2 animate-fade-in-up">
                             <div className="flex items-center justify-between mb-5">
-                                <h3 className="text-sm font-bold text-[var(--warga-primary)] tracking-tight font-outfit opacity-80">Informasi Terbaru</h3>
+                                <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold tracking-widest">
+                                    <ClockCounterClockwise size={20} className="text-[var(--warga-primary)]" />
+                                    Informasi Terbaru
+                                </h3>
                                 <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[var(--warga-primary)]/80 underline decoration-[var(--warga-primary)]/30 underline-offset-4">Lihat Semua</button>
                             </div>
                             
@@ -282,8 +286,8 @@ export default function WargaPortal() {
                         </div>
                     </div>
                 ) : (
-                    /* Tab Lainnya: 2 Columns x 4 Rows with 1.5x Scale */
-                    <div className="grid grid-cols-2 gap-y-12 gap-x-6 animate-fade-in">
+                    <div className="grid grid-cols-4 gap-y-6 gap-x-3 animate-fade-in">
+                        {/* Tab Lainnya: 4 Columns x 2 Rows with 1.5x Scale */}
                         {[
                             { label: 'Warga', icon: Users, path: '/warga' },
                             { label: 'Pengurus', icon: Users, path: '/pengurus' },
@@ -303,12 +307,12 @@ export default function WargaPortal() {
                                         navigate(item.path);
                                     }
                                 }}
-                                className="flex flex-col items-center gap-4 group cursor-pointer"
+                                className="flex flex-col items-center gap-1.5 group cursor-pointer"
                             >
-                                <div className={`w-[84px] h-[84px] bg-[var(--warga-primary)]/5 rounded-[2.5rem] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10 shadow-sm`}>
-                                    <item.icon size={36} weight="duotone" className="text-[var(--warga-primary)]/80" />
+                                <div className={`w-full aspect-square bg-[var(--warga-primary)]/5 rounded-[22px] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10 shadow-sm`}>
+                                    <item.icon size={26} weight="duotone" className="text-[var(--warga-primary)]/80" />
                                 </div>
-                                <span className="text-[16.8px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
+                                <span className="text-[14px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
                             </div>
                         ))}
                     </div>
