@@ -17,7 +17,8 @@ export const prisma = basePrisma.$extends({
         const multiTenantModels = [
             'User', 'Warga', 'Role', 'AnggotaKeluarga', 'Pengurus', 'Notulensi', 
             'Kehadiran', 'Aset', 'SuratPengantar', 'JadwalRonda', 'Agenda', 
-            'Keuangan', 'PembayaranIuran', 'Aktivitas', 'Pengaturan'
+            'Keuangan', 'PembayaranIuran', 'Aktivitas', 'Pengaturan',
+            'Polling', 'PollingVote'
         ];
 
         // Models that have the deletedAt field (Soft Delete supported)
