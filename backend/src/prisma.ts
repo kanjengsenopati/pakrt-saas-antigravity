@@ -23,28 +23,33 @@ export const prisma = basePrisma.$extends({
         // Models that have the deletedAt field (Soft Delete supported)
         const softDeleteModels = ['Warga', 'AnggotaKeluarga', 'Pengurus', 'SuratPengantar', 'Keuangan', 'PembayaranIuran'];
 
-        const anyArgs = args as any;
+        let currentOperation = operation;
+        const anyArgs = (args || {}) as any;
         
         // 1. Transformation: findUnique results in validation error if non-unique fields (like tenant_id or deletedAt) are added.
         // Converting to findFirst is safe and allows the extra filters.
         if (operation === 'findUnique' && (multiTenantModels.includes(model) || softDeleteModels.includes(model))) {
-            anyArgs.where = anyArgs.where || {};
-            return (basePrisma as any)[model].findFirst(anyArgs);
+            const hasTenantFilter = multiTenantModels.includes(model) && context?.tenantId;
+            const hasSoftDeleteFilter = softDeleteModels.includes(model);
+
+            if (hasTenantFilter || hasSoftDeleteFilter) {
+               currentOperation = 'findFirst' as any;
+            }
         }
 
         // 2. Tenant Isolation Injection
         if (context?.tenantId && multiTenantModels.includes(model)) {
-          if (['findMany', 'findFirst', 'count', 'groupBy', 'aggregate'].includes(operation)) {
+          if (['findMany', 'findFirst', 'count', 'groupBy', 'aggregate'].includes(currentOperation as string)) {
             anyArgs.where = anyArgs.where || {};
             anyArgs.where.tenant_id = context.tenantId;
-          } else if (['update', 'updateMany', 'delete', 'deleteMany', 'upsert'].includes(operation)) {
+          } else if (['update', 'updateMany', 'delete', 'deleteMany', 'upsert'].includes(currentOperation as string)) {
             anyArgs.where = anyArgs.where || {};
             anyArgs.where.tenant_id = context.tenantId;
-          } else if (['create', 'createMany'].includes(operation)) {
-            if (operation === 'create') {
+          } else if (['create', 'createMany'].includes(currentOperation as string)) {
+            if (currentOperation === 'create') {
               anyArgs.data = anyArgs.data || {};
               anyArgs.data.tenant_id = context.tenantId;
-            } else if (operation === 'createMany') {
+            } else if (currentOperation === 'createMany') {
                if (Array.isArray(anyArgs.data)) {
                  anyArgs.data = anyArgs.data.map((item: any) => ({ ...item, tenant_id: context.tenantId }));
                }
@@ -54,7 +59,7 @@ export const prisma = basePrisma.$extends({
 
         // 3. Soft Delete: Filtering (Exclude deleted records from READ)
         if (softDeleteModels.includes(model)) {
-          if (['findMany', 'findFirst', 'findUnique', 'count', 'groupBy', 'aggregate'].includes(operation)) {
+          if (['findMany', 'findFirst', 'findUnique', 'count', 'groupBy', 'aggregate'].includes(currentOperation as string)) {
             anyArgs.where = anyArgs.where || {};
             // Only add if not explicitly searching for deleted records
             if (anyArgs.where.deletedAt === undefined) {
@@ -78,20 +83,10 @@ export const prisma = basePrisma.$extends({
                 if (record) {
                     // Manual Cascading for Warga
                     if (model === 'Warga') {
-                      const family = await (basePrisma as any).anggotaKeluarga.findMany({
+                      await (basePrisma as any).anggotaKeluarga.updateMany({
                         where: { warga_id: record.id, deletedAt: null },
-                        select: { id: true, nik: true }
+                        data: { deletedAt: now }
                       });
-
-                      for (const member of family) {
-                        await (basePrisma as any).anggotaKeluarga.update({
-                          where: { id: member.id },
-                          data: { 
-                            deletedAt: now,
-                            nik: `${member.nik}::deleted::${now.getTime()}`
-                          }
-                        });
-                      }
                       
                       await (basePrisma as any).pengurus.updateMany({
                         where: { warga_id: record.id, deletedAt: null },
@@ -138,7 +133,17 @@ export const prisma = basePrisma.$extends({
           }
         }
 
-        return query(args);
+        try {
+          // If we transformed findUnique to findFirst, we call findFirst explicitly via basePrisma 
+          // because query callback expects the ORIGINAL operation's arguments/return types.
+          if (operation === 'findUnique' && (currentOperation as string) === 'findFirst') {
+              return (basePrisma as any)[model].findFirst(anyArgs);
+          }
+          return query(anyArgs);
+        } catch (error) {
+           console.error(`[Prisma Extension Error] Model: ${model}, Operation: ${operation}, Args:`, JSON.stringify(anyArgs, null, 2));
+           throw error;
+        }
       },
     },
   },
