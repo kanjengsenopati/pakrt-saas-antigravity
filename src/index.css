@@ -56,6 +56,7 @@
     body {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         letter-spacing: -0.011em;
+        @apply bg-slate-50 text-slate-900 antialiased;
     }
 
     button,
@@ -78,7 +79,7 @@
 }
 
 body {
-    @apply bg-gray-50 text-gray-900 antialiased leading-normal;
+    @apply bg-slate-50 text-slate-900 antialiased leading-[1.5];
     background-image: radial-gradient(circle at 15% 50%, var(--bg-glow-1), transparent 25%), radial-gradient(circle at 85% 30%, var(--bg-glow-2), transparent 25%);
     background-attachment: fixed;
 }
@@ -97,23 +98,23 @@ body {
 }
 
 .page-title {
-    @apply text-[1.25rem] font-medium text-gray-900 tracking-tight leading-tight;
+    @apply text-[22px] font-bold text-slate-900 tracking-[-0.5px] leading-tight;
 }
-
+ 
 .section-label {
-    @apply text-[11px] font-medium text-slate-500 tracking-tight;
+    @apply text-[16px] font-semibold text-slate-800 tracking-tight;
 }
-
-.text-label {
-    @apply text-[14px] font-normal text-slate-500 tracking-tight;
+ 
+.text-body {
+    @apply text-[14px] font-medium text-slate-600 leading-[1.5];
 }
-
-.text-body-sm {
-    @apply text-[14px] font-normal text-slate-500 leading-relaxed;
+ 
+.text-caption {
+    @apply text-[12px] font-normal text-slate-500 tracking-tight;
 }
-
+ 
 .input-label {
-    @apply text-sm font-medium text-gray-700 mb-1.5 block;
+    @apply text-sm font-semibold text-slate-700 mb-1.5 block;
 }
 
 .text-main {

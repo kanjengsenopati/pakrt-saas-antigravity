@@ -8,7 +8,7 @@ function App() {
 
     // Global UI Cache Buster & Error Safeguard
     useEffect(() => {
-        const UI_VERSION = 'v1.5.8';
+        const UI_VERSION = 'v1.6.0';
         const storedVersion = localStorage.getItem('app_ui_version');
 
         const forceCleanup = async () => {

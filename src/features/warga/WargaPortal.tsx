@@ -108,10 +108,10 @@ export default function WargaPortal() {
     return (
         <div className="min-h-screen bg-[var(--warga-bg)] font-inter pb-6 transition-all duration-500 overflow-x-hidden" translate="no">
             {/* Top Navigation Bar */}
-            <div className="sticky top-0 z-50 bg-[var(--warga-bg)]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-black/5">
-                <button onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-[var(--warga-primary)] flex items-center gap-2 group">
+            <div className="sticky top-0 z-50 bg-slate-50/80 backdrop-blur-md px-5 py-4 flex items-center justify-between border-b border-black/5">
+                <button onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-brand-600 flex items-center gap-2 group">
                     <CaretLeft size={24} weight="bold" />
-                    <span className="text-xs font-bold font-outfit uppercase tracking-wider group-active:translate-x-1 transition-transform">Kembali</span>
+                    <span className="text-caption font-bold group-active:translate-x-1 transition-transform">Kembali</span>
                 </button>
                 <div className="flex items-center gap-3">
                     <button 
@@ -137,84 +137,84 @@ export default function WargaPortal() {
             </div>
 
             {/* Dashboard Title Row */}
-            <div className="px-6 pt-4 pb-2">
-                <h2 className="text-[14px] font-normal text-slate-800 tracking-tight">
+            <div className="px-5 pt-4 pb-2">
+                <h2 className="section-label">
                     Dashboard Warga
                 </h2>
             </div>
  
             {/* Hero Section */}
-            <div className="px-6 pt-4 pb-2">
-                <p className="text-[17px] md:text-[21px] font-normal text-slate-900 tracking-tight mb-1">
+            <div className="px-5 pt-4 pb-2">
+                <h1 className="page-title mb-1">
                     {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
-                </p>
-                <div className="mt-4 mb-8 p-5 bg-white border border-blue-600/5 rounded-[28px] shadow-sm">
-                    <p className="text-[13px] text-[var(--warga-primary)]/70 leading-relaxed font-medium">
+                </h1>
+                <div className="mt-4 mb-8 p-4 bg-white border border-slate-100 rounded-card shadow-premium">
+                    <p className="text-body">
                         Anda terdaftar sebagai warga <strong>RT {currentTenant?.config?.rt || '-'}</strong>, <strong>RW {currentTenant?.config?.rw || '-'}</strong>, Kel {currentTenant?.config?.kelurahan || '-'}, Kec {currentTenant?.config?.kecamatan || '-'}, {currentTenant?.config?.kota || '-'}.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-2">
                     {/* Iuran Card */}
-                    <div className={`flex flex-col gap-1 px-5 py-5 rounded-[32px] shadow-sm border transition-all active:scale-[0.98] ${
+                    <div className={`flex flex-col gap-1 p-4 rounded-card border transition-all active:scale-[0.98] ${
                         data.iuranPendingCount > 0 
-                            ? 'bg-red-50/70 border-red-100 text-red-900 group shadow-red-900/5' 
-                            : 'bg-brand-50/70 border-brand-200/50 text-brand-900 group shadow-brand-900/5'
+                            ? 'bg-red-50/70 border-red-100 text-red-900 group shadow-premium shadow-red-900/5' 
+                            : 'bg-brand-50/70 border-brand-200/50 text-brand-900 group shadow-premium shadow-brand-900/5'
                     }`}>
                         <div className="flex items-center justify-between mb-3">
-                            <div className={`p-2.5 rounded-2xl ${data.iuranPendingCount > 0 ? 'bg-red-100 text-red-600' : 'bg-brand-100 text-brand-600'}`}>
+                            <div className={`p-2.5 rounded-btn ${data.iuranPendingCount > 0 ? 'bg-red-100 text-red-600' : 'bg-brand-100 text-brand-600'}`}>
                                 <Wallet size={20} weight="fill" />
                             </div>
-                            <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${
+                            <span className={`text-caption font-bold uppercase px-3 py-1 rounded-full ${
                                 data.iuranPendingCount > 0 ? 'bg-red-600 text-white' : 'bg-brand-600 text-white'
                             }`}>
                                 {data.iuranPendingCount > 0 ? 'Tertunggak' : 'Lancar'}
                             </span>
                         </div>
-                        <p className={`text-[10px] font-bold tracking-wider opacity-80 mb-1`}>Tagihan Iuran</p>
-                        <h4 className="text-xl font-bold leading-tight tracking-tight">
-                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Belum Bayar` : 'Semua Sudah Terbayar'}
+                        <p className="text-caption font-bold tracking-wider opacity-80 mb-1">Tagihan Iuran</p>
+                        <h4 className="text-lg font-bold leading-tight tracking-tight">
+                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan` : 'Lancar'}
                         </h4>
                     </div>
                     
                     {/* Surat Card */}
-                    <div className="flex flex-col gap-1 px-5 py-5 bg-blue-50/70 border-blue-100/50 border rounded-[32px] shadow-sm shadow-blue-900/5 text-blue-900 group active:scale-[0.98] transition-all">
+                    <div className="flex flex-col gap-1 p-4 bg-blue-50/70 border-blue-100/50 border rounded-card shadow-premium shadow-blue-900/5 text-blue-900 group active:scale-[0.98] transition-all">
                         <div className="flex items-center justify-between mb-3">
-                            <div className="p-2.5 bg-blue-100 text-blue-600 rounded-2xl">
+                            <div className="p-2.5 bg-blue-100 text-blue-600 rounded-btn">
                                 <FileText size={20} weight="fill" />
                             </div>
-                            <span className="text-[10px] font-black uppercase px-3 py-1 bg-blue-600 text-white rounded-full">
+                            <span className="text-caption font-bold uppercase px-3 py-1 bg-blue-600 text-white rounded-full">
                                 {data.suratProsesCount > 0 ? 'Proses' : 'Selesai'}
                             </span>
                         </div>
-                        <p className="text-[10px] font-bold tracking-wider opacity-80 mb-1">Surat Keterangan</p>
-                        <h4 className="text-xl font-bold leading-tight tracking-tight">
-                            {data.suratProsesCount > 0 ? `${data.suratProsesCount} Surat Diproses` : 'Tidak Ada Ajuan Aktif'}
+                        <p className="text-caption font-bold tracking-wider opacity-80 mb-1">Surat Keterangan</p>
+                        <h4 className="text-lg font-bold leading-tight tracking-tight">
+                            {data.suratProsesCount > 0 ? `${data.suratProsesCount} Surat` : 'Selesai'}
                         </h4>
                     </div>
                 </div>
             </div>
 
             {/* Tabbed Menu Redesign */}
-            <div className="px-6 py-6">
+            <div className="px-5 py-6">
                 {/* Tabs Switcher */}
-                <div className="flex items-center gap-2 mb-6 p-1 bg-white/50 backdrop-blur-sm rounded-2xl w-fit">
+                <div className="flex items-center gap-2 mb-6 p-1 bg-white/50 backdrop-blur-sm rounded-btn w-fit">
                     <button 
                         onClick={() => setActiveTab('utama')}
-                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
                             activeTab === 'utama' 
-                            ? 'bg-[var(--warga-primary)] text-white shadow-md' 
-                            : 'text-[var(--warga-primary)]/60 hover:bg-[var(--warga-primary)]/5'
+                            ? 'bg-brand-600 text-white shadow-md' 
+                            : 'text-brand-600/60 hover:bg-brand-600/5'
                         }`}
                     >
                         Menu Utama
                     </button>
                     <button 
                         onClick={() => setActiveTab('lainnya')}
-                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
                             activeTab === 'lainnya' 
-                            ? 'bg-[var(--warga-primary)] text-white shadow-md' 
-                            : 'text-[var(--warga-primary)]/60 hover:bg-[var(--warga-primary)]/5'
+                            ? 'bg-brand-600 text-white shadow-md' 
+                            : 'text-brand-600/60 hover:bg-brand-600/5'
                         }`}
                     >
                         Lainnya
@@ -236,10 +236,10 @@ export default function WargaPortal() {
                                     onClick={() => navigate(item.path)}
                                     className="flex flex-col items-center gap-1.5 group cursor-pointer"
                                 >
-                                    <div className={`w-full aspect-square bg-[var(--warga-primary)]/5 rounded-[22px] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10`}>
-                                        <item.icon size={26} weight="duotone" className="text-[var(--warga-primary)]/80" />
+                                    <div className={`w-full aspect-square bg-brand-600/5 rounded-btn flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
+                                        <item.icon size={26} weight="duotone" className="text-brand-600/80" />
                                     </div>
-                                    <span className="text-[14px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
+                                    <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
                                 </div>
                             ))}
                         </div>
@@ -247,11 +247,11 @@ export default function WargaPortal() {
                         {/* Announcement Section moved here for Menu Utama */}
                         <div className="py-2 animate-fade-in-up">
                             <div className="flex items-center justify-between mb-5">
-                                <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold tracking-widest">
-                                    <ClockCounterClockwise size={20} className="text-[var(--warga-primary)]" />
+                                <h3 className="section-label flex items-center gap-2">
+                                    <ClockCounterClockwise size={20} className="text-brand-600" />
                                     Informasi Terbaru
                                 </h3>
-                                <button onClick={() => navigate('/agenda')} className="text-[11px] font-bold text-[var(--warga-primary)]/80 underline decoration-[var(--warga-primary)]/30 underline-offset-4">Lihat Semua</button>
+                                <button onClick={() => navigate('/agenda')} className="text-caption font-bold text-brand-600/80 underline decoration-brand-600/30 underline-offset-4">Lihat Semua</button>
                             </div>
                             
                             <div className="space-y-4">
@@ -260,15 +260,15 @@ export default function WargaPortal() {
                                         <div 
                                             key={agenda.id} 
                                             onClick={() => navigate('/agenda')}
-                                            className="bg-[var(--warga-primary)] p-6 rounded-[28px] text-white relative overflow-hidden group shadow-2xl shadow-blue-950/20 active:scale-[0.98] transition-all"
+                                            className="bg-brand-600 p-5 rounded-card text-white relative overflow-hidden group shadow-premium active:scale-[0.98] transition-all"
                                         >
                                             <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
                                             <div className="relative z-10">
-                                                <div className="inline-flex px-3 py-1 bg-[var(--warga-primary-light)] rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                                <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-caption font-bold uppercase tracking-widest mb-4">
                                                     Penting
                                                 </div>
-                                                <h4 className="text-xl font-bold leading-tight mb-2 font-outfit">{agenda.judul}</h4>
-                                                <p className="text-white/70 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
+                                                <h4 className="text-lg font-bold leading-tight mb-2">{agenda.judul}</h4>
+                                                <p className="text-white/80 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
                                                 <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest group/btn">
                                                     Lihat Detail
                                                     <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
@@ -277,9 +277,9 @@ export default function WargaPortal() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="bg-white p-6 rounded-[28px] text-center border-2 border-dashed border-blue-100 py-12">
-                                        <Megaphone size={40} weight="duotone" className="mx-auto text-blue-100 mb-2" />
-                                        <p className="text-sm font-bold text-blue-300 tracking-tight">Belum ada pengumuman.</p>
+                                    <div className="bg-white p-6 rounded-card text-center border-2 border-dashed border-slate-100 py-12 shadow-premium">
+                                        <Megaphone size={40} weight="duotone" className="mx-auto text-slate-200 mb-2" />
+                                        <p className="text-caption font-bold text-slate-300 tracking-tight">Belum ada pengumuman.</p>
                                     </div>
                                 )}
                             </div>
@@ -309,10 +309,10 @@ export default function WargaPortal() {
                                 }}
                                 className="flex flex-col items-center gap-1.5 group cursor-pointer"
                             >
-                                <div className={`w-full aspect-square bg-[var(--warga-primary)]/5 rounded-[22px] flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] group-hover:bg-[var(--warga-primary)]/10 shadow-sm`}>
-                                    <item.icon size={26} weight="duotone" className="text-[var(--warga-primary)]/80" />
+                                <div className={`w-full aspect-square bg-brand-600/5 rounded-btn flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
+                                    <item.icon size={26} weight="duotone" className="text-brand-600/80" />
                                 </div>
-                                <span className="text-[14px] font-normal text-[var(--warga-primary)]/80 leading-none text-center whitespace-nowrap">{item.label}</span>
+                                <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
                             </div>
                         ))}
                     </div>
@@ -321,10 +321,10 @@ export default function WargaPortal() {
 
             {/* Active Polling (If exists) */}
             {activePolls.length > 0 && (
-                <div className="px-6 py-6 border-t border-black/5">
+                <div className="px-5 py-6 border-t border-black/5">
                     <div className="flex items-center gap-2 mb-4">
                         <ChartPieSlice size={18} weight="fill" className="text-brand-500" />
-                        <h3 className="text-xs font-black text-[var(--warga-primary)] uppercase tracking-widest font-outfit">Jajak Pendapat Aktif</h3>
+                        <h3 className="text-caption font-bold uppercase tracking-widest">Jajak Pendapat Aktif</h3>
                     </div>
                     <div className="space-y-4">
                         {activePolls.map((p: any) => (

@@ -99,7 +99,7 @@ export default function AduanForm() {
                 </div>
 
                 {/* Form Fields */}
-                <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 md:p-8 space-y-6">
+                <div className="bg-white rounded-card border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 tracking-tight mb-2">Judul Aspirasi</label>
@@ -137,7 +137,7 @@ export default function AduanForm() {
                     <div className="pt-6 border-t border-slate-50">
                         <div 
                             onClick={() => setValue('is_anonymous', !isAnonymous)}
-                            className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between group ${isAnonymous ? 'border-brand-500 bg-brand-50/30 shadow-sm' : 'border-slate-50 bg-slate-50/30 hover:border-slate-200'}`}
+                            className={`p-4 rounded-btn border-2 cursor-pointer transition-all flex items-center justify-between group ${isAnonymous ? 'border-brand-500 bg-brand-50/30 shadow-sm' : 'border-slate-50 bg-slate-50/30 hover:border-slate-200'}`}
                         >
                             <div className="flex items-center gap-4">
                                 <div className={`p-2 rounded-xl transition-all ${isAnonymous ? 'bg-brand-500 text-white shadow-md' : 'bg-white text-slate-400 border border-slate-100'}`}>
@@ -152,9 +152,9 @@ export default function AduanForm() {
                                 {isAnonymous && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                             </div>
                         </div>
-                        <div className="mt-4 flex items-start gap-2 px-2 py-3 bg-amber-50/50 rounded-xl border border-amber-100/50">
+                        <div className="mt-4 flex items-start gap-2 px-2 py-3 bg-amber-50/50 rounded-btn border border-amber-100/50">
                             <Info weight="fill" className="text-amber-500 w-4 h-4 mt-0.5 shrink-0" />
-                            <p className="text-[11px] text-amber-800/80 font-medium leading-relaxed italic">
+                            <p className="text-caption font-medium leading-relaxed italic">
                                 Catatan: Pengurus RT akan tetap memiliki akses ke identitas Anda untuk keperluan koordinasi dan tindak lanjut laporan.
                             </p>
                         </div>
@@ -171,7 +171,7 @@ export default function AduanForm() {
                         <button
                             type="submit"
                             disabled={isSubmitting || isUploading}
-                            className="flex-[2] py-4 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-3 text-sm font-bold shadow-xl shadow-slate-200 transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-[2] py-4 bg-slate-900 text-white rounded-btn flex items-center justify-center gap-3 text-sm font-bold shadow-premium transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

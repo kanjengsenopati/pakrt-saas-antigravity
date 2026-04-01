@@ -7,7 +7,14 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Plus Jakarta Sans', 'sans-serif'],
+                sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            borderRadius: {
+                'card': '20px',
+                'btn': '12px',
+            },
+            boxShadow: {
+                'premium': '0 8px 30px rgb(0, 0, 0, 0.04)',
             },
             colors: {
                 brand: {

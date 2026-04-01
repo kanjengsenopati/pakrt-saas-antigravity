@@ -134,10 +134,10 @@ export default function Dashboard() {
             {/* Header / Top Navigation Mock (Mobile Style) */}
             <div className="flex items-center justify-between mt-2 md:mt-0">
                 <div className="flex items-center gap-3">
-                    <button className="p-2 rounded-xl hover:bg-gray-100 transition-colors md:hidden">
+                    <button className="p-2 rounded-btn hover:bg-slate-100 transition-colors md:hidden">
                         <Users weight="bold" className="w-6 h-6 text-slate-800" />
                     </button>
-                    <h2 className="text-[14px] font-normal text-slate-800 tracking-tight">Dashboard Pengurus</h2>
+                    <h2 className="section-label">Dashboard Pengurus</h2>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -152,10 +152,10 @@ export default function Dashboard() {
 
             {/* Greeting Section */}
             <div className="pt-2">
-                <h1 className="text-[17px] md:text-[21px] font-normal text-slate-900 tracking-tight">
+                <h1 className="page-title">
                     Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
                 </h1>
-                <p className="text-body-sm mt-1">
+                <p className="text-body mt-1">
                     Anda tercatat sebagai {authUser?.role_entity?.name || authUser?.role || 'Pengurus'} di {currentScope}, {currentTenant?.name}.
                 </p>
             </div>
@@ -165,7 +165,7 @@ export default function Dashboard() {
                 {/* 1. Total Iuran Card (Royal Blue) */}
                 <div 
                     onClick={() => navigate('/iuran')}
-                    className="bg-brand-600 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-brand-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-brand-600 rounded-card p-4 md:p-5 text-white shadow-lg shadow-brand-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <Wallet weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
@@ -185,7 +185,7 @@ export default function Dashboard() {
                 {/* 2. Aduan Card (Coral/Red Alert) */}
                 <div 
                     onClick={() => navigate('/surat')}
-                    className="bg-coral-500 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-coral-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-coral-500 rounded-card p-4 md:p-5 text-white shadow-lg shadow-coral-500/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <FileText weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
@@ -205,7 +205,7 @@ export default function Dashboard() {
                 {/* 3. Community Spotlight (Deep Navy/Blue) */}
                 <div 
                     onClick={() => navigate('/agenda')}
-                    className="bg-navy-900 rounded-[1.25rem] md:rounded-[2rem] p-4 md:p-6 text-white shadow-lg shadow-navy-900/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-navy-900 rounded-card p-4 md:p-5 text-white shadow-lg shadow-navy-900/10 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <CalendarCheck weight="fill" className="w-20 h-20 md:w-40 md:h-40" />
@@ -213,7 +213,7 @@ export default function Dashboard() {
                     <div className="relative z-10 flex items-center justify-between">
                         <div className="max-w-[70%]">
                             <p className="text-[10px] md:text-xs font-bold tracking-wider opacity-80 mb-1">Spotlight Agenda</p>
-                            <h3 className="text-base md:text-xl font-bold tracking-tight leading-tight truncate">
+                            <h3 className="text-base md:text-[18px] font-bold tracking-tight leading-tight truncate">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
                             </h3>
                             <p className="text-[9px] md:text-[11px] font-medium opacity-90 mt-1 italic truncate">
@@ -230,10 +230,10 @@ export default function Dashboard() {
             {/* Tabbed Multi-Action Grid - Redesigned Interface */}
             <div className="px-1 md:px-0 mt-4">
                 {/* Tabs Switcher */}
-                <div className="flex items-center gap-2 mb-6 p-1.5 bg-slate-100/50 rounded-2xl w-fit mx-auto md:mx-0">
+                <div className="flex items-center gap-2 mb-6 p-1.5 bg-slate-100/50 rounded-btn w-fit mx-auto md:mx-0">
                     <button 
                         onClick={() => setActiveMenuTab('utama')}
-                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
                             activeMenuTab === 'utama' 
                             ? 'bg-white text-brand-600 shadow-sm ring-1 ring-black/5' 
                             : 'text-slate-500 hover:text-slate-700'
@@ -243,7 +243,7 @@ export default function Dashboard() {
                     </button>
                     <button 
                         onClick={() => setActiveMenuTab('lainnya')}
-                        className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
                             activeMenuTab === 'lainnya' 
                             ? 'bg-white text-brand-600 shadow-sm ring-1 ring-black/5' 
                             : 'text-slate-500 hover:text-slate-700'
@@ -266,7 +266,7 @@ export default function Dashboard() {
                                 <div key={i} className="flex flex-col items-center gap-2 md:gap-3 group">
                                     <button 
                                         onClick={() => navigate(action.link)}
-                                        className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-2xl md:rounded-3xl flex items-center justify-center relative shadow-sm border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                                        className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-btn md:rounded-card flex items-center justify-center relative shadow-premium border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
                                     >
                                         <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
                                     </button>
@@ -280,7 +280,7 @@ export default function Dashboard() {
                         {/* Recent Activities moved here for Menu Utama */}
                         {!isWarga && (
                             <div className="animate-fade-in-up">
-                                <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+                                <div className="bg-white rounded-card p-5 shadow-premium border border-slate-100">
                                     <div className="flex items-center justify-between mb-5">
                                         <h3 className="section-label flex items-center gap-2 !text-slate-800 font-bold tracking-widest">
                                             <ClockCounterClockwise size={20} className="text-brand-600" />
@@ -291,12 +291,12 @@ export default function Dashboard() {
                                         {recentActivities.slice(0, 3).length > 0 ? (
                                             recentActivities.slice(0, 3).map((act: any) => (
                                                 <div key={act.id} className="flex gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                                                    <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                                                    <div className="w-10 h-10 rounded-btn bg-brand-50 flex items-center justify-center shrink-0">
                                                         <ArrowRight className="text-brand-600" />
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-bold text-slate-900 leading-none">{toTitleCase(act.details)}</p>
-                                                        <p className="text-[11px] text-slate-400 mt-1 font-medium italic">{formatDate(act.timestamp)}</p>
+                                                        <p className="text-caption mt-1 italic">{formatDate(act.timestamp)}</p>
                                                     </div>
                                                 </div>
                                             ))
@@ -324,7 +324,7 @@ export default function Dashboard() {
                             <div key={i} className="flex flex-col items-center gap-2 md:gap-3 group">
                                 <button 
                                     onClick={() => navigate(action.link)}
-                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-2xl md:rounded-3xl flex items-center justify-center relative shadow-sm border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-btn md:rounded-card flex items-center justify-center relative shadow-premium border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
                                 >
                                     <action.icon weight="duotone" className="w-6 h-6 md:w-9 md:h-9" />
                                 </button>
@@ -340,22 +340,22 @@ export default function Dashboard() {
             {/* Fixed Bottom Navigation - Mobile Experience Refinement */}
             <div className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around z-50 md:hidden pb-1">
                 <div className="flex flex-col items-center gap-1.5 text-brand-600">
-                    <div className="bg-brand-50 px-5 py-1.5 rounded-full">
+                    <div className="bg-brand-50 px-5 py-1.5 rounded-btn transition-all active:scale-95">
                         <House weight="fill" className="w-6 h-6" />
                     </div>
-                    <span className="text-label !text-brand-600 !font-extrabold tracking-widest">Beranda</span>
+                    <span className="text-caption !text-brand-600 !font-bold">Beranda</span>
                 </div>
                 <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <Users weight="bold" className="w-6 h-6" />
-                    <span className="text-label tracking-widest">Warga</span>
+                    <span className="text-caption">Warga</span>
                 </div>
                 <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <FileText weight="bold" className="w-6 h-6" />
-                    <span className="text-label tracking-widest">Surat</span>
+                    <span className="text-caption">Surat</span>
                 </div>
                 <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
                     <UserCircle weight="bold" className="w-6 h-6" />
-                    <span className="text-label tracking-widest">Akun</span>
+                    <span className="text-caption">Akun</span>
                 </div>
             </div>
 
