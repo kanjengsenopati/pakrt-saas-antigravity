@@ -125,21 +125,21 @@ export default function AduanList() {
             {/* Quick Stats & Tabs */}
             <div className="flex flex-col gap-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-brand-500">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Masuk</p>
-                        <p className="text-2xl font-bold text-slate-900">{stats?.total || 0}</p>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-brand-500 text-center transition-all hover:shadow-md">
+                        <p className="text-[11px] font-medium text-slate-500 capitalize tracking-tight mb-1">Total Masuk</p>
+                        <p className="text-2xl font-medium text-slate-900">{stats?.total || 0}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-amber-500">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Menunggu</p>
-                        <p className="text-2xl font-bold text-slate-900">{stats?.pending || 0}</p>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-amber-500 text-center transition-all hover:shadow-md">
+                        <p className="text-[11px] font-medium text-slate-500 capitalize tracking-tight mb-1">Menunggu</p>
+                        <p className="text-2xl font-medium text-slate-900">{stats?.pending || 0}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-blue-500">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Diproses</p>
-                        <p className="text-2xl font-bold text-slate-900">{stats?.processing || 0}</p>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-blue-500 text-center transition-all hover:shadow-md">
+                        <p className="text-[11px] font-medium text-slate-500 capitalize tracking-tight mb-1">Diproses</p>
+                        <p className="text-2xl font-medium text-slate-900">{stats?.processing || 0}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-brand-600">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Selesai</p>
-                        <p className="text-2xl font-bold text-slate-900">{stats?.completed || 0}</p>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-l-brand-600 text-center transition-all hover:shadow-md">
+                        <p className="text-[11px] font-medium text-slate-500 capitalize tracking-tight mb-1">Selesai</p>
+                        <p className="text-2xl font-medium text-slate-900">{stats?.completed || 0}</p>
                     </div>
                 </div>
 
