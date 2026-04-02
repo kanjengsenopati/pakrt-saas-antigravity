@@ -789,7 +789,7 @@ export default function AgendaList() {
                         <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-white/50 sticky top-0 z-10 backdrop-blur-sm">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-brand-50 rounded-[14px] flex items-center justify-center shadow-sm">
-                                    <ImageSquare weight="duotone" className="text-brand-600 w-6 h-6" />
+                                    <ImageIcon weight="duotone" className="text-brand-600 w-6 h-6" />
                                 </div>
                                 <div>
                                     <Text.H2 className="!text-xl !font-bold">Dokumentasi Kegiatan</Text.H2>
