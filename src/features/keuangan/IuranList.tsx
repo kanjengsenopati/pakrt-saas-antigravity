@@ -53,6 +53,13 @@ export default function IuranList() {
     const [isRejecting, setIsRejecting] = useState(false);
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [expandedHistoryIds, setExpandedHistoryIds] = useState<string[]>([]);
+
+    const toggleHistory = (wargaId: string) => {
+        setExpandedHistoryIds(prev => 
+            prev.includes(wargaId) ? prev.filter(id => id !== wargaId) : [...prev, wargaId]
+        );
+    };
 
     const handleExport = async () => {
         if (!currentTenant) return;
@@ -414,9 +421,29 @@ export default function IuranList() {
                                 <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat pembayaran iuran akan muncul di sini</p>
                             </div>
                         </div>
-                    ) : (
-                        filteredIuran.map((iuran) => (
-                            <div key={iuran.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                    ) : (() => {
+                        // Grouping logic for mobile cards
+                        const grouped = Object.values(
+                            filteredIuran.reduce((acc, current) => {
+                                const wargaId = current.warga_id;
+                                if (!acc[wargaId]) {
+                                    acc[wargaId] = {
+                                        latest: current,
+                                        allPaidMonths: new Set<number>(),
+                                        history: []
+                                    };
+                                }
+                                current.periode_bulan.forEach(m => acc[wargaId].allPaidMonths.add(m));
+                                acc[wargaId].history.push(current);
+                                if (new Date(current.tanggal_bayar) > new Date(acc[wargaId].latest.tanggal_bayar)) {
+                                    acc[wargaId].latest = current;
+                                }
+                                return acc;
+                            }, {} as Record<string, { latest: IuranWithWarga, allPaidMonths: Set<number>, history: IuranWithWarga[] }>)
+                        ).sort((a, b) => new Date(b.latest.tanggal_bayar).getTime() - new Date(a.latest.tanggal_bayar).getTime());
+
+                        return grouped.map(({ latest: iuran, allPaidMonths, history }) => (
+                            <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
                                 <div className="p-4">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
@@ -439,42 +466,79 @@ export default function IuranList() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2 mb-4">
-                                        {iuran.status === 'VERIFIED' ? (
-                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 border border-brand-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
-                                                <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                Verified
-                                            </span>
-                                        ) : iuran.status === 'REJECTED' ? (
-                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
-                                                <X weight="bold" className="w-3.5 h-3.5" />
-                                                Rejected
-                                            </span>
-                                        ) : (
-                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
-                                                <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
-                                                Pending
-                                            </span>
-                                        )}
-                                        {iuran.status === 'REJECTED' && iuran.alasan_penolakan && (
-                                            <span className="text-[10px] text-rose-400 italic font-medium truncate max-w-[150px]">
-                                                {iuran.alasan_penolakan}
-                                            </span>
-                                        )}
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-2">
+                                            {iuran.status === 'VERIFIED' ? (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 border border-brand-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                    <CheckCircle weight="fill" className="w-3.5 h-3.5" />
+                                                    Verified
+                                                </span>
+                                            ) : iuran.status === 'REJECTED' ? (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                    <X weight="bold" className="w-3.5 h-3.5" />
+                                                    Rejected
+                                                </span>
+                                            ) : (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
+                                                    <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                                                    Pending
+                                                </span>
+                                            )}
+                                            {iuran.url_bukti && (
+                                                <button
+                                                    onClick={() => setViewProofUrl(iuran.url_bukti || null)}
+                                                    className="p-1.5 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-all shadow-sm border border-brand-100/30"
+                                                    title="Lihat Bukti"
+                                                >
+                                                    <ImageIcon weight="bold" className="w-3.5 h-3.5" />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <button 
+                                            onClick={() => toggleHistory(iuran.warga_id)}
+                                            className="text-[10px] font-bold text-brand-600 uppercase tracking-wider hover:underline"
+                                        >
+                                            {expandedHistoryIds.includes(iuran.warga_id) ? 'Tutup Riwayat' : 'Lihat Riwayat'}
+                                        </button>
                                     </div>
 
+                                    {/* History Panel */}
+                                    {expandedHistoryIds.includes(iuran.warga_id) && (
+                                        <div className="mb-4 bg-slate-50 border border-slate-100 rounded-xl p-3 animate-fade-in">
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">Riwayat Pembayaran {filterYear}</p>
+                                            <div className="space-y-2">
+                                                {history.map((h, idx) => (
+                                                    <div key={h.id} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
+                                                        <div>
+                                                            <div className="font-bold text-slate-700">{dateUtils.toDisplay(h.tanggal_bayar)}</div>
+                                                            <div className="text-slate-400 font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</div>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <div className="font-bold text-slate-900">{formatRupiah(h.nominal)}</div>
+                                                            <div className={`font-bold ${h.status === 'VERIFIED' ? 'text-brand-600' : h.status === 'REJECTED' ? 'text-rose-500' : 'text-amber-500'}`}>{h.status}</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3 mb-4">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 leading-none">Bulan Terbayar ({iuran.periode_tahun})</p>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 leading-none">Status Iuran ({iuran.periode_tahun})</p>
                                         <div className="grid grid-cols-6 gap-1.5">
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
-                                                const isPaid = iuran.periode_bulan.includes(month);
+                                                const isPaid = allPaidMonths.has(month);
+                                                // Find if this month was in a verified transaction
+                                                const htx = history.find(h => h.periode_bulan.includes(month));
+                                                const status = htx?.status || 'UNPAID';
+                                                
                                                 return (
                                                     <div 
                                                         key={month} 
                                                         className={`flex flex-col items-center justify-center p-1 rounded-lg border text-[10px] font-bold transition-all duration-300 shadow-sm
                                                             ${isPaid 
-                                                                ? (iuran.status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' 
-                                                                 : iuran.status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300'
+                                                                ? (status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' 
+                                                                 : status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300'
                                                                  : 'bg-rose-500 text-white border-rose-400')
                                                                 : 'bg-white text-slate-200 border-slate-100'
                                                             }`}
@@ -499,15 +563,6 @@ export default function IuranList() {
                                             </HasPermission>
                                         )}
                                         <div className="flex gap-2">
-                                            {iuran.url_bukti && (
-                                                <button
-                                                    onClick={() => setViewProofUrl(iuran.url_bukti || null)}
-                                                    className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-all shadow-sm border border-brand-100/50"
-                                                    title="Lihat Bukti"
-                                                >
-                                                    <ImageIcon weight="bold" className="w-4 h-4" />
-                                                </button>
-                                            )}
                                             {iuran.status === 'REJECTED' && (
                                                 isWarga ? (
                                                     <button
@@ -552,8 +607,8 @@ export default function IuranList() {
                                     </div>
                                 </div>
                             </div>
-                        ))
-                    )}
+                        ));
+                    })()}
                 </div>
             </div>
 
