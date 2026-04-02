@@ -19,6 +19,7 @@ import { formatRupiah } from '../../utils/currency';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
+import { Text } from '../../components/ui/Typography';
 
 
 const toTitleCase = (str: string) => {
@@ -136,10 +137,10 @@ export default function IuranList() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">Pembayaran Iuran</h1>
-                    <p className="text-xs font-semibold text-gray-400 tracking-normal mt-1 italic">
-                        Rekapitulasi pembayaran iuran wajib bulanan warga
-                    </p>
+                    <Text.H1>Pembayaran Iuran</Text.H1>
+                    <Text.Body className="mt-1 flex items-center gap-1.5 leading-none">
+                        Rekapitulasi pembayaran iuran wajib bulanan warga untuk <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-[8px] border border-brand-100">{currentScope}</span>
+                    </Text.Body>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <HasPermission module="Iuran Warga" action="Buat">
@@ -157,25 +158,19 @@ export default function IuranList() {
             {/* STATS WIDGETS */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
                 {/* TOTAL KOLEKTIF */}
-                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
+                <div className="bg-white py-4 px-4 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden transition-all duration-300 border-l-[6px] border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <CheckCircle weight="fill" className="text-brand-500 w-3 h-3" />
-                            Total Kolektif {filterYear || 'Semua'}
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{formatRupiah(totalCollectedYear)}</p>
+                        <Text.Label className="mb-2 !tracking-tight !text-slate-500">Total Kolektif {filterYear || 'Semua'}</Text.Label>
+                        <Text.Amount className="text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(totalCollectedYear)}</Text.Amount>
                     </div>
                 </div>
 
                 {/* MASUK BULAN INI */}
-                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
+                <div className="bg-brand-600 py-4 px-4 rounded-[20px] shadow-premium relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-brand-100 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Plus weight="bold" className="text-white w-3 h-3" />
-                            Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{formatRupiah(totalCollectedMonth)}</p>
+                        <Text.Label className="!text-brand-100 mb-2 !tracking-tight">Bulan Ini ({now.toLocaleString('id-ID', { month: 'short' })})</Text.Label>
+                        <Text.Amount className="!text-white text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(totalCollectedMonth)}</Text.Amount>
                     </div>
                 </div>
             </div>
@@ -245,14 +240,14 @@ export default function IuranList() {
                 {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50 border-b border-gray-100 text-sm font-semibold text-gray-500 tracking-normal">
+                        <thead className="bg-slate-50/50 border-b border-slate-100">
                             <tr>
-                                <th className="p-3">Tanggal Bayar & Kategori</th>
-                                <th className="p-3">Warga Pembayar</th>
-                                <th className="p-3">Periode Terbayar</th>
-                                <th className="p-3 text-right">Nominal (Rp)</th>
-                                <th className="p-3 text-center">Status</th>
-                                <th className="p-3 text-center px-6">Aksi</th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-400">Tanggal Bayar & Kategori</Text.Label></th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-400">Warga Pembayar</Text.Label></th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-400">Periode Terbayar</Text.Label></th>
+                                <th className="p-4 text-right"><Text.Label className="!text-slate-400">Nominal (Rp)</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-400">Status</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-400">Aksi</Text.Label></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -279,98 +274,89 @@ export default function IuranList() {
                                 </tr>
                             ) : (
                                 filteredIuran.map((iuran) => (
-                                    <tr key={iuran.id} className="hover:bg-gray-50/50 transition-colors group border-b border-gray-50 last:border-0 text-sm">
-                                        <td className="p-3">
-                                            <div className="font-semibold text-gray-900">{dateUtils.toDisplay(iuran.tanggal_bayar)}</div>
-                                            <div className="text-sm text-gray-400 font-mono mt-0.5 whitespace-nowrap tracking-normal italic">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</div>
-                                            <div className="text-xs text-brand-600 font-bold tracking-normal mt-1">{toTitleCase(iuran.kategori || 'Iuran Bulanan')}</div>
+                                    <tr key={iuran.id} className="hover:bg-slate-50/60 transition-colors group">
+                                        <td className="p-4 whitespace-nowrap">
+                                            <Text.H2 className="!text-slate-900">{dateUtils.toDisplay(iuran.tanggal_bayar)}</Text.H2>
+                                            <Text.Caption className="italic mt-0.5 !text-[10px] uppercase">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</Text.Caption>
+                                            <Text.Label className="!text-[10px] !text-brand-600 font-bold tracking-normal mt-1 flex items-center gap-1">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                                                {toTitleCase(iuran.kategori || 'Iuran Bulanan')}
+                                            </Text.Label>
                                         </td>
-                                        <td className="p-3">
-                                            <p className="font-semibold text-gray-900">{toTitleCase(iuran.warga?.nama || 'Warga Terhapus')}</p>
-                                            <p className="text-xs text-gray-500 font-mono mt-0.5">{iuran.warga?.nik}</p>
+                                        <td className="p-4">
+                                            <Text.H2 className="!text-slate-900 group-hover:text-brand-600 transition-colors">{toTitleCase(iuran.warga?.nama || 'Warga Terhapus')}</Text.H2>
+                                            <Text.Caption className="font-mono mt-0.5 !text-[10px]">{iuran.warga?.nik}</Text.Caption>
                                         </td>
-                                        <td className="p-3">
-                                            <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                        <td className="p-4">
+                                            <div className="flex flex-wrap gap-1.5 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
-                                                    <span key={b} className={`inline-flex px-1.5 py-0.5 rounded-lg text-sm font-semibold tracking-normal shadow-sm border ${
+                                                    <span key={b} className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-sm border ${
                                                     iuran.status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' :
-                                                        iuran.status === 'PENDING' ? 'bg-yellow-400 text-black border-yellow-500' :
-                                                        'bg-red-50 border-red-200 text-red-600'
+                                                        iuran.status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300' :
+                                                        'bg-rose-50 border-rose-200 text-rose-600'
                                                     }`}>
-                                                        {getMonthName(b).substring(0, 3)} {iuran.periode_tahun}
+                                                        {getMonthName(b).substring(0, 3).toUpperCase()} {iuran.periode_tahun}
                                                     </span>
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className="p-3 text-right">
-                                            <span className="font-semibold text-gray-900">
+                                        <td className="p-4 text-right">
+                                            <Text.Amount className="!text-slate-900">
                                                 {formatRupiah(iuran.nominal)}
-                                            </span>
+                                            </Text.Amount>
                                         </td>
-                                        <td className="p-3">
+                                        <td className="p-4">
                                             <div className="flex flex-col items-center gap-1">
                                                 {iuran.status === 'VERIFIED' ? (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-brand-600 text-white border border-brand-700 flex items-center gap-1 shadow-sm">
-                                                        <CheckCircle weight="fill" className="w-3 h-3" />
-                                                        Diterima
+                                                    <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-slate-900 text-white flex items-center gap-1.5 shadow-premium">
+                                                        <CheckCircle weight="fill" className="w-3.5 h-3.5" />
+                                                        SAH / TERIMA
                                                     </span>
                                                 ) : iuran.status === 'REJECTED' ? (
                                                     <div className="flex flex-col items-center">
-                                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-100 flex items-center gap-1 shadow-sm">
-                                                            <X weight="bold" className="w-3 h-3" />
-                                                            Ditolak
+                                                        <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm">
+                                                            <X weight="bold" className="w-3.5 h-3.5" />
+                                                            DITOLAK
                                                         </span>
                                                         {iuran.alasan_penolakan && (
-                                                            <p className="text-sm text-red-400 mt-1 max-w-[120px] text-center italic">{iuran.alasan_penolakan}</p>
+                                                            <Text.Caption className="!text-rose-400 mt-1 max-w-[120px] text-center italic">{iuran.alasan_penolakan}</Text.Caption>
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-black border border-yellow-500 flex items-center gap-1 shadow-sm animate-pulse">
-                                                        <CircleNotch weight="bold" className="w-3 h-3 animate-spin" />
-                                                        Pending
+                                                    <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
+                                                        <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                                                        PENDING
                                                     </span>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="p-3 px-6">
-                                            <div className="flex items-center justify-center gap-2">
+                                        <td className="p-4">
+                                            <div className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
                                                 {iuran.status === 'PENDING' && (
                                                     <HasPermission module="Iuran Warga" action="Ubah">
                                                         <button
                                                             onClick={() => setVerifyingId(iuran.id)}
-                                                            className="flex items-center gap-1 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
+                                                            className="p-2 bg-brand-600 text-white rounded-[10px] hover:bg-brand-700 transition-all shadow-premium"
                                                             title="Verifikasi Pembayaran"
                                                         >
-                                                            Verifikasi
+                                                            <CheckCircle weight="bold" className="w-4 h-4" />
                                                         </button>
                                                     </HasPermission>
                                                 )}
                                                 {iuran.status === 'REJECTED' && (
-                                                    isWarga ? (
-                                                        <button
-                                                            onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
-                                                            className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
-                                                            title="Edit & Ajukan Ulang"
-                                                        >
-                                                            Ajukan Ulang
-                                                        </button>
-                                                    ) : (
-                                                        <HasPermission module="Iuran Warga" action="Ubah">
-                                                            <button
-                                                                onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
-                                                                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold transition-all shadow-sm"
-                                                                title="Edit & Ajukan Ulang"
-                                                            >
-                                                                Ajukan Ulang
-                                                            </button>
-                                                        </HasPermission>
-                                                    )
+                                                    <button
+                                                        onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                        className="p-2 bg-amber-500 text-white rounded-[10px] hover:bg-amber-600 transition-all shadow-premium"
+                                                        title="Ajukan Ulang"
+                                                    >
+                                                        <PencilSimple weight="bold" className="w-4 h-4" />
+                                                    </button>
                                                 )}
                                                 {(iuran.status === 'PENDING' || iuran.status === 'VERIFIED') && (
                                                     <HasPermission module="Iuran Warga" action="Ubah">
                                                         <button
                                                             onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
-                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors shadow-sm bg-white border border-blue-100"
+                                                            className="p-2 text-slate-500 bg-slate-50 hover:text-brand-600 hover:bg-brand-50 rounded-[10px] transition-all"
                                                             title="Ubah Data"
                                                         >
                                                             <PencilSimple weight="bold" className="w-4 h-4" />
@@ -380,7 +366,7 @@ export default function IuranList() {
                                                 {iuran.url_bukti && (
                                                     <button
                                                         onClick={() => setViewProofUrl(iuran.url_bukti || null)}
-                                                        className="p-2 text-brand-600 hover:bg-brand-50 rounded-lg transition-colors shadow-sm bg-white border border-brand-100"
+                                                        className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-[10px] transition-all"
                                                         title="Lihat Bukti Bayar"
                                                     >
                                                         <Eye weight="bold" className="w-4 h-4" />
@@ -389,8 +375,8 @@ export default function IuranList() {
                                                 <HasPermission module="Iuran Warga" action="Hapus">
                                                     <button
                                                         onClick={() => handleDelete(iuran.id)}
-                                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors shadow-sm bg-white border border-red-100"
-                                                        title="Hapus / Batalkan Bayar"
+                                                        className="p-2 text-slate-400 bg-slate-50 hover:text-red-500 hover:bg-red-50 rounded-[10px] transition-all"
+                                                        title="Hapus / Batalkan"
                                                     >
                                                         <Trash weight="bold" className="w-4 h-4" />
                                                     </button>
@@ -444,61 +430,78 @@ export default function IuranList() {
 
                         return grouped.map(({ latest: iuran, allPaidMonths, history }) => (
                             <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
-                                <div className="p-4">
+                                 <div className="p-5">
                                     <div className="flex justify-between items-start mb-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
-                                                <span className="text-[8px] font-bold leading-none uppercase">{new Date(iuran.tanggal_bayar).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                <span className="text-sm font-black leading-none mt-0.5">{new Date(iuran.tanggal_bayar).getDate()}</span>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-[16px] bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100/50 shadow-inner">
+                                                <Text.Caption className="!text-[9px] !font-black leading-none uppercase">{new Date(iuran.tanggal_bayar).toLocaleDateString('id-ID', { month: 'short' })}</Text.Caption>
+                                                <Text.Amount className="!text-lg leading-none mt-1">{new Date(iuran.tanggal_bayar).getDate()}</Text.Amount>
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900 text-[14px] capitalize tracking-tight leading-tight mb-1">{toTitleCase(iuran.warga?.nama || 'Warga Terhapus')}</h3>
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="text-[10px] font-mono text-slate-400 tracking-tighter uppercase italic">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</span>
-                                                </div>
+                                                <Text.H2 className="!font-bold uppercase !tracking-tight line-clamp-1">{toTitleCase(iuran.warga?.nama || 'Warga Terhapus')}</Text.H2>
+                                                <Text.Caption className="italic uppercase !text-[10px] !tracking-normal">ID: {formatFormalId(iuran.tanggal_bayar, iuran.id)}</Text.Caption>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-base font-bold text-brand-600 tabular-nums tracking-tight">
-                                                {formatRupiah(iuran.nominal)}
-                                            </div>
-                                            <p className="text-[9px] text-brand-500 font-bold uppercase tracking-tight mt-0.5">{toTitleCase(iuran.kategori || 'Iuran Bulanan')}</p>
+                                            <Text.Amount className="!text-brand-600 block !tracking-tight">+{formatRupiah(iuran.nominal)}</Text.Amount>
+                                            <Text.Label className="!text-brand-500 !text-[9px] !tracking-tight uppercase !font-bold">Iuran Warga</Text.Label>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-2">
                                             {iuran.status === 'VERIFIED' ? (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-600 border border-brand-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-slate-900 text-white flex items-center gap-1.5 shadow-premium uppercase tracking-wider">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                    Verified
+                                                    VERIFIED
                                                 </span>
                                             ) : iuran.status === 'REJECTED' ? (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
                                                     <X weight="bold" className="w-3.5 h-3.5" />
-                                                    Rejected
+                                                    REJECTED
                                                 </span>
                                             ) : (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
+                                                <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
                                                     <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
-                                                    Pending
+                                                    PENDING
                                                 </span>
                                             )}
+                                            
+                                            {!isWarga && (
+                                                <div className="flex items-center gap-1 ml-1">
+                                                    <HasPermission module="Iuran Warga" action="Ubah">
+                                                        <button 
+                                                            onClick={() => navigate(`/iuran/edit/${iuran.id}`)}
+                                                            className="p-2 text-slate-400 hover:text-brand-600 transition-all active:scale-95 bg-slate-50 rounded-[10px]"
+                                                        >
+                                                            <PencilSimple weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                    <HasPermission module="Iuran Warga" action="Hapus">
+                                                        <button 
+                                                            onClick={() => handleDelete(iuran.id)}
+                                                            className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-95 bg-slate-50 rounded-[10px]"
+                                                        >
+                                                            <Trash weight="bold" className="w-4 h-4" />
+                                                        </button>
+                                                    </HasPermission>
+                                                </div>
+                                            )}
+
                                             {iuran.url_bukti && (
                                                 <button
                                                     onClick={() => setViewProofUrl(iuran.url_bukti || null)}
-                                                    className="p-1.5 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-all shadow-sm border border-brand-100/30"
-                                                    title="Lihat Bukti"
+                                                    className="p-2 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-[10px] transition-all ml-1 shadow-sm"
                                                 >
-                                                    <ImageIcon weight="bold" className="w-3.5 h-3.5" />
+                                                    <ImageIcon weight="bold" className="w-4 h-4" />
                                                 </button>
                                             )}
                                         </div>
                                         <button 
                                             onClick={() => toggleHistory(iuran.warga_id)}
-                                            className="text-[10px] font-bold text-brand-600 uppercase tracking-wider hover:underline"
+                                            className="text-[10px] font-black text-brand-600 uppercase tracking-widest bg-brand-50 px-4 py-2 rounded-full hover:bg-brand-100 transition-colors shadow-inner"
                                         >
-                                            {expandedHistoryIds.includes(iuran.warga_id) ? 'Tutup Riwayat' : 'Lihat Riwayat'}
+                                            {expandedHistoryIds.includes(iuran.warga_id) ? 'Tutup' : 'Riwayat'}
                                         </button>
                                     </div>
 

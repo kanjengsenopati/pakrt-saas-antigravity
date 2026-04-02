@@ -10,6 +10,7 @@ import { PembayaranIuran, Warga } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
 import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch, Warning, X, Clock } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
 
 type IuranFormData = Omit<PembayaranIuran, 'id' | 'tenant_id'>;
@@ -247,8 +248,8 @@ export default function IuranForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="page-title">{isEdit ? 'Ubah Pembayaran Iuran' : 'Catat Pembayaran Iuran'}</h1>
-                    <p className="text-muted mt-0.5">Pembayaran bulanan wajib untuk warga <span className="font-semibold text-brand-600">{currentScope}</span></p>
+                    <Text.H1>{isEdit ? 'Ubah Pembayaran Iuran' : 'Catat Pembayaran Iuran'}</Text.H1>
+                    <Text.Body className="mt-0.5">Pembayaran bulanan wajib untuk warga <span className="font-semibold text-brand-600">{currentScope}</span></Text.Body>
                 </div>
             </div>
 
@@ -307,44 +308,44 @@ export default function IuranForm() {
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
                             <div className="bg-brand-600 p-4 text-white">
-                                <h3 className="text-sm font-semibold flex items-center gap-2">
+                                <Text.Label className="!text-white flex items-center gap-2">
                                     <ChartPieSlice weight="fill" className="w-5 h-5" />
                                     Ringkasan Kewajiban
-                                </h3>
-                                <p className="text-sm text-brand-100 mt-0.5 tracking-normal font-medium">Tahun {watchTahun || new Date().getFullYear()}</p>
+                                </Text.Label>
+                                <Text.Caption className="!text-brand-100 mt-0.5 !tracking-normal font-medium capitalize">Tahun {watchTahun || new Date().getFullYear()}</Text.Caption>
                             </div>
                             
                             <div className="p-5 space-y-5 bg-gradient-to-b from-white to-gray-50">
                                 <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <p className="section-label !text-sm text-gray-400">Total Tagihan 12 Bulan</p>
-                                    <p className="value-highlight">
+                                    <Text.Label className="!text-slate-400">Total Tagihan 12 Bulan</Text.Label>
+                                    <Text.Amount className="!text-slate-900">
                                         {formatRupiah(defaultNominal * 12)}
-                                    </p>
-                                    <p className="text-xs text-gray-400 italic font-medium">Tarif: {formatRupiah(defaultNominal)} / bln</p>
+                                    </Text.Amount>
+                                    <Text.Caption className="italic font-medium">Tarif: {formatRupiah(defaultNominal)} / bln</Text.Caption>
                                 </div>
 
                                 <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <p className="section-label !text-sm text-emerald-600">Sudah Dibayar (Sistem)</p>
-                                    <p className="value-highlight !text-emerald-600">
+                                    <Text.Label className="!text-emerald-600">Sudah Dibayar (Sistem)</Text.Label>
+                                    <Text.Amount className="!text-emerald-600">
                                         {formatRupiah(alreadyPaid)}
-                                    </p>
+                                    </Text.Amount>
                                     {pendingAmount > 0 && (
                                         <div className="flex items-center gap-1.5 mt-1 text-amber-600">
                                             <Clock className="w-3.5 h-3.5" />
-                                            <span className="text-xs font-bold whitespace-nowrap">Menunggu Verifikasi: {formatRupiah(pendingAmount)}</span>
+                                            <Text.Caption className="font-bold whitespace-nowrap !text-amber-600">Menunggu Verifikasi: {formatRupiah(pendingAmount)}</Text.Caption>
                                         </div>
                                     )}
-                                    <p className="text-xs text-emerald-500/70 italic font-medium mt-1">Hingga periode saat ini</p>
+                                    <Text.Caption className="!text-emerald-500/70 italic font-medium mt-1">Hingga periode saat ini</Text.Caption>
                                 </div>
 
                                 <div className="p-4 bg-brand-50 rounded-xl border border-brand-100 shadow-inner">
-                                    <p className="section-label !text-sm text-brand-600 mb-1">Sisa Kewajiban</p>
-                                    <p className="text-[22px] font-semibold text-brand-700 tabular-nums leading-none">
+                                    <Text.Label className="!text-brand-600 mb-1">Sisa Kewajiban</Text.Label>
+                                    <Text.Amount className="!text-brand-700 !text-2xl leading-none">
                                         {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
-                                    </p>
-                                    <p className="text-xs text-brand-500 mt-2 font-medium italic">
+                                    </Text.Amount>
+                                    <Text.Caption className="!text-brand-500 mt-2 font-medium italic">
                                         {paymentMode === 'Pas' ? '*(Otomatis Mode Pas)' : '*(Setelah nominal ini lunas)'}
-                                    </p>
+                                    </Text.Caption>
                                 </div>
                             </div>
                         </div>
@@ -354,8 +355,8 @@ export default function IuranForm() {
                                 <Users weight="duotone" className="w-6 h-6 text-gray-300" />
                             </div>
                             <div>
-                                <p className="text-xs font-semibold text-gray-500">Menunggu Data Warga</p>
-                                <p className="text-xs text-gray-400 mt-1">Pilih warga dan kategori untuk melihat ringkasan kewajiban</p>
+                                <Text.Label className="!text-slate-400">Menunggu Data Warga</Text.Label>
+                                <Text.Caption className="mt-1">Pilih warga dan kategori untuk melihat ringkasan kewajiban</Text.Caption>
                             </div>
                         </div>
                     )}
@@ -366,17 +367,17 @@ export default function IuranForm() {
                             <CalendarBlank weight="fill" className="w-4 h-4" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-blue-900 leading-tight">Info Periode</p>
-                            <p className="text-sm text-blue-700 mt-0.5 leading-relaxed">Pastikan periode tahun sesuai dengan iuran yang sedang berjalan.</p>
+                            <Text.H2 className="!leading-tight !text-blue-900">Info Periode</Text.H2>
+                            <Text.Body className="!text-blue-700 mt-0.5 leading-relaxed">Pastikan periode tahun sesuai dengan iuran yang sedang berjalan.</Text.Body>
                         </div>
                     </div>
                 </div>
 
                 {/* RIGHT COLUMN: FORM */}
                 <div className="md:col-span-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="border-b border-gray-50 p-4 bg-gray-50/30 flex items-center gap-2">
+                    <div className="border-b border-gray-50 p-4 bg-slate-50/10 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-brand-500" />
-                        <span className="section-label">Input Transaksi Pembayaran</span>
+                        <Text.Label className="uppercase !tracking-widest">Input Transaksi Pembayaran</Text.Label>
                     </div>
 
                     <div className="p-6 md:p-8">
