@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { notulensiService } from '../../services/notulensiService';
 import { Agenda, Notulensi } from '../../database/db';
-import { Plus, PencilSimple, Trash, CalendarBlank, Users, CheckCircle, FileText, X, ImageSquare, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, Search, Calendar, Image as ImageIcon } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Users, CheckCircle, FileText, X, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, MagnifyingGlass, Calendar, Image as ImageIcon } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
@@ -197,7 +197,7 @@ export default function AgendaList() {
 
     const { 
         mergedData: agendaItems, 
-        isFetching: isLoading, 
+        isFetching: _isLoading, 
         refresh: loadData 
     } = useHybridData<Agenda[]>({
         fetcher: () => agendaService.getAll(currentTenant?.id || '', currentScope),
@@ -206,11 +206,13 @@ export default function AgendaList() {
 
     const agendaList = agendaItems || [];
     
+    // Fetch Notulensi for status tracking
     const { mergedData: notulensiItems } = useHybridData<Notulensi[]>({
         fetcher: () => notulensiService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });
-    const notulensiList = notulensiItems || [];
+    // @ts-ignore - Used in legacy logic or for future status indicators
+    const _notulensiList = notulensiItems || [];
 
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'terencana' | 'terlaksana'>('all');
@@ -241,7 +243,7 @@ export default function AgendaList() {
     const handleViewPhotos = (agenda: Agenda) => {
         setViewPhotosModal({
             isOpen: true,
-            photos: agenda.dokumentasi_urls || [],
+            photos: agenda.foto_dokumentasi || [],
             judul: agenda.judul
         });
     };
@@ -280,7 +282,7 @@ export default function AgendaList() {
 
     const totalAgenda = filteredAgenda.length;
     const realizedAgenda = (filteredAgenda || []).filter(a => a.is_terlaksana).length;
-    const pendingAgenda = (filteredAgenda || []).filter(a => !a.is_terlaksana && isPast(a.tanggal_waktu)).length;
+    const pendingAgenda = (filteredAgenda || []).filter(a => !a.is_terlaksana && isPast(a.tanggal)).length;
     const upcomingAgenda = totalAgenda - realizedAgenda - pendingAgenda;
 
     const totalPendanaan = filteredAgenda.reduce((acc, curr) => curr.butuh_pendanaan ? acc + (curr.nominal_biaya || 0) : acc, 0);
@@ -472,7 +474,7 @@ export default function AgendaList() {
                                 className="w-full pl-6 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-[12px] focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700 shadow-sm group-hover:bg-white"
                             />
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-brand-500 transition-colors">
-                                <Search weight="bold" className="w-4 h-4" />
+                                <MagnifyingGlass weight="bold" className="w-4 h-4" />
                             </div>
                         </div>
                         <div className="flex items-center bg-slate-50 p-1.5 rounded-[12px] border border-slate-100 shadow-sm">
@@ -518,8 +520,8 @@ export default function AgendaList() {
                                                     <td className="py-5 pl-2">
                                                         <div className="flex items-center gap-4">
                                                             <div className={`w-12 h-12 rounded-[14px] flex flex-col items-center justify-center border ${agenda.is_terlaksana ? 'bg-slate-50 border-slate-200 text-slate-400' : 'bg-brand-50 border-brand-100 text-brand-600 shadow-sm'}`}>
-                                                                <Text.Label className="!text-[10px] !tracking-tighter !font-black !leading-none">{dateUtils.format(agenda.tanggal_waktu, 'MMM').toUpperCase()}</Text.Label>
-                                                                <Text.Amount className="text-lg !leading-none mt-1">{dateUtils.format(agenda.tanggal_waktu, 'dd')}</Text.Amount>
+                                                                <Text.Label className="!text-[10px] !tracking-tighter !font-black !leading-none">{dateUtils.format(agenda.tanggal, 'MMM').toUpperCase()}</Text.Label>
+                                                                <Text.Amount className="text-lg !leading-none mt-1">{dateUtils.format(agenda.tanggal, 'dd')}</Text.Amount>
                                                             </div>
                                                             <div className="max-w-[280px]">
                                                                 <button 
@@ -527,7 +529,7 @@ export default function AgendaList() {
                                                                     className="text-left group/title"
                                                                 >
                                                                     <Text.H2 className="!text-sm group-hover/title:text-brand-600 transition-colors line-clamp-1">{agenda.judul}</Text.H2>
-                                                                    <Text.Caption className="line-clamp-1 mt-0.5">{agenda.deskripsi_singkat || 'Tidak ada deskripsi'}</Text.Caption>
+                                                                    <Text.Caption className="line-clamp-1 mt-0.5">{agenda.deskripsi ? (agenda.deskripsi.substring(0, 50) + '...') : 'Tidak ada deskripsi'}</Text.Caption>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -536,7 +538,7 @@ export default function AgendaList() {
                                                         <div className="space-y-1">
                                                             <div className="flex items-center gap-1.5 text-slate-600">
                                                                 <Clock weight="bold" className="w-3.5 h-3.5 text-slate-400" />
-                                                                <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal_waktu, 'HH:mm')} WIB</Text.Caption>
+                                                                <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')} WIB</Text.Caption>
                                                             </div>
                                                             <div className="flex items-center gap-1.5 text-slate-400">
                                                                 <MapPin weight="fill" className="w-3.5 h-3.5 text-brand-400" />
@@ -614,17 +616,17 @@ export default function AgendaList() {
                                                                     />
                                                                 )}
                                                                 
-                                                                {agenda.is_terlaksana && agenda.dokumentasi_urls && agenda.dokumentasi_urls.length > 0 && (
+                                                                {agenda.is_terlaksana && agenda.foto_dokumentasi && agenda.foto_dokumentasi.length > 0 && (
                                                                     <div className="px-12 pb-12 pt-4 flex items-center justify-between bg-slate-50/30">
                                                                         <div className="flex -space-x-3">
-                                                                            {agenda.dokumentasi_urls.slice(0, 5).map((url, i) => (
+                                                                            {agenda.foto_dokumentasi.slice(0, 5).map((url: string, i: number) => (
                                                                                 <div key={i} className="w-12 h-12 rounded-[14px] border-2 border-white overflow-hidden shadow-sm">
                                                                                     <img src={getFullUrl(url)} alt="doc" className="w-full h-full object-cover" />
                                                                                 </div>
                                                                             ))}
-                                                                            {agenda.dokumentasi_urls.length > 5 && (
+                                                                            {agenda.foto_dokumentasi.length > 5 && (
                                                                                 <div className="w-12 h-12 rounded-[14px] border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                                                                    +{agenda.dokumentasi_urls.length - 5}
+                                                                                    +{agenda.foto_dokumentasi.length - 5}
                                                                                 </div>
                                                                             )}
                                                                         </div>
@@ -632,7 +634,7 @@ export default function AgendaList() {
                                                                             onClick={() => handleViewPhotos(agenda)}
                                                                             className="flex items-center gap-2 px-6 py-2.5 bg-white border border-slate-100 rounded-[12px] text-xs font-bold text-slate-600 hover:shadow-premium transition-all active-press"
                                                                         >
-                                                                            <ImageSquare weight="duotone" className="w-4 h-4 text-brand-500" />
+                                                                            <ImageIcon weight="duotone" className="w-4 h-4 text-brand-500" />
                                                                             Lihat Semua Dokumentasi
                                                                         </button>
                                                                     </div>
@@ -672,8 +674,8 @@ export default function AgendaList() {
                                         <div className="p-6">
                                             <div className="flex items-start justify-between mb-5">
                                                 <div className={`px-3 py-2 rounded-[12px] flex flex-col items-center justify-center border ${agenda.is_terlaksana ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-600 text-white border-transparent shadow-premium'}`}>
-                                                    <Text.Label className={`!text-[9px] !leading-none ${agenda.is_terlaksana ? '!text-slate-400' : '!text-brand-100'}`}>{dateUtils.format(agenda.tanggal_waktu, 'MMM').toUpperCase()}</Text.Label>
-                                                    <Text.Amount className={`text-lg !leading-none mt-1 ${agenda.is_terlaksana ? '' : '!text-white'}`}>{dateUtils.format(agenda.tanggal_waktu, 'dd')}</Text.Amount>
+                                                    <Text.Label className={`!text-[9px] !leading-none ${agenda.is_terlaksana ? '!text-slate-400' : '!text-brand-100'}`}>{dateUtils.format(agenda.tanggal, 'MMM').toUpperCase()}</Text.Label>
+                                                    <Text.Amount className={`text-lg !leading-none mt-1 ${agenda.is_terlaksana ? '' : '!text-white'}`}>{dateUtils.format(agenda.tanggal, 'dd')}</Text.Amount>
                                                 </div>
                                                 <div className="flex gap-2">
                                                     {agenda.is_terlaksana && (
@@ -694,7 +696,7 @@ export default function AgendaList() {
                                             <div className="space-y-4">
                                                 <div className="space-y-1">
                                                     <Text.H2 className="!text-lg line-clamp-2">{agenda.judul}</Text.H2>
-                                                    <Text.Body className="line-clamp-2 !text-slate-500 !text-sm">{agenda.deskripsi_singkat || '-'}</Text.Body>
+                                                    <Text.Body className="line-clamp-2 !text-slate-500 !text-sm">{agenda.deskripsi || '-'}</Text.Body>
                                                 </div>
 
                                                 <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-slate-50">
@@ -702,7 +704,7 @@ export default function AgendaList() {
                                                         <Text.Label className="!text-[9px]">WAKTU & LOKASI</Text.Label>
                                                         <div className="flex items-center gap-1.5">
                                                             <Clock weight="bold" className="w-3 h-3 text-brand-500" />
-                                                            <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal_waktu, 'HH:mm')}</Text.Caption>
+                                                            <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')}</Text.Caption>
                                                         </div>
                                                     </div>
                                                     <div className="space-y-1 text-right">
@@ -751,11 +753,11 @@ export default function AgendaList() {
                                                     />
                                                 )}
                                                 
-                                                {agenda.is_terlaksana && agenda.dokumentasi_urls && agenda.dokumentasi_urls.length > 0 && (
+                                                {agenda.is_terlaksana && agenda.foto_dokumentasi && agenda.foto_dokumentasi.length > 0 && (
                                                     <div className="p-6 border-t border-slate-100 bg-white">
                                                         <Text.Label className="mb-4 block">Foto Dokumentasi</Text.Label>
                                                         <div className="grid grid-cols-3 gap-2 mb-4">
-                                                            {agenda.dokumentasi_urls.slice(0, 3).map((url, i) => (
+                                                            {agenda.foto_dokumentasi.slice(0, 3).map((url: string, i: number) => (
                                                                 <div key={i} className="aspect-square rounded-[12px] overflow-hidden border border-slate-100 shadow-sm">
                                                                     <img src={getFullUrl(url)} alt="doc" className="w-full h-full object-cover" />
                                                                 </div>
@@ -765,8 +767,8 @@ export default function AgendaList() {
                                                             onClick={() => handleViewPhotos(agenda)}
                                                             className="w-full py-3 bg-slate-50 text-slate-600 rounded-[12px] text-xs font-bold border border-slate-100 shadow-sm flex items-center justify-center gap-2"
                                                         >
-                                                            <ImageSquare weight="duotone" className="w-4 h-4 text-brand-500" />
-                                                            Lihat Semua Foto ({agenda.dokumentasi_urls.length})
+                                                            <ImageIcon weight="duotone" className="w-4 h-4 text-brand-500" />
+                                                            Lihat Semua Foto ({agenda.foto_dokumentasi.length})
                                                         </button>
                                                     </div>
                                                 )}

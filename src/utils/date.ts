@@ -40,6 +40,43 @@ export const formatDateDisplay = (dateInput: string | Date | null | undefined): 
 };
 
 /**
+ * Simple formatter for custom date strings.
+ * @param dateInput 
+ * @param formatStr e.g. 'dd MMM YYYY', 'HH:mm'
+ */
+export const dateStoreFormat = (dateInput: string | Date | null | undefined, formatStr: string): string => {
+    if (!dateInput) return '-';
+    // Handle YYYY-MM-DD that might be interpreted as UTC by new Date()
+    // causing off-by-one day issues
+    let d: Date;
+    if (typeof dateInput === 'string' && dateInput.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        const [year, month, day] = dateInput.split('-').map(Number);
+        d = new Date(year, month - 1, day);
+    } else {
+        d = new Date(dateInput);
+    }
+
+    if (isNaN(d.getTime())) return '-';
+
+    const day = d.getDate();
+    const month = d.getMonth();
+    const year = d.getFullYear();
+    const hours = d.getHours();
+    const minutes = d.getMinutes();
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const monthsFull = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    return formatStr
+        .replace('dd', String(day).padStart(2, '0'))
+        .replace('MMM', months[month])
+        .replace('MMMM', monthsFull[month])
+        .replace('YYYY', String(year))
+        .replace('HH', String(hours).padStart(2, '0'))
+        .replace('mm', String(minutes).padStart(2, '0'));
+};
+
+/**
  * Normalizes a date string for HTML5 date input (YYYY-MM-DD).
  * Browser <input type="date"> requires this specific format.
  */
@@ -63,4 +100,5 @@ export const normalizeDateForInput = (dateStr: string | null | undefined): strin
 export const dateUtils = {
     toDisplay: formatDateDisplay,
     toInput: normalizeDateForInput,
+    format: dateStoreFormat,
 };
