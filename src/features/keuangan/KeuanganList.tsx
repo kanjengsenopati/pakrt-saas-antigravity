@@ -8,6 +8,7 @@ import {
     Plus, 
     Funnel, 
     Trash, 
+    PencilSimple,
     ArrowDownRight,
     Image as ImageIcon,
     X
@@ -58,8 +59,6 @@ export default function KeuanganList() {
         );
     };
 
-
-    // Data loading handled by Tenant changes
     useEffect(() => {
         if (currentTenant) {
             loadData();
@@ -94,7 +93,6 @@ export default function KeuanganList() {
         t.kategori.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Filtered transactions data
     const formatFormalId = (dateString: string, itemId: string) => {
         const d = new Date(dateString);
         const yyyy = d.getFullYear();
@@ -104,29 +102,17 @@ export default function KeuanganList() {
         return `${yyyy}${mm}${dd}-${shortId}`;
     };
 
-    /**
-     * Parses the keterangan field into a display-ready object.
-     * Handles both new format: "[Nama Warga] Kategori — Bulan Tahun | ref:id"
-     * and legacy formats gracefully.
-     */
     const parseKeterangan = (keterangan: string) => {
-        // Strip backend ref tag first
         const cleaned = keterangan.replace(/\s*\|\s*ref:[a-f0-9-]+$/i, '').trim();
-
-        // New format: "[Nama Warga] Kategori — Period"
-        // Example: "[SISWANTO] Iuran — Januari, Februari 2026"
         const newFormatMatch = cleaned.match(/^\[([^\]]+)\]\s+(.+?)\s+—\s+(.+)$/);
         if (newFormatMatch) {
             const periodStr = newFormatMatch[3]; 
             const yearMatch = periodStr.match(/\d{4}/);
             const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
-            
-            // Extract month parts, handling comma or space separators
             const monthsStr = periodStr.replace(/\d{4}/, '').trim();
             const monthParts = monthsStr.split(/[,\s]+/)
                 .map(m => m.trim().toUpperCase().replace(/[^A-Z]/g, ''))
                 .filter(m => m.length > 0);
-            
             const months = monthParts.map(getMonthNumber).filter(m => m > 0);
 
             return {
@@ -140,7 +126,6 @@ export default function KeuanganList() {
             };
         }
 
-        // [AUTO] format for system generated entries
         if (cleaned.toUpperCase().startsWith('[AUTO]')) {
             return {
                 wargaNama: null,
@@ -151,7 +136,6 @@ export default function KeuanganList() {
             };
         }
 
-        // Plain text fallback or legacy formats
         return {
             wargaNama: null,
             label: toTitleCase(cleaned.split('|')[0].trim()),
@@ -184,29 +168,26 @@ export default function KeuanganList() {
                     )}
                 </div>
             </div>
-            {/* SUMMARY CARDS */}
+
             <div className="grid grid-cols-3 gap-3 md:gap-4 -mt-2">
-                {/* KAS MASUK */}
                 <div className="bg-white py-4 px-4 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden transition-all duration-300 border-l-[6px] border-l-brand-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <Text.Label className="mb-2">Kas Masuk</Text.Label>
+                        <Text.Label className="mb-2 !tracking-tight !text-slate-500">Kas Masuk</Text.Label>
                         <Text.Amount className="text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.kasMasuk)}</Text.Amount>
                     </div>
                 </div>
 
-                {/* KAS KELUAR */}
                 <div className="bg-white py-4 px-4 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden transition-all duration-300 border-l-[6px] border-l-red-500">
                     <div className="relative z-10 flex flex-col items-center text-center">
-                        <Text.Label className="mb-2">Kas Keluar</Text.Label>
+                        <Text.Label className="mb-2 !tracking-tight !text-slate-500">Kas Keluar</Text.Label>
                         <Text.Amount className="text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.kasKeluar)}</Text.Amount>
                     </div>
                 </div>
 
-                {/* SALDO AKHIR */}
                 <div className={`py-4 px-4 rounded-[20px] border shadow-premium relative overflow-hidden transition-all duration-300 ${summary.saldo >= 0 ? 'bg-brand-600 border-brand-500' : 'bg-red-600 border-red-500'}`}>
                     <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
                     <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <Text.Label className="!text-white opacity-60 mb-2">Saldo</Text.Label>
+                        <Text.Label className="!text-white opacity-90 mb-2 !tracking-tight">Saldo</Text.Label>
                         <Text.Amount className="!text-white text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.saldo)}</Text.Amount>
                     </div>
                 </div>
@@ -229,7 +210,6 @@ export default function KeuanganList() {
                     </button>
                 </div>
 
-                {/* DESKTOP VIEW: TABLE */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-slate-50/50 border-b border-slate-100">
@@ -365,7 +345,6 @@ export default function KeuanganList() {
                             <Text.H2>Belum Ada Transaksi</Text.H2>
                         </div>
                     ) : (() => {
-                        // Hybrid Grouping Algorithm
                         const groupedOutput: any[] = [];
                         const citizenGroups: Record<string, any> = {};
 
@@ -393,7 +372,6 @@ export default function KeuanganList() {
                             }
                         });
 
-                        // Sort by latest date across all types
                         const sortedOutput = groupedOutput.sort((a, b) => {
                             const dateA = a.type === 'citizen-group' ? new Date(a.latest.tanggal).getTime() : new Date(a.data.tanggal).getTime();
                             const dateB = b.type === 'citizen-group' ? new Date(b.latest.tanggal).getTime() : new Date(b.data.tanggal).getTime();
@@ -409,7 +387,7 @@ export default function KeuanganList() {
                                 return (
                                     <div key={`citizen-${wargaNama}-${idx}`} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-300">
                                         <div className="p-5">
-                                            <div className="flex justify-between items-start mb-5">
+                                            <div className="flex justify-between items-start mb-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-12 h-12 rounded-[16px] bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100/50 shadow-inner">
                                                         <Text.Caption className="!text-[9px] !font-bold leading-none uppercase">{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Caption>
@@ -417,67 +395,88 @@ export default function KeuanganList() {
                                                     </div>
                                                     <div>
                                                         <Text.H2 className="!font-bold uppercase tracking-tight line-clamp-1">{toTitleCase(wargaNama)}</Text.H2>
-                                                        <Text.Caption className="italic uppercase">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
+                                                        <Text.Caption className="italic uppercase !text-[10px]">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
                                                     <Text.Amount className="!text-brand-600 block">+{formatRupiah(trx.nominal)}</Text.Amount>
-                                                    <Text.Label className="!text-brand-500 !text-[9px]">Iuran Warga</Text.Label>
+                                                    <Text.Label className="!text-brand-500 !text-[9px] !tracking-tight uppercase">Iuran Warga</Text.Label>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center justify-between mb-5">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100/50 uppercase tracking-widest leading-none">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100/50 uppercase tracking-tight leading-none whitespace-nowrap">
                                                         KAS MASUK
                                                     </span>
+                                                    
+                                                    {!isWarga && (
+                                                        <div className="flex items-center gap-1">
+                                                            <HasPermission module="Buku Kas / Transaksi" action="Ubah">
+                                                                <button 
+                                                                    onClick={() => navigate(`/keuangan/edit/${trx.id}`)}
+                                                                    className="p-1.5 text-slate-400 hover:text-brand-600 transition-all active:scale-90"
+                                                                >
+                                                                    <PencilSimple weight="bold" className="w-4 h-4" />
+                                                                </button>
+                                                            </HasPermission>
+                                                            <HasPermission module="Buku Kas / Transaksi" action="Hapus">
+                                                                <button 
+                                                                    onClick={() => handleDelete(trx.id)}
+                                                                    className="p-1.5 text-slate-400 hover:text-red-500 transition-all active:scale-90"
+                                                                >
+                                                                    <Trash weight="bold" className="w-4 h-4" />
+                                                                </button>
+                                                            </HasPermission>
+                                                        </div>
+                                                    )}
+
                                                     {trx.url_bukti && (
                                                         <button
                                                             onClick={() => setSelectedProof(trx.url_bukti || null)}
-                                                            className="p-2 text-brand-600 bg-brand-50 rounded-[10px] border border-brand-100/30"
-                                                            title="Lihat Bukti"
+                                                            className="p-1.5 text-brand-600 hover:opacity-70 transition-opacity"
                                                         >
                                                             <ImageIcon weight="bold" className="w-4 h-4" />
                                                         </button>
                                                     )}
                                                 </div>
+
                                                 <button 
                                                     onClick={() => toggleHistory(wargaNama)}
-                                                    className="text-[11px] font-bold text-brand-600 uppercase tracking-widest hover:opacity-70 transition-opacity"
+                                                    className="text-[10px] font-bold text-brand-600 uppercase tracking-tight bg-brand-50 px-3 py-1.5 rounded-full hover:bg-brand-100 transition-colors"
                                                 >
-                                                    {isExpanded ? 'Tutup Detail' : 'Lihat Riwayat'}
+                                                    {isExpanded ? 'Tutup' : 'Lihat Riwayat'}
                                                 </button>
                                             </div>
 
-                                            {/* Expandable History */}
                                             {isExpanded && (
-                                                <div className="mb-5 bg-slate-50/50 border border-slate-100 rounded-[16px] p-4 animate-fade-in">
-                                                    <Text.Label className="block mb-3 !text-[9px] opacity-70">Riwayat Pembayaran</Text.Label>
+                                                <div className="mb-4 bg-slate-50 border border-slate-100 rounded-[14px] p-4 animate-fade-in">
+                                                    <Text.Label className="block mb-3 !text-[9px] opacity-70 !tracking-tight uppercase">Riwayat Pembayaran</Text.Label>
                                                     <div className="space-y-3">
                                                         {history.map((h: any, hIdx: number) => (
                                                             <div key={hIdx} className="flex justify-between items-center text-[10px] border-b border-slate-200/30 pb-3 last:border-0 last:pb-0">
                                                                 <div>
-                                                                    <Text.H2 className="!text-[12px]">{dateUtils.toDisplay(h.trx.tanggal)}</Text.H2>
-                                                                    <Text.Caption className="font-medium">Periode: {h.parsed.period}</Text.Caption>
+                                                                    <Text.H2 className="!text-[11px]">{dateUtils.toDisplay(h.trx.tanggal)}</Text.H2>
+                                                                    <Text.Caption className="font-medium !text-[10px]">Periode: {h.parsed.period}</Text.Caption>
                                                                 </div>
-                                                                <Text.Amount className="!text-[12px] !text-brand-600">+{formatRupiah(h.trx.nominal)}</Text.Amount>
+                                                                <Text.Amount className="!text-[11px] !text-brand-600">+{formatRupiah(h.trx.nominal)}</Text.Amount>
                                                             </div>
                                                         ))}
                                                     </div>
                                                 </div>
                                             )}
 
-                                            <div className="bg-slate-50/30 rounded-[16px] border border-slate-100 p-4 mb-4">
-                                                <Text.Label className="block mb-3 !text-[9px] opacity-70">Status Lunas ({parsed.year})</Text.Label>
-                                                <div className="grid grid-cols-6 gap-2">
+                                            <div className="bg-slate-50/50 rounded-[14px] border border-slate-100 p-4">
+                                                <Text.Label className="block mb-3 !text-[9px] opacity-60 !tracking-tight uppercase">Status Terbayar ({parsed.year})</Text.Label>
+                                                <div className="grid grid-cols-6 gap-1.5">
                                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
                                                         const isPaid = allPaidMonths.has(month);
                                                         return (
                                                             <div 
                                                                 key={month} 
-                                                                className={`flex aspect-square items-center justify-center rounded-[8px] border text-[9px] font-bold transition-all shadow-sm
+                                                                className={`flex aspect-square items-center justify-center rounded-[6px] border text-[8px] font-bold transition-all
                                                                     ${isPaid 
-                                                                        ? 'bg-brand-600 text-white border-brand-700' 
+                                                                        ? 'bg-brand-600 text-white border-brand-700 shadow-sm' 
                                                                         : 'bg-white text-slate-300 border-slate-100'
                                                                     }`}
                                                             >
@@ -486,20 +485,6 @@ export default function KeuanganList() {
                                                         );
                                                     })}
                                                 </div>
-                                            </div>
-
-                                            <div className="flex justify-end items-center pt-4 border-t border-slate-50 gap-2">
-                                                {!isWarga && (
-                                                    <HasPermission module="Buku Kas / Transaksi" action="Hapus">
-                                                        <button
-                                                            onClick={() => handleDelete(trx.id)}
-                                                            className="p-2.5 text-slate-400 hover:text-red-500 bg-slate-50 rounded-[12px] transition-all"
-                                                            title="Hapus"
-                                                        >
-                                                            <Trash weight="bold" className="w-4 h-4" />
-                                                        </button>
-                                                    </HasPermission>
-                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -510,7 +495,7 @@ export default function KeuanganList() {
                                 return (
                                     <div key={trx.id} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-300">
                                         <div className="p-5">
-                                            <div className="flex justify-between items-start mb-5">
+                                            <div className="flex justify-between items-start mb-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className={`w-12 h-12 rounded-[16px] flex flex-col items-center justify-center border shadow-inner ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-rose-50 text-rose-600 border-rose-100/50'}`}>
                                                         <Text.Caption className={`!text-[9px] !font-bold leading-none uppercase ${trx.tipe === 'pemasukan' ? '!text-emerald-500' : '!text-rose-500'}`}>{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Caption>
@@ -518,7 +503,7 @@ export default function KeuanganList() {
                                                     </div>
                                                     <div>
                                                         <Text.H2 className={`!font-bold uppercase tracking-tight line-clamp-1 ${trx.tipe === 'pemasukan' ? '!text-emerald-600' : '!text-rose-600'}`}>{toTitleCase(trx.kategori)}</Text.H2>
-                                                        <Text.Caption className="italic uppercase">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
+                                                        <Text.Caption className="italic uppercase !text-[10px]">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
                                                     </div>
                                                 </div>
                                                 <div className={`text-lg font-bold tabular-nums tracking-tight ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
@@ -526,40 +511,48 @@ export default function KeuanganList() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-slate-50/30 rounded-[16px] border border-slate-100 p-4 mb-4">
-                                                <Text.Body className="!text-slate-800 leading-relaxed italic">
-                                                    {parsed.label || "Tanpa Keterangan"}
-                                                </Text.Body>
+                                            <div className="flex items-center gap-2 mb-4">
+                                                {trx.tipe === 'pemasukan' ? (
+                                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100/50 uppercase tracking-tight leading-none whitespace-nowrap">KAS MASUK</span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[10px] font-bold border border-rose-100/50 uppercase tracking-tight leading-none whitespace-nowrap">KAS KELUAR</span>
+                                                )}
+
+                                                {!isWarga && (
+                                                    <div className="flex items-center gap-1">
+                                                        <HasPermission module="Buku Kas / Transaksi" action="Ubah">
+                                                            <button 
+                                                                onClick={() => navigate(`/keuangan/edit/${trx.id}`)}
+                                                                className="p-1.5 text-slate-400 hover:text-brand-600 transition-all active:scale-90"
+                                                            >
+                                                                <PencilSimple weight="bold" className="w-4 h-4" />
+                                                            </button>
+                                                        </HasPermission>
+                                                        <HasPermission module="Buku Kas / Transaksi" action="Hapus">
+                                                            <button 
+                                                                onClick={() => handleDelete(trx.id)}
+                                                                className="p-1.5 text-slate-400 hover:text-red-500 transition-all active:scale-90"
+                                                            >
+                                                                <Trash weight="bold" className="w-4 h-4" />
+                                                            </button>
+                                                        </HasPermission>
+                                                    </div>
+                                                )}
+
+                                                {trx.url_bukti && (
+                                                    <button
+                                                        onClick={() => setSelectedProof(trx.url_bukti || null)}
+                                                        className="p-1.5 text-brand-600 hover:opacity-70 transition-opacity"
+                                                    >
+                                                        <ImageIcon weight="bold" className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </div>
 
-                                            <div className="flex justify-between items-center pt-4 border-t border-slate-50 gap-2">
-                                                <div className="flex items-center gap-3">
-                                                    {trx.tipe === 'pemasukan' ? (
-                                                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100/50 uppercase tracking-widest leading-none">KAS MASUK</span>
-                                                    ) : (
-                                                        <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[10px] font-bold border border-rose-100/50 uppercase tracking-widest leading-none">KAS KELUAR</span>
-                                                    )}
-                                                    {trx.url_bukti && (
-                                                        <button
-                                                            onClick={() => setSelectedProof(trx.url_bukti || null)}
-                                                            className="p-2 text-brand-600 bg-brand-50 rounded-[10px] border border-brand-100/30"
-                                                            title="Lihat Bukti"
-                                                        >
-                                                            <ImageIcon weight="bold" className="w-4 h-4" />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                                {!isWarga && (
-                                                    <HasPermission module="Buku Kas / Transaksi" action="Hapus">
-                                                        <button
-                                                            onClick={() => handleDelete(trx.id)}
-                                                            className="p-2.5 text-slate-400 hover:text-red-500 bg-slate-50 rounded-[12px] transition-all"
-                                                            title="Hapus"
-                                                        >
-                                                            <Trash weight="bold" className="w-4 h-4" />
-                                                        </button>
-                                                    </HasPermission>
-                                                )}
+                                            <div className="bg-slate-50/50 rounded-[14px] border border-slate-100 p-4">
+                                                <Text.Body className="!text-slate-700 leading-relaxed italic !text-[12px]">
+                                                    {parsed.label || "Tanpa Keterangan"}
+                                                </Text.Body>
                                             </div>
                                         </div>
                                     </div>
@@ -570,7 +563,6 @@ export default function KeuanganList() {
                 </div>
             </div>
 
-            {/* PROOF MODAL */}
             {selectedProof && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-5 bg-black/60 backdrop-blur-sm animate-fade-in">
                     <div className="relative max-w-4xl w-full bg-white rounded-[24px] shadow-2xl overflow-hidden animate-zoom-in">
