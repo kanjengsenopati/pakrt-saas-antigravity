@@ -21,7 +21,7 @@ const getMonthNumber = (monthName: string) => {
     const months = {
         'JANUARI': 1, 'PEBRUARI': 2, 'FEBRUARI': 2, 'MARET': 3, 'APRIL': 4, 'MEI': 5, 'JUNI': 6,
         'JULI': 7, 'AGUSTUS': 8, 'SEPTEMBER': 9, 'OKTOBER': 10, 'NOPEMBER': 11, 'NOVEMBER': 11, 'DESEMBER': 12,
-        'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MEI': 5, 'JUN': 6,
+        'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'JUN': 6,
         'JUL': 7, 'AGU': 8, 'SEP': 9, 'OKT': 10, 'NOV': 11, 'DES': 12
     };
     return months[monthName.toUpperCase() as keyof typeof months] || 0;
@@ -392,7 +392,7 @@ export default function KeuanganList() {
                             return dateB - dateA;
                         });
 
-                        return sortedOutput.map((item, index) => {
+                        return sortedOutput.map((item) => {
                             if (item.type === 'citizen-group') {
                                 const { wargaNama, latest: trx, allPaidMonths, history } = item;
                                 const parsed = parseKeterangan(trx.keterangan);
