@@ -341,6 +341,21 @@ export default function KeuanganList() {
 
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
+                    {isLoading ? (
+                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                            <span>Sinkronisasi...</span>
+                        </div>
+                    ) : filteredTransactions.length === 0 ? (
+                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                <ArrowDownRight weight="duotone" className="w-8 h-8 text-slate-300" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Transaksi</p>
+                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat transaksi anda akan muncul di sini</p>
+                            </div>
+                        </div>
                     ) : (() => {
                         // Hybrid Grouping Algorithm
                         const groupedOutput: any[] = [];
