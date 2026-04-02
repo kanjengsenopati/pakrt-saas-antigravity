@@ -507,7 +507,7 @@ export default function IuranList() {
                                         <div className="mb-4 bg-slate-50 border border-slate-100 rounded-xl p-3 animate-fade-in">
                                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">Riwayat Pembayaran {filterYear}</p>
                                             <div className="space-y-2">
-                                                {history.map((h, idx) => (
+                                                {history.map((h) => (
                                                     <div key={h.id} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
                                                         <div>
                                                             <div className="font-bold text-slate-700">{dateUtils.toDisplay(h.tanggal_bayar)}</div>
