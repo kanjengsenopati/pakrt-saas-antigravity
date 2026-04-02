@@ -118,15 +118,15 @@ export default function SetupPage() {
             const { asetService } = await import('../../services/asetService');
             const existingAsets = await asetService.getAll(tenantId, currentScope);
             const asets: Array<Omit<Aset, 'id'>> = [
-                { nama_barang: 'Tenda Sarnafil 3x3', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Kursi Chitose', jumlah: 100, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Sound System Wireless', jumlah: 1, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Tenda Cafe 2x2', jumlah: 5, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Meja Lipat HPL', jumlah: 10, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Taplak Meja PKK', jumlah: 10, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Timbangan Bayi Digital', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Alat Ukur Tinggi Badan', jumlah: 2, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
-                { nama_barang: 'Tiket Antrian', jumlah: 1, kondisi: 'baik', status_pinjam: 'tersedia', tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Tenda Sarnafil 3x3', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Kursi Chitose', jumlah: 100, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Sound System Wireless', jumlah: 1, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Tenda Cafe 2x2', jumlah: 5, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Meja Lipat HPL', jumlah: 10, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Taplak Meja PKK', jumlah: 10, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Timbangan Bayi Digital', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Alat Ukur Tinggi Badan', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
+                { nama_barang: 'Tiket Antrian', jumlah: 1, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
             ].map(a => ({ 
                 ...a, 
                 status_pinjam: a.status_pinjam as 'tersedia' | 'dipinjam',

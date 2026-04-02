@@ -113,13 +113,19 @@ export default function KeuanganList() {
         const cleaned = keterangan.replace(/\s*\|\s*ref:[a-f0-9-]+$/i, '').trim();
 
         // New format: "[Nama Warga] Kategori — Period"
+        // Example: "[SISWANTO] Iuran — Januari, Februari 2026"
         const newFormatMatch = cleaned.match(/^\[([^\]]+)\]\s+(.+?)\s+—\s+(.+)$/);
         if (newFormatMatch) {
-            const periodStr = newFormatMatch[3]; // e.g. "April, Mei 2026"
-            const yearMatch = periodStr.match(/\d{4}$/);
+            const periodStr = newFormatMatch[3]; 
+            const yearMatch = periodStr.match(/\d{4}/);
             const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
-            const monthsStr = periodStr.replace(/\d{4}$/, '').trim();
-            const monthParts = monthsStr.split(',').map(m => m.trim().toUpperCase().replace(/[^A-Z]/g, ''));
+            
+            // Extract month parts, handling comma or space separators
+            const monthsStr = periodStr.replace(/\d{4}/, '').trim();
+            const monthParts = monthsStr.split(/[,\s]+/)
+                .map(m => m.trim().toUpperCase().replace(/[^A-Z]/g, ''))
+                .filter(m => m.length > 0);
+            
             const months = monthParts.map(getMonthNumber).filter(m => m > 0);
 
             return {
@@ -133,18 +139,18 @@ export default function KeuanganList() {
             };
         }
 
-        // [AUTO] format
-        if (cleaned.startsWith('[AUTO]')) {
+        // [AUTO] format for system generated entries
+        if (cleaned.toUpperCase().startsWith('[AUTO]')) {
             return {
                 wargaNama: null,
-                label: toTitleCase(cleaned.replace('[AUTO] ', '').split('|')[0].trim()),
+                label: toTitleCase(cleaned.replace(/\[AUTO\]\s*/i, '').split('|')[0].trim()),
                 period: null,
                 isIuran: false,
                 raw: cleaned
             };
         }
 
-        // Plain text fallback
+        // Plain text fallback or legacy formats
         return {
             wargaNama: null,
             label: toTitleCase(cleaned.split('|')[0].trim()),
