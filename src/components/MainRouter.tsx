@@ -262,6 +262,14 @@ const router = createBrowserRouter([
                 )
             },
             {
+                path: 'keuangan/edit/:id',
+                element: (
+                    <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Ubah' }}>
+                        <KeuanganForm />
+                    </ProtectedRoute>
+                )
+            },
+            {
                 path: 'iuran',
                 element: (
                     <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Lihat' }}>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { keuanganService } from '../../services/keuanganService';
 import { pengaturanService } from '../../services/pengaturanService';
@@ -12,15 +12,18 @@ import { FileUpload } from '../../components/ui/FileUpload';
 type KeuanganFormData = Omit<Keuangan, 'id' | 'tenant_id' | 'scope'>;
 
 export default function KeuanganForm() {
+    const { id } = useParams();
+    const isEdit = !!id;
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
     const [fotoBukti, setFotoBukti] = useState<string>('');
     const [isUploading, setIsUploading] = useState(false);
+    const [isInitialLoading, setIsInitialLoading] = useState(isEdit);
 
     const [pemasukanCategories, setPemasukanCategories] = useState<string[]>(['Lainnya']);
     const [pengeluaranCategories, setPengeluaranCategories] = useState<string[]>(['Lainnya']);
 
-    const { register, handleSubmit, watch, control, setValue, formState: { errors } } = useForm<KeuanganFormData>({
+    const { register, handleSubmit, watch, control, setValue, reset, formState: { errors } } = useForm<KeuanganFormData>({
         defaultValues: {
             tanggal: new Date().toISOString().split('T')[0],
             tipe: 'pemasukan',
@@ -52,24 +55,55 @@ export default function KeuanganForm() {
                     try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch { }
                 }
             });
+
+            if (isEdit && id) {
+                keuanganService.getById(id).then(data => {
+                    if (data) {
+                        reset({
+                            tanggal: data.tanggal,
+                            tipe: data.tipe,
+                            kategori: data.kategori,
+                            nominal: data.nominal,
+                            keterangan: data.keterangan,
+                            url_bukti: data.url_bukti || ''
+                        });
+                        setFotoBukti(data.url_bukti || '');
+                    }
+                }).finally(() => {
+                    setIsInitialLoading(false);
+                });
+            }
         }
-    }, [currentTenant]);
+    }, [currentTenant, isEdit, id, reset]);
 
     const onSubmit = async (data: KeuanganFormData) => {
         if (!currentTenant) return;
 
         try {
-            await keuanganService.create({
-                ...data,
-                tenant_id: currentTenant.id,
-                scope: currentScope
-            });
+            if (isEdit && id) {
+                await keuanganService.update(id, data);
+            } else {
+                await keuanganService.create({
+                    ...data,
+                    tenant_id: currentTenant.id,
+                    scope: currentScope
+                });
+            }
             navigate('/keuangan');
         } catch (error) {
             console.error("Gagal menyimpan transaksi:", error);
             alert("Terjadi kesalahan saat menyimpan transaksi keuangan.");
         }
     };
+
+    if (isInitialLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <CircleNotch className="w-10 h-10 text-brand-600 animate-spin" />
+                <p className="text-gray-500 font-medium">Memuat data transaksi...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
@@ -81,8 +115,13 @@ export default function KeuanganForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Catat Transaksi Kas</h1>
-                    <p className="text-gray-500 mt-1">Pembukuan penerimaan atau pengeluaran kas <span className="font-semibold text-brand-600">{currentScope}</span></p>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        {isEdit ? 'Ubah Transaksi Kas' : 'Catat Transaksi Kas'}
+                    </h1>
+                    <p className="text-gray-500 mt-1">
+                        {isEdit ? 'Perbarui rincian transaksi' : 'Pembukuan penerimaan atau pengeluaran kas'}{' '}
+                        <span className="font-semibold text-brand-600">{currentScope}</span>
+                    </p>
                 </div>
             </div>
 
@@ -202,7 +241,7 @@ export default function KeuanganForm() {
                             ) : (
                                 <FloppyDisk weight="bold" />
                             )}
-                            <span>{isUploading ? 'Mengunggah...' : 'Simpan Transaksi Kas'}</span>
+                            <span>{isUploading ? 'Mengunggah...' : (isEdit ? 'Perbarui Transaksi' : 'Simpan Transaksi Kas')}</span>
                         </button>
                     </div>
                 </form>
