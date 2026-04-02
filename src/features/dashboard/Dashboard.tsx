@@ -162,27 +162,27 @@ export default function Dashboard() {
             </div>
 
             {/* Summary Grid - Compact & Dense for Management Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-4">
                 {/* 1. Total Iuran Card (Royal Blue) */}
                 <div 
                     onClick={() => navigate('/iuran')}
-                    className="bg-brand-600 rounded-[20px] p-5 text-white shadow-premium shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-brand-600 rounded-[18px] p-4 text-white shadow-premium shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <Wallet weight="fill" className="w-20 h-20 md:w-32 md:h-32" />
+                        <Wallet weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-4">
-                            <Text.Label className="!text-white opacity-80">Total Iuran</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-[12px] p-2 border border-white/20">
-                                <Wallet weight="fill" className="w-5 (md:w-6) h-5 (md:h-6)" />
+                        <div className="flex items-center justify-between mb-2">
+                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Total Iuran</Text.Label>
+                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
+                                <Wallet weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
                         </div>
                         <div>
-                            <Text.Amount className="!text-white text-2xl md:text-3xl tracking-tight leading-none">
+                            <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
                                 {formatRupiah(stats.saldo)}
                             </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-2 italic block">
+                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[9px] md:!text-[11px] italic block !tracking-tight">
                                 85% Warga Membayar
                             </Text.Caption>
                         </div>
@@ -192,23 +192,23 @@ export default function Dashboard() {
                 {/* 2. Aduan Card (Coral/Red Alert) */}
                 <div 
                     onClick={() => navigate('/surat')}
-                    className="bg-coral-500 rounded-[20px] p-5 text-white shadow-premium shadow-coral-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-coral-500 rounded-[18px] p-4 text-white shadow-premium shadow-coral-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <FileText weight="fill" className="w-20 h-20 md:w-32 md:h-32" />
+                        <FileText weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-4">
-                            <Text.Label className="!text-white opacity-80">Aduan Pending</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-[12px] p-2 border border-white/20">
-                                <Bell weight="fill" className="w-5 (md:w-6) h-5 (md:h-6) animate-bounce-subtle" />
+                        <div className="flex items-center justify-between mb-2">
+                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Aduan Pending</Text.Label>
+                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
+                                <Bell weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
                         </div>
                         <div>
-                            <Text.Amount className="!text-white text-2xl md:text-3xl tracking-tight leading-none">
+                            <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
                                 {stats.pendingSurat} Laporan
                             </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-2 italic block">
+                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[9px] md:!text-[11px] italic block !tracking-tight">
                                 Tindak Lanjut Segera
                             </Text.Caption>
                         </div>
@@ -218,23 +218,23 @@ export default function Dashboard() {
                 {/* 3. Community Spotlight (Deep Navy/Blue) */}
                 <div 
                     onClick={() => navigate('/agenda')}
-                    className="bg-navy-900 rounded-[20px] p-5 text-white shadow-premium shadow-navy-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-navy-900 rounded-[18px] p-4 text-white shadow-premium shadow-navy-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98] col-span-2 md:col-span-1"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <CalendarCheck weight="fill" className="w-20 h-20 md:w-32 md:h-32" />
+                        <CalendarCheck weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-4">
-                            <Text.Label className="!text-white opacity-80">Spotlight Agenda</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-[12px] p-2 border border-white/20">
-                                <CalendarCheck weight="fill" className="w-5 (md:w-6) h-5 (md:h-6)" />
+                        <div className="flex items-center justify-between mb-2">
+                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Spotlight Agenda</Text.Label>
+                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
+                                <CalendarCheck weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
                         </div>
                         <div>
-                            <Text.H2 className="!text-white text-lg md:text-xl leading-tight line-clamp-1 mb-1">
+                            <Text.H2 className="!text-white text-base md:text-xl leading-tight line-clamp-1 mb-1 !font-bold">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
                             </Text.H2>
-                            <Text.Caption className="!text-white font-medium opacity-80 italic line-clamp-1 block">
+                            <Text.Caption className="!text-white font-medium opacity-80 italic line-clamp-1 block !text-[10px] md:!text-[12px] !tracking-tight">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].deskripsi : 'Pembersihan saluran air.'}
                             </Text.Caption>
                         </div>
