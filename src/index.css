@@ -151,7 +151,7 @@ input[type="date"],
 input[type="number"],
 textarea,
 select {
-    @apply transition-all duration-200 outline-none border border-gray-200 text-sm text-gray-900 rounded-lg px-3 py-2;
+    @apply transition-all duration-200 outline-none border border-gray-200 text-sm text-gray-900 rounded-lg pl-3 pr-3 py-2;
 }
 
 input:focus,

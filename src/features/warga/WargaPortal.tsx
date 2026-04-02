@@ -138,7 +138,7 @@ export default function WargaPortal() {
 
             {/* Dashboard Title Row */}
             <div className="px-5 pt-4 pb-2">
-                <h2 className="section-label">
+                <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                     Dashboard Warga
                 </h2>
             </div>
@@ -166,7 +166,7 @@ export default function WargaPortal() {
                                 <Wallet size={20} weight="fill" />
                             </div>
                             <span className={`text-caption font-bold uppercase px-3 py-1 rounded-full ${
-                                data.iuranPendingCount > 0 ? 'bg-red-600 text-white' : 'bg-brand-600 text-white'
+                                data.iuranPendingCount > 0 ? 'bg-red-600 text-white' : 'bg-blue-100 text-blue-700'
                             }`}>
                                 {data.iuranPendingCount > 0 ? 'Tertunggak' : 'Lancar'}
                             </span>
@@ -224,7 +224,7 @@ export default function WargaPortal() {
                 {activeTab === 'utama' ? (
                     <div className="space-y-10 animate-fade-in">
                         {/* 4 Column Menu Utama */}
-                        <div className="grid grid-cols-4 gap-x-3 gap-y-6">
+                        <div className="grid grid-cols-4 gap-3">
                             {[
                                 { label: 'Iuran', icon: HandCoins, path: '/iuran/baru' },
                                 { label: 'Kas', icon: Wallet, path: '/iuran' },
@@ -236,7 +236,7 @@ export default function WargaPortal() {
                                     onClick={() => navigate(item.path)}
                                     className="flex flex-col items-center gap-1.5 group cursor-pointer"
                                 >
-                                    <div className={`w-full aspect-square bg-brand-600/5 rounded-btn flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
+                                    <div className={`w-full aspect-square bg-brand-600/5 rounded-card flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
                                         <item.icon size={26} weight="duotone" className="text-brand-600/80" />
                                     </div>
                                     <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
@@ -286,7 +286,7 @@ export default function WargaPortal() {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-4 gap-y-6 gap-x-3 animate-fade-in">
+                    <div className="grid grid-cols-4 gap-3 animate-fade-in">
                         {/* Tab Lainnya: 4 Columns x 2 Rows with 1.5x Scale */}
                         {[
                             { label: 'Warga', icon: Users, path: '/warga' },
@@ -309,7 +309,7 @@ export default function WargaPortal() {
                                 }}
                                 className="flex flex-col items-center gap-1.5 group cursor-pointer"
                             >
-                                <div className={`w-full aspect-square bg-brand-600/5 rounded-btn flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
+                                <div className={`w-full aspect-square bg-brand-600/5 rounded-card flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
                                     <item.icon size={26} weight="duotone" className="text-brand-600/80" />
                                 </div>
                                 <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
