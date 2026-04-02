@@ -186,7 +186,7 @@ export default function RegisterWizard() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+        <div className="min-h-screen bg-gray-50 flex flex-col font-jakarta selection:bg-brand-500 selection:text-white">
             <PWAInstallBanner show={true} />
             {/* Top Navigation */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-10 px-6 py-4">

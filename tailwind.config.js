@@ -8,6 +8,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],
+                jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
             },
             borderRadius: {
                 'card': '20px',

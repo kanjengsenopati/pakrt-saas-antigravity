@@ -80,7 +80,7 @@ export default function Login() {
     };
 
     return (
-        <div className="h-screen w-screen bg-white flex flex-col md:flex-row font-sans selection:bg-brand-500 selection:text-white overflow-hidden">
+        <div className="h-screen w-screen bg-white flex flex-col md:flex-row font-jakarta selection:bg-brand-500 selection:text-white overflow-hidden">
             <PWAInstallBanner show={true} />
             {/* Left Panel - Brand Display */}
             <div className="hidden md:flex flex-col justify-between w-[45%] bg-slate-50 p-10 lg:p-14 text-slate-900 relative overflow-hidden shrink-0 border-r border-slate-100">
