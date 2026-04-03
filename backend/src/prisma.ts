@@ -27,17 +27,6 @@ export const prisma = basePrisma.$extends({
         let currentOperation = operation;
         const anyArgs = (args || {}) as any;
         
-        // 1. Transformation: findUnique results in validation error if non-unique fields (like tenant_id or deletedAt) are added.
-        // Converting to findFirst is safe and allows the extra filters.
-        if (operation === 'findUnique' && (multiTenantModels.includes(model) || softDeleteModels.includes(model))) {
-            const hasTenantFilter = multiTenantModels.includes(model) && context?.tenantId;
-            const hasSoftDeleteFilter = softDeleteModels.includes(model);
-
-            if (hasTenantFilter || hasSoftDeleteFilter) {
-               currentOperation = 'findFirst' as any;
-            }
-        }
-
         // 2. Tenant Isolation Injection
         if (context?.tenantId && multiTenantModels.includes(model)) {
           if (['findMany', 'findFirst', 'count', 'groupBy', 'aggregate'].includes(currentOperation as string)) {
@@ -60,7 +49,7 @@ export const prisma = basePrisma.$extends({
 
         // 3. Soft Delete: Filtering (Exclude deleted records from READ)
         if (softDeleteModels.includes(model)) {
-          if (['findMany', 'findFirst', 'findUnique', 'count', 'groupBy', 'aggregate'].includes(currentOperation as string)) {
+          if (['findMany', 'findFirst', 'count', 'groupBy', 'aggregate'].includes(currentOperation as string)) {
             anyArgs.where = anyArgs.where || {};
             // Only add if not explicitly searching for deleted records
             if (anyArgs.where.deletedAt === undefined) {
@@ -135,12 +124,7 @@ export const prisma = basePrisma.$extends({
         }
 
         try {
-          // If we transformed findUnique to findFirst, we call findFirst explicitly via basePrisma 
-          // because query callback expects the ORIGINAL operation's arguments/return types.
-          if (operation === 'findUnique' && (currentOperation as string) === 'findFirst') {
-              return (basePrisma as any)[model].findFirst(anyArgs);
-          }
-          return query(anyArgs);
+          return await query(anyArgs);
         } catch (error) {
            console.error(`[Prisma Extension Error] Model: ${model}, Operation: ${operation}, Args:`, JSON.stringify(anyArgs, null, 2));
            throw error;
