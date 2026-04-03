@@ -150,14 +150,14 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-[0.7rem] font-medium text-blue-100/70 uppercase tracking-widest">{authUser?.role_entity?.name || authUser?.role || 'Administrator'}</span>
-                                        <div className="flex flex-col">
-                                            <h1 className="text-xl font-extrabold tracking-tight font-headline line-clamp-1 leading-none mb-1">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                        <div className="flex items-end gap-3">
+                                            <h1 className="text-3xl font-extrabold tracking-tight font-headline leading-none">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
                                             {currentTenant?.location_detail && (
-                                                <div className="flex flex-col gap-0.5">
-                                                    <span className="text-[0.6rem] font-bold text-blue-100/90 tracking-widest uppercase">
+                                                <div className="flex flex-col gap-1 mb-[1px]">
+                                                    <span className="text-[0.75rem] font-bold text-white tracking-widest uppercase leading-none">
                                                         {currentTenant.location_detail.split(' • ')[0]}
                                                     </span>
-                                                    <span className="text-[0.55rem] font-medium text-blue-100/60 uppercase tracking-tighter line-clamp-1">
+                                                    <span className="text-[0.6rem] font-medium text-blue-100/60 uppercase tracking-tight line-clamp-1 leading-none">
                                                         {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
                                                     </span>
                                                 </div>
@@ -322,14 +322,14 @@ export default function Dashboard() {
                             </div>
                             <div>
                                 <p className="text-white/70 font-label text-[0.75rem] leading-none mb-1">{authUser?.role_entity?.name || authUser?.role || 'Pengurus'}</p>
-                                <div className="flex flex-col">
-                                    <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5 leading-none mb-1">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                <div className="flex items-end gap-3">
+                                    <h1 className="font-headline font-bold text-white text-3xl tracking-tight leading-none">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
                                     {currentTenant?.location_detail && (
-                                        <div className="flex flex-col">
-                                            <span className="text-[0.6rem] font-bold text-white/90 tracking-widest uppercase leading-tight">
+                                        <div className="flex flex-col gap-1 mb-[1px]">
+                                            <span className="text-[0.7rem] font-bold text-white tracking-widest uppercase leading-none">
                                                 {currentTenant.location_detail.split(' • ')[0]}
                                             </span>
-                                            <span className="text-[0.55rem] font-medium text-white/50 uppercase tracking-tighter line-clamp-1">
+                                            <span className="text-[0.55rem] font-medium text-white/50 uppercase tracking-tight line-clamp-1 leading-none">
                                                 {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
                                             </span>
                                         </div>
