@@ -146,7 +146,7 @@ export default function Dashboard() {
             {/* Header / Top Navigation Mock (Mobile Style) */}
             <div className="flex items-center justify-between mt-2 md:mt-0">
                 <div className="flex items-center gap-3">
-                    <button className="p-2 rounded-[12px] hover:bg-slate-100 transition-colors md:hidden">
+                    <button className="p-2 rounded-[0.75rem] hover:bg-slate-100 transition-colors md:hidden">
                         <Users weight="bold" className="w-6 h-6 text-slate-800" />
                     </button>
                     <Text.Label className="!text-slate-500">Dashboard Pengurus</Text.Label>
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <Bell weight="bold" className="w-6 h-6 text-slate-800" />
-                        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">3</span>
+                        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[0.625rem] font-bold text-white">3</span>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-slate-900 border-2 border-white shadow-premium flex items-center justify-center text-white font-bold text-sm">
                         {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
@@ -176,7 +176,7 @@ export default function Dashboard() {
                     <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
                         <Minus size={14} weight="bold" />
                     </button>
-                    <span className="text-[10px] font-bold text-slate-700 w-8 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
+                    <span className="text-[0.625rem] font-bold text-slate-700 w-8 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
                     <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
                         <Plus size={14} weight="bold" />
                     </button>
@@ -188,14 +188,14 @@ export default function Dashboard() {
                 {/* 1. Total Iuran Card (Royal Blue) */}
                 <div 
                     onClick={() => navigate('/iuran')}
-                    className="bg-brand-600 rounded-[18px] p-4 text-white shadow-premium shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-brand-600 rounded-[1.125rem] p-4 text-white shadow-premium shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <Wallet weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
                         <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Total Iuran</Text.Label>
+                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Total Iuran</Text.Label>
                             <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
                                 <Wallet weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
@@ -204,7 +204,7 @@ export default function Dashboard() {
                             <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
                                 {formatRupiah(stats.saldo)}
                             </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[9px] md:!text-[11px] italic block !tracking-tight">
+                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[0.5625rem] md:!text-[0.6875rem] italic block !tracking-tight">
                                 85% Warga Membayar
                             </Text.Caption>
                         </div>
@@ -214,14 +214,14 @@ export default function Dashboard() {
                 {/* 2. Aduan Card (Coral/Red Alert) */}
                 <div 
                     onClick={() => navigate('/surat')}
-                    className="bg-coral-500 rounded-[18px] p-4 text-white shadow-premium shadow-coral-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
+                    className="bg-coral-500 rounded-[1.125rem] p-4 text-white shadow-premium shadow-coral-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <FileText weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
                         <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Aduan Pending</Text.Label>
+                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Aduan Pending</Text.Label>
                             <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
                                 <Bell weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
@@ -230,7 +230,7 @@ export default function Dashboard() {
                             <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
                                 {stats.pendingSurat} Laporan
                             </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[9px] md:!text-[11px] italic block !tracking-tight">
+                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[0.5625rem] md:!text-[0.6875rem] italic block !tracking-tight">
                                 Tindak Lanjut Segera
                             </Text.Caption>
                         </div>
@@ -240,14 +240,14 @@ export default function Dashboard() {
                 {/* 3. Community Spotlight (Deep Navy/Blue) */}
                 <div 
                     onClick={() => navigate('/agenda')}
-                    className="bg-navy-900 rounded-[18px] p-4 text-white shadow-premium shadow-navy-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98] col-span-2 md:col-span-1"
+                    className="bg-navy-900 rounded-[1.125rem] p-4 text-white shadow-premium shadow-navy-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98] col-span-2 md:col-span-1"
                 >
                     <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
                         <CalendarCheck weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col justify-between h-full">
                         <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[10px] md:!text-xs uppercase !tracking-tight">Spotlight Agenda</Text.Label>
+                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Spotlight Agenda</Text.Label>
                             <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
                                 <CalendarCheck weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
                             </div>
@@ -256,7 +256,7 @@ export default function Dashboard() {
                             <Text.H2 className="!text-white text-base md:text-xl leading-tight line-clamp-1 mb-1 !font-bold">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
                             </Text.H2>
-                            <Text.Caption className="!text-white font-medium opacity-80 italic line-clamp-1 block !text-[10px] md:!text-[12px] !tracking-tight">
+                            <Text.Caption className="!text-white font-medium opacity-80 italic line-clamp-1 block !text-[0.625rem] md:!text-[0.75rem] !tracking-tight">
                                 {upcomingAgenda.length > 0 ? upcomingAgenda[0].deskripsi : 'Pembersihan saluran air.'}
                             </Text.Caption>
                         </div>
@@ -267,10 +267,10 @@ export default function Dashboard() {
             {/* Tabbed Multi-Action Grid - Redesigned Interface */}
             <div className="px-1 md:px-0 mt-4">
                 {/* Tabs Switcher */}
-                <div className="flex items-center gap-2 mb-8 p-1.5 bg-slate-100/50 rounded-[14px] w-fit mx-auto md:mx-0">
+                <div className="flex items-center gap-2 mb-8 p-1.5 bg-slate-100/50 rounded-[0.875rem] w-fit mx-auto md:mx-0">
                     <button 
                         onClick={() => setActiveMenuTab('utama')}
-                        className={`px-8 py-2.5 rounded-[12px] text-sm font-bold transition-all duration-300 ${
+                        className={`px-8 py-2.5 rounded-[0.75rem] text-sm font-bold transition-all duration-300 ${
                             activeMenuTab === 'utama' 
                             ? 'bg-white text-brand-600 shadow-premium border border-slate-200/50' 
                             : 'text-slate-500 hover:text-slate-700'
@@ -280,7 +280,7 @@ export default function Dashboard() {
                     </button>
                     <button 
                         onClick={() => setActiveMenuTab('lainnya')}
-                        className={`px-8 py-2.5 rounded-[12px] text-sm font-bold transition-all duration-300 ${
+                        className={`px-8 py-2.5 rounded-[0.75rem] text-sm font-bold transition-all duration-300 ${
                             activeMenuTab === 'lainnya' 
                             ? 'bg-white text-brand-600 shadow-premium border border-slate-200/50' 
                             : 'text-slate-500 hover:text-slate-700'
@@ -303,7 +303,7 @@ export default function Dashboard() {
                                 <div key={i} className="flex flex-col items-center gap-3 group">
                                     <button 
                                         onClick={() => navigate(action.link)}
-                                        className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[20px] flex items-center justify-center relative shadow-premium border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                                        className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[1.25rem] flex items-center justify-center relative shadow-premium border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
                                     >
                                         <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
                                     </button>
@@ -317,7 +317,7 @@ export default function Dashboard() {
                         {/* Recent Activities moved here for Menu Utama */}
                         {!isWarga && (
                             <div className="animate-fade-in-up">
-                                <div className="bg-white rounded-[20px] p-6 shadow-premium border border-slate-100">
+                                <div className="bg-white rounded-[1.25rem] p-6 shadow-premium border border-slate-100">
                                     <div className="flex items-center justify-between mb-6">
                                         <div className="flex items-center gap-2">
                                             <ClockCounterClockwise size={20} className="text-brand-600" />
@@ -327,8 +327,8 @@ export default function Dashboard() {
                                     <div className="space-y-5">
                                         {recentActivities.slice(0, 3).length > 0 ? (
                                             recentActivities.slice(0, 3).map((act: any) => (
-                                                <div key={act.id} className="flex gap-4 p-4 rounded-[16px] hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                                    <div className="w-10 h-10 rounded-[12px] bg-brand-50 flex items-center justify-center shrink-0">
+                                                <div key={act.id} className="flex gap-4 p-4 rounded-[1rem] hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                                    <div className="w-10 h-10 rounded-[0.75rem] bg-brand-50 flex items-center justify-center shrink-0">
                                                         <ArrowRight className="text-brand-600" />
                                                     </div>
                                                     <div className="flex flex-col justify-center">
@@ -361,7 +361,7 @@ export default function Dashboard() {
                             <div key={i} className="flex flex-col items-center gap-3 group">
                                 <button 
                                     onClick={() => navigate(action.link)}
-                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[20px] flex items-center justify-center relative shadow-premium border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
+                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[1.25rem] flex items-center justify-center relative shadow-premium border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
                                 >
                                     <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
                                 </button>
@@ -377,7 +377,7 @@ export default function Dashboard() {
             {/* Fixed Bottom Navigation - Mobile Experience Refinement */}
             <div className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around z-50 md:hidden pb-1">
                 <div className="flex flex-col items-center gap-1.5 text-brand-600">
-                    <div className="bg-brand-50 px-5 py-1.5 rounded-[12px] transition-all active:scale-95">
+                    <div className="bg-brand-50 px-5 py-1.5 rounded-[0.75rem] transition-all active:scale-95">
                         <House weight="fill" className="w-6 h-6" />
                     </div>
                     <Text.Caption className="!text-brand-600 font-bold">Beranda</Text.Caption>

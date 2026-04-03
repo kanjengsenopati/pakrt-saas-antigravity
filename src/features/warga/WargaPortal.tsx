@@ -128,10 +128,10 @@ export default function WargaPortal() {
                 {/* Info & Avatar */}
                 <div className="flex justify-between items-center mb-6 pt-2">
                     <div>
-                        <p className="text-[13px] text-brand-100/90 tracking-tight font-medium mb-1">
+                        <p className="text-[0.8125rem] text-brand-100/90 tracking-tight font-medium mb-1">
                             {getGreeting()}, Warga!
                         </p>
-                        <h1 className="text-2xl font-bold text-white tracking-tight leading-tight line-clamp-1 max-w-[220px]">
+                        <h1 className="text-2xl font-bold text-white tracking-tight leading-tight line-clamp-1 max-w-[13.75rem]">
                             {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
                         </h1>
                     </div>
@@ -141,7 +141,7 @@ export default function WargaPortal() {
                             <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
                                 <Minus size={12} weight="bold" />
                             </button>
-                            <span className="text-[9px] font-bold text-white w-7 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
+                            <span className="text-[0.5625rem] font-bold text-white w-7 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
                             <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
                                 <Plus size={12} weight="bold" />
                             </button>
@@ -161,11 +161,11 @@ export default function WargaPortal() {
 
                 {/* Card Status (Floating) - Tagihan Iuran */}
                 <div className="bg-white rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
-                    <p className="text-[11px] text-slate-500 font-semibold tracking-tight mb-2">
+                    <p className="text-[0.6875rem] text-slate-500 font-semibold tracking-tight mb-2">
                         Status Tagihan Iuran Anda
                     </p>
                     <div className="flex justify-between items-center">
-                        <h2 className="text-[24px] font-bold text-brand-600 tracking-tight leading-none">
+                        <h2 className="text-[1.5rem] font-bold text-brand-600 tracking-tight leading-none">
                             {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
                         </h2>
                         <button 
@@ -182,31 +182,31 @@ export default function WargaPortal() {
             <div className="px-6 pt-24 pb-6 space-y-8">
                 {/* Layanan Mandiri */}
                 <div className="animate-fade-in-up">
-                    <h3 className="text-[13px] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Layanan Mandiri</h3>
+                    <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Layanan Mandiri</h3>
                     <div className="grid grid-cols-4 gap-3">
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/surat')}>
-                            <button className="w-[60px] h-[60px] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
+                            <button className="w-[3.75rem] h-[3.75rem] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
                                 <EnvelopeSimple size={28} weight="duotone" />
                             </button>
-                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Minta<br/>Surat</span>
+                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Minta<br/>Surat</span>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/aduan/new')}>
-                            <button className="w-[60px] h-[60px] bg-rose-50/80 group-hover:bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border border-rose-100/50 group-active:scale-95 transition-all">
+                            <button className="w-[3.75rem] h-[3.75rem] bg-rose-50/80 group-hover:bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border border-rose-100/50 group-active:scale-95 transition-all">
                                 <Megaphone size={28} weight="duotone" />
                             </button>
-                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</span>
+                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</span>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/iuran')}>
-                            <button className="w-[60px] h-[60px] bg-emerald-50/80 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 group-active:scale-95 transition-all">
+                            <button className="w-[3.75rem] h-[3.75rem] bg-emerald-50/80 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 group-active:scale-95 transition-all">
                                 <CurrencyCircleDollar size={28} weight="duotone" />
                             </button>
-                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</span>
+                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</span>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/agenda')}>
-                            <button className="w-[60px] h-[60px] bg-purple-50/80 group-hover:bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/50 group-active:scale-95 transition-all">
+                            <button className="w-[3.75rem] h-[3.75rem] bg-purple-50/80 group-hover:bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/50 group-active:scale-95 transition-all">
                                 <CalendarCheck size={28} weight="duotone" />
                             </button>
-                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</span>
+                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</span>
                         </div>
                     </div>
                 </div>
@@ -214,27 +214,27 @@ export default function WargaPortal() {
                 {/* Jadwal Ronda (Dark Theme Box) */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.1s'}}>
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Jadwal Ronda Anda</h3>
-                        <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/ronda')}>Lihat Jadwal</span>
+                        <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Jadwal Ronda Anda</h3>
+                        <span className="text-[0.625rem] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/ronda')}>Lihat Jadwal</span>
                     </div>
                     
-                    <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[20px] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
-                        <Flashlight weight="fill" className="absolute -right-4 -bottom-4 text-[80px] text-slate-700/50 -rotate-12" />
+                    <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[1.25rem] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
+                        <Flashlight weight="fill" className="absolute -right-4 -bottom-4 text-[5rem] text-slate-700/50 -rotate-12" />
                         
                         <div className="bg-slate-700/80 rounded-2xl w-14 h-14 flex flex-col items-center justify-center text-white border border-slate-600 shadow-inner z-10 shrink-0">
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300 mt-1">Cek</span>
-                            <span className="text-[18px] leading-none font-black mt-0.5"><ClockCounterClockwise size={20} weight="bold"/></span>
+                            <span className="text-[0.5625rem] font-bold uppercase tracking-wider text-slate-300 mt-1">Cek</span>
+                            <span className="text-[1.125rem] leading-none font-black mt-0.5"><ClockCounterClockwise size={20} weight="bold"/></span>
                         </div>
                         <div className="z-10">
-                            <h4 className="text-white font-bold text-[15px] tracking-tight mb-0.5">Jadwal Siskamling</h4>
-                            <p className="text-slate-400 text-[11px] font-medium leading-tight">Pastikan Anda hadir sesuai jadwal blok/RT Anda.</p>
+                            <h4 className="text-white font-bold text-[0.9375rem] tracking-tight mb-0.5">Jadwal Siskamling</h4>
+                            <p className="text-slate-400 text-[0.6875rem] font-medium leading-tight">Pastikan Anda hadir sesuai jadwal blok/RT Anda.</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Menu Lainnya Section */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-                    <h3 className="text-[13px] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Pintasan Lainnya</h3>
+                    <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Pintasan Lainnya</h3>
                     <div className="grid grid-cols-4 gap-3">
                         {[
                             { label: 'Data Warga', icon: Users, path: '/warga', color: 'bg-amber-50 text-amber-600 border-amber-100', hoverBg: 'group-hover:bg-amber-100' },
@@ -255,10 +255,10 @@ export default function WargaPortal() {
                                 }}
                                 className="flex flex-col items-center gap-2 group cursor-pointer"
                             >
-                                <button className={`w-[60px] h-[60px] ${item.color} ${item.hoverBg} rounded-2xl flex items-center justify-center shadow-sm border group-active:scale-95 transition-all`}>
+                                <button className={`w-[3.75rem] h-[3.75rem] ${item.color} ${item.hoverBg} rounded-2xl flex items-center justify-center shadow-sm border group-active:scale-95 transition-all`}>
                                     <item.icon size={26} weight="duotone" />
                                 </button>
-                                <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">{item.label}</span>
+                                <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">{item.label}</span>
                             </div>
                         ))}
                     </div>
@@ -268,24 +268,24 @@ export default function WargaPortal() {
                 {agendas.length > 0 && (
                     <div className="animate-fade-in-up" style={{animationDelay: '0.3s'}}>
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Pengumuman Terbaru</h3>
-                            <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/agenda')}>Semua</span>
+                            <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Pengumuman Terbaru</h3>
+                            <span className="text-[0.625rem] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/agenda')}>Semua</span>
                         </div>
                         <div className="space-y-4">
                             {agendas.map((agenda: any) => (
                                 <div 
                                     key={agenda.id} 
                                     onClick={() => navigate('/agenda')}
-                                    className="bg-brand-600 p-5 rounded-[20px] text-white relative overflow-hidden group shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                                    className="bg-brand-600 p-5 rounded-[1.25rem] text-white relative overflow-hidden group shadow-md active:scale-[0.98] transition-all cursor-pointer"
                                 >
                                     <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
                                     <div className="relative z-10">
-                                        <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">
+                                        <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-[0.625rem] font-bold uppercase tracking-widest mb-4">
                                             Penting
                                         </div>
-                                        <h4 className="text-[17px] font-bold leading-tight mb-2 tracking-tight">{agenda.judul}</h4>
-                                        <p className="text-white/80 text-[13px] line-clamp-2 leading-snug mb-4 font-medium">{agenda.deskripsi}</p>
-                                        <button className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest group/btn">
+                                        <h4 className="text-[1.0625rem] font-bold leading-tight mb-2 tracking-tight">{agenda.judul}</h4>
+                                        <p className="text-white/80 text-[0.8125rem] line-clamp-2 leading-snug mb-4 font-medium">{agenda.deskripsi}</p>
+                                        <button className="flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-widest group/btn">
                                             Lihat Detail
                                             <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
                                         </button>
@@ -301,7 +301,7 @@ export default function WargaPortal() {
                     <div className="animate-fade-in-up" style={{animationDelay: '0.4s'}}>
                         <div className="flex items-center gap-2 mb-4">
                             <ChartPieSlice size={20} weight="fill" className="text-brand-500" />
-                            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Jajak Pendapat Aktif</h3>
+                            <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Jajak Pendapat Aktif</h3>
                         </div>
                         <div className="space-y-4">
                             {activePolls.map((p: any) => (
