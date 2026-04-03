@@ -67,16 +67,20 @@ const router = createBrowserRouter([
         element: <VerifySurat />
     },
     {
+        path: '/dashboard',
+        element: (
+            <ProtectedRoute>
+                <Dashboard />
+            </ProtectedRoute>
+        )
+    },
+    {
         element: (
             <ProtectedRoute>
                 <AppLayout />
             </ProtectedRoute>
         ),
         children: [
-            {
-                path: 'dashboard',
-                element: <Dashboard />
-            },
             {
                 path: 'warga',
                 element: (
