@@ -152,9 +152,11 @@ export default function Dashboard() {
                                         <span className="text-[0.7rem] font-medium text-blue-100/70 uppercase tracking-widest">{authUser?.role_entity?.name || authUser?.role || 'Administrator'}</span>
                                         <div className="flex items-center gap-2">
                                             <h1 className="text-xl font-extrabold tracking-tight font-headline">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
-                                            <span className="bg-white/10 px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold tracking-wider text-blue-100 border border-white/20 uppercase whitespace-nowrap">
-                                                RW 08 • Kel. Jati • Kec. Pulogadung
-                                            </span>
+                                            {currentTenant?.location_detail && (
+                                                <span className="bg-white/10 px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold tracking-wider text-blue-100 border border-white/20 uppercase whitespace-nowrap">
+                                                    {currentTenant.location_detail}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -317,9 +319,11 @@ export default function Dashboard() {
                                 <p className="text-white/70 font-label text-[0.75rem] leading-none mb-1">{authUser?.role_entity?.name || authUser?.role || 'Pengurus'}</p>
                                 <div className="flex items-center gap-2">
                                     <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
-                                    <span className="bg-white/10 px-2 py-0.5 rounded-full text-[0.6rem] font-bold tracking-widest text-white/90 border border-white/20 uppercase whitespace-nowrap">
-                                        RW 08 • Kel. Jati
-                                    </span>
+                                    {currentTenant?.location_detail && (
+                                        <span className="bg-white/10 px-2 py-0.5 rounded-full text-[0.6rem] font-bold tracking-widest text-white/90 border border-white/20 uppercase whitespace-nowrap">
+                                            {currentTenant.location_detail}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>

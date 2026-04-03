@@ -3,6 +3,7 @@ export interface Tenant {
     name: string;
     subdomain: string;
     config: Record<string, any>;
+    location_detail?: string;
 }
 
 export interface User {

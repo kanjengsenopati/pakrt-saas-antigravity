@@ -28,6 +28,36 @@ export const authService = {
                 role_entity: true
             }
         });
+
+        if (user && user.tenant) {
+            (user.tenant as any).location_detail = await this.resolveLocationDetail(user.tenant.id);
+        }
+
+        return user;
+    },
+
+    async resolveLocationDetail(tenantId: string) {
+        try {
+            const parts = tenantId.split('.');
+            if (parts.length < 6) return null;
+
+            const kecCode = parts.slice(0, 3).join('.');
+            const kelCode = parts.slice(0, 4).join('.');
+            const rw = parts[4];
+            const rt = parts[5];
+
+            const [kec, kel] = await Promise.all([
+                prisma.wilayah.findUnique({ where: { id: kecCode } }),
+                prisma.wilayah.findUnique({ where: { id: kelCode } })
+            ]);
+
+            const kecName = kec ? kec.name.toUpperCase() : 'KECAMATAN';
+            const kelName = kel ? kel.name.toUpperCase() : 'KELURAHAN';
+
+            return `RT ${rt} / RW ${rw} • KEL. ${kelName} • KEC. ${kecName}`;
+        } catch (e) {
+            return null;
+        }
     },
 
     async register(tenantData: any, userData: any) {
@@ -78,9 +108,15 @@ export const authService = {
     },
 
     async getTenantById(id: string) {
-        return await prisma.tenant.findUnique({
+        const tenant = await prisma.tenant.findUnique({
             where: { id }
         });
+        
+        if (tenant) {
+            (tenant as any).location_detail = await this.resolveLocationDetail(tenant.id);
+        }
+        
+        return tenant;
     },
 
     async updatePassword(userId: string, hashedPassword: string) {
