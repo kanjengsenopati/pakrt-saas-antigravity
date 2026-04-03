@@ -24,8 +24,9 @@ import {
     TrendUp,
     Gavel,
     IdentificationCard,
-    Megaphone
-} from '@phosphor-icons/react';
+    Megaphone,
+    CaretLeft,
+    CaretRight
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
 import { aktivitasService } from '../../services/aktivitasService';
@@ -45,6 +46,7 @@ export default function Dashboard() {
     
     const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0, pendingIuran: 0 });
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
+    const [activityPage, setActivityPage] = useState(1);
     const [activeMenuTab, setActiveMenuTab] = useState<'utama' | 'lainnya'>('utama');
 
     const isWarga = useMemo(() =>
@@ -147,7 +149,12 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-[0.7rem] font-medium text-blue-100/70 uppercase tracking-widest">{authUser?.role_entity?.name || authUser?.role || 'Administrator'}</span>
-                                        <h1 className="text-xl font-extrabold tracking-tight font-headline">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                        <div className="flex items-center gap-2">
+                                            <h1 className="text-xl font-extrabold tracking-tight font-headline">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                            <span className="bg-white/10 px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold tracking-wider text-blue-100 border border-white/20 uppercase whitespace-nowrap">
+                                                RW 08 • Kel. Jati • Kec. Pulogadung
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95">
@@ -249,8 +256,8 @@ export default function Dashboard() {
                             <section className="pb-10">
                                 <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline mb-5">Aktivitas Terakhir</h3>
                                 <div className="space-y-4">
-                                    {recentActivities.slice(0, 5).length > 0 ? (
-                                        recentActivities.slice(0, 5).map((act: any) => (
+                                    {recentActivities.length > 0 ? (
+                                        recentActivities.slice((activityPage - 1) * 5, activityPage * 5).map((act: any) => (
                                             <div key={act.id} className="flex items-center gap-4 p-5 bg-surface-container-low rounded-2xl">
                                                 <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
                                                     {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? (
@@ -272,6 +279,27 @@ export default function Dashboard() {
                                         <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
                                     )}
                                 </div>
+                                {recentActivities.length > 5 && (
+                                    <div className="flex justify-center items-center gap-4 mt-6">
+                                        <button 
+                                            disabled={activityPage === 1}
+                                            onClick={() => setActivityPage(prev => Math.max(1, prev - 1))}
+                                            className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface hover:bg-primary hover:text-white disabled:opacity-50 transition-colors"
+                                        >
+                                            <CaretLeft weight="bold" />
+                                        </button>
+                                        <span className="text-sm font-label text-on-surface-variant font-medium">
+                                            {activityPage} / {Math.ceil(recentActivities.length / 5)}
+                                        </span>
+                                        <button 
+                                            disabled={activityPage === Math.ceil(recentActivities.length / 5)}
+                                            onClick={() => setActivityPage(prev => prev + 1)}
+                                            className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface hover:bg-primary hover:text-white disabled:opacity-50 transition-colors"
+                                        >
+                                            <CaretRight weight="bold" />
+                                        </button>
+                                    </div>
+                                )}
                             </section>
                         )}
                     </main>
@@ -286,7 +314,12 @@ export default function Dashboard() {
                             </div>
                             <div>
                                 <p className="text-white/70 font-label text-[0.75rem] leading-none mb-1">{authUser?.role_entity?.name || authUser?.role || 'Pengurus'}</p>
-                                <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                <div className="flex items-center gap-2">
+                                    <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                    <span className="bg-white/10 px-2 py-0.5 rounded-full text-[0.6rem] font-bold tracking-widest text-white/90 border border-white/20 uppercase whitespace-nowrap">
+                                        RW 08 • Kel. Jati
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90">
@@ -393,7 +426,7 @@ export default function Dashboard() {
                             <section className="mt-12 px-6">
                                 <h4 className="font-headline font-bold text-on-surface-variant text-[1.2rem] mb-4">Aktivitas Terkini</h4>
                                 <div className="space-y-4">
-                                    {recentActivities.slice(0, 3).length > 0 ? recentActivities.slice(0, 3).map((act: any) => (
+                                    {recentActivities.length > 0 ? recentActivities.slice((activityPage - 1) * 5, activityPage * 5).map((act: any) => (
                                         <div key={act.id} className="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_24px_-4px_rgba(0,80,212,0.05)] flex gap-4">
                                             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? 'bg-secondary-container/30 text-secondary' : 'bg-tertiary-container/20 text-tertiary'}`}>
                                                 {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? <Money weight="fill" className="text-xl" /> : <ChatDots weight="fill" className="text-xl" />}
@@ -407,6 +440,27 @@ export default function Dashboard() {
                                         <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
                                     )}
                                 </div>
+                                {recentActivities.length > 5 && (
+                                    <div className="flex justify-center items-center gap-4 mt-6">
+                                        <button 
+                                            disabled={activityPage === 1}
+                                            onClick={() => setActivityPage(prev => Math.max(1, prev - 1))}
+                                            className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface hover:bg-primary-dim hover:text-white disabled:opacity-50 transition-colors shadow-sm"
+                                        >
+                                            <CaretLeft weight="bold" />
+                                        </button>
+                                        <span className="text-sm font-label text-on-surface-variant font-medium">
+                                            {activityPage} / {Math.ceil(recentActivities.length / 5)}
+                                        </span>
+                                        <button 
+                                            disabled={activityPage === Math.ceil(recentActivities.length / 5)}
+                                            onClick={() => setActivityPage(prev => prev + 1)}
+                                            className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface hover:bg-primary-dim hover:text-white disabled:opacity-50 transition-colors shadow-sm"
+                                        >
+                                            <CaretRight weight="bold" />
+                                        </button>
+                                    </div>
+                                )}
                             </section>
                         )}
                     </main>
