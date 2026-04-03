@@ -9,6 +9,9 @@ export default {
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],
                 jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+                headline: ['"Plus Jakarta Sans"', 'sans-serif'],
+                body: ['Manrope', 'sans-serif'],
+                label: ['Manrope', 'sans-serif'],
             },
             borderRadius: {
                 'card': '20px',
@@ -36,7 +39,19 @@ export default {
                 },
                 navy: {
                     900: 'rgb(var(--color-brand-900) / <alpha-value>)',
-                }
+                },
+                'primary': '#0050d4',
+                'primary-dim': '#0046bb',
+                'background': '#f5f7f9',
+                'on-background': '#2c2f31',
+                'on-surface': '#2c2f31',
+                'on-surface-variant': '#595c5e',
+                'surface-container-lowest': '#ffffff',
+                'surface-container-low': '#eef1f3',
+                'error': '#b31b25',
+                'tertiary': '#702ae1',
+                'tertiary-container': '#c0a0ff',
+                'on-tertiary-container': '#3f008e',
             }
         },
     },

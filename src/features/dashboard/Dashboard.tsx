@@ -22,7 +22,11 @@ import {
     Bell,
     House,
     Minus,
-    Plus
+    Plus,
+    TrendUp,
+    Gavel,
+    IdentificationCard,
+    Megaphone
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -142,260 +146,301 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in pb-32 max-w-4xl mx-auto px-5 md:px-0" translate="no">
-            {/* Header / Top Navigation Mock (Mobile Style) */}
-            <div className="flex items-center justify-between mt-2 md:mt-0">
-                <div className="flex items-center gap-3">
-                    <button className="p-2 rounded-[0.75rem] hover:bg-slate-100 transition-colors md:hidden">
-                        <Users weight="bold" className="w-6 h-6 text-slate-800" />
-                    </button>
-                    <Text.Label className="!text-slate-500">Dashboard Pengurus</Text.Label>
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <Bell weight="bold" className="w-6 h-6 text-slate-800" />
-                        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[0.625rem] font-bold text-white">3</span>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-slate-900 border-2 border-white shadow-premium flex items-center justify-center text-white font-bold text-sm">
-                        {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
-                    </div>
-                </div>
-            </div>
-
-            {/* Greeting Section */}
-            <div className="pt-2 flex justify-between items-end">
-                <div>
-                    <Text.H1>
-                        Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
-                    </Text.H1>
-                    <Text.Body className="mt-1">
-                        Anda tercatat sebagai {authUser?.role_entity?.name || authUser?.role || 'Pengurus'} di {currentScope}, {currentTenant?.name}.
-                    </Text.Body>
-                </div>
-                <div className="flex items-center bg-slate-200/50 rounded-full px-1.5 py-1 mb-1">
-                    <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
-                        <Minus size={14} weight="bold" />
-                    </button>
-                    <span className="text-[0.625rem] font-bold text-slate-700 w-8 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
-                    <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
-                        <Plus size={14} weight="bold" />
-                    </button>
-                </div>
-            </div>
-
-            {/* Summary Grid - Compact & Dense for Management Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-4">
-                {/* 1. Total Iuran Card (Royal Blue) */}
-                <div 
-                    onClick={() => navigate('/iuran')}
-                    className="bg-brand-600 rounded-[1.125rem] p-4 text-white shadow-premium shadow-brand-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
-                >
-                    <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <Wallet weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
-                    </div>
-                    <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Total Iuran</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
-                                <Wallet weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
-                            </div>
-                        </div>
-                        <div>
-                            <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
-                                {formatRupiah(stats.saldo)}
-                            </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[0.5625rem] md:!text-[0.6875rem] italic block !tracking-tight">
-                                85% Warga Membayar
-                            </Text.Caption>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 2. Aduan Card (Coral/Red Alert) */}
-                <div 
-                    onClick={() => navigate('/surat')}
-                    className="bg-coral-500 rounded-[1.125rem] p-4 text-white shadow-premium shadow-coral-500/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]"
-                >
-                    <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <FileText weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
-                    </div>
-                    <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Aduan Pending</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
-                                <Bell weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
-                            </div>
-                        </div>
-                        <div>
-                            <Text.Amount className="!text-white text-base md:text-2xl lg:text-3xl tracking-tighter leading-none block">
-                                {stats.pendingSurat} Laporan
-                            </Text.Amount>
-                            <Text.Caption className="!text-white font-medium opacity-80 mt-1 !text-[0.5625rem] md:!text-[0.6875rem] italic block !tracking-tight">
-                                Tindak Lanjut Segera
-                            </Text.Caption>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 3. Community Spotlight (Deep Navy/Blue) */}
-                <div 
-                    onClick={() => navigate('/agenda')}
-                    className="bg-navy-900 rounded-[1.125rem] p-4 text-white shadow-premium shadow-navy-900/20 relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98] col-span-2 md:col-span-1"
-                >
-                    <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-20 transition-all duration-500">
-                        <CalendarCheck weight="fill" className="w-16 h-16 md:w-32 md:h-32" />
-                    </div>
-                    <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-2">
-                            <Text.Label className="!text-white opacity-80 !text-[0.625rem] md:!text-xs uppercase !tracking-tight">Spotlight Agenda</Text.Label>
-                            <div className="bg-white/20 backdrop-blur-md rounded-lg p-1.5 border border-white/20">
-                                <CalendarCheck weight="fill" className="w-4 h-4 md:w-6 md:h-6" />
-                            </div>
-                        </div>
-                        <div>
-                            <Text.H2 className="!text-white text-base md:text-xl leading-tight line-clamp-1 mb-1 !font-bold">
-                                {upcomingAgenda.length > 0 ? upcomingAgenda[0].judul : 'Kerja Bakti Rutin'}
-                            </Text.H2>
-                            <Text.Caption className="!text-white font-medium opacity-80 italic line-clamp-1 block !text-[0.625rem] md:!text-[0.75rem] !tracking-tight">
-                                {upcomingAgenda.length > 0 ? upcomingAgenda[0].deskripsi : 'Pembersihan saluran air.'}
-                            </Text.Caption>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Tabbed Multi-Action Grid - Redesigned Interface */}
-            <div className="px-1 md:px-0 mt-4">
-                {/* Tabs Switcher */}
-                <div className="flex items-center gap-2 mb-8 p-1.5 bg-slate-100/50 rounded-[0.875rem] w-fit mx-auto md:mx-0">
-                    <button 
-                        onClick={() => setActiveMenuTab('utama')}
-                        className={`px-8 py-2.5 rounded-[0.75rem] text-sm font-bold transition-all duration-300 ${
-                            activeMenuTab === 'utama' 
-                            ? 'bg-white text-brand-600 shadow-premium border border-slate-200/50' 
-                            : 'text-slate-500 hover:text-slate-700'
-                        }`}
-                    >
-                        Menu Utama
-                    </button>
-                    <button 
-                        onClick={() => setActiveMenuTab('lainnya')}
-                        className={`px-8 py-2.5 rounded-[0.75rem] text-sm font-bold transition-all duration-300 ${
-                            activeMenuTab === 'lainnya' 
-                            ? 'bg-white text-brand-600 shadow-premium border border-slate-200/50' 
-                            : 'text-slate-500 hover:text-slate-700'
-                        }`}
-                    >
-                        Lainnya
-                    </button>
-                </div>
-
-                {activeMenuTab === 'utama' ? (
-                    <div className="space-y-12 animate-fade-in">
-                        {/* 4 Column Menu Utama */}
-                        <div className="grid grid-cols-4 gap-4 md:gap-8">
-                            {[
-                                { label: 'Buku Kas', icon: Money, color: 'bg-brand-50 text-brand-600', link: '/keuangan' },
-                                { label: 'Iuran', icon: Wallet, color: 'bg-emerald-50 text-emerald-600', link: '/iuran' },
-                                { label: 'Agenda', icon: CalendarBlank, color: 'bg-blue-50 text-blue-600', link: '/agenda' },
-                                { label: 'Notulen', icon: Notebook, color: 'bg-amber-50 text-amber-600', link: '/notulensi' },
-                            ].map((action, i) => (
-                                <div key={i} className="flex flex-col items-center gap-3 group">
-                                    <button 
-                                        onClick={() => navigate(action.link)}
-                                        className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[1.25rem] flex items-center justify-center relative shadow-premium border border-slate-100/50 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
-                                    >
-                                        <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
-                                    </button>
-                                    <Text.Label className="text-center truncate w-full px-1">
-                                        {action.label}
-                                    </Text.Label>
+        <div className="bg-background text-on-background font-body min-h-screen pb-24 animate-fade-in" translate="no">
+            {activeMenuTab === 'utama' ? (
+                <>
+                    {/* Immersive Header Section */}
+                    <div className="relative pb-24">
+                        {/* Large Blue Header */}
+                        <header className="w-full bg-primary text-white rounded-b-[2rem] shadow-none bg-gradient-to-br from-primary to-primary-dim pt-8 pb-32 px-6">
+                            <div className="flex justify-between items-center max-w-4xl mx-auto">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden shadow-lg bg-white/10 flex items-center justify-center font-bold text-lg text-white">
+                                        {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[0.7rem] font-medium text-blue-100/70 uppercase tracking-widest">{authUser?.role_entity?.name || authUser?.role || 'Administrator'}</span>
+                                        <h1 className="text-xl font-extrabold tracking-tight font-headline">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                                <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95">
+                                    <div className="relative">
+                                        <Bell weight="fill" className="text-white text-2xl" />
+                                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-primary"></span>
+                                    </div>
+                                </button>
+                            </div>
+                        </header>
 
-                        {/* Recent Activities moved here for Menu Utama */}
-                        {!isWarga && (
-                            <div className="animate-fade-in-up">
-                                <div className="bg-white rounded-[1.25rem] p-6 shadow-premium border border-slate-100">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div className="flex items-center gap-2">
-                                            <ClockCounterClockwise size={20} className="text-brand-600" />
-                                            <Text.Label className="!text-slate-800">Informasi Terbaru</Text.Label>
+                        {/* Overlapping Card - Keuangan */}
+                        <div className="absolute bottom-0 left-0 w-full px-6 translate-y-12">
+                            <div className="max-w-4xl mx-auto">
+                                <section className="bg-white rounded-[2rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+                                    <div className="relative z-10">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div>
+                                                <p className="text-slate-500 font-label text-sm font-medium mb-2">Total Kas RT</p>
+                                                <h2 className="text-3xl font-extrabold font-headline tracking-tight text-slate-900 leading-tight">{formatRupiah(stats.saldo)}</h2>
+                                            </div>
+                                            <div className="bg-blue-50 p-3 rounded-2xl">
+                                                <Wallet weight="fill" className="text-primary text-2xl" />
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 mb-8">
+                                            <span className="flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                                <TrendUp weight="bold" className="text-[14px] mr-1" />
+                                                Active
+                                            </span>
+                                            <span className="text-slate-400 text-[11px] font-medium">Update realtime</span>
+                                        </div>
+                                        <button onClick={() => navigate('/keuangan')} className="w-full py-4 bg-primary text-white font-bold rounded-2xl text-sm transition-all hover:bg-primary-dim active:scale-[0.98] shadow-lg shadow-primary/30">
+                                            Lihat Detail Kas
+                                        </button>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Canvas */}
+                    <main className="mt-20 px-6 space-y-8 max-w-4xl mx-auto">
+                        {/* Stats Bento Grid Section */}
+                        <section>
+                            <div className="flex justify-between items-center mb-5">
+                                <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline">Manajemen Warga</h3>
+                                <span className="text-primary font-bold text-sm cursor-pointer hover:underline" onClick={() => setActiveMenuTab('lainnya')}>Lihat Semua</span>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* Stats 1: Ajuan Surat */}
+                                <div onClick={() => navigate('/surat')} className="col-span-2 bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                                            <FileText weight="fill" className="text-primary text-2xl" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[15px] font-bold text-on-surface">Ajuan Surat</p>
+                                            <p className="text-on-surface-variant text-xs font-medium">{stats.pendingSurat} Surat Baru</p>
                                         </div>
                                     </div>
-                                    <div className="space-y-5">
-                                        {recentActivities.slice(0, 3).length > 0 ? (
-                                            recentActivities.slice(0, 3).map((act: any) => (
-                                                <div key={act.id} className="flex gap-4 p-4 rounded-[1rem] hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                                    <div className="w-10 h-10 rounded-[0.75rem] bg-brand-50 flex items-center justify-center shrink-0">
-                                                        <ArrowRight className="text-brand-600" />
-                                                    </div>
-                                                    <div className="flex flex-col justify-center">
-                                                        <Text.H2 className="!font-bold !text-slate-900 leading-tight">{toTitleCase(act.details)}</Text.H2>
-                                                        <Text.Caption className="mt-1 italic">{formatDate(act.timestamp)}</Text.Caption>
-                                                    </div>
+                                    <ArrowRight weight="bold" className="text-on-surface-variant" />
+                                </div>
+
+                                {/* Stats 2: Aduan Warga */}
+                                <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-11 h-11 shrink-0 rounded-xl bg-red-50 flex items-center justify-center">
+                                            <ChatDots weight="fill" className="text-error text-2xl" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[14px] font-bold text-on-surface leading-tight">Aduan</p>
+                                            <p className="text-[10px] font-bold text-error uppercase tracking-tight">Aktif</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight weight="bold" className="text-on-surface-variant text-sm" />
+                                </div>
+
+                                {/* Stats 3: Agenda Warga */}
+                                <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-11 h-11 shrink-0 rounded-xl bg-purple-50 flex items-center justify-center">
+                                            <CalendarBlank weight="fill" className="text-tertiary text-2xl" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[14px] font-bold text-on-surface leading-tight">Agenda</p>
+                                            <p className="text-[10px] font-medium text-on-surface-variant uppercase tracking-tight">{stats.agenda} Event</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight weight="bold" className="text-on-surface-variant text-sm" />
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Quick Summary List */}
+                        {!isWarga && (
+                            <section className="pb-10">
+                                <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline mb-5">Aktivitas Terakhir</h3>
+                                <div className="space-y-4">
+                                    {recentActivities.slice(0, 5).length > 0 ? (
+                                        recentActivities.slice(0, 5).map((act: any) => (
+                                            <div key={act.id} className="flex items-center gap-4 p-5 bg-surface-container-low rounded-2xl">
+                                                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                                    {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? (
+                                                        <Money weight="fill" className="text-primary text-xl" />
+                                                    ) : act.module === 'Surat' ? (
+                                                        <FileText weight="fill" className="text-tertiary text-xl" />
+                                                    ) : (
+                                                        <Bell weight="fill" className="text-emerald-500 text-xl" />
+                                                    )}
                                                 </div>
-                                            ))
-                                        ) : (
-                                            <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
-                                        )}
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                    <p className="text-[11px] font-medium text-on-surface-variant">{formatDate(act.timestamp)}</p>
+                                                </div>
+                                                <span className="px-2.5 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-extrabold rounded-full">INFO</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
+                                    )}
+                                </div>
+                            </section>
+                        )}
+                    </main>
+                </>
+            ) : (
+                <>
+                    {/* Semua Layanan Pengurus view */}
+                    <header className="bg-blue-700/80 dark:bg-blue-900/80 backdrop-blur-md rounded-b-[1.5rem] w-full sticky top-0 z-50 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex justify-between items-center px-6 py-4 max-w-4xl mx-auto">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden border border-white/30 text-white font-bold text-sm">
+                                {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
+                            </div>
+                            <div>
+                                <p className="text-white/70 font-label text-[0.75rem] leading-none mb-1">{authUser?.role_entity?.name || authUser?.role || 'Pengurus'}</p>
+                                <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                            </div>
+                        </div>
+                        <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90">
+                            <Bell weight="bold" className="text-xl" />
+                        </button>
+                    </header>
+
+                    <main className="pb-24 max-w-4xl mx-auto animate-fade-in-up mt-8">
+                        {/* Hero Balance Section */}
+                        <section className="px-6 -mt-4">
+                            <div className="bg-primary bg-gradient-to-br from-primary to-primary-dim rounded-xl p-6 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.15)] relative overflow-hidden">
+                                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                                    <svg height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" width="100%">
+                                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
+                                    </svg>
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <p className="text-white/80 font-label text-[0.75rem] tracking-wider uppercase font-bold">Total Kas RT</p>
+                                        <Wallet weight="regular" className="text-white/60 text-xl" />
+                                    </div>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-white/60 font-headline font-semibold text-lg">Rp</span>
+                                        <h2 className="text-white font-headline font-extrabold text-3xl tracking-tight">{formatRupiah(stats.saldo).replace('Rp', '').trim()}</h2>
+                                    </div>
+                                    <div className="mt-6 flex gap-4">
+                                        <button onClick={() => navigate('/keuangan/baru?tipe=pemasukan')} className="flex-1 bg-white/20 backdrop-blur-sm py-2.5 rounded-lg text-white font-label text-[0.8rem] font-bold hover:bg-white/30 transition-all flex items-center justify-center gap-2 active:scale-95">
+                                            <Plus weight="bold" /> Pemasukan
+                                        </button>
+                                        <button onClick={() => navigate('/keuangan/baru?tipe=pengeluaran')} className="flex-1 bg-white/10 backdrop-blur-sm py-2.5 rounded-lg text-white font-label text-[0.8rem] font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2 active:scale-95">
+                                            <Minus weight="bold" /> Pengeluaran
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        )}
-                    </div>
-                ) : (
-                    /* Tab Lainnya: 4 Columns x 2 Rows with 1.5x Scale */
-                    <div className="grid grid-cols-4 gap-4 md:gap-8 animate-fade-in">
-                        {[
-                            { label: 'Warga', icon: Users, color: 'bg-blue-50 text-blue-600', link: '/warga' },
-                            { label: 'Pengurus', icon: UserCircle, color: 'bg-brand-50 text-brand-600', link: '/pengurus' },
-                            { label: 'Surat', icon: FileText, color: 'bg-indigo-50 text-indigo-600', link: '/surat' },
-                            { label: 'Ronda', icon: ShieldCheck, color: 'bg-emerald-50 text-emerald-600', link: '/ronda' },
-                            { label: 'Aduan', icon: ChatDots, color: 'bg-coral-50 text-coral-600', link: '/aduan' },
-                            { label: 'Aset RT', icon: Package, color: 'bg-amber-50 text-amber-600', link: '/aset' },
-                            { label: 'Profile', icon: UserCircle, color: 'bg-slate-50 text-slate-400', link: '/profile' },
-                            { label: 'Setting', icon: Gear, color: 'bg-slate-50 text-slate-400', link: '/pengaturan' },
-                        ].map((action, i) => (
-                            <div key={i} className="flex flex-col items-center gap-3 group">
-                                <button 
-                                    onClick={() => navigate(action.link)}
-                                    className={`w-14 h-14 md:w-20 md:h-20 ${action.color} rounded-[1.25rem] flex items-center justify-center relative shadow-premium border border-slate-100 group-hover:shadow-md group-hover:scale-105 active:scale-95 transition-all duration-300`}
-                                >
-                                    <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
-                                </button>
-                                <Text.Label className="text-center truncate w-full px-1">
-                                    {action.label}
-                                </Text.Label>
+                        </section>
+
+                        {/* Services Section Grid 3x3 */}
+                        <section className="mt-8 px-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="font-headline font-bold text-on-surface text-[1.5rem] tracking-tight -ml-0.5">Layanan Pengurus</h3>
+                                <span className="px-3 py-1 bg-tertiary-container/30 text-on-tertiary-container rounded-full text-[0.7rem] font-bold font-label">Akses Eksklusif</span>
                             </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                            
+                            <div className="grid grid-cols-3 gap-x-4 gap-y-8">
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/keuangan')}>
+                                    <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-700 dark:text-blue-400 group-active:scale-95 transition-transform">
+                                        <Money weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Kas RT</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aset')}>
+                                    <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center text-emerald-700 dark:text-emerald-400 group-active:scale-95 transition-transform">
+                                        <Package weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aset RT</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
+                                    <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center text-amber-700 dark:text-amber-400 group-active:scale-95 transition-transform">
+                                        <Gavel weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">AD/ART</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/pengurus')}>
+                                    <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-700 dark:text-purple-400 group-active:scale-95 transition-transform">
+                                        <IdentificationCard weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Pengurus</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/ronda')}>
+                                    <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-700 dark:text-red-400 group-active:scale-95 transition-transform">
+                                        <ShieldCheck weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Ronda</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/notulensi')}>
+                                    <div className="w-16 h-16 bg-sky-50 dark:bg-sky-900/20 rounded-lg flex items-center justify-center text-sky-700 dark:text-sky-400 group-active:scale-95 transition-transform">
+                                        <Notebook weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Notulen</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aduan')}>
+                                    <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/20 rounded-lg flex items-center justify-center text-rose-700 dark:text-rose-400 group-active:scale-95 transition-transform">
+                                        <Megaphone weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aduan Warga</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/agenda')}>
+                                    <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center text-indigo-700 dark:text-indigo-400 group-active:scale-95 transition-transform">
+                                        <CalendarCheck weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Agenda Warga</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/warga')}>
+                                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-700 dark:text-slate-300 group-active:scale-95 transition-transform">
+                                        <Users weight="fill" className="text-[2rem]" />
+                                    </div>
+                                    <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Warga</span>
+                                </div>
+                            </div>
+                        </section>
 
-            {/* Fixed Bottom Navigation - Mobile Experience Refinement */}
-            <div className="fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around z-50 md:hidden pb-1">
-                <div className="flex flex-col items-center gap-1.5 text-brand-600">
-                    <div className="bg-brand-50 px-5 py-1.5 rounded-[0.75rem] transition-all active:scale-95">
-                        <House weight="fill" className="w-6 h-6" />
-                    </div>
-                    <Text.Caption className="!text-brand-600 font-bold">Beranda</Text.Caption>
-                </div>
-                <div onClick={() => navigate('/warga')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
-                    <Users weight="bold" className="w-6 h-6" />
-                    <Text.Caption>Warga</Text.Caption>
-                </div>
-                <div onClick={() => navigate('/surat')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
-                    <FileText weight="bold" className="w-6 h-6" />
-                    <Text.Caption>Surat</Text.Caption>
-                </div>
-                <div onClick={() => navigate('/profile')} className="flex flex-col items-center gap-1.5 text-slate-400 active:text-brand-600 transition-colors">
-                    <UserCircle weight="bold" className="w-6 h-6" />
-                    <Text.Caption>Akun</Text.Caption>
-                </div>
-            </div>
+                        {!isWarga && (
+                            <section className="mt-12 px-6">
+                                <h4 className="font-headline font-bold text-on-surface-variant text-[1.2rem] mb-4">Aktivitas Terkini</h4>
+                                <div className="space-y-4">
+                                    {recentActivities.slice(0, 3).length > 0 ? recentActivities.slice(0, 3).map((act: any) => (
+                                        <div key={act.id} className="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_24px_-4px_rgba(0,80,212,0.05)] flex gap-4">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? 'bg-secondary-container/30 text-secondary' : 'bg-tertiary-container/20 text-tertiary'}`}>
+                                                {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? <Money weight="fill" className="text-xl" /> : <ChatDots weight="fill" className="text-xl" />}
+                                            </div>
+                                            <div>
+                                                <p className="font-body text-[0.875rem] font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                <p className="font-label text-[0.75rem] text-on-surface-variant">{formatDate(act.timestamp)}</p>
+                                            </div>
+                                        </div>
+                                    )) : (
+                                        <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
+                                    )}
+                                </div>
+                            </section>
+                        )}
+                    </main>
+                </>
+            )}
 
+            {/* BottomNavBar */}
+            <nav className="fixed bottom-0 left-0 w-full z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl rounded-t-[1.5rem] flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-8px_24px_-4px_rgba(0,80,212,0.05)] md:hidden">
+                <button onClick={() => setActiveMenuTab('utama')} className={`flex flex-col items-center justify-center transition-all duration-200 ${activeMenuTab === 'utama' ? 'text-blue-700 dark:text-blue-400 scale-110 active:scale-90' : 'text-slate-400 dark:text-slate-500 hover:text-blue-500 active:scale-90'}`}>
+                    <House weight={activeMenuTab === 'utama' ? 'fill' : 'regular'} className="text-[1.7rem]" />
+                </button>
+                <button onClick={() => setActiveMenuTab('lainnya')} className={`flex flex-col items-center justify-center transition-all duration-200 ${activeMenuTab === 'lainnya' ? 'text-blue-700 dark:text-blue-400 scale-110 active:scale-90' : 'text-slate-400 dark:text-slate-500 hover:text-blue-500 active:scale-90'}`}>
+                    <Gear weight={activeMenuTab === 'lainnya' ? 'fill' : 'regular'} className="text-[1.7rem]" />
+                </button>
+                <button onClick={() => navigate('/keuangan')} className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-200">
+                    <Wallet weight="regular" className="text-[1.7rem]" />
+                </button>
+                <button onClick={() => navigate('/surat')} className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-200">
+                    <FileText weight="regular" className="text-[1.7rem]" />
+                </button>
+            </nav>
         </div>
     );
 }
