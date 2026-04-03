@@ -27,6 +27,7 @@ import {
     Megaphone,
     CaretLeft,
     CaretRight
+} from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
 import { aktivitasService } from '../../services/aktivitasService';
