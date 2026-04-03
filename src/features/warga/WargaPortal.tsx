@@ -18,7 +18,12 @@ import {
     CaretLeft,
     SignOut,
     Megaphone,
-    ClockCounterClockwise
+    ClockCounterClockwise,
+    ArrowRight,
+    EnvelopeSimple,
+    CurrencyCircleDollar,
+    CalendarCheck,
+    Flashlight
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
@@ -105,253 +110,193 @@ export default function WargaPortal() {
     const { warga } = data;
  
  
+    const formatAvatarText = (name: string) => {
+        if (!name) return 'W';
+        const parts = name.split(' ');
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    };
+
     return (
-        <div className="min-h-screen bg-[var(--warga-bg)] font-inter pb-6 transition-all duration-500 overflow-x-hidden" translate="no">
-            {/* Top Navigation Bar */}
-            <div className="sticky top-0 z-50 bg-slate-50/80 backdrop-blur-md px-5 py-4 flex items-center justify-between border-b border-black/5">
-                <button onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-brand-600 flex items-center gap-2 group">
-                    <CaretLeft size={24} weight="bold" />
-                    <span className="text-caption font-bold group-active:translate-x-1 transition-transform">Kembali</span>
-                </button>
-                <div className="flex items-center gap-3">
-                    <button 
-                        onClick={() => { if(window.confirm('Keluar dari aplikasi?')) logout(); }}
-                        className="p-2 text-[var(--warga-primary)] hover:bg-[var(--warga-accent)] rounded-full transition-colors"
-                        title="Keluar"
-                    >
-                        <SignOut size={22} weight="bold" />
-                    </button>
+        <div className="min-h-screen bg-slate-50 font-inter pb-24 transition-all duration-500 overflow-x-hidden" translate="no">
+            {/* Blue Header Section */}
+            <div className="bg-brand-600 rounded-b-[2.5rem] pt-12 pb-20 px-6 relative z-0 shadow-sm border-b border-brand-700/50">
+                {/* Info & Avatar */}
+                <div className="flex justify-between items-center mb-6 pt-2">
+                    <div>
+                        <p className="text-[13px] text-brand-100/90 tracking-tight font-medium mb-1">
+                            {getGreeting()}, Warga!
+                        </p>
+                        <h1 className="text-2xl font-bold text-white tracking-tight leading-tight line-clamp-1 max-w-[220px]">
+                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
+                        </h1>
+                    </div>
                     <div 
                         onClick={() => navigate('/profile')} 
-                        className="w-10 h-10 rounded-xl border-2 border-[var(--warga-primary)]/20 overflow-hidden cursor-pointer shadow-sm active:scale-95 transition-all"
+                        className="w-12 h-12 rounded-full border-2 border-brand-100/30 bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-inner cursor-pointer active:scale-95 transition-transform overflow-hidden shrink-0"
                     >
                         {warga.avatar ? (
                             <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
                         ) : (
-                            <div className="w-full h-full bg-[var(--warga-accent)] text-[var(--warga-primary)] flex items-center justify-center font-bold">
-                                {warga.nama.charAt(0)}
-                            </div>
+                            formatAvatarText(warga.nama)
                         )}
                     </div>
                 </div>
+
+                {/* Glassmorphism Card (Floating) - Tagihan Iuran */}
+                <div className="bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl p-5 shadow-lg absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98]">
+                    <p className="text-[11px] text-brand-50 font-medium tracking-tight mb-2 opacity-90">
+                        Status Tagihan Iuran Anda
+                    </p>
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-[24px] font-bold text-white tracking-tight leading-none">
+                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
+                        </h2>
+                        <button 
+                            onClick={() => navigate('/iuran')}
+                            className="bg-white text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
+                        >
+                            {data.iuranPendingCount > 0 ? 'Bayar' : 'Cek'} <ArrowRight weight="bold" />
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {/* Dashboard Title Row */}
-            <div className="px-5 pt-4 pb-2">
-                <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                    Dashboard Warga
-                </h2>
-            </div>
- 
-            {/* Hero Section */}
-            <div className="px-5 pt-4 pb-2">
-                <h1 className="page-title mb-1">
-                    {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
-                </h1>
-                <div className="mt-4 mb-8 p-5 bg-white border border-brand-100/50 rounded-card shadow-premium relative overflow-hidden group active:scale-[0.99] transition-all">
-                    {/* Subtle aesthetic backdrop */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-600/5 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700" />
-                    
-                    <div className="flex gap-4 items-center relative z-10">
-                        <div className="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-2xl flex items-center justify-center text-brand-600 shadow-sm border border-brand-100/50 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
-                            <ShieldCheck size={26} weight="duotone" />
+            {/* Body Section */}
+            <div className="px-6 pt-24 pb-6 space-y-8">
+                {/* Layanan Mandiri */}
+                <div className="animate-fade-in-up">
+                    <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em] mb-4">LAYANAN MANDIRI</h3>
+                    <div className="grid grid-cols-4 gap-3">
+                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/surat')}>
+                            <button className="w-[60px] h-[60px] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
+                                <EnvelopeSimple size={28} weight="duotone" />
+                            </button>
+                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Minta<br/>Surat</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex flex-wrap items-center justify-between mb-1.5 gap-x-2 gap-y-0.5">
-                                <p className="text-[11px] font-bold text-brand-600 tracking-tighter flex items-center gap-1.5 whitespace-nowrap">
-                                    Anggota Terverifikasi
-                                    <span className="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse shrink-0" />
-                                </p>
-                                <span className="text-[10px] font-bold text-slate-400/80 tracking-tighter italic whitespace-nowrap">Warga RT {currentTenant?.config?.rt || '-'} / RW {currentTenant?.config?.rw || '-'}</span>
-                            </div>
-
-                            <p className="text-body !text-slate-700 leading-tight">
-                                Terdaftar di <span className="font-bold text-slate-900 border-b-2 border-brand-100">Kel {currentTenant?.config?.kelurahan || '-'}</span>, Kec {currentTenant?.config?.kecamatan || '-'}, {currentTenant?.config?.kota || '-'}
-                            </p>
+                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/aduan/new')}>
+                            <button className="w-[60px] h-[60px] bg-rose-50/80 group-hover:bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border border-rose-100/50 group-active:scale-95 transition-all">
+                                <Megaphone size={28} weight="duotone" />
+                            </button>
+                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/iuran')}>
+                            <button className="w-[60px] h-[60px] bg-emerald-50/80 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 group-active:scale-95 transition-all">
+                                <CurrencyCircleDollar size={28} weight="duotone" />
+                            </button>
+                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/agenda')}>
+                            <button className="w-[60px] h-[60px] bg-purple-50/80 group-hover:bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/50 group-active:scale-95 transition-all">
+                                <CalendarCheck size={28} weight="duotone" />
+                            </button>
+                            <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</span>
                         </div>
                     </div>
                 </div>
 
-
-                <div className="grid grid-cols-2 gap-4 mb-2">
-                    {/* Iuran Card */}
-                    <div className={`flex flex-col gap-1 p-4 rounded-card border transition-all active:scale-[0.98] ${
-                        data.iuranPendingCount > 0 
-                            ? 'bg-red-50/70 border-red-100 text-red-900 group shadow-premium shadow-red-900/5' 
-                            : 'bg-brand-50/70 border-brand-200/50 text-brand-900 group shadow-premium shadow-brand-900/5'
-                    }`}>
-                        <div className="flex items-center justify-between mb-3">
-                            <div className={`p-2.5 rounded-btn ${data.iuranPendingCount > 0 ? 'bg-red-100 text-red-600' : 'bg-brand-100 text-brand-600'}`}>
-                                <Wallet size={20} weight="fill" />
-                            </div>
-                            <span className={`text-caption font-bold uppercase px-3 py-1 rounded-full ${
-                                data.iuranPendingCount > 0 ? 'bg-red-600 text-white' : 'bg-blue-100 text-blue-700'
-                            }`}>
-                                {data.iuranPendingCount > 0 ? 'Tertunggak' : 'Lancar'}
-                            </span>
-                        </div>
-                        <p className="text-caption font-bold tracking-wider opacity-80 mb-1">Tagihan Iuran</p>
-                        <h4 className="text-lg font-bold leading-tight tracking-tight">
-                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan` : 'Lancar'}
-                        </h4>
+                {/* Jadwal Ronda (Dark Theme Box) */}
+                <div className="animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">JADWAL RONDA ANDA</h3>
+                        <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/ronda')}>Lihat Jadwal</span>
                     </div>
                     
-                    {/* Surat Card */}
-                    <div className="flex flex-col gap-1 p-4 bg-blue-50/70 border-blue-100/50 border rounded-card shadow-premium shadow-blue-900/5 text-blue-900 group active:scale-[0.98] transition-all">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="p-2.5 bg-blue-100 text-blue-600 rounded-btn">
-                                <FileText size={20} weight="fill" />
-                            </div>
-                            <span className="text-caption font-bold uppercase px-3 py-1 bg-blue-600 text-white rounded-full">
-                                {data.suratProsesCount > 0 ? 'Proses' : 'Selesai'}
-                            </span>
+                    <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[20px] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
+                        <Flashlight weight="fill" className="absolute -right-4 -bottom-4 text-[80px] text-slate-700/50 -rotate-12" />
+                        
+                        <div className="bg-slate-700/80 rounded-2xl w-14 h-14 flex flex-col items-center justify-center text-white border border-slate-600 shadow-inner z-10 shrink-0">
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300 mt-1">Cek</span>
+                            <span className="text-[18px] leading-none font-black mt-0.5"><ClockCounterClockwise size={20} weight="bold"/></span>
                         </div>
-                        <p className="text-caption font-bold tracking-wider opacity-80 mb-1">Surat Keterangan</p>
-                        <h4 className="text-lg font-bold leading-tight tracking-tight">
-                            {data.suratProsesCount > 0 ? `${data.suratProsesCount} Surat` : 'Selesai'}
-                        </h4>
-                    </div>
-                </div>
-            </div>
-
-            {/* Tabbed Menu Redesign */}
-            <div className="px-5 py-6">
-                {/* Tabs Switcher */}
-                <div className="flex items-center gap-2 mb-6 p-1 bg-white/50 backdrop-blur-sm rounded-btn w-fit">
-                    <button 
-                        onClick={() => setActiveTab('utama')}
-                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
-                            activeTab === 'utama' 
-                            ? 'bg-brand-600 text-white shadow-md' 
-                            : 'text-brand-600/60 hover:bg-brand-600/5'
-                        }`}
-                    >
-                        Menu Utama
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('lainnya')}
-                        className={`px-6 py-2.5 rounded-btn text-sm font-bold transition-all duration-300 ${
-                            activeTab === 'lainnya' 
-                            ? 'bg-brand-600 text-white shadow-md' 
-                            : 'text-brand-600/60 hover:bg-brand-600/5'
-                        }`}
-                    >
-                        Lainnya
-                    </button>
-                </div>
-
-                {activeTab === 'utama' ? (
-                    <div className="space-y-10 animate-fade-in">
-                        {/* 4 Column Menu Utama */}
-                        <div className="grid grid-cols-4 gap-3">
-                            {[
-                                { label: 'Iuran', icon: HandCoins, path: '/iuran/baru' },
-                                { label: 'Kas', icon: Wallet, path: '/iuran' },
-                                { label: 'Agenda', icon: Checks, path: '/agenda' },
-                                { label: 'Surat', icon: FileText, path: '/surat' },
-                            ].map((item, idx) => (
-                                <div 
-                                    key={idx} 
-                                    onClick={() => navigate(item.path)}
-                                    className="flex flex-col items-center gap-1.5 group cursor-pointer"
-                                >
-                                    <div className={`w-full aspect-square bg-brand-600/5 rounded-card flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
-                                        <item.icon size={26} weight="duotone" className="text-brand-600/80" />
-                                    </div>
-                                    <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Announcement Section moved here for Menu Utama */}
-                        <div className="py-2 animate-fade-in-up">
-                            <div className="flex items-center justify-between mb-5">
-                                <h3 className="section-label flex items-center gap-2">
-                                    <ClockCounterClockwise size={20} className="text-brand-600" />
-                                    Informasi Terbaru
-                                </h3>
-                                <button onClick={() => navigate('/agenda')} className="text-caption font-bold text-brand-600/80 underline decoration-brand-600/30 underline-offset-4">Lihat Semua</button>
-                            </div>
-                            
-                            <div className="space-y-4">
-                                {agendas.length > 0 ? (
-                                    agendas.map((agenda: any) => (
-                                        <div 
-                                            key={agenda.id} 
-                                            onClick={() => navigate('/agenda')}
-                                            className="bg-brand-600 p-5 rounded-card text-white relative overflow-hidden group shadow-premium active:scale-[0.98] transition-all"
-                                        >
-                                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                                            <div className="relative z-10">
-                                                <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-caption font-bold uppercase tracking-widest mb-4">
-                                                    Penting
-                                                </div>
-                                                <h4 className="text-lg font-bold leading-tight mb-2">{agenda.judul}</h4>
-                                                <p className="text-white/80 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">{agenda.deskripsi}</p>
-                                                <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest group/btn">
-                                                    Lihat Detail
-                                                    <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="bg-white p-6 rounded-card text-center border-2 border-dashed border-slate-100 py-12 shadow-premium">
-                                        <Megaphone size={40} weight="duotone" className="mx-auto text-slate-200 mb-2" />
-                                        <p className="text-caption font-bold text-slate-300 tracking-tight">Belum ada pengumuman.</p>
-                                    </div>
-                                )}
-                            </div>
+                        <div className="z-10">
+                            <h4 className="text-white font-bold text-[15px] tracking-tight mb-0.5">Jadwal Siskamling</h4>
+                            <p className="text-slate-400 text-[11px] font-medium leading-tight">Pastikan Anda hadir sesuai jadwal blok/RT Anda.</p>
                         </div>
                     </div>
-                ) : (
-                    <div className="grid grid-cols-4 gap-3 animate-fade-in">
-                        {/* Tab Lainnya: 4 Columns x 2 Rows with 1.5x Scale */}
+                </div>
+
+                {/* Menu Lainnya Section */}
+                <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+                    <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em] mb-4">PINTASAN LAINNYA</h3>
+                    <div className="grid grid-cols-4 gap-3">
                         {[
-                            { label: 'Warga', icon: Users, path: '/warga' },
-                            { label: 'Pengurus', icon: Users, path: '/pengurus' },
-                            { label: 'Profile', icon: UserCircle, path: '/profile' },
-                            { label: 'Aduan', icon: Megaphone, path: '/aduan/new' },
-                            { label: 'Usulan', icon: Lightbulb, path: '/aduan/new' },
-                            { label: 'Ronda', icon: ShieldCheck, path: '/ronda' },
-                            { label: 'Aset', icon: Package, path: '/aset' },
-                            { label: 'AD/ART', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' } },
+                            { label: 'Data Warga', icon: Users, path: '/warga', color: 'bg-amber-50 text-amber-600 border-amber-100', hoverBg: 'group-hover:bg-amber-100' },
+                            { label: 'Aset RT', icon: Package, path: '/aset', color: 'bg-cyan-50 text-cyan-600 border-cyan-100', hoverBg: 'group-hover:bg-cyan-100' },
+                            { label: 'AD/ART', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' }, color: 'bg-slate-100 text-slate-600 border-slate-200', hoverBg: 'group-hover:bg-slate-200' },
+                            { label: 'Logout', icon: SignOut, isLogout: true, color: 'bg-red-50 text-red-600 border-red-100', hoverBg: 'group-hover:bg-red-100' },
                         ].map((item, idx) => (
                             <div 
                                 key={idx} 
                                 onClick={() => {
-                                    if (item.extra?.tab) {
+                                    if (item.isLogout) {
+                                        if(window.confirm('Keluar dari aplikasi?')) logout();
+                                    } else if (item.extra?.tab) {
                                         navigate(item.path, { state: { activeTab: item.extra.tab } });
                                     } else {
                                         navigate(item.path);
                                     }
                                 }}
-                                className="flex flex-col items-center gap-1.5 group cursor-pointer"
+                                className="flex flex-col items-center gap-2 group cursor-pointer"
                             >
-                                <div className={`w-full aspect-square bg-brand-600/5 rounded-card flex items-center justify-center group-active:scale-[0.85] transition-all border border-black/[0.03] shadow-premium`}>
-                                    <item.icon size={26} weight="duotone" className="text-brand-600/80" />
-                                </div>
-                                <p className="text-body !text-slate-800 leading-none text-center whitespace-nowrap">{item.label}</p>
+                                <button className={`w-[60px] h-[60px] ${item.color} ${item.hoverBg} rounded-2xl flex items-center justify-center shadow-sm border group-active:scale-95 transition-all`}>
+                                    <item.icon size={26} weight="duotone" />
+                                </button>
+                                <span className="text-[10px] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">{item.label}</span>
                             </div>
                         ))}
                     </div>
+                </div>
+
+                {/* Agenda / Announcements Section */}
+                {agendas.length > 0 && (
+                    <div className="animate-fade-in-up" style={{animationDelay: '0.3s'}}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">PENGUMUMAN TERBARU</h3>
+                            <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/agenda')}>Semua</span>
+                        </div>
+                        <div className="space-y-4">
+                            {agendas.map((agenda: any) => (
+                                <div 
+                                    key={agenda.id} 
+                                    onClick={() => navigate('/agenda')}
+                                    className="bg-brand-600 p-5 rounded-[20px] text-white relative overflow-hidden group shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                                >
+                                    <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+                                    <div className="relative z-10">
+                                        <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">
+                                            Penting
+                                        </div>
+                                        <h4 className="text-[17px] font-bold leading-tight mb-2 tracking-tight">{agenda.judul}</h4>
+                                        <p className="text-white/80 text-[13px] line-clamp-2 leading-snug mb-4 font-medium">{agenda.deskripsi}</p>
+                                        <button className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest group/btn">
+                                            Lihat Detail
+                                            <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Active Polling (If exists) */}
+                {activePolls.length > 0 && (
+                    <div className="animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+                        <div className="flex items-center gap-2 mb-4">
+                            <ChartPieSlice size={20} weight="fill" className="text-brand-500" />
+                            <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">JAJAK PENDAPAT AKTIF</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {activePolls.map((p: any) => (
+                               <PollingParticipation key={p.id} pollingId={p.id} />
+                            ))}
+                        </div>
+                    </div>
                 )}
             </div>
-
-            {/* Active Polling (If exists) */}
-            {activePolls.length > 0 && (
-                <div className="px-5 py-6 border-t border-black/5">
-                    <div className="flex items-center gap-2 mb-4">
-                        <ChartPieSlice size={18} weight="fill" className="text-brand-500" />
-                        <h3 className="text-caption font-bold uppercase tracking-widest">Jajak Pendapat Aktif</h3>
-                    </div>
-                    <div className="space-y-4">
-                        {activePolls.map((p: any) => (
-                           <PollingParticipation key={p.id} pollingId={p.id} />
-                        ))}
-                    </div>
-                </div>
-            )}
 
             <StickyHomeButton />
         </div>
