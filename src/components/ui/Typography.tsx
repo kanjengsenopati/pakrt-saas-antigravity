@@ -58,7 +58,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400",
+        "text-base font-medium text-slate-500",
         className
       )}
     >
@@ -71,7 +71,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-sm font-medium text-slate-600 leading-[1.6]",
+        "text-base font-medium text-slate-500 leading-relaxed",
         className
       )}
     >
@@ -84,7 +84,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-[12px] font-normal text-slate-400 leading-normal",
+        "text-base font-medium text-slate-500 leading-normal",
         className
       )}
     >

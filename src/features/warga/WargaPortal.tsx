@@ -24,6 +24,7 @@ import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
 import { StickyHomeButton } from '../../components/ui/StickyHomeButton';
+import { Text } from '../../components/ui/Typography';
 
 export default function WargaPortal() {
     const { user, logout, isLoading: authLoading } = useAuth();
@@ -188,25 +189,25 @@ export default function WargaPortal() {
                             <button className="w-[3.75rem] h-[3.75rem] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
                                 <EnvelopeSimple size={28} weight="duotone" />
                             </button>
-                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Minta<br/>Surat</span>
+                            <Text.Label className="text-center group-active:scale-95 transition-transform">Minta<br/>Surat</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/aduan/new')}>
                             <button className="w-[3.75rem] h-[3.75rem] bg-rose-50/80 group-hover:bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border border-rose-100/50 group-active:scale-95 transition-all">
                                 <Megaphone size={28} weight="duotone" />
                             </button>
-                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</span>
+                            <Text.Label className="text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/iuran')}>
                             <button className="w-[3.75rem] h-[3.75rem] bg-emerald-50/80 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 group-active:scale-95 transition-all">
                                 <CurrencyCircleDollar size={28} weight="duotone" />
                             </button>
-                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</span>
+                            <Text.Label className="text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/agenda')}>
                             <button className="w-[3.75rem] h-[3.75rem] bg-purple-50/80 group-hover:bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/50 group-active:scale-95 transition-all">
                                 <CalendarCheck size={28} weight="duotone" />
                             </button>
-                            <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</span>
+                            <Text.Label className="text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</Text.Label>
                         </div>
                     </div>
                 </div>
@@ -258,7 +259,9 @@ export default function WargaPortal() {
                                 <button className={`w-[3.75rem] h-[3.75rem] ${item.color} ${item.hoverBg} rounded-2xl flex items-center justify-center shadow-sm border group-active:scale-95 transition-all`}>
                                     <item.icon size={26} weight="duotone" />
                                 </button>
-                                <span className="text-[0.625rem] font-bold text-slate-600 leading-tight text-center group-active:scale-95 transition-transform">{item.label}</span>
+                                <Text.Label className="text-center truncate w-full px-1 group-active:scale-95 transition-transform">
+                                    {item.label}
+                                </Text.Label>
                             </div>
                         ))}
                     </div>

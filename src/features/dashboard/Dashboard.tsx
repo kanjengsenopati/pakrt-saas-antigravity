@@ -307,7 +307,7 @@ export default function Dashboard() {
                                     >
                                         <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
                                     </button>
-                                    <Text.Label className="text-center truncate w-full px-1 !text-slate-600">
+                                    <Text.Label className="text-center truncate w-full px-1">
                                         {action.label}
                                     </Text.Label>
                                 </div>
@@ -365,7 +365,7 @@ export default function Dashboard() {
                                 >
                                     <action.icon weight="duotone" className="w-6 h-6 md:w-10 md:h-10" />
                                 </button>
-                                <Text.Label className="text-center truncate w-full px-1 !text-slate-600">
+                                <Text.Label className="text-center truncate w-full px-1">
                                     {action.label}
                                 </Text.Label>
                             </div>
