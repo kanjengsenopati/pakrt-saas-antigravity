@@ -150,12 +150,17 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-[0.7rem] font-medium text-blue-100/70 uppercase tracking-widest">{authUser?.role_entity?.name || authUser?.role || 'Administrator'}</span>
-                                        <div className="flex items-center gap-2">
-                                            <h1 className="text-xl font-extrabold tracking-tight font-headline">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                        <div className="flex flex-col">
+                                            <h1 className="text-xl font-extrabold tracking-tight font-headline line-clamp-1 leading-none mb-1">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
                                             {currentTenant?.location_detail && (
-                                                <span className="bg-white/10 px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold tracking-wider text-blue-100 border border-white/20 uppercase whitespace-nowrap">
-                                                    {currentTenant.location_detail}
-                                                </span>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="text-[0.6rem] font-bold text-blue-100/90 tracking-widest uppercase">
+                                                        {currentTenant.location_detail.split(' • ')[0]}
+                                                    </span>
+                                                    <span className="text-[0.55rem] font-medium text-blue-100/60 uppercase tracking-tighter line-clamp-1">
+                                                        {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
+                                                    </span>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -317,12 +322,17 @@ export default function Dashboard() {
                             </div>
                             <div>
                                 <p className="text-white/70 font-label text-[0.75rem] leading-none mb-1">{authUser?.role_entity?.name || authUser?.role || 'Pengurus'}</p>
-                                <div className="flex items-center gap-2">
-                                    <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                <div className="flex flex-col">
+                                    <h1 className="font-headline font-bold text-white text-lg tracking-tight -mt-0.5 leading-none mb-1">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
                                     {currentTenant?.location_detail && (
-                                        <span className="bg-white/10 px-2 py-0.5 rounded-full text-[0.6rem] font-bold tracking-widest text-white/90 border border-white/20 uppercase whitespace-nowrap">
-                                            {currentTenant.location_detail}
-                                        </span>
+                                        <div className="flex flex-col">
+                                            <span className="text-[0.6rem] font-bold text-white/90 tracking-widest uppercase leading-tight">
+                                                {currentTenant.location_detail.split(' • ')[0]}
+                                            </span>
+                                            <span className="text-[0.55rem] font-medium text-white/50 uppercase tracking-tighter line-clamp-1">
+                                                {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
+                                            </span>
+                                        </div>
                                     )}
                                 </div>
                             </div>
