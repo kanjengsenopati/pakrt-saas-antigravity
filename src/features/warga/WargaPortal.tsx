@@ -137,18 +137,18 @@ export default function WargaPortal() {
                     </div>
                 </div>
 
-                {/* Glassmorphism Card (Floating) - Tagihan Iuran */}
-                <div className="bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl p-5 shadow-lg absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98]">
-                    <p className="text-[11px] text-brand-50 font-medium tracking-tight mb-2 opacity-90">
+                {/* Card Status (Floating) - Tagihan Iuran */}
+                <div className="bg-white rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
+                    <p className="text-[11px] text-slate-500 font-semibold tracking-tight mb-2">
                         Status Tagihan Iuran Anda
                     </p>
                     <div className="flex justify-between items-center">
-                        <h2 className="text-[24px] font-bold text-white tracking-tight leading-none">
+                        <h2 className="text-[24px] font-bold text-brand-600 tracking-tight leading-none">
                             {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
                         </h2>
                         <button 
                             onClick={() => navigate('/iuran')}
-                            className="bg-white text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
+                            className="bg-brand-50 border border-brand-100 text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
                         >
                             {data.iuranPendingCount > 0 ? 'Bayar' : 'Cek'} <ArrowRight weight="bold" />
                         </button>
@@ -160,7 +160,7 @@ export default function WargaPortal() {
             <div className="px-6 pt-24 pb-6 space-y-8">
                 {/* Layanan Mandiri */}
                 <div className="animate-fade-in-up">
-                    <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em] mb-4">LAYANAN MANDIRI</h3>
+                    <h3 className="text-[13px] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Layanan Mandiri</h3>
                     <div className="grid grid-cols-4 gap-3">
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/surat')}>
                             <button className="w-[60px] h-[60px] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
@@ -192,7 +192,7 @@ export default function WargaPortal() {
                 {/* Jadwal Ronda (Dark Theme Box) */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.1s'}}>
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">JADWAL RONDA ANDA</h3>
+                        <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Jadwal Ronda Anda</h3>
                         <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/ronda')}>Lihat Jadwal</span>
                     </div>
                     
@@ -212,7 +212,7 @@ export default function WargaPortal() {
 
                 {/* Menu Lainnya Section */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-                    <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em] mb-4">PINTASAN LAINNYA</h3>
+                    <h3 className="text-[13px] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Pintasan Lainnya</h3>
                     <div className="grid grid-cols-4 gap-3">
                         {[
                             { label: 'Data Warga', icon: Users, path: '/warga', color: 'bg-amber-50 text-amber-600 border-amber-100', hoverBg: 'group-hover:bg-amber-100' },
@@ -246,7 +246,7 @@ export default function WargaPortal() {
                 {agendas.length > 0 && (
                     <div className="animate-fade-in-up" style={{animationDelay: '0.3s'}}>
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">PENGUMUMAN TERBARU</h3>
+                            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Pengumuman Terbaru</h3>
                             <span className="text-[10px] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/agenda')}>Semua</span>
                         </div>
                         <div className="space-y-4">
@@ -279,7 +279,7 @@ export default function WargaPortal() {
                     <div className="animate-fade-in-up" style={{animationDelay: '0.4s'}}>
                         <div className="flex items-center gap-2 mb-4">
                             <ChartPieSlice size={20} weight="fill" className="text-brand-500" />
-                            <h3 className="text-[12px] font-extrabold text-slate-800 tracking-[0.15em]">JAJAK PENDAPAT AKTIF</h3>
+                            <h3 className="text-[13px] font-bold text-slate-800 tracking-tight flex items-center">Jajak Pendapat Aktif</h3>
                         </div>
                         <div className="space-y-4">
                             {activePolls.map((p: any) => (
