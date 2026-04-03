@@ -4,18 +4,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { statsService } from '../../services/statsService';
 import { 
     User, 
-    HandCoins, 
     FileText, 
     Users, 
-    ShieldCheck, 
     ChartPieSlice, 
     Plus, 
-    Wallet, 
-    Lightbulb, 
-    Checks, 
     Package, 
-    UserCircle, 
-    CaretLeft,
     SignOut,
     Megaphone,
     ClockCounterClockwise,
@@ -39,7 +32,6 @@ export default function WargaPortal() {
     const [isLoading, setIsLoading] = useState(true);
     const [activePolls, setActivePolls] = useState<any[]>([]);
     const [agendas, setAgendas] = useState<any[]>([]);
-    const [activeTab, setActiveTab] = useState<'utama' | 'lainnya'>('utama');
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -234,9 +226,9 @@ export default function WargaPortal() {
                                     if (item.isLogout) {
                                         if(window.confirm('Keluar dari aplikasi?')) logout();
                                     } else if (item.extra?.tab) {
-                                        navigate(item.path, { state: { activeTab: item.extra.tab } });
+                                        navigate(item.path as string, { state: { activeTab: item.extra.tab } });
                                     } else {
-                                        navigate(item.path);
+                                        navigate(item.path as string);
                                     }
                                 }}
                                 className="flex flex-col items-center gap-2 group cursor-pointer"
