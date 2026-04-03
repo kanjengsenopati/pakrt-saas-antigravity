@@ -138,9 +138,16 @@ export default function IuranList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <Text.H1>Pembayaran Iuran</Text.H1>
-                    <Text.Body className="mt-1 flex items-center gap-1.5 leading-none">
-                        Rekapitulasi pembayaran iuran wajib bulanan warga untuk <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-[8px] border border-brand-100">{currentScope}</span>
-                    </Text.Body>
+                    <div className="mt-2 flex flex-col gap-0.5">
+                        <span className="text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-[6px] border border-brand-100/50 uppercase tracking-widest w-fit">
+                            {currentScope}
+                        </span>
+                        {currentTenant?.location_detail && (
+                            <span className="text-[9px] font-medium text-slate-400 pl-0.5 uppercase tracking-tight">
+                                {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <HasPermission module="Iuran Warga" action="Buat">
@@ -429,7 +436,7 @@ export default function IuranList() {
                         ).sort((a, b) => new Date(b.latest.tanggal_bayar).getTime() - new Date(a.latest.tanggal_bayar).getTime());
 
                         return grouped.map(({ latest: iuran, allPaidMonths, history }) => (
-                            <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                            <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-500 hover:shadow-xl active:scale-[0.99]">
                                  <div className="p-5">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-4">
@@ -499,9 +506,9 @@ export default function IuranList() {
                                         </div>
                                         <button 
                                             onClick={() => toggleHistory(iuran.warga_id)}
-                                            className="text-[10px] font-black text-brand-600 uppercase tracking-widest bg-brand-50 px-4 py-2 rounded-full hover:bg-brand-100 transition-colors shadow-inner"
+                                            className="text-[10px] font-bold text-brand-600 uppercase tracking-tight bg-brand-50 px-3 py-1.5 rounded-full hover:bg-brand-100 transition-colors"
                                         >
-                                            {expandedHistoryIds.includes(iuran.warga_id) ? 'Tutup' : 'Riwayat'}
+                                            {expandedHistoryIds.includes(iuran.warga_id) ? 'Tutup' : 'Lihat Riwayat'}
                                         </button>
                                     </div>
 
@@ -526,24 +533,23 @@ export default function IuranList() {
                                         </div>
                                     )}
 
-                                    <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3 mb-4">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 leading-none">Status Iuran ({iuran.periode_tahun})</p>
+                                    <div className="bg-slate-50/50 rounded-[14px] border border-slate-100 p-4 mb-4">
+                                        <Text.Label className="block mb-3 !text-[9px] opacity-60 !tracking-tight uppercase">Status Terbayar ({iuran.periode_tahun})</Text.Label>
                                         <div className="grid grid-cols-6 gap-1.5">
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
                                                 const isPaid = allPaidMonths.has(month);
-                                                // Find if this month was in a verified transaction
                                                 const htx = history.find(h => h.periode_bulan.includes(month));
                                                 const status = htx?.status || 'UNPAID';
                                                 
                                                 return (
                                                     <div 
                                                         key={month} 
-                                                        className={`flex flex-col items-center justify-center p-1 rounded-lg border text-[10px] font-bold transition-all duration-300 shadow-sm
+                                                        className={`flex aspect-square items-center justify-center rounded-[6px] border text-[8px] font-bold transition-all duration-300
                                                             ${isPaid 
-                                                                ? (status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' 
-                                                                 : status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300'
-                                                                 : 'bg-rose-500 text-white border-rose-400')
-                                                                : 'bg-white text-slate-200 border-slate-100'
+                                                                ? (status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700 shadow-sm' 
+                                                                 : status === 'PENDING' ? 'bg-amber-400 text-white border-amber-500 shadow-sm'
+                                                                 : 'bg-rose-500 text-white border-rose-600 shadow-sm')
+                                                                : 'bg-white text-slate-300 border-slate-100'
                                                             }`}
                                                     >
                                                         {getMonthName(month).substring(0, 3).toUpperCase()}
