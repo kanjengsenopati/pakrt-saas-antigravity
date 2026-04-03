@@ -11,11 +11,9 @@ import {
     ChatDots,
     Notebook,
     Money,
-    UserCircle,
     Gear,
     CalendarBlank, 
     CalendarCheck,
-    ClockCounterClockwise,
     Wallet,
     FileText,
     ArrowRight,
@@ -47,17 +45,7 @@ export default function Dashboard() {
     
     const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0, pendingIuran: 0 });
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
-    const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
     const [activeMenuTab, setActiveMenuTab] = useState<'utama' | 'lainnya'>('utama');
-    const [fontScale, setFontScale] = useState(() => {
-        const saved = localStorage.getItem('pakrt_font_scale');
-        return saved ? parseFloat(saved) : 1;
-    });
-
-    useEffect(() => {
-        localStorage.setItem('pakrt_font_scale', fontScale.toString());
-        document.documentElement.style.fontSize = `${16 * fontScale}px`;
-    }, [fontScale]);
 
     const isWarga = useMemo(() =>
         authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
@@ -99,7 +87,7 @@ export default function Dashboard() {
     const fetchActivities = useCallback(async () => {
         if (!currentTenant) return;
         try {
-            const agendas = await agendaService.getUpcoming(currentTenant.id, currentScope, 3);
+            // Removed unused agendas fetch
             
             let activities: Aktivitas[] = [];
             if (!isWarga) {
@@ -111,7 +99,6 @@ export default function Dashboard() {
             }
             
             setRecentActivities(activities);
-            setUpcomingAgenda(agendas || []);
         } catch (error) {
             console.error("Dashboard: Error fetching activities:", error);
         }
