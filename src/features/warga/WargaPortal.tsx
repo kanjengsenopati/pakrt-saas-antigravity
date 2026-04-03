@@ -16,7 +16,8 @@ import {
     EnvelopeSimple,
     CurrencyCircleDollar,
     CalendarCheck,
-    Flashlight
+    Flashlight,
+    Minus
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
@@ -32,6 +33,15 @@ export default function WargaPortal() {
     const [isLoading, setIsLoading] = useState(true);
     const [activePolls, setActivePolls] = useState<any[]>([]);
     const [agendas, setAgendas] = useState<any[]>([]);
+    const [fontScale, setFontScale] = useState(() => {
+        const saved = localStorage.getItem('pakrt_font_scale');
+        return saved ? parseFloat(saved) : 1;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('pakrt_font_scale', fontScale.toString());
+        document.documentElement.style.fontSize = `${16 * fontScale}px`;
+    }, [fontScale]);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -125,15 +135,27 @@ export default function WargaPortal() {
                             {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
                         </h1>
                     </div>
-                    <div 
-                        onClick={() => navigate('/profile')} 
-                        className="w-12 h-12 rounded-full border-2 border-brand-100/30 bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-inner cursor-pointer active:scale-95 transition-transform overflow-hidden shrink-0"
-                    >
-                        {warga.avatar ? (
-                            <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
-                        ) : (
-                            formatAvatarText(warga.nama)
-                        )}
+                    <div className="flex items-center gap-2">
+                        {/* Font Resizer */}
+                        <div className="flex items-center bg-brand-500/50 rounded-full border border-brand-400/30 px-1 py-1">
+                            <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
+                                <Minus size={12} weight="bold" />
+                            </button>
+                            <span className="text-[9px] font-bold text-white w-7 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
+                            <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
+                                <Plus size={12} weight="bold" />
+                            </button>
+                        </div>
+                        <div 
+                            onClick={() => navigate('/profile')} 
+                            className="w-12 h-12 rounded-full border-2 border-brand-100/30 bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-inner cursor-pointer active:scale-95 transition-transform overflow-hidden shrink-0"
+                        >
+                            {warga.avatar ? (
+                                <img src={warga.avatar} className="w-full h-full object-cover" alt="avatar" />
+                            ) : (
+                                formatAvatarText(warga.nama)
+                            )}
+                        </div>
                     </div>
                 </div>
 

@@ -20,7 +20,9 @@ import {
     FileText,
     ArrowRight,
     Bell,
-    House
+    House,
+    Minus,
+    Plus
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -43,6 +45,15 @@ export default function Dashboard() {
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
     const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
     const [activeMenuTab, setActiveMenuTab] = useState<'utama' | 'lainnya'>('utama');
+    const [fontScale, setFontScale] = useState(() => {
+        const saved = localStorage.getItem('pakrt_font_scale');
+        return saved ? parseFloat(saved) : 1;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('pakrt_font_scale', fontScale.toString());
+        document.documentElement.style.fontSize = `${16 * fontScale}px`;
+    }, [fontScale]);
 
     const isWarga = useMemo(() =>
         authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
@@ -152,13 +163,24 @@ export default function Dashboard() {
             </div>
 
             {/* Greeting Section */}
-            <div className="pt-2">
-                <Text.H1>
-                    Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
-                </Text.H1>
-                <Text.Body className="mt-1">
-                    Anda tercatat sebagai {authUser?.role_entity?.name || authUser?.role || 'Pengurus'} di {currentScope}, {currentTenant?.name}.
-                </Text.Body>
+            <div className="pt-2 flex justify-between items-end">
+                <div>
+                    <Text.H1>
+                        Selamat Pagi, {authUser?.name?.split(' ')[0] || 'Pengurus'}
+                    </Text.H1>
+                    <Text.Body className="mt-1">
+                        Anda tercatat sebagai {authUser?.role_entity?.name || authUser?.role || 'Pengurus'} di {currentScope}, {currentTenant?.name}.
+                    </Text.Body>
+                </div>
+                <div className="flex items-center bg-slate-200/50 rounded-full px-1.5 py-1 mb-1">
+                    <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
+                        <Minus size={14} weight="bold" />
+                    </button>
+                    <span className="text-[10px] font-bold text-slate-700 w-8 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
+                    <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-slate-500 hover:text-slate-800 active:scale-95 transition-all">
+                        <Plus size={14} weight="bold" />
+                    </button>
+                </div>
             </div>
 
             {/* Summary Grid - Compact & Dense for Management Overview */}
