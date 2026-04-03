@@ -148,11 +148,29 @@ export default function WargaPortal() {
                 <h1 className="page-title mb-1">
                     {getGreeting()}, {warga.jenis_kelamin === 'L' ? 'Bapak' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
                 </h1>
-                <div className="mt-4 mb-8 p-4 bg-white border border-slate-100 rounded-card shadow-premium">
-                    <p className="text-body">
-                        Anda terdaftar sebagai warga <strong>RT {currentTenant?.config?.rt || '-'}</strong>, <strong>RW {currentTenant?.config?.rw || '-'}</strong>, Kel {currentTenant?.config?.kelurahan || '-'}, Kec {currentTenant?.config?.kecamatan || '-'}, {currentTenant?.config?.kota || '-'}.
-                    </p>
+                <div className="mt-4 mb-8 p-5 bg-white border border-brand-100/50 rounded-card shadow-premium relative overflow-hidden group active:scale-[0.99] transition-all">
+                    {/* Subtle aesthetic backdrop */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-600/5 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700" />
+                    
+                    <div className="flex gap-4 items-center relative z-10">
+                        <div className="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-2xl flex items-center justify-center text-brand-600 shadow-sm border border-brand-100/50 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
+                            <ShieldCheck size={26} weight="duotone" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center justify-between mb-1">
+                                <p className="text-[10px] font-bold text-brand-600 uppercase tracking-widest flex items-center gap-1.5">
+                                    Anggota Terverifikasi
+                                    <span className="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse" />
+                                </p>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Warga RT {currentTenant?.config?.rt || '-'} / RW {currentTenant?.config?.rw || '-'}</span>
+                            </div>
+                            <p className="text-body !text-slate-700 leading-tight">
+                                Terdaftar di <span className="font-bold text-slate-900 border-b-2 border-brand-100">Kel {currentTenant?.config?.kelurahan || '-'}</span>, Kec {currentTenant?.config?.kecamatan || '-'}, {currentTenant?.config?.kota || '-'}
+                            </p>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div className="grid grid-cols-2 gap-4 mb-2">
                     {/* Iuran Card */}
