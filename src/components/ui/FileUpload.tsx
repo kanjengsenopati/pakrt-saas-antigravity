@@ -278,22 +278,22 @@ export const FileUpload = ({
                 </div>
 
                 {/* Vertical Mode Switcher Buttons */}
-                <div className="flex flex-col gap-2 p-1 bg-slate-50 border border-slate-100 rounded-2xl shadow-sm shrink-0 min-w-[90px]">
+                <div className="flex flex-col gap-1.5 p-1 bg-slate-50 border border-slate-100 rounded-2xl shadow-sm shrink-0 min-w-[75px]">
                     <button
                         type="button"
                         onClick={() => setMode('upload')}
-                        className={`flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl transition-all duration-300 ${mode === 'upload' ? 'bg-white shadow-md text-brand-600 scale-100 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 border border-transparent active:scale-95'}`}
+                        className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-[14px] transition-all duration-300 ${mode === 'upload' ? 'bg-white shadow-md text-brand-600 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 active:scale-95'}`}
                     >
                         <Camera weight={mode === 'upload' ? "fill" : "bold"} className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Upload</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider">Upload</span>
                     </button>
                     <button
                         type="button"
                         onClick={() => setMode('link')}
-                        className={`flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl transition-all duration-300 ${mode === 'link' ? 'bg-white shadow-md text-brand-600 scale-100 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 border border-transparent active:scale-95'}`}
+                        className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-[14px] transition-all duration-300 ${mode === 'link' ? 'bg-white shadow-md text-brand-600 ring-1 ring-slate-100' : 'text-slate-400 hover:text-brand-500 active:scale-95'}`}
                     >
                         <GoogleDriveLogo weight={mode === 'link' ? "fill" : "bold"} className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest leading-none">G. Drive</span>
+                        <span className="text-[9px] font-bold uppercase tracking-widest leading-none">G. Drive</span>
                     </button>
                 </div>
             </div>

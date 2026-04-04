@@ -485,31 +485,31 @@ export default function AgendaList() {
                 <div className="bg-white p-4 md:p-8 rounded-[24px] border border-slate-100 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
                     <div className="flex flex-col lg:flex-row gap-4 mb-8">
                         <div className="flex-1 relative group">
-                            <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
+                            <MagnifyingGlass weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Cari agenda kegiatan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-14 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
+                                className="w-full pl-16 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
                             />
                         </div>
                         <div className="flex items-center bg-slate-100/50 p-1 rounded-xl border border-slate-100 shadow-sm w-full lg:w-fit overflow-x-auto no-scrollbar">
                             <button
                                 onClick={() => setStatusFilter('all')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Semua
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terencana')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Terencana
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terlaksana')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'terlaksana' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Selesai
                             </button>
@@ -696,15 +696,15 @@ export default function AgendaList() {
                                                 </div>
                                                 <div className="flex gap-2">
                                                     {agenda.is_terlaksana && (
-                                                        <div className="bg-slate-900 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                                                        <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
                                                             <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                            <Text.Label className="!text-[9px] !text-white">Terlaksana</Text.Label>
+                                                            <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest leading-none">Terlaksana</Text.Label>
                                                         </div>
                                                     )}
                                                     {!agenda.is_terlaksana && (
-                                                        <div className="bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full border border-brand-100 flex items-center gap-1.5">
+                                                        <div className="bg-brand-600 text-white px-3 py-1.5 rounded-full border border-transparent shadow-sm flex items-center gap-1.5">
                                                             <Calendar weight="fill" className="w-3.5 h-3.5" />
-                                                            <Text.Label className="!text-[9px] !text-brand-600">Terencana</Text.Label>
+                                                            <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest leading-none">Terencana</Text.Label>
                                                         </div>
                                                     )}
                                                 </div>
@@ -716,17 +716,17 @@ export default function AgendaList() {
                                                     <Text.Body className="line-clamp-2 !text-slate-500 !text-sm">{agenda.deskripsi || '-'}</Text.Body>
                                                 </div>
 
-                                                <div className="flex items-center justify-between py-4 border-t border-b border-slate-50 gap-4">
-                                                    <div className="space-y-1">
-                                                        <Text.Label className="!text-[9px] text-slate-400">WAKTU & LOKASI</Text.Label>
+                                                <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-slate-50">
+                                                    <div className="space-y-1.5">
+                                                        <Text.Label className="!text-[9px] text-slate-400 font-black uppercase tracking-widest block">Waktu & Lokasi</Text.Label>
                                                         <div className="flex items-center gap-1.5">
-                                                            <Clock weight="bold" className="w-3 h-3 text-brand-500" />
+                                                            <Clock weight="bold" className="w-3.5 h-3.5 text-brand-500" />
                                                             <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')} WIB</Text.Caption>
                                                         </div>
                                                     </div>
-                                                    <div className="space-y-1 text-right">
-                                                        <Text.Label className="!text-[9px] text-slate-400">ESTIMASI BIAYA</Text.Label>
-                                                        <Text.Amount className="text-sm font-black text-brand-600">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
+                                                    <div className="space-y-1.5 text-right">
+                                                        <Text.Label className="!text-[9px] text-slate-400 font-black uppercase tracking-widest block">Estimasi Biaya</Text.Label>
+                                                        <Text.Amount className="text-sm font-black text-brand-600 block leading-tight">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
                                                     </div>
                                                 </div>
 
