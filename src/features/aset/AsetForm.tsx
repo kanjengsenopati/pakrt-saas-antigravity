@@ -147,7 +147,7 @@ export default function AsetForm() {
                                     render={({ field }) => (
                                         <CurrencyInput
                                             {...field}
-                                            className="w-full pl-12 bg-white"
+                                            className="w-full p-3 pl-12 bg-white"
                                             placeholder="0"
                                         />
                                     )}
