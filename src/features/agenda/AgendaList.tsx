@@ -350,47 +350,39 @@ export default function AgendaList() {
             {activeTab === 'summary' && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                        <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300">
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                                <Calendar weight="bold" className="text-brand-500 w-4 h-4" />
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                                <Calendar weight="bold" className="text-brand-500 w-3.5 h-3.5" />
                                 Kegiatan
                             </p>
-                            <div className="flex items-baseline">
-                                <span className="text-4xl font-bold text-slate-900 tracking-tighter">{totalAgenda}</span>
-                            </div>
+                            <span className="text-4xl font-bold text-slate-900 tracking-tighter leading-none">{totalAgenda}</span>
                         </div>
 
-                        <div className="bg-slate-900 p-6 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
-                            <p className="text-sm font-bold text-white/50 tracking-tight mb-4 flex items-center gap-2">
-                                <CheckCircle weight="fill" className="text-brand-500 w-4 h-4" />
+                        <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                            <p className="text-sm font-bold text-white/50 tracking-tight mb-1 flex items-center justify-center gap-2">
+                                <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
                                 Selesai
                             </p>
-                            <div className="flex items-baseline">
-                                <span className="text-4xl font-bold text-white tracking-tighter">{realizedAgenda}</span>
-                            </div>
+                            <span className="text-4xl font-bold text-white tracking-tighter leading-none">{realizedAgenda}</span>
                         </div>
 
-                        <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300">
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                                <TrendUp weight="bold" className="text-amber-500 w-4 h-4" />
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                                <TrendUp weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                                 Review
                             </p>
-                            <div className="flex items-baseline">
-                                <span className="text-4xl font-bold text-amber-600 tracking-tighter">{pendingAgenda}</span>
-                            </div>
+                            <span className="text-4xl font-bold text-amber-600 tracking-tighter leading-none">{pendingAgenda}</span>
                         </div>
 
-                        <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300">
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
-                                <TrendUp weight="bold" className="text-blue-500 w-4 h-4" />
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                                <TrendUp weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                                 Anggaran
                             </p>
-                            <div className="flex items-baseline">
-                                <span className="text-2xl font-bold text-slate-900 tracking-tighter">{formatRupiah(totalPendanaan)}</span>
-                            </div>
+                            <span className="text-2xl font-bold text-slate-900 tracking-tighter leading-none">{formatRupiah(totalPendanaan)}</span>
                         </div>
                     </div>
 
