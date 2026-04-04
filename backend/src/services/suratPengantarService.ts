@@ -1,5 +1,7 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
+import { aktivitasService } from './aktivitasService';
+import { wargaService } from './wargaService';
 
 export const suratPengantarService = {
   async getAll(tenantId: string, scope?: string, wargaId?: string, page: number = 1, limit: number = 20) {
@@ -49,7 +51,23 @@ export const suratPengantarService = {
     if (data.status === 'selesai' && !data.nomor_surat) {
       data.nomor_surat = await this.generateNomorSurat(data.tenant_id);
     }
-    return await prisma.suratPengantar.create({ data });
+    const result = await prisma.suratPengantar.create({ data });
+    
+    // Log Activity
+    try {
+      const warga = await wargaService.getById(data.warga_id);
+      await aktivitasService.create({
+        tenant_id: data.tenant_id,
+        scope: data.scope || 'RT',
+        action: 'Surat Pengantar',
+        details: `**${warga?.nama || 'Warga'}** mengajukan surat pengantar baru: ${data.jenis_surat}`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for surat creation:", e);
+    }
+
+    return result;
   },
 
   async update(id: string, data: any) {
@@ -61,7 +79,25 @@ export const suratPengantarService = {
         data.nomor_surat = await this.generateNomorSurat(existing.tenant_id);
       }
     }
-    return await prisma.suratPengantar.update({ where: { id }, data });
+    const result = await prisma.suratPengantar.update({ where: { id }, data });
+
+    // Log Activity if status changed
+    if (data.status) {
+      try {
+        const existing = await this.getById(id);
+        await aktivitasService.create({
+          tenant_id: result.tenant_id,
+          scope: result.scope || 'RT',
+          action: 'Update Surat',
+          details: `Status surat pengantar **${existing?.warga?.nama || 'Warga'}** (${result.jenis_surat}) diperbarui menjadi: ${result.status.toUpperCase()}`,
+          timestamp: Date.now()
+        });
+      } catch (e) {
+        console.warn("Failed to log activity for surat update:", e);
+      }
+    }
+
+    return result;
   },
 
   async generateNomorSurat(tenantId: string) {

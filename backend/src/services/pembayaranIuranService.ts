@@ -182,7 +182,7 @@ export const pembayaranIuranService = {
                         tenant_id: processedData.tenant_id,
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
-                        details: `Pembayaran iuran tunai oleh ${wargaNama}: ${processedData.kategori} [${metadataMode || 'Manual'}] - Terverifikasi`,
+                        details: `Pembayaran iuran tunai oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Terverifikasi`,
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -194,7 +194,7 @@ export const pembayaranIuranService = {
                         tenant_id: processedData.tenant_id,
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
-                        details: `Pembayaran iuran oleh ${wargaNama}: ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                        details: `Pembayaran iuran oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -252,7 +252,7 @@ export const pembayaranIuranService = {
                 tenant_id: result.tenant_id,
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
-                details: `Verifikasi pembayaran iuran oleh ${wargaNama} [DITERIMA]`,
+                details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITERIMA]`,
                 timestamp: Date.now()
             });
 
@@ -272,7 +272,7 @@ export const pembayaranIuranService = {
                 tenant_id: result.tenant_id,
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
-                details: `Verifikasi pembayaran iuran oleh ${wargaNama} [DITOLAK]: ${alasan}`,
+                details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITOLAK]: ${alasan}`,
                 timestamp: Date.now()
             });
 
@@ -386,7 +386,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: 'RT',
             action: 'Edit Iuran',
-            details: `Mengubah data pembayaran iuran oleh ${(result as any).warga?.nama || 'Warga'}: ${result.kategori} [${metadataMode || 'Manual'}]`,
+            details: `Mengubah data pembayaran iuran oleh **${(result as any).warga?.nama || 'Warga'}**: ${result.kategori} [${metadataMode || 'Manual'}]`,
             timestamp: Date.now()
         });
         return result;
@@ -412,7 +412,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: 'RT',
             action: 'Batal Iuran',
-            details: `Membatalkan/Menghapus pembayaran iuran oleh ${wargaNama}: ${result.kategori}`,
+            details: `Membatalkan/Menghapus pembayaran iuran oleh **${wargaNama}**: ${result.kategori}`,
             timestamp: Date.now()
         });
         return result;
@@ -443,7 +443,7 @@ export const pembayaranIuranService = {
             tenant_id: result.tenant_id,
             scope: result.scope || 'RT',
             action: 'Ajukan Ulang Iuran',
-            details: `Warga (${wargaNama}) mengajukan ulang pembayaran iuran yang ditolak: ${result.kategori}`,
+            details: `Warga (**${wargaNama}**) mengajukan ulang pembayaran iuran yang ditolak: ${result.kategori}`,
             timestamp: Date.now()
         });
 

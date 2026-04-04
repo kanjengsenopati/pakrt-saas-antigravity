@@ -37,9 +37,16 @@ import { agendaService } from '../../services/agendaService';
 import { statsService } from '../../services/statsService';
 import { pengurusService } from '../../services/pengurusService';
 
-const toTitleCase = (str: string) => {
-    if (!str) return '';
-    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+const formatActivityDetails = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={i} className="font-extrabold text-primary">{part.slice(2, -2)}</strong>;
+        }
+        return part;
+    });
 };
 
 export default function Dashboard() {
@@ -319,7 +326,7 @@ export default function Dashboard() {
                                                         )}
                                                     </div>
                                                     <div className="flex-1">
-                                                        <p className="text-sm font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                        <p className="text-sm font-medium text-on-surface line-clamp-1">{formatActivityDetails(act.details)}</p>
                                                         <p className="text-[11px] font-medium text-on-surface-variant">{formatDate(act.timestamp)}</p>
                                                     </div>
                                                     <button 
@@ -336,7 +343,7 @@ export default function Dashboard() {
                                                             <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
                                                             <span className="text-[0.6rem] font-black text-slate-500 uppercase tracking-widest">{act.action}</span>
                                                         </div>
-                                                        <p className="text-[0.85rem] text-on-surface-variant leading-relaxed font-body">{act.details}</p>
+                                                        <p className="text-[0.85rem] text-on-surface-variant leading-relaxed font-body">{formatActivityDetails(act.details)}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -507,7 +514,7 @@ export default function Dashboard() {
                                                         {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? <Money weight="fill" className="text-xl" /> : <ChatDots weight="fill" className="text-xl" />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-body text-[0.875rem] font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                        <p className="font-body text-[0.875rem] font-medium text-on-surface line-clamp-1">{formatActivityDetails(act.details)}</p>
                                                         <p className="font-label text-[0.75rem] text-on-surface-variant">{formatDate(act.timestamp)}</p>
                                                     </div>
                                                 </div>
@@ -525,7 +532,7 @@ export default function Dashboard() {
                                                         <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
                                                         <span className="text-[0.6rem] font-black text-slate-500 uppercase tracking-widest">{act.action}</span>
                                                     </div>
-                                                    <p className="text-[0.8rem] text-on-surface-variant leading-relaxed font-label font-medium">{act.details}</p>
+                                                    <p className="text-[0.8rem] text-on-surface-variant leading-relaxed font-label font-medium">{formatActivityDetails(act.details)}</p>
                                                 </div>
                                             )}
                                         </div>

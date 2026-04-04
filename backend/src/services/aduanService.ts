@@ -1,5 +1,5 @@
-import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
+import { aktivitasService } from './aktivitasService';
 
 export const aduanService = {
   async getAll(tenantId: string, scope?: string, status?: string, tipe?: string, wargaId?: string, page: number = 1, limit: number = 20) {
@@ -67,12 +67,46 @@ export const aduanService = {
 
   async create(data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.aduanUsulan.create({ data });
+    const result = await prisma.aduanUsulan.create({ data });
+
+    // Log Activity
+    try {
+      const warga = await prisma.warga.findUnique({ where: { id: data.warga_id } });
+      await aktivitasService.create({
+        tenant_id: data.tenant_id,
+        scope: data.scope || 'RT',
+        action: 'Aduan Warga',
+        details: `**${warga?.nama || 'Warga'}** mengirimkan aduan: ${data.judul}`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for aduan creation:", e);
+    }
+
+    return result;
   },
 
   async update(id: string, data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    return await prisma.aduanUsulan.update({ where: { id }, data });
+    const result = await prisma.aduanUsulan.update({ where: { id }, data });
+
+    // Log Activity if status changed
+    if (data.status) {
+      try {
+        const aduan = await this.getById(id);
+        await aktivitasService.create({
+          tenant_id: result.tenant_id,
+          scope: result.scope || 'RT',
+          action: 'Update Aduan',
+          details: `Status aduan **${aduan?.warga?.nama || 'Warga'}** (${result.judul}) diperbarui menjadi: ${result.status}`,
+          timestamp: Date.now()
+        });
+      } catch (e) {
+        console.warn("Failed to log activity for aduan update:", e);
+      }
+    }
+
+    return result;
   },
 
   async delete(id: string) {
