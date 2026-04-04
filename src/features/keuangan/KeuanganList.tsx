@@ -45,6 +45,7 @@ export default function KeuanganList() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedProof, setSelectedProof] = useState<string | null>(null);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     useEffect(() => {
         if (currentTenant) {
@@ -106,7 +107,7 @@ export default function KeuanganList() {
                 wargaNama: newFormatMatch[1],
                 label: newFormatMatch[2],
                 period: periodStr,
-                months,
+                months: months as number[],
                 year,
                 isIuran: true,
                 raw: cleaned
@@ -118,6 +119,8 @@ export default function KeuanganList() {
                 wargaNama: null,
                 label: toTitleCase(cleaned.replace(/\[AUTO\]\s*/i, '').split('|')[0].trim()),
                 period: null,
+                months: [] as number[],
+                year: null,
                 isIuran: false,
                 raw: cleaned
             };
@@ -127,6 +130,8 @@ export default function KeuanganList() {
             wargaNama: null,
             label: toTitleCase(cleaned.split('|')[0].trim()),
             period: null,
+            months: [] as number[],
+            year: null,
             isIuran: false,
             raw: cleaned
         };
@@ -334,55 +339,93 @@ export default function KeuanganList() {
                             .map((trx) => {
                                 const parsed = parseKeterangan(trx.keterangan);
                                 return (
-                                    <div key={trx.id} className="p-5 hover:bg-slate-50/50 transition-all duration-300 active:bg-slate-100 cursor-pointer">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="flex gap-4 min-w-0">
-                                                <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-rose-50 text-rose-600 border-rose-100/50'}`}>
-                                                    <span className={`text-[9px] font-black uppercase leading-none ${trx.tipe === 'pemasukan' ? 'text-emerald-500' : 'text-rose-500'}`}>{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                    <span className="text-lg font-black leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${trx.tipe === 'pemasukan' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}`}>
-                                                            {trx.tipe === 'pemasukan' ? 'Masuk' : 'Keluar'}
-                                                        </span>
-                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight truncate">ID: {formatFormalId(trx.tanggal, trx.id)}</span>
+                                    <div key={trx.id} className="border-b border-slate-50 last:border-0">
+                                        <div 
+                                            onClick={() => setExpandedId(expandedId === trx.id ? null : trx.id)}
+                                            className={`p-5 transition-all duration-300 active:bg-slate-100 cursor-pointer ${expandedId === trx.id ? 'bg-slate-50/80 shadow-inner' : 'hover:bg-slate-50/50'}`}
+                                        >
+                                            <div className="flex justify-between items-start gap-4">
+                                                <div className="flex gap-4 min-w-0">
+                                                    <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-rose-50 text-rose-600 border-rose-100/50'}`}>
+                                                        <span className={`text-[9px] font-bold uppercase leading-none ${trx.tipe === 'pemasukan' ? 'text-emerald-500' : 'text-rose-500'}`}>{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                        <span className="text-lg font-bold leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
                                                     </div>
-                                                    <Text.H2 className="!font-bold line-clamp-1 !text-slate-900 !leading-snug">{toTitleCase(trx.kategori)}</Text.H2>
-                                                    <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5">
-                                                        {parsed.wargaNama ? (
-                                                            <><span className="font-bold text-brand-600">{parsed.wargaNama}</span> — {parsed.period}</>
-                                                        ) : (
-                                                            parsed.label || "Tanpa Keterangan"
-                                                        )}
-                                                    </p>
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${trx.tipe === 'pemasukan' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}`}>
+                                                                {trx.tipe === 'pemasukan' ? 'Masuk' : 'Keluar'}
+                                                            </span>
+                                                            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-tight truncate opacity-60">ID: {formatFormalId(trx.tanggal, trx.id)}</span>
+                                                        </div>
+                                                        <Text.H2 className="!font-medium line-clamp-1 !text-slate-900 !leading-snug">{toTitleCase(trx.kategori)}</Text.H2>
+                                                        <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5">
+                                                            {parsed.wargaNama ? (
+                                                                <><span className="font-bold text-brand-600">{parsed.wargaNama}</span> {parsed.isIuran && '— Iuran'}</>
+                                                            ) : (
+                                                                parsed.label || "Tanpa Keterangan"
+                                                            )}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="flex flex-col items-end shrink-0 gap-1.5 pt-1">
-                                                <div className={`text-base font-black tabular-nums tracking-tighter ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                                                    {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
-                                                </div>
-                                                <div className="flex items-center gap-1.5">
-                                                    {trx.url_bukti && (
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); setSelectedProof(trx.url_bukti || null); }}
-                                                            className="p-1.5 text-brand-600 bg-brand-50 rounded-lg border border-brand-100 transition-opacity hover:opacity-70"
-                                                        >
-                                                            <ImageIcon weight="bold" className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-                                                    {!isWarga && (
-                                                        <HasPermission module="Buku Kas / Transaksi" action="Ubah">
+                                                <div className="flex flex-col items-end shrink-0 gap-1.5 pt-1">
+                                                    <div className={`text-base font-normal tabular-nums tracking-tighter ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                        {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {trx.url_bukti && (
                                                             <button
-                                                                onClick={(e) => { e.stopPropagation(); navigate(`/keuangan/edit/${trx.id}`); }}
-                                                                className="p-1.5 text-slate-400 bg-white rounded-lg border border-slate-200 transition-all active:scale-90"
+                                                                onClick={(e) => { e.stopPropagation(); setSelectedProof(trx.url_bukti || null); }}
+                                                                className="p-1.5 text-brand-600 bg-brand-50 rounded-lg border border-brand-100 transition-opacity hover:opacity-70"
                                                             >
-                                                                <PencilSimple weight="bold" className="w-3.5 h-3.5" />
+                                                                <ImageIcon weight="bold" className="w-3.5 h-3.5" />
                                                             </button>
-                                                        </HasPermission>
-                                                    )}
+                                                        )}
+                                                        {!isWarga && (
+                                                            <HasPermission module="Buku Kas / Transaksi" action="Ubah">
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); navigate(`/keuangan/edit/${trx.id}`); }}
+                                                                    className="p-1.5 text-slate-400 bg-white rounded-lg border border-slate-200 transition-all active:scale-90"
+                                                                >
+                                                                    <PencilSimple weight="bold" className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </HasPermission>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            {expandedId === trx.id && (
+                                                <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                                                    <div className="space-y-3">
+                                                        <div className="flex flex-col gap-1">
+                                                            <Text.Caption className="!text-[10px] !font-bold uppercase tracking-widest text-slate-400">Keterangan Lengkap</Text.Caption>
+                                                            <p className="text-sm text-slate-700 leading-relaxed">{parsed.raw}</p>
+                                                        </div>
+
+                                                        {parsed.isIuran && parsed.months.length > 0 && (
+                                                            <div className="flex flex-col gap-2">
+                                                                <Text.Caption className="!text-[10px] !font-bold uppercase tracking-widest text-brand-500">Bulan Dibayar ({parsed.year})</Text.Caption>
+                                                                <div className="flex flex-wrap gap-1.5">
+                                                                    {['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'].map((m, idx) => {
+                                                                        const isPaid = parsed.months.includes(idx + 1);
+                                                                        return (
+                                                                            <span 
+                                                                                key={m}
+                                                                                className={`px-2.5 py-1 rounded-lg text-[10px] font-black tracking-tight transition-all
+                                                                                    ${isPaid 
+                                                                                        ? 'bg-brand-600 text-white shadow-sm scale-105' 
+                                                                                        : 'bg-slate-50 text-slate-300 opacity-40'}`}
+                                                                            >
+                                                                                {m}
+                                                                            </span>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );
