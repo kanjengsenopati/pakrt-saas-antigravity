@@ -136,7 +136,7 @@ export default function Login() {
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                             {/* Email/WA Field */}
                             <div className="space-y-2">
-                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 uppercase tracking-wider">Email atau Nomor WhatsApp</label>
+                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 tracking-tight">Email atau Nomor WhatsApp</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
                                         <Envelope weight="bold" size={20} />
@@ -152,7 +152,7 @@ export default function Login() {
 
                             {/* Password Field */}
                             <div className="space-y-2">
-                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 uppercase tracking-wider">Kata Sandi</label>
+                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 tracking-tight">Kata Sandi</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
                                         <Lock weight="bold" size={20} />
