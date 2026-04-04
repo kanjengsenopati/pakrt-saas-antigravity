@@ -5,6 +5,7 @@ import { Header } from '../components/ui/Header';
 import { StickyHomeButton } from '../components/ui/StickyHomeButton';
 import { useTenant } from '../contexts/TenantContext';
 import { ThemeManager } from '../components/ThemeManager';
+import { BottomNav } from '../components/ui/BottomNav';
 
 export function AppLayout() {
     const { currentTenant } = useTenant();
@@ -25,6 +26,7 @@ export function AppLayout() {
                 </main>
             </div>
             <StickyHomeButton />
+            <BottomNav />
         </div>
     );
 }

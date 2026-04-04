@@ -11,14 +11,12 @@ import {
     ChatDots,
     Notebook,
     Money,
-    Gear,
     CalendarBlank, 
     CalendarCheck,
     Wallet,
     FileText,
     ArrowRight,
     Bell,
-    House,
     Minus,
     Plus,
     TrendUp,
@@ -577,22 +575,6 @@ export default function Dashboard() {
                     </main>
                 </>
             )}
-
-            {/* BottomNavBar */}
-            <nav className="fixed bottom-0 left-0 w-full z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl rounded-t-[1.5rem] flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-8px_24px_-4px_rgba(0,80,212,0.05)] md:hidden">
-                <button onClick={() => setActiveMenuTab('utama')} className={`flex flex-col items-center justify-center transition-all duration-200 ${activeMenuTab === 'utama' ? 'text-blue-700 dark:text-blue-400 scale-110 active:scale-90' : 'text-slate-400 dark:text-slate-500 hover:text-blue-500 active:scale-90'}`}>
-                    <House weight={activeMenuTab === 'utama' ? 'fill' : 'regular'} className="text-[1.7rem]" />
-                </button>
-                <button onClick={() => setActiveMenuTab('lainnya')} className={`flex flex-col items-center justify-center transition-all duration-200 ${activeMenuTab === 'lainnya' ? 'text-blue-700 dark:text-blue-400 scale-110 active:scale-90' : 'text-slate-400 dark:text-slate-500 hover:text-blue-500 active:scale-90'}`}>
-                    <Gear weight={activeMenuTab === 'lainnya' ? 'fill' : 'regular'} className="text-[1.7rem]" />
-                </button>
-                <button onClick={() => navigate('/keuangan')} className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-200">
-                    <Wallet weight="regular" className="text-[1.7rem]" />
-                </button>
-                <button onClick={() => navigate('/surat')} className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-200">
-                    <FileText weight="regular" className="text-[1.7rem]" />
-                </button>
-            </nav>
         </div>
     );
 }
