@@ -335,13 +335,13 @@ export default function AgendaList() {
             <div className="flex bg-slate-100/50 p-1 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                 <button
                     onClick={() => setActiveTab('list')}
-                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[12px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-sm font-bold tracking-tight rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <Calendar weight="bold" className="w-4 h-4" /> Daftar Aktivitas
                 </button>
                 <button
                     onClick={() => setActiveTab('summary')}
-                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[12px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-sm font-bold tracking-tight rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <ChartPieSlice weight="bold" className="w-4 h-4" /> Rekapitulasi
                 </button>
@@ -352,47 +352,44 @@ export default function AgendaList() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300">
                             <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                <Calendar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
-                                Total Kegiatan
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <Calendar weight="bold" className="text-brand-500 w-4 h-4" />
+                                Kegiatan
                             </p>
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-4xl font-bold text-slate-900 tracking-tight">{totalAgenda}</span>
-                                <span className="text-xs font-bold text-slate-400">Kegiatan</span>
+                            <div className="flex items-baseline">
+                                <span className="text-4xl font-bold text-slate-900 tracking-tighter">{totalAgenda}</span>
                             </div>
                         </div>
 
                         <div className="bg-slate-900 p-6 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
-                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
-                                Terealisasi
+                            <p className="text-sm font-bold text-white/50 tracking-tight mb-4 flex items-center gap-2">
+                                <CheckCircle weight="fill" className="text-brand-500 w-4 h-4" />
+                                Selesai
                             </p>
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-4xl font-bold text-white tracking-tight">{realizedAgenda}</span>
-                                <span className="text-xs font-bold text-slate-500">Selesai</span>
+                            <div className="flex items-baseline">
+                                <span className="text-4xl font-bold text-white tracking-tighter">{realizedAgenda}</span>
                             </div>
                         </div>
 
                         <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300">
                             <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                <TrendUp weight="bold" className="text-amber-500 w-3.5 h-3.5" />
-                                Laporan Review
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <TrendUp weight="bold" className="text-amber-500 w-4 h-4" />
+                                Review
                             </p>
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-4xl font-bold text-amber-600 tracking-tight">{pendingAgenda}</span>
-                                <span className="text-xs font-bold text-slate-400">Review</span>
+                            <div className="flex items-baseline">
+                                <span className="text-4xl font-bold text-amber-600 tracking-tighter">{pendingAgenda}</span>
                             </div>
                         </div>
 
                         <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300">
                             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                <TrendUp weight="bold" className="text-blue-500 w-3.5 h-3.5" />
-                                Alokasi Anggaran
+                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <TrendUp weight="bold" className="text-blue-500 w-4 h-4" />
+                                Anggaran
                             </p>
                             <div className="flex items-baseline">
-                                <span className="text-2xl font-bold text-slate-900 tracking-tight">{formatRupiah(totalPendanaan)}</span>
+                                <span className="text-2xl font-bold text-slate-900 tracking-tighter">{formatRupiah(totalPendanaan)}</span>
                             </div>
                         </div>
                     </div>
