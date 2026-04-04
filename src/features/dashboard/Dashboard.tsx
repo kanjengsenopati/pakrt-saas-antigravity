@@ -49,6 +49,7 @@ export default function Dashboard() {
     const [recentActivities, setRecentActivities] = useState<Aktivitas[]>([]);
     const [activityPage, setActivityPage] = useState(1);
     const [activeMenuTab, setActiveMenuTab] = useState<'utama' | 'lainnya'>('utama');
+    const [expandedActivityId, setExpandedActivityId] = useState<string | null>(null);
 
     const isWarga = useMemo(() =>
         authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
@@ -461,17 +462,34 @@ export default function Dashboard() {
 
                         {!isWarga && (
                             <section className="mt-12 px-6">
-                                <h4 className="font-headline font-bold text-on-surface-variant text-[1.2rem] mb-4">Aktivitas Terkini</h4>
+                                <h4 className="font-headline font-bold text-on-surface-variant text-[1.2rem] mb-4">Aktivitas Terakhir</h4>
                                 <div className="space-y-4">
                                     {recentActivities.length > 0 ? recentActivities.slice((activityPage - 1) * 5, activityPage * 5).map((act: any) => (
-                                        <div key={act.id} className="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_24px_-4px_rgba(0,80,212,0.05)] flex gap-4">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? 'bg-secondary-container/30 text-secondary' : 'bg-tertiary-container/20 text-tertiary'}`}>
-                                                {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? <Money weight="fill" className="text-xl" /> : <ChatDots weight="fill" className="text-xl" />}
+                                        <div key={act.id} className="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_24px_-4px_rgba(0,80,212,0.05)] flex flex-col gap-4">
+                                            <div className="flex justify-between items-center w-full">
+                                                <div className="flex gap-4 items-center">
+                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? 'bg-secondary-container/30 text-secondary' : 'bg-tertiary-container/20 text-tertiary'}`}>
+                                                        {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? <Money weight="fill" className="text-xl" /> : <ChatDots weight="fill" className="text-xl" />}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-body text-[0.875rem] font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                        <p className="font-label text-[0.75rem] text-on-surface-variant">{formatDate(act.timestamp)}</p>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setExpandedActivityId(expandedActivityId === act.id ? null : act.id)}
+                                                    className="text-[0.65rem] font-black text-primary px-3 py-1 bg-primary/5 rounded-lg active:scale-95 transition-all text-center shrink-0 ml-auto"
+                                                >
+                                                    {expandedActivityId === act.id ? 'TUTUP' : 'LIHAT'}
+                                                </button>
                                             </div>
-                                            <div>
-                                                <p className="font-body text-[0.875rem] font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
-                                                <p className="font-label text-[0.75rem] text-on-surface-variant">{formatDate(act.timestamp)}</p>
-                                            </div>
+                                            
+                                            {expandedActivityId === act.id && (
+                                                <div className="pt-4 border-t border-slate-100 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                                    <span className="text-[0.6rem] font-black text-slate-400 uppercase tracking-widest">{act.action}</span>
+                                                    <p className="text-[0.8rem] text-on-surface-variant leading-relaxed font-body">{act.details}</p>
+                                                </div>
+                                            )}
                                         </div>
                                     )) : (
                                         <Text.Body className="italic py-4 text-center opacity-50">Belum ada informasi terbaru.</Text.Body>
