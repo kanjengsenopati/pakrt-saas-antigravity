@@ -175,49 +175,49 @@ export default function Dashboard() {
                         </header>
 
                         {/* Overlapping Card - Keuangan */}
-                        <div className="absolute bottom-0 left-0 w-full px-6 translate-y-12">
+                        <div className="absolute bottom-0 left-0 w-full px-6 translate-y-16">
                             <div className="max-w-4xl mx-auto">
-                                <section className="bg-white rounded-[2rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                                <section className="bg-white rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
                                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
                                     <div className="relative z-10">
-                                        <div className="flex justify-between items-start mb-2">
+                                        <div className="flex justify-between items-start mb-1">
                                             <div>
-                                                <p className="text-slate-500 font-label text-sm font-medium mb-2">Total Kas RT</p>
-                                                <h2 className="text-3xl font-extrabold font-headline tracking-tight text-slate-900 leading-tight">{formatRupiah(stats.saldo)}</h2>
+                                                <p className="text-slate-500 font-label text-xs font-medium mb-1">Total Kas RT</p>
+                                                <h2 className="text-2xl font-extrabold font-headline tracking-tight text-slate-900 leading-tight">{formatRupiah(stats.saldo)}</h2>
                                             </div>
-                                            <div className="bg-blue-50 p-3 rounded-2xl">
-                                                <Wallet weight="fill" className="text-primary text-2xl" />
+                                            <div className="bg-blue-50 p-2.5 rounded-2xl">
+                                                <Wallet weight="fill" className="text-primary text-xl" />
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3 mb-8">
-                                            <span className="flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                                                <TrendUp weight="bold" className="text-[14px] mr-1" />
+                                        <div className="flex items-center gap-3 mb-5">
+                                            <span className="flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                                                <TrendUp weight="bold" className="text-[12px] mr-1" />
                                                 Active
                                             </span>
-                                            <span className="text-slate-400 text-[11px] font-medium">Update realtime</span>
+                                            <span className="text-slate-400 text-[10px] font-medium">Update realtime</span>
                                         </div>
-                                        <button onClick={() => navigate('/keuangan')} className="w-full py-4 bg-primary text-white font-bold rounded-2xl text-sm transition-all hover:bg-primary-dim active:scale-[0.98] shadow-lg shadow-primary/30">
+                                        <button onClick={() => navigate('/keuangan')} className="w-full py-3 bg-primary text-white font-bold rounded-2xl text-sm transition-all hover:bg-primary-dim active:scale-[0.98] shadow-lg shadow-primary/30">
                                             Lihat Detail Kas
                                         </button>
 
                                         {/* Informasi Berlangganan Section */}
-                                        <div className="border-t border-slate-100 pt-5 mt-5">
-                                            <div className="flex items-center gap-3 mb-3">
-                                                <div className="w-8 h-8 rounded-xl bg-orange-50 shrink-0 flex items-center justify-center">
-                                                    <ShieldCheck weight="fill" className="text-orange-500 text-lg" />
+                                        <div className="border-t border-slate-100 pt-4 mt-4">
+                                            <div className="flex items-center gap-2.5 mb-2">
+                                                <div className="w-7 h-7 rounded-xl bg-orange-50 shrink-0 flex items-center justify-center">
+                                                    <ShieldCheck weight="fill" className="text-orange-500 text-base" />
                                                 </div>
-                                                <p className="text-xs font-bold text-slate-700 truncate">Informasi Berlangganan Aplikasi PakRT</p>
+                                                <p className="text-[11px] font-bold text-slate-700 truncate">Informasi Berlangganan Aplikasi PakRT</p>
                                             </div>
-                                            <div className="flex items-center justify-between pl-11">
-                                                <span className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-full shrink-0 uppercase tracking-wider">
+                                            <div className="flex items-center justify-between pl-9">
+                                                <span className="px-2.5 py-1 bg-orange-500 text-white text-[9px] font-black rounded-full shrink-0 uppercase tracking-wider">
                                                     Sisa 15 Hari
                                                 </span>
                                                 <button 
                                                     onClick={() => navigate('/pengaturan')} 
-                                                    className="text-primary font-bold text-xs flex items-center gap-1 hover:underline active:scale-95 transition-all"
+                                                    className="text-primary font-bold text-[10px] flex items-center gap-1 hover:underline active:scale-95 transition-all"
                                                 >
                                                     Detail
-                                                    <ArrowRight weight="bold" className="text-[12px]" />
+                                                    <ArrowRight weight="bold" className="text-[10px]" />
                                                 </button>
                                             </div>
                                         </div>
