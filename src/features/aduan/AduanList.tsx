@@ -120,10 +120,18 @@ export default function AduanList() {
                 <div className="flex gap-2 w-full md:w-auto">
                     <button
                         onClick={() => navigate('/aduan/new')}
-                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-[12px] text-sm font-semibold transition-all shadow-premium hover-lift active-press"
+                        className="hidden md:flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-[12px] text-sm font-semibold transition-all shadow-premium hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Kirim Aspirasi</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/aduan/new')}
+                        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </div>
             </div>
@@ -132,7 +140,7 @@ export default function AduanList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <ChartBar weight="duotone" className="text-slate-400 w-4 h-4" />
                         Total Aspirasi
                     </p>
@@ -144,9 +152,9 @@ export default function AduanList() {
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <Clock weight="duotone" className="text-amber-500 w-4 h-4" />
-                        Menunggu
+                        Menunggu Antrian
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-amber-600 tracking-tight tabular-nums">{stats?.pending || 0}</span>
@@ -156,9 +164,9 @@ export default function AduanList() {
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <ArrowRight weight="duotone" className="text-blue-500 w-4 h-4" />
-                        Diproses
+                        Sedang Diproses
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-blue-600 tracking-tight tabular-nums">{stats?.processing || 0}</span>
@@ -168,9 +176,9 @@ export default function AduanList() {
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <CheckCircle weight="duotone" className="text-brand-400 w-4 h-4" />
-                        Selesai
+                        Sudah Selesai
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-white tracking-tight tabular-nums">{stats?.completed || 0}</span>
@@ -180,16 +188,16 @@ export default function AduanList() {
             </div>
 
             {/* Tabs */}
-            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit self-center md:self-start border border-slate-100 shadow-sm">
+            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm">
                 <button 
                     onClick={() => setViewTab('list')}
-                    className={`px-6 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${viewTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <Users weight="bold" /> Daftar Aspirasi
                 </button>
                 <button 
                     onClick={() => setViewTab('dashboard')}
-                    className={`px-6 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'dashboard' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${viewTab === 'dashboard' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <ChartPie weight="bold" /> Analisis Data
                 </button>

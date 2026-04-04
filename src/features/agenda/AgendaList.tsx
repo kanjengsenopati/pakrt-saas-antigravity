@@ -311,29 +311,37 @@ export default function AgendaList() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
                     <Text.H1>Informasi Kegiatan</Text.H1>
-                    <Text.Body className="mt-1">Daftar aktivitas and jadwal kegiatan warga</Text.Body>
+                    <Text.Body className="mt-1">Daftar aktivitas dan jadwal kegiatan warga</Text.Body>
                 </div>
                 <HasPermission module="Agenda" action="Buat">
                     <button
                         onClick={() => navigate('/agenda/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
+                        className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <Plus weight="bold" />
+                        <Plus weight="bold" size={18} />
                         <span>Buat Agenda Baru</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/agenda/new')}
+                        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </HasPermission>
             </div>
 
-            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit border border-slate-100 shadow-sm">
+            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm">
                 <button
                     onClick={() => setActiveTab('list')}
-                    className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <Calendar weight="bold" className="w-4 h-4" /> Daftar Aktivitas
                 </button>
                 <button
                     onClick={() => setActiveTab('summary')}
-                    className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <ChartPieSlice weight="bold" className="w-4 h-4" /> Dashboard Monitor
                 </button>
@@ -344,7 +352,7 @@ export default function AgendaList() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                             <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                            <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                                 <Calendar weight="duotone" className="text-slate-400 w-4 h-4" />
                                 Total Kegiatan
                             </p>
@@ -356,7 +364,7 @@ export default function AgendaList() {
 
                         <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 text-white">
                             <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                            <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                                 <CheckCircle weight="duotone" className="text-brand-400 w-4 h-4" />
                                 Terealisasi
                             </p>
@@ -368,9 +376,9 @@ export default function AgendaList() {
 
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:shadow-md">
                             <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                            <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                                 <TrendUp weight="duotone" className="text-amber-500 w-4 h-4" />
-                                Laporan
+                                Laporan Review
                             </p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-3xl font-black text-amber-600 tracking-tight tabular-nums">{pendingAgenda}</span>
@@ -380,9 +388,9 @@ export default function AgendaList() {
 
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:shadow-md">
                             <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                            <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                                 <TrendUp weight="duotone" className="text-blue-500 w-4 h-4" />
-                                Anggaran
+                                Alokasi Anggaran
                             </p>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-xl font-black text-slate-900 tracking-tight tabular-nums">{formatRupiah(totalPendanaan)}</span>
@@ -474,36 +482,36 @@ export default function AgendaList() {
             )}
 
             {activeTab === 'list' && (
-                <div className="bg-white p-8 rounded-[20px] border border-slate-100 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="flex flex-col md:flex-row gap-6 mb-8">
+                <div className="bg-white p-4 md:p-8 rounded-[24px] border border-slate-100 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
+                    <div className="flex flex-col lg:flex-row gap-4 mb-8">
                         <div className="flex-1 relative group">
                             <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Cari informasi kegiatan atau agenda..."
+                                placeholder="Cari agenda kegiatan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700 shadow-sm"
+                                className="w-full pl-12 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
                             />
                         </div>
-                        <div className="flex items-center bg-slate-100/50 p-1.5 rounded-xl border border-slate-100 shadow-sm">
+                        <div className="flex items-center bg-slate-100/50 p-1 rounded-xl border border-slate-100 shadow-sm w-full lg:w-fit overflow-x-auto no-scrollbar">
                             <button
                                 onClick={() => setStatusFilter('all')}
-                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Semua
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terencana')}
-                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Terencana
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terlaksana')}
-                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
-                                Terlaksana
+                                Selesai
                             </button>
                         </div>
                     </div>

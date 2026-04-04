@@ -141,26 +141,34 @@ export default function RondaList() {
                 <HasPermission module="Jadwal Ronda" action="Buat">
                     <button
                         onClick={() => navigate('/ronda/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
+                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <Plus weight="bold" />
+                        <Plus weight="bold" size={18} />
                         <span>Buat Jadwal Baru</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/ronda/new')}
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </HasPermission>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
-                    <div className="flex gap-1 bg-white p-1 rounded-xl border border-gray-200">
+                    <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                         <button
                             onClick={() => setActiveTab('informasi')}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'informasi' ? 'bg-brand-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                            className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'informasi' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             Informasi Regu
                         </button>
                         <button
                             onClick={() => setActiveTab('jadwal')}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'jadwal' ? 'bg-brand-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                            className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'jadwal' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             Log Jadwal
                         </button>

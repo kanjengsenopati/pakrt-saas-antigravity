@@ -150,10 +150,18 @@ export default function WargaList() {
                         <HasPermission module="Warga" action="Buat">
                             <button
                                 onClick={() => navigate('/warga/new')}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
+                                className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                             >
-                                <Plus weight="bold" />
+                                <Plus weight="bold" size={18} />
                                 <span>Tambah Warga</span>
+                            </button>
+                            
+                            {/* MOBILE FAB */}
+                            <button
+                                onClick={() => navigate('/warga/new')}
+                                className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                            >
+                                <Plus weight="bold" size={24} />
                             </button>
                         </HasPermission>
 
@@ -163,8 +171,8 @@ export default function WargaList() {
                                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-sm transition-all shadow-sm active-press"
                             >
                                 <ShareNetwork weight="bold" />
-                                <span className="hidden sm:inline">Share Link</span>
-                                <span className="sm:hidden text-xs tracking-normal">Share Link</span>
+                                <span className={user?.role?.toLowerCase() === 'warga' ? 'inline' : 'hidden sm:inline'}>Share Link</span>
+                                {user?.role?.toLowerCase() !== 'warga' && <span className="sm:hidden text-xs tracking-normal">Share</span>}
                             </button>
                         </HasPermission>
 
@@ -256,7 +264,7 @@ export default function WargaList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <Users weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Warga
                     </p>
@@ -268,9 +276,9 @@ export default function WargaList() {
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <UserPlus weight="duotone" className="text-amber-400 w-4 h-4" />
-                        Verifikasi
+                        Menunggu Verifikasi
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-white tracking-tight tabular-nums">{pendingWarga.length}</span>
@@ -281,16 +289,16 @@ export default function WargaList() {
 
             {/* Tabs for Admin */}
             <HasPermission module="Warga" action="Buat">
-                <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit border border-slate-100 shadow-sm">
+                <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                     <button
                         onClick={() => setActiveTab('Verified')}
-                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'Verified' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'Verified' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <UserCheck weight="bold" className="w-4 h-4" /> Terverifikasi ({wargaList.length})
+                        <UserCheck weight="bold" className="w-4 h-4" /> Terverifikasi
                     </button>
                     <button
                         onClick={() => setActiveTab('Pending')}
-                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'Pending' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'Pending' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         <ClockCounterClockwise weight="bold" className="w-4 h-4" /> 
                         Permintaan

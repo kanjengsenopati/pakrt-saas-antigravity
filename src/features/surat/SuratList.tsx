@@ -74,10 +74,18 @@ export default function SuratList() {
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button
                         onClick={() => navigate('/surat/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
+                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <Plus weight="bold" />
+                        <Plus weight="bold" size={18} />
                         <span>Buat Permohonan Baru</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/surat/new')}
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </HasPermission>
             </div>
@@ -86,7 +94,7 @@ export default function SuratList() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <FileText weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Surat
                     </p>
@@ -98,9 +106,9 @@ export default function SuratList() {
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <ClockCounterClockwise weight="duotone" className="text-amber-400 w-4 h-4" />
-                        Antrian
+                        Antrian Berjalan
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-white tracking-tight tabular-nums">{suratList.filter(s => s.status === 'proses').length}</span>

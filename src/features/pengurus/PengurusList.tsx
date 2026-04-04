@@ -15,10 +15,12 @@ import {
     Briefcase,
     BookOpen,
     FloppyDisk,
+    Plus,
     PlusCircle,
     X,
     User,
-    MagnifyingGlass
+    MagnifyingGlass,
+    ClockCounterClockwise
 } from '@phosphor-icons/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { HasPermission } from '../../components/auth/HasPermission';
@@ -267,10 +269,18 @@ export default function PengurusList() {
                 <HasPermission module="Data Pengurus" action="Buat">
                     <button
                         onClick={() => navigate('/pengurus/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-full font-medium text-[15px] transition-all shadow-md shadow-brand-500/20 active:scale-95"
+                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <PlusCircle weight="fill" size={18} />
+                        <Plus weight="bold" size={18} />
                         <span>Tambah Jabatan</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/pengurus/new')}
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </HasPermission>
             </div>
@@ -279,7 +289,7 @@ export default function PengurusList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-3 sm:px-0 -mt-2">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <Briefcase weight="duotone" className="text-slate-400 w-4 h-4" />
                         Total Struktur
                     </p>
@@ -291,7 +301,7 @@ export default function PengurusList() {
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <Users weight="duotone" className="text-brand-400 w-4 h-4" />
                         Pejabat Aktif
                     </p>
@@ -304,22 +314,22 @@ export default function PengurusList() {
 
             {/* PILL-STYLE TAB NAVIGATION */}
             <div className="px-3 sm:px-0">
-                <div className="bg-slate-100/50 p-1.5 rounded-xl flex items-center gap-1 w-fit border border-slate-100 shadow-sm">
+                <div className="bg-slate-100/50 p-1 rounded-xl flex items-center gap-1 w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         <UserList weight="bold" /> Struktur Aktif
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <ListDashes weight="bold" /> Riwayat
+                        <ClockCounterClockwise weight="bold" /> Riwayat
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         <BookOpen weight="bold" /> AD / ART
                     </button>

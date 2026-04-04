@@ -118,10 +118,18 @@ export default function AsetList() {
                 <HasPermission module="Aset" action="Buat">
                     <button
                         onClick={() => navigate('/aset/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
+                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <Plus weight="bold" />
+                        <Plus weight="bold" size={18} />
                         <span>Tambah Aset</span>
+                    </button>
+                    
+                    {/* MOBILE FAB */}
+                    <button
+                        onClick={() => navigate('/aset/new')}
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
                     </button>
                 </HasPermission>
             </div>
