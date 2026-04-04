@@ -133,75 +133,66 @@ export default function KeuanganList() {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in px-5 md:px-0">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="space-y-8 animate-fade-in relative px-3 md:px-0">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
-                    <Text.H1>Kas Masuk & Keluar</Text.H1>
-                    <div className="mt-2 flex flex-col gap-0.5">
-                        <span className="text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-[6px] border border-brand-100/50 uppercase tracking-widest w-fit">
-                            {currentScope}
-                        </span>
-                        {currentTenant?.location_detail && (
-                            <span className="text-[9px] font-medium text-slate-400 pl-0.5 uppercase tracking-tight">
-                                {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
-                            </span>
-                        )}
-                    </div>
+                    <Text.H1>Informasi Transaksi Kas</Text.H1>
+                    <Text.Body className="mt-1">Laporan arus kas masuk dan keluar RT</Text.Body>
                 </div>
-                <div className="flex gap-2 w-full sm:w-auto">
-                    {!isWarga && (
-                        <HasPermission module="Buku Kas / Transaksi" action="Buat">
-                            <button
-                                onClick={() => navigate('/keuangan/baru')}
-                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-[12px] text-sm font-semibold transition-all shadow-premium hover-lift active-press"
-                            >
-                                <Plus weight="bold" />
-                                <span>Catat Transaksi</span>
-                            </button>
-                        </HasPermission>
-                    )}
-                </div>
+                {!isWarga && (
+                    <HasPermission module="Buku Kas / Transaksi" action="Buat">
+                        <button
+                            onClick={() => navigate('/keuangan/baru')}
+                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                        >
+                            <Plus weight="bold" size={18} />
+                            <span>Catat Transaksi</span>
+                        </button>
+                        
+                        {/* MOBILE FAB */}
+                        <button
+                            onClick={() => navigate('/keuangan/baru')}
+                            className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                        >
+                            <Plus weight="bold" size={24} />
+                        </button>
+                    </HasPermission>
+                )}
             </div>
 
             <div className="grid grid-cols-3 gap-3 md:gap-4 -mt-2">
-                <div className="bg-white py-4 px-4 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden transition-all duration-300 border-l-[6px] border-l-brand-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <Text.Label className="mb-2 !tracking-tight !text-slate-500">Kas Masuk</Text.Label>
-                        <Text.Amount className="text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.kasMasuk)}</Text.Amount>
-                    </div>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Kas Masuk</Text.Label>
+                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter text-brand-600 leading-none">{formatRupiah(summary.kasMasuk)}</Text.Amount>
                 </div>
 
-                <div className="bg-white py-4 px-4 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden transition-all duration-300 border-l-[6px] border-l-red-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <Text.Label className="mb-2 !tracking-tight !text-slate-500">Kas Keluar</Text.Label>
-                        <Text.Amount className="text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.kasKeluar)}</Text.Amount>
-                    </div>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-red-400" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Kas Keluar</Text.Label>
+                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter text-red-600 leading-none">{formatRupiah(summary.kasKeluar)}</Text.Amount>
                 </div>
 
-                <div className={`py-4 px-4 rounded-[20px] border shadow-premium relative overflow-hidden transition-all duration-300 ${summary.saldo >= 0 ? 'bg-brand-600 border-brand-500' : 'bg-red-600 border-red-500'}`}>
-                    <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-2xl" />
-                    <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <Text.Label className="!text-white opacity-90 mb-2 !tracking-tight">Saldo</Text.Label>
-                        <Text.Amount className="!text-white text-sm sm:text-xl lg:text-2xl leading-none truncate">{formatRupiah(summary.saldo)}</Text.Amount>
-                    </div>
+                <div className={`p-4 rounded-[24px] border shadow-premium relative overflow-hidden transition-all duration-300 flex flex-col items-center justify-center text-center ${summary.saldo >= 0 ? 'bg-white border-slate-100' : 'bg-red-900 border-red-800'}`}>
+                    <Text.Label className={`text-sm font-bold tracking-tight mb-1 ${summary.saldo >= 0 ? 'text-slate-900' : 'text-white/70'}`}>Saldo</Text.Label>
+                    <Text.Amount className={`text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter leading-none ${summary.saldo >= 0 ? 'text-brand-600' : 'text-white'}`}>{formatRupiah(summary.saldo)}</Text.Amount>
                 </div>
             </div>
 
-            <div className="bg-white rounded-[20px] shadow-premium border border-slate-100 overflow-hidden">
-                <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-50/30">
-                    <div className="relative w-full sm:w-80">
+            <div className="bg-white rounded-[24px] shadow-premium border border-slate-100 overflow-hidden">
+                <div className="p-4 border-b border-slate-50 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white">
+                    <div className="relative w-full sm:w-80 group">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
+                            <Funnel weight="bold" className="w-4 h-4" />
+                        </div>
                         <input
                             type="text"
                             placeholder="Cari transaksi..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-4 pr-4 py-2.5 border border-slate-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all text-sm font-medium"
+                            className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-[16px] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
                         />
                     </div>
-                    <button className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-700 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 transition-colors w-full sm:w-auto justify-center shadow-sm">
-                        <Funnel className="w-4 h-4" />
-                        <Text.Label className="!text-slate-700 !tracking-normal">Filter</Text.Label>
-                    </button>
                 </div>
 
                 <div className="hidden md:block overflow-x-auto">
@@ -321,9 +312,8 @@ export default function KeuanganList() {
                         </tbody>
                     </table>
                 </div>
-
-                {/* MOBILE VIEW: CARD GRID */}
-                <div className="md:hidden space-y-4 p-5 bg-slate-50/30">
+                {/* MOBILE VIEW: CHRONOLOGICAL LIST */}
+                <div className="md:hidden divide-y divide-slate-50 bg-white">
                     {isLoading ? (
                         <div className="py-24 text-center">
                             <div className="flex flex-col items-center gap-4">
@@ -332,82 +322,66 @@ export default function KeuanganList() {
                             </div>
                         </div>
                     ) : filteredTransactions.length === 0 ? (
-                        <div className="bg-white border-2 border-dashed border-slate-200 rounded-[20px] p-20 text-center flex flex-col items-center gap-4">
+                        <div className="rounded-[20px] p-20 text-center flex flex-col items-center gap-4">
                             <div className="w-20 h-20 bg-slate-50 rounded-[20px] flex items-center justify-center">
                                 <ArrowDownRight weight="duotone" className="w-10 h-10 text-slate-200" />
                             </div>
                             <Text.H2>Belum Ada Transaksi</Text.H2>
                         </div>
-                                    ) : (
+                    ) : (
                         filteredTransactions
                             .sort((a, b) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime())
                             .map((trx) => {
                                 const parsed = parseKeterangan(trx.keterangan);
                                 return (
-                                    <div key={trx.id} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-300">
-                                        <div className="p-5">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-12 h-12 rounded-[16px] flex flex-col items-center justify-center border shadow-inner ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-rose-100/50 text-rose-600 border-rose-200/50'}`}>
-                                                        <Text.Caption className={`!text-[9px] !font-bold leading-none uppercase ${trx.tipe === 'pemasukan' ? '!text-emerald-500' : '!text-rose-500'}`}>{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Caption>
-                                                        <Text.H2 className={`!text-lg font-bold leading-none mt-1 ${trx.tipe === 'pemasukan' ? '!text-emerald-700' : '!text-rose-700'}`}>{new Date(trx.tanggal).getDate()}</Text.H2>
-                                                    </div>
-                                                    <div>
-                                                        <Text.H2 className={`!font-bold uppercase tracking-tight line-clamp-1 ${trx.tipe === 'pemasukan' ? '!text-emerald-600' : '!text-rose-600'}`}>{toTitleCase(trx.kategori)}</Text.H2>
-                                                        <Text.Caption className="italic uppercase !text-[10px]">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
-                                                    </div>
+                                    <div key={trx.id} className="p-5 hover:bg-slate-50/50 transition-all duration-300 active:bg-slate-100 cursor-pointer">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <div className="flex gap-4 min-w-0">
+                                                <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${trx.tipe === 'pemasukan' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : 'bg-rose-50 text-rose-600 border-rose-100/50'}`}>
+                                                    <span className={`text-[9px] font-black uppercase leading-none ${trx.tipe === 'pemasukan' ? 'text-emerald-500' : 'text-rose-500'}`}>{new Date(trx.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                    <span className="text-lg font-black leading-none mt-0.5">{new Date(trx.tanggal).getDate()}</span>
                                                 </div>
-                                                <div className={`text-lg font-bold tabular-nums tracking-tight ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${trx.tipe === 'pemasukan' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}`}>
+                                                            {trx.tipe === 'pemasukan' ? 'Masuk' : 'Keluar'}
+                                                        </span>
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight truncate">ID: {formatFormalId(trx.tanggal, trx.id)}</span>
+                                                    </div>
+                                                    <Text.H2 className="!font-bold line-clamp-1 !text-slate-900 !leading-snug">{toTitleCase(trx.kategori)}</Text.H2>
+                                                    <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5">
+                                                        {parsed.wargaNama ? (
+                                                            <><span className="font-bold text-brand-600">{parsed.wargaNama}</span> — {parsed.period}</>
+                                                        ) : (
+                                                            parsed.label || "Tanpa Keterangan"
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col items-end shrink-0 gap-1.5 pt-1">
+                                                <div className={`text-base font-black tabular-nums tracking-tighter ${trx.tipe === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
                                                     {trx.tipe === 'pemasukan' ? '+' : '-'}{formatRupiah(trx.nominal)}
                                                 </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 mb-4">
-                                                {trx.tipe === 'pemasukan' ? (
-                                                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100/50 uppercase tracking-tight leading-none whitespace-nowrap">KAS MASUK</span>
-                                                ) : (
-                                                    <span className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[10px] font-bold border border-rose-100/50 uppercase tracking-tight leading-none whitespace-nowrap">KAS KELUAR</span>
-                                                )}
-
-                                                {!isWarga && (
-                                                    <div className="flex items-center gap-1">
+                                                <div className="flex items-center gap-1.5">
+                                                    {trx.url_bukti && (
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); setSelectedProof(trx.url_bukti || null); }}
+                                                            className="p-1.5 text-brand-600 bg-brand-50 rounded-lg border border-brand-100 transition-opacity hover:opacity-70"
+                                                        >
+                                                            <ImageIcon weight="bold" className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    )}
+                                                    {!isWarga && (
                                                         <HasPermission module="Buku Kas / Transaksi" action="Ubah">
                                                             <button
-                                                                onClick={() => navigate(`/keuangan/edit/${trx.id}`)}
-                                                                className="p-1.5 text-slate-400 hover:text-brand-600 transition-all active:scale-90"
+                                                                onClick={(e) => { e.stopPropagation(); navigate(`/keuangan/edit/${trx.id}`); }}
+                                                                className="p-1.5 text-slate-400 bg-white rounded-lg border border-slate-200 transition-all active:scale-90"
                                                             >
-                                                                <PencilSimple weight="bold" className="w-4 h-4" />
+                                                                <PencilSimple weight="bold" className="w-3.5 h-3.5" />
                                                             </button>
                                                         </HasPermission>
-                                                        <HasPermission module="Buku Kas / Transaksi" action="Hapus">
-                                                            <button
-                                                                onClick={() => handleDelete(trx.id)}
-                                                                className="p-1.5 text-slate-400 hover:text-red-500 transition-all active:scale-90"
-                                                            >
-                                                                <Trash weight="bold" className="w-4 h-4" />
-                                                            </button>
-                                                        </HasPermission>
-                                                    </div>
-                                                )}
-
-                                                {trx.url_bukti && (
-                                                    <button
-                                                        onClick={() => setSelectedProof(trx.url_bukti || null)}
-                                                        className="p-1.5 text-brand-600 hover:opacity-70 transition-opacity"
-                                                    >
-                                                        <ImageIcon weight="bold" className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            <div className="bg-slate-50/50 rounded-[14px] border border-slate-100 p-4">
-                                                <Text.Body className="!text-slate-700 leading-relaxed italic !text-[12px]">
-                                                    {parsed.isIuran && parsed.wargaNama ? (
-                                                        <>Pembayaran Iuran: <span className="font-bold underline">{parsed.wargaNama}</span> — {parsed.period}</>
-                                                    ) : (
-                                                        parsed.label || "Tanpa Keterangan"
                                                     )}
-                                                </Text.Body>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
