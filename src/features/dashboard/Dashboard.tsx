@@ -26,7 +26,9 @@ import {
     IdentificationCard,
     Megaphone,
     CaretLeft,
-    CaretRight
+    CaretRight,
+    User,
+    SignOut
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -166,17 +168,33 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                 </div>
-                                <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95">
-                                    <div className="relative">
-                                        <Bell weight="fill" className="text-white text-2xl" />
-                                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-primary"></span>
-                                    </div>
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button 
+                                        onClick={() => navigate('/profile')}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95"
+                                        title="Profil Saya"
+                                    >
+                                        <User weight="bold" className="text-white text-xl" />
+                                    </button>
+                                    <button 
+                                        onClick={() => navigate('/login')} 
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95"
+                                        title="Logout"
+                                    >
+                                        <SignOut weight="bold" className="text-white text-xl" />
+                                    </button>
+                                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 active:scale-95">
+                                        <div className="relative">
+                                            <Bell weight="fill" className="text-white text-xl" />
+                                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-primary"></span>
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
                         </header>
 
                         {/* Overlapping Card - Keuangan */}
-                        <div className="absolute bottom-0 left-0 w-full px-6 translate-y-16">
+                        <div className="absolute bottom-0 left-0 w-full px-6 translate-y-20">
                             <div className="max-w-4xl mx-auto">
                                 <section className="bg-white rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
                                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
@@ -478,16 +496,19 @@ export default function Dashboard() {
                                                 </div>
                                                 <button 
                                                     onClick={() => setExpandedActivityId(expandedActivityId === act.id ? null : act.id)}
-                                                    className="text-[0.65rem] font-black text-primary px-3 py-1 bg-primary/5 rounded-lg active:scale-95 transition-all text-center shrink-0 ml-auto"
+                                                    className="text-[0.65rem] font-bold text-primary px-3 py-1 bg-primary/5 rounded-lg active:scale-95 transition-all text-center shrink-0 ml-auto"
                                                 >
-                                                    {expandedActivityId === act.id ? 'TUTUP' : 'LIHAT'}
+                                                    {expandedActivityId === act.id ? 'Tutup' : 'Lihat'}
                                                 </button>
                                             </div>
                                             
                                             {expandedActivityId === act.id && (
-                                                <div className="pt-4 border-t border-slate-100 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                                                    <span className="text-[0.6rem] font-black text-slate-400 uppercase tracking-widest">{act.action}</span>
-                                                    <p className="text-[0.8rem] text-on-surface-variant leading-relaxed font-body">{act.details}</p>
+                                                <div className="pt-4 mt-1 border-t border-slate-100 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200 p-3 bg-slate-50/50 rounded-lg">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
+                                                        <span className="text-[0.6rem] font-black text-slate-500 uppercase tracking-widest">{act.action}</span>
+                                                    </div>
+                                                    <p className="text-[0.8rem] text-on-surface-variant leading-relaxed font-label font-medium">{act.details}</p>
                                                 </div>
                                             )}
                                         </div>
