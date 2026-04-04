@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { wargaService } from '../../services/wargaService';
 import { Warga } from '../../database/db';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
-import { Users, Plus, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus, DotsThreeOutlineVertical, ClockCounterClockwise } from '@phosphor-icons/react';
+import { Users, Plus, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, DownloadSimple, UploadSimple, FileArrowDown, ShareNetwork, UserCheck, XCircle, Info, Copy, UserPlus, DotsThreeOutlineVertical, ClockCounterClockwise, MagnifyingGlass } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
@@ -253,45 +253,49 @@ export default function WargaList() {
             </div>
 
             {/* STATS WIDGETS */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
-                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Users weight="fill" className="text-brand-500 w-3 h-3" />
-                            Total Warga
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{wargaList.length} Jiwa</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <Users weight="duotone" className="text-brand-500 w-4 h-4" />
+                        Total Warga
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{wargaList.length}</span>
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Jiwa</span>
                     </div>
                 </div>
 
-                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <UserPlus weight="bold" className="text-amber-400 w-3 h-3" />
-                            Menunggu Verifikasi
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{pendingWarga.length} Antrian</p>
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <UserPlus weight="duotone" className="text-amber-400 w-4 h-4" />
+                        Verifikasi
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{pendingWarga.length}</span>
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-none">Antrian</span>
                     </div>
                 </div>
             </div>
 
             {/* Tabs for Admin */}
             <HasPermission module="Warga" action="Buat">
-                <div className="flex border-b border-gray-200">
+                <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit border border-slate-100 shadow-sm">
                     <button
                         onClick={() => setActiveTab('Verified')}
-                        className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 ${activeTab === 'Verified' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'Verified' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        Terverifikasi ({wargaList.length})
+                        <UserCheck weight="bold" className="w-4 h-4" /> Terverifikasi ({wargaList.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('Pending')}
-                        className={`px-6 py-3 text-[14px] font-bold transition-all border-b-2 flex items-center gap-2 ${activeTab === 'Pending' ? 'border-brand-600 text-brand-600 bg-brand-50/50' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-gray-50'}`}
+                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'Pending' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        Permintaan Bergabung
+                        <ClockCounterClockwise weight="bold" className="w-4 h-4" /> 
+                        Permintaan
                         {pendingWarga.length > 0 && (
-                            <span className="bg-brand-600 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-pulse">
+                            <span className="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-full animate-pulse ml-1">
                                 {pendingWarga.length}
                             </span>
                         )}
@@ -300,19 +304,20 @@ export default function WargaList() {
             </HasPermission>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
-                    <div className="relative flex-1">
+                <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 bg-gray-50/50">
+                    <div className="relative flex-1 group">
+                        <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                         <input
                             type="text"
-                            placeholder="Cari Nama/NIK..."
+                            placeholder="Cari Nama atau NIK warga..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-4 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-sm"
+                            className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm font-medium"
                         />
                     </div>
-                    <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-[14px] font-normal transition-all shadow-sm active-press">
-                        <Funnel weight="fill" className="text-brand-600 sm:text-slate-400" />
-                        <span className="hidden sm:inline">Filter Tambahan</span>
+                    <button className="flex-none flex justify-center items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
+                        <Funnel weight="bold" className="text-brand-600" />
+                        <span>Filter Lanjutan</span>
                     </button>
                 </div>
 
@@ -410,9 +415,9 @@ export default function WargaList() {
                                             </td>
                                             <td className="p-3">
                                                 <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
-                                                <div className="mt-1 flex items-center gap-1.5 overflow-hidden">
-                                                    <span className="text-[9px] font-bold text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border border-slate-200 capitalize leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                                                <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden">
+                                                    <span className="text-[10px] font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 uppercase tracking-widest leading-none">{warga.nik}</span>
+                                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border uppercase tracking-widest leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
                                                         {warga.status_penduduk || 'Tetap'}
                                                     </span>
                                                 </div>

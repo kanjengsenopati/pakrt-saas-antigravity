@@ -17,7 +17,8 @@ import {
     FloppyDisk,
     PlusCircle,
     X,
-    User
+    User,
+    MagnifyingGlass
 } from '@phosphor-icons/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { HasPermission } from '../../components/auth/HasPermission';
@@ -274,72 +275,72 @@ export default function PengurusList() {
                 </HasPermission>
             </div>
 
-            {/* PREMIUM SNAP-TO-CARD SUMMARY (MOBILE) / GRID (DESKTOP) */}
-            <div className="relative">
-                <div className="flex sm:grid sm:grid-cols-2 gap-3 sm:gap-6 overflow-x-auto sm:overflow-visible no-scrollbar snap-x px-3 sm:px-0 pb-2 sm:pb-0">
-                    {/* Card 1: Total Position */}
-                    <div className="min-w-[85%] sm:min-w-0 snap-center glass-card p-4 sm:p-6 rounded-[2rem] flex items-center gap-4 transition-all hover:scale-[1.02] cursor-default border-l-4 border-l-brand-500">
-                        <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 shrink-0 shadow-inner">
-                            <Briefcase weight="duotone" size={24} />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-[13px] sm:text-[14px] font-medium text-slate-400 leading-none mb-1">Total Struktur</p>
-                            <p className="text-[20px] sm:text-[24px] font-medium text-slate-900 tabular-nums">{totalPositions} <span className="text-[14px] opacity-50">Posisi</span></p>
-                        </div>
+            {/* PREMIUM STATS WIDGETS */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-3 sm:px-0 -mt-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <Briefcase weight="duotone" className="text-slate-400 w-4 h-4" />
+                        Total Struktur
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{totalPositions}</span>
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Posisi</span>
                     </div>
+                </div>
 
-                    {/* Card 2: Active Members */}
-                    <div className="min-w-[85%] sm:min-w-0 snap-center bg-brand-600 p-4 sm:p-6 rounded-[2rem] flex items-center gap-4 shadow-xl shadow-brand-500/20 transition-all hover:scale-[1.02] cursor-default relative overflow-hidden group">
-                        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700" />
-                        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white shrink-0 shadow-inner">
-                            <Users weight="duotone" size={24} />
-                        </div>
-                        <div className="relative z-10 min-w-0">
-                            <p className="text-[13px] sm:text-[14px] font-medium text-white/70 leading-none mb-1">Pejabat Aktif</p>
-                            <p className="text-[20px] sm:text-[24px] font-medium text-white tabular-nums">{activePengurus} <span className="text-[14px] opacity-70">Orang</span></p>
-                        </div>
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <Users weight="duotone" className="text-brand-400 w-4 h-4" />
+                        Pejabat Aktif
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{activePengurus}</span>
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-none">Orang</span>
                     </div>
                 </div>
             </div>
 
-            {/* PILL-STYLE TAB NAVIGATION (SEGMENTED CONTROL) */}
+            {/* PILL-STYLE TAB NAVIGATION */}
             <div className="px-3 sm:px-0">
-                <div className="bg-slate-100/80 p-1.5 rounded-[1.5rem] flex items-center gap-1 w-full sm:w-max">
+                <div className="bg-slate-100/50 p-1.5 rounded-xl flex items-center gap-1 w-fit border border-slate-100 shadow-sm">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'aktif' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        Struktur Aktif
+                        <UserList weight="bold" /> Struktur Aktif
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'riwayat' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        Riwayat
+                        <ListDashes weight="bold" /> Riwayat
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 sm:flex-none pill-tab ${activeTab === 'ad-art' ? 'pill-tab-active' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        Ad / Art
+                        <BookOpen weight="bold" /> AD / ART
                     </button>
                 </div>
             </div>
 
             {activeTab === 'aktif' ? (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
-                        <div className="relative flex-1">
+                    <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 bg-gray-50/50">
+                        <div className="relative flex-1 group">
+                            <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Cari Jabatan atau Nama..."
+                                placeholder="Cari Jabatan atau Nama pengurus..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-4 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-sm"
+                                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm font-medium"
                             />
                         </div>
                         <div className="flex gap-2">
-                            <div className="hidden sm:flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+                            <div className="hidden sm:flex bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                                 <button
                                     onClick={() => setViewMode('list')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
@@ -353,9 +354,9 @@ export default function PengurusList() {
                                     <SquaresFour weight="bold" size={18} />
                                 </button>
                             </div>
-                            <button className="flex-none flex justify-center items-center gap-2 p-2 sm:px-4 sm:py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-[14px] font-normal transition-all shadow-sm active-press">
-                                <Funnel weight="fill" className="text-brand-600 sm:text-slate-400" />
-                                <span className="hidden sm:inline">Filter</span>
+                            <button className="flex-none flex justify-center items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
+                                <Funnel weight="bold" className="text-brand-600" />
+                                <span>Filter</span>
                             </button>
                         </div>
                     </div>
@@ -422,7 +423,7 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4 text-center">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-normal ${pengurus.status === 'tidak aktif' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
+                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${pengurus.status === 'tidak aktif' ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
                                                     {pengurus.status || 'aktif'}
                                                 </span>
                                             </td>

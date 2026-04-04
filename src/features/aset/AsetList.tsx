@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { asetService } from '../../services/asetService';
 import { wargaService } from '../../services/wargaService';
 import { Aset, Warga } from '../../database/db';
-import { Plus, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X, CircleNotch } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Package, Handshake, ArrowUUpLeft, Image as ImageIcon, X, CircleNotch, MagnifyingGlass } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
@@ -118,7 +118,7 @@ export default function AsetList() {
                 <HasPermission module="Aset" action="Buat">
                     <button
                         onClick={() => navigate('/aset/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Tambah Aset</span>
@@ -128,19 +128,20 @@ export default function AsetList() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
-                    <div className="relative w-full sm:w-96">
+                    <div className="relative w-full sm:w-96 group">
+                        <MagnifyingGlass weight="bold" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Cari nama barang..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
                         />
                     </div>
                     <select
                         value={filterCondition}
                         onChange={e => setFilterCondition(e.target.value)}
-                        className="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-[14px] font-normal transition-colors outline-none focus:ring-2 focus:ring-brand-500"
+                        className="w-full sm:w-auto px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-medium transition-all outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shadow-sm"
                     >
                         <option value="">Semua Kondisi</option>
                         <option value="baik">Baik</option>
@@ -191,11 +192,11 @@ export default function AsetList() {
                                                 <div>
                                                     <p className="font-bold text-slate-800 leading-tight mb-1 text-[14px]">{aset.nama_barang}</p>
                                                     <div className="flex items-center gap-2">
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-tight 
-                                                            ${aset.kondisi === 'baik' ? 'bg-brand-50 text-brand-700 border border-brand-200' :
-                                                                aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                                                                aset.kondisi === 'rusak_berat' ? 'bg-red-50 text-red-700 border border-red-200' :
-                                                                'bg-slate-50 text-slate-700 border border-slate-200'}
+                                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase
+                                                            ${aset.kondisi === 'baik' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+                                                                aset.kondisi === 'rusak_ringan' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+                                                                aset.kondisi === 'rusak_berat' ? 'bg-rose-50 text-rose-700 border border-rose-100' :
+                                                                'bg-slate-50 text-slate-700 border border-slate-100'}
                                                         `}>
                                                             {aset.kondisi === 'baik' ? 'Baik' :
                                                                 aset.kondisi === 'rusak_ringan' ? 'Rusak Ringan' :
@@ -256,14 +257,14 @@ export default function AsetList() {
                                                     <HasPermission module="Aset" action="Ubah">
                                                         <button
                                                             onClick={() => navigate(`/aset/edit/${aset.id}`)}
-                                                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors border border-transparent hover:border-blue-100" title="Edit">
+                                                            className="p-2 text-primary hover:bg-primary/5 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Edit">
                                                             <PencilSimple weight="duotone" className="w-4 h-4" />
                                                         </button>
                                                     </HasPermission>
                                                     <HasPermission module="Aset" action="Hapus">
                                                         <button
                                                             onClick={() => handleDelete(aset.id, aset.nama_barang)}
-                                                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors border border-transparent hover:border-red-100" title="Hapus">
+                                                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Hapus">
                                                             <Trash weight="duotone" className="w-4 h-4" />
                                                         </button>
                                                     </HasPermission>

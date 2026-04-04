@@ -55,11 +55,11 @@ export default function SuratList() {
     const getStatusBadge = (status: SuratPengantar['status']) => {
         switch (status) {
             case 'proses':
-                return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><ClockCounterClockwise weight="bold" /> Proses</span>;
+                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-widest"><ClockCounterClockwise weight="bold" /> Proses</span>;
             case 'selesai':
-                return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-800"><CheckCircle weight="bold" /> Selesai</span>;
+                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest"><CheckCircle weight="fill" /> Selesai</span>;
             case 'ditolak':
-                return <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"><XCircle weight="bold" /> Ditolak</span>;
+                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-600 border border-rose-100 uppercase tracking-widest"><XCircle weight="bold" /> Ditolak</span>;
         }
     };
 
@@ -74,7 +74,7 @@ export default function SuratList() {
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button
                         onClick={() => navigate('/surat/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[14px] font-normal transition-all shadow-sm hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Permohonan Baru</span>
@@ -83,42 +83,45 @@ export default function SuratList() {
             </div>
 
             {/* STATS WIDGETS */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
-                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <FileText weight="fill" className="text-brand-500 w-3 h-3" />
-                            Total Surat
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{suratList.length} Permohonan</p>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <FileText weight="duotone" className="text-brand-500 w-4 h-4" />
+                        Total Surat
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{suratList.length}</span>
+                        <span className="text-[11px] font-bold text-slate-400">Permohonan</span>
                     </div>
                 </div>
 
-                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <ClockCounterClockwise weight="bold" className="text-amber-400 w-3 h-3" />
-                            Menunggu Proses
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{suratList.filter(s => s.status === 'proses').length} Antrian</p>
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <ClockCounterClockwise weight="duotone" className="text-amber-400 w-4 h-4" />
+                        Antrian
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{suratList.filter(s => s.status === 'proses').length}</span>
+                        <span className="text-[11px] font-bold text-slate-500">Berjalan</span>
                     </div>
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50/50">
-                    <div className="relative w-full sm:w-96">
+                    <div className="relative w-full sm:w-96 group">
                         <input
                             type="text"
                             placeholder="Cari pemohon atau jenis surat..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors shadow-sm"
+                            className="w-full pl-4 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
                         />
                     </div>
-                    <button className="w-full sm:w-auto flex justify-center items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors">
-                        <Funnel weight="fill" className="text-gray-400" />
+                    <button className="w-full sm:w-auto flex justify-center items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
+                        <Funnel weight="bold" className="text-slate-400" />
                         <span>Filter Status</span>
                     </button>
                 </div>

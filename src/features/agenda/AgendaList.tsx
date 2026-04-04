@@ -316,7 +316,7 @@ export default function AgendaList() {
                 <HasPermission module="Agenda" action="Buat">
                     <button
                         onClick={() => navigate('/agenda/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-[12px] text-sm font-semibold transition-all shadow-premium hover-lift active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Agenda Baru</span>
@@ -324,57 +324,68 @@ export default function AgendaList() {
                 </HasPermission>
             </div>
 
-            <div className="flex space-x-2 border-b border-slate-100 pb-1">
+            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit border border-slate-100 shadow-sm">
                 <button
                     onClick={() => setActiveTab('list')}
-                    className={`px-6 py-3 font-bold text-xs tracking-widest uppercase transition-all border-b-2 ${activeTab === 'list' ? 'text-brand-600 border-brand-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
+                    className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                    Daftar Aktivitas
+                    <Calendar weight="bold" className="w-4 h-4" /> Daftar Aktivitas
                 </button>
                 <button
                     onClick={() => setActiveTab('summary')}
-                    className={`px-6 py-3 font-bold text-xs tracking-widest uppercase transition-all border-b-2 ${activeTab === 'summary' ? 'text-brand-600 border-brand-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
+                    className={`px-6 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                    Dashboard Monitor
+                    <ChartPieSlice weight="bold" className="w-4 h-4" /> Dashboard Monitor
                 </button>
             </div>
 
             {activeTab === 'summary' && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                        <div className="bg-white p-6 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden group border-l-[6px] border-l-slate-400">
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                <Text.Label className="mb-3 block !text-slate-900">Total Kegiatan</Text.Label>
-                                <Text.Amount className="text-4xl">{totalAgenda}</Text.Amount>
-                                <Text.Caption className="mt-3 font-medium">Seluruh Data</Text.Caption>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                                <Calendar weight="duotone" className="text-slate-400 w-4 h-4" />
+                                Total Kegiatan
+                            </p>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-3xl font-black text-slate-900 tracking-tight tabular-nums">{totalAgenda}</span>
+                                <span className="text-[11px] font-bold text-slate-400">Data</span>
                             </div>
                         </div>
 
-                        <div className="bg-brand-600 p-6 rounded-[20px] shadow-premium relative overflow-hidden group">
-                            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                            <div className="relative z-10 flex flex-col items-center text-center text-white">
-                                <Text.Label className="mb-3 block !text-brand-100">Terealisasi</Text.Label>
-                                <Text.Amount className="text-4xl !text-white">{realizedAgenda}</Text.Amount>
-                                <div className="flex items-center gap-2 text-[10px] font-bold text-brand-200 mt-3 uppercase tracking-widest">
-                                    <span className="w-2 h-2 rounded-full bg-brand-200 animate-pulse" />
-                                    Selesai
-                                </div>
+                        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 text-white">
+                            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                                <CheckCircle weight="duotone" className="text-brand-400 w-4 h-4" />
+                                Terealisasi
+                            </p>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-3xl font-black text-white tracking-tight tabular-nums">{realizedAgenda}</span>
+                                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Selesai</span>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden group border-l-[6px] border-l-amber-500">
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                <Text.Label className="mb-3 block !text-slate-900">Menunggu Laporan</Text.Label>
-                                <Text.Amount className="text-4xl text-amber-600">{pendingAgenda}</Text.Amount>
-                                <Text.Caption className="mt-3 font-bold text-amber-600 uppercase tracking-widest">Review</Text.Caption>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:shadow-md">
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                                <TrendUp weight="duotone" className="text-amber-500 w-4 h-4" />
+                                Laporan
+                            </p>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-3xl font-black text-amber-600 tracking-tight tabular-nums">{pendingAgenda}</span>
+                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Review</span>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-[20px] border border-slate-100 shadow-premium relative overflow-hidden group border-l-[6px] border-l-blue-500">
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                <Text.Label className="mb-3 block !text-slate-900">Estimasi Biaya</Text.Label>
-                                <Text.Amount className="text-xl truncate">{formatRupiah(totalPendanaan)}</Text.Amount>
-                                <Text.Caption className="mt-4 font-medium uppercase tracking-widest">Anggaran</Text.Caption>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:shadow-md">
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                                <TrendUp weight="duotone" className="text-blue-500 w-4 h-4" />
+                                Anggaran
+                            </p>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-black text-slate-900 tracking-tight tabular-nums">{formatRupiah(totalPendanaan)}</span>
                             </div>
                         </div>
                     </div>
@@ -466,33 +477,31 @@ export default function AgendaList() {
                 <div className="bg-white p-8 rounded-[20px] border border-slate-100 shadow-premium animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="flex flex-col md:flex-row gap-6 mb-8">
                         <div className="flex-1 relative group">
+                            <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Cari informasi kegiatan atau agenda..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-6 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-[12px] focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700 shadow-sm group-hover:bg-white"
+                                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700 shadow-sm"
                             />
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-brand-500 transition-colors">
-                                <MagnifyingGlass weight="bold" className="w-4 h-4" />
-                            </div>
                         </div>
-                        <div className="flex items-center bg-slate-50 p-1.5 rounded-[12px] border border-slate-100 shadow-sm">
+                        <div className="flex items-center bg-slate-100/50 p-1.5 rounded-xl border border-slate-100 shadow-sm">
                             <button
                                 onClick={() => setStatusFilter('all')}
-                                className={`px-6 py-2 text-[10px] font-bold rounded-[8px] transition-all uppercase tracking-widest ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Semua
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terencana')}
-                                className={`px-6 py-2 text-[10px] font-bold rounded-[8px] transition-all uppercase tracking-widest ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Terencana
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terlaksana')}
-                                className={`px-6 py-2 text-[10px] font-bold rounded-[8px] transition-all uppercase tracking-widest ${statusFilter === 'terlaksana' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`px-6 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Terlaksana
                             </button>
@@ -557,14 +566,14 @@ export default function AgendaList() {
                                                     </td>
                                                     <td className="py-5 text-center">
                                                         {agenda.is_terlaksana ? (
-                                                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full shadow-sm">
+                                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-900 text-white rounded-full shadow-sm">
                                                                 <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                                <Text.Label className="!text-[10px] !text-white">Terlaksana</Text.Label>
+                                                                <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest">Terlaksana</Text.Label>
                                                             </div>
                                                         ) : (
-                                                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 text-brand-600 rounded-full border border-brand-100">
+                                                            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-50 border border-brand-100 text-brand-600 rounded-full">
                                                                 <Calendar weight="fill" className="w-3.5 h-3.5" />
-                                                                <Text.Label className="!text-[10px] !text-brand-600">Terencana</Text.Label>
+                                                                <Text.Label className="!text-[9px] !font-black !text-brand-600 uppercase tracking-widest">Terencana</Text.Label>
                                                             </div>
                                                         )}
                                                     </td>

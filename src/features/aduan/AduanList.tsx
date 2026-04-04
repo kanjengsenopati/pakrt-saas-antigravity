@@ -129,36 +129,67 @@ export default function AduanList() {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 -mt-2">
-                <div className="bg-white p-5 rounded-[20px] border border-slate-100 shadow-premium border-l-[6px] border-l-slate-400 transition-all text-center">
-                    <Text.Label className="mb-2 block">Total</Text.Label>
-                    <Text.Amount className="text-2xl">{stats?.total || 0}</Text.Amount>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <ChartBar weight="duotone" className="text-slate-400 w-4 h-4" />
+                        Total Aspirasi
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{stats?.total || 0}</span>
+                        <span className="text-[11px] font-bold text-slate-400">Data</span>
+                    </div>
                 </div>
-                <div className="bg-white p-5 rounded-[20px] border border-slate-100 shadow-premium border-l-[6px] border-l-amber-500 transition-all text-center">
-                    <Text.Label className="mb-2 block">Menunggu</Text.Label>
-                    <Text.Amount className="text-2xl text-amber-600">{stats?.pending || 0}</Text.Amount>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <Clock weight="duotone" className="text-amber-500 w-4 h-4" />
+                        Menunggu
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-amber-600 tracking-tight tabular-nums">{stats?.pending || 0}</span>
+                        <span className="text-[11px] font-bold text-slate-400">Antrian</span>
+                    </div>
                 </div>
-                <div className="bg-white p-5 rounded-[20px] border border-slate-100 shadow-premium border-l-[6px] border-l-blue-500 transition-all text-center">
-                    <Text.Label className="mb-2 block">Proses</Text.Label>
-                    <Text.Amount className="text-2xl text-blue-600">{stats?.processing || 0}</Text.Amount>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <ArrowRight weight="duotone" className="text-blue-500 w-4 h-4" />
+                        Diproses
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-blue-600 tracking-tight tabular-nums">{stats?.processing || 0}</span>
+                        <span className="text-[11px] font-bold text-slate-400">Aktif</span>
+                    </div>
                 </div>
-                <div className="bg-white p-5 rounded-[20px] border border-slate-100 shadow-premium border-l-[6px] border-l-brand-600 transition-all text-center">
-                    <Text.Label className="mb-2 block">Selesai</Text.Label>
-                    <Text.Amount className="text-2xl text-brand-600">{stats?.completed || 0}</Text.Amount>
+
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <CheckCircle weight="duotone" className="text-brand-400 w-4 h-4" />
+                        Selesai
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{stats?.completed || 0}</span>
+                        <span className="text-[11px] font-bold text-slate-500">Tuntas</span>
+                    </div>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex bg-slate-100/50 p-1.5 rounded-[14px] w-fit self-center md:self-start border border-slate-100 shadow-sm">
+            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-fit self-center md:self-start border border-slate-100 shadow-sm">
                 <button 
                     onClick={() => setViewTab('list')}
-                    className={`px-6 py-2 rounded-[10px] text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-6 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <Users weight="bold" /> Daftar Aspirasi
                 </button>
                 <button 
                     onClick={() => setViewTab('dashboard')}
-                    className={`px-6 py-2 rounded-[10px] text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'dashboard' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-6 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${viewTab === 'dashboard' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <ChartPie weight="bold" /> Analisis Data
                 </button>
@@ -227,7 +258,7 @@ export default function AduanList() {
                         <select 
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value as any)}
-                            className="bg-white border border-slate-200 rounded-[12px] px-5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-brand-500 transition-all text-slate-700 shadow-sm"
+                            className="bg-white border border-slate-200 rounded-xl px-5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-700 shadow-sm"
                         >
                             <option value="all">Semua Status</option>
                             <option value="Menunggu">Menunggu</option>
@@ -272,7 +303,7 @@ export default function AduanList() {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold border flex items-center gap-1.5 uppercase tracking-widest ${
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 uppercase tracking-widest ${
                                                     item.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                                     item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                                                     'bg-emerald-50 text-emerald-600 border-emerald-100'

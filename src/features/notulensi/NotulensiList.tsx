@@ -189,7 +189,7 @@ export default function NotulensiList() {
                 <HasPermission module="Notulensi" action="Buat">
                     <button
                         onClick={() => navigate('/notulensi/new')}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/10 active-press"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/10 hover-lift active-press"
                     >
                         <Plus weight="bold" />
                         <span>Buat Notulensi Baru</span>
@@ -198,38 +198,42 @@ export default function NotulensiList() {
             </div>
 
             {/* STATS WIDGETS */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
-                <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md border-l-4 border-l-brand-500">
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <Notebook weight="fill" className="text-brand-500 w-3 h-3" />
-                            Total Arsip
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-slate-900 leading-none truncate tabular-nums">{totalNotulensi} Dokumen</p>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <Notebook weight="duotone" className="text-brand-500 w-4 h-4" />
+                        Total Arsip
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{totalNotulensi}</span>
+                        <span className="text-[11px] font-bold text-slate-400">Dokumen</span>
                     </div>
                 </div>
 
-                <div className="bg-brand-600 p-3 sm:p-4 rounded-2xl border border-brand-500 shadow-lg relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
-                    <div className="absolute -right-4 -bottom-4 w-15 h-15 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 flex flex-col items-center text-center text-white">
-                        <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-center">
-                            <CalendarBlank weight="bold" className="text-amber-400 w-3 h-3" />
-                            Bulan Ini
-                        </p>
-                        <p className="text-[13px] sm:text-lg font-normal text-white leading-none truncate tabular-nums">{thisMonthNotulensi} Pertemuan</p>
+                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-1.5 flex items-center gap-2">
+                        <CalendarBlank weight="duotone" className="text-brand-400 w-4 h-4" />
+                        Bulan Ini
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{thisMonthNotulensi}</span>
+                        <span className="text-[11px] font-bold text-slate-500">Pertemuan</span>
                     </div>
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col lg:flex-row justify-between gap-4 bg-gray-50/50">
-                    <div className="relative flex-1 max-w-md">
+                    <div className="relative flex-1 max-w-md group">
+                        <MagnifyingGlassPlus weight="bold" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Cari Judul, Tanggal, atau Tuan Rumah..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-4 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
                         />
                     </div>
 
@@ -358,30 +362,30 @@ export default function NotulensiList() {
                                                 </div>
                                             </td>
                                             <td className="p-4 text-right align-middle pr-6 whitespace-nowrap w-24">
-                                                <div className="flex items-center justify-end gap-1">
+                                                <div className="flex items-center justify-end gap-2">
                                                     <button
                                                         onClick={() => handleToggleExpand(notulensi.id)}
-                                                        className={`p-2 rounded-xl transition-all active:scale-90 shadow-sm border ${expandedId === notulensi.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-400 border-slate-100 hover:text-brand-600 hover:border-brand-200 hover:bg-brand-50/50'}`}
+                                                        className={`p-2 rounded-xl transition-all shadow-sm border ${expandedId === notulensi.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-400 border-slate-100 hover:text-brand-600 hover:border-brand-200 hover:bg-brand-50/50'}`}
                                                         title={expandedId === notulensi.id ? 'Tutup Detail' : 'Lihat Detail & Kehadiran'}
                                                     >
-                                                        {expandedId === notulensi.id ? <CaretUp weight="bold" className="w-5 h-5" /> : <Eye weight="bold" className="w-5 h-5" />}
+                                                        {expandedId === notulensi.id ? <X weight="bold" className="w-5 h-5" /> : <Eye weight="duotone" className="w-5 h-5" />}
                                                     </button>
                                                     <HasPermission module="Notulensi" action="Ubah">
                                                         <button
                                                             onClick={() => navigate(`/notulensi/${notulensi.id}`)}
-                                                            className="p-2 text-slate-400 hover:text-amber-500 bg-white border border-slate-100 hover:border-amber-200 hover:bg-amber-50/50 rounded-xl transition-all active:scale-90 shadow-sm"
+                                                            className="p-2 text-primary hover:bg-primary/5 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90"
                                                             title="Ubah Notulensi"
                                                         >
-                                                            <Pencil weight="bold" className="w-5 h-5" />
+                                                            <Pencil weight="duotone" className="w-5 h-5" />
                                                         </button>
                                                     </HasPermission>
                                                     <HasPermission module="Notulensi" action="Hapus">
                                                         <button
                                                             onClick={() => handleDelete(notulensi.id, notulensi.judul)}
-                                                            className="p-2 text-slate-400 hover:text-red-500 bg-white border border-slate-100 hover:border-red-200 hover:bg-red-50/50 rounded-xl transition-all active:scale-90 shadow-sm"
+                                                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90"
                                                             title="Hapus"
                                                         >
-                                                            <Trash weight="bold" className="w-5 h-5" />
+                                                            <Trash weight="duotone" className="w-5 h-5" />
                                                         </button>
                                                     </HasPermission>
                                                 </div>
