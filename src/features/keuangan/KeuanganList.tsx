@@ -397,29 +397,45 @@ export default function KeuanganList() {
                                             {expandedId === trx.id && (
                                                 <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                                                     <div className="space-y-3">
-                                                        <div className="flex flex-col gap-1">
-                                                            <Text.Caption className="!text-[10px] !font-bold uppercase tracking-widest text-slate-400">Keterangan Lengkap</Text.Caption>
-                                                            <p className="text-sm text-slate-700 leading-relaxed">{parsed.raw}</p>
+                                                        <div className="flex flex-col gap-1 text-left">
+                                                            <Text.Caption className="!text-[10px] !font-bold uppercase tracking-tight text-slate-400">Keterangan Lengkap</Text.Caption>
+                                                            <p className="text-sm text-slate-700 leading-relaxed font-medium">{parsed.raw}</p>
                                                         </div>
 
-                                                        {parsed.isIuran && parsed.months.length > 0 && (
-                                                            <div className="flex flex-col gap-2">
-                                                                <Text.Caption className="!text-[10px] !font-bold uppercase tracking-widest text-brand-500">Bulan Dibayar ({parsed.year})</Text.Caption>
+                                                        {parsed.isIuran && (
+                                                            <div className="flex flex-col gap-2 text-left">
+                                                                <Text.Caption className="!text-[10px] !font-bold tracking-tight text-brand-600">Bulan Dibayar ({parsed.year})</Text.Caption>
                                                                 <div className="flex flex-wrap gap-1.5">
-                                                                    {['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'].map((m, idx) => {
-                                                                        const isPaid = parsed.months.includes(idx + 1);
-                                                                        return (
-                                                                            <span 
-                                                                                key={m}
-                                                                                className={`px-2.5 py-1 rounded-lg text-[10px] font-black tracking-tight transition-all
-                                                                                    ${isPaid 
-                                                                                        ? 'bg-brand-600 text-white shadow-sm scale-105' 
-                                                                                        : 'bg-slate-50 text-slate-300 opacity-40'}`}
-                                                                            >
-                                                                                {m}
-                                                                            </span>
-                                                                        );
-                                                                    })}
+                                                                    {(() => {
+                                                                        const allMonthsPlayedByCitizen = transactions
+                                                                            .filter(t => {
+                                                                                const p = parseKeterangan(t.keterangan);
+                                                                                return p.wargaNama === parsed.wargaNama && p.year === parsed.year && p.isIuran;
+                                                                            })
+                                                                            .flatMap(t => parseKeterangan(t.keterangan).months);
+
+                                                                        return ['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'].map((m, idx) => {
+                                                                            const monthNum = idx + 1;
+                                                                            const isCurrent = parsed.months.includes(monthNum);
+                                                                            const isPaid = allMonthsPlayedByCitizen.includes(monthNum);
+                                                                            
+                                                                            let colorStates = "bg-red-50 text-red-500 border border-red-100 opacity-60"; // Unpaid
+                                                                            if (isCurrent) {
+                                                                                colorStates = "bg-brand-600 text-white shadow-sm border-brand-500 scale-110 z-10 font-black";
+                                                                            } else if (isPaid) {
+                                                                                colorStates = "bg-blue-50 text-blue-500 border border-blue-100 font-bold opacity-100";
+                                                                            }
+
+                                                                            return (
+                                                                                <span 
+                                                                                    key={m}
+                                                                                    className={`px-2 py-1 rounded-lg text-[9px] transition-all tracking-tighter ${colorStates}`}
+                                                                                >
+                                                                                    {m}
+                                                                                </span>
+                                                                            );
+                                                                        });
+                                                                    })()}
                                                                 </div>
                                                             </div>
                                                         )}
