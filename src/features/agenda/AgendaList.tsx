@@ -106,19 +106,19 @@ const ReportPanel = ({
 const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda, currentScope: string, formatRupiah: (val: number) => string }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-12 max-w-6xl mx-auto">
         <div className="space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
-                <div className="bg-white p-6 rounded-[20px] border border-slate-100 text-center flex flex-col items-center justify-center shadow-premium">
-                    <Text.Label className="mb-2 block">Anggaran</Text.Label>
-                    <Text.Amount className="text-lg text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
-                    <Text.Caption className="mt-1 font-medium italic">{agenda.sumber_dana || '-'}</Text.Caption>
+        <div className="flex flex-col gap-5">
+                <div className="bg-white p-6 rounded-[24px] border border-slate-100 flex flex-col items-center justify-center shadow-premium group hover:border-brand-200 transition-all">
+                    <Text.Label className="mb-2 block text-slate-400">Anggaran Kegiatan</Text.Label>
+                    <Text.Amount className="text-xl text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
+                    <Text.Caption className="mt-1 font-medium italic text-slate-500">{agenda.sumber_dana || '-'}</Text.Caption>
                 </div>
-                <div className="bg-white p-6 rounded-[20px] border border-slate-100 text-center flex flex-col items-center justify-center shadow-premium">
-                    <Text.Label className="mb-2 block">Jenis</Text.Label>
+                <div className="bg-white p-6 rounded-[24px] border border-slate-100 flex flex-col items-center justify-center shadow-premium group hover:border-brand-200 transition-all">
+                    <Text.Label className="mb-2 block text-slate-400">Jenis Aktivitas</Text.Label>
                     <Text.H2 className="!text-brand-600 !font-bold">{agenda.jenis_kegiatan || '-'}</Text.H2>
-                    <Text.Caption className="mt-1 font-medium italic">{agenda.perlu_rapat ? 'Ada Notulensi' : 'Tanpa Rapat'}</Text.Caption>
+                    <Text.Caption className="mt-1 font-medium italic text-slate-500">{agenda.perlu_rapat ? 'Ada Notulensi' : 'Tanpa Rapat'}</Text.Caption>
                 </div>
                 {agenda.perlu_rapat && agenda.tuan_rumah && (
-                    <div className="bg-white p-6 rounded-[20px] border border-brand-100 text-center flex flex-col items-center justify-center shadow-premium">
+                    <div className="bg-white p-6 rounded-[24px] border border-brand-100 flex flex-col items-center justify-center shadow-premium group hover:bg-brand-50/30 transition-all">
                         <div className="flex items-center gap-1 mb-2">
                              <House weight="fill" className="w-3.5 h-3.5 text-brand-500" />
                              <Text.Label className="!text-brand-500 !tracking-normal">Tuan Rumah</Text.Label>
@@ -126,7 +126,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
                         <Text.H2 className="!text-sm !font-bold text-slate-900 truncate max-w-full px-2" title={agenda.tuan_rumah}>{agenda.tuan_rumah}</Text.H2>
                         <div className="flex items-center gap-1 mt-1">
                             <MapPin weight="bold" className="w-2.5 h-2.5 text-slate-400" />
-                            <Text.Caption className="italic" title={agenda.lokasi}>{agenda.lokasi || 'Lokasi Rapat'}</Text.Caption>
+                            <Text.Caption className="italic text-slate-500" title={agenda.lokasi}>{agenda.lokasi || 'Lokasi Rapat'}</Text.Caption>
                         </div>
                     </div>
                 )}
@@ -307,7 +307,7 @@ export default function AgendaList() {
     }));
 
     return (
-        <div className="space-y-8 animate-fade-in relative px-5 md:px-0">
+        <div className="space-y-8 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
                     <Text.H1>Informasi Kegiatan</Text.H1>
@@ -332,16 +332,16 @@ export default function AgendaList() {
                 </HasPermission>
             </div>
 
-            <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm">
+            <div className="flex bg-slate-100/50 p-1 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                 <button
                     onClick={() => setActiveTab('list')}
-                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[12px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <Calendar weight="bold" className="w-4 h-4" /> Daftar Aktivitas
                 </button>
                 <button
                     onClick={() => setActiveTab('summary')}
-                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[12px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                     <ChartPieSlice weight="bold" className="w-4 h-4" /> Dashboard Monitor
                 </button>
@@ -491,25 +491,25 @@ export default function AgendaList() {
                                 placeholder="Cari agenda kegiatan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
+                                className="w-full pl-14 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
                             />
                         </div>
                         <div className="flex items-center bg-slate-100/50 p-1 rounded-xl border border-slate-100 shadow-sm w-full lg:w-fit overflow-x-auto no-scrollbar">
                             <button
                                 onClick={() => setStatusFilter('all')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Semua
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terencana')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Terencana
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terlaksana')}
-                                className={`flex-1 lg:flex-none px-4 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 lg:flex-none px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${statusFilter === 'terlaksana' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 Selesai
                             </button>
@@ -716,17 +716,17 @@ export default function AgendaList() {
                                                     <Text.Body className="line-clamp-2 !text-slate-500 !text-sm">{agenda.deskripsi || '-'}</Text.Body>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-slate-50">
+                                                <div className="flex items-center justify-between py-4 border-t border-b border-slate-50 gap-4">
                                                     <div className="space-y-1">
-                                                        <Text.Label className="!text-[9px]">WAKTU & LOKASI</Text.Label>
+                                                        <Text.Label className="!text-[9px] text-slate-400">WAKTU & LOKASI</Text.Label>
                                                         <div className="flex items-center gap-1.5">
                                                             <Clock weight="bold" className="w-3 h-3 text-brand-500" />
-                                                            <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')}</Text.Caption>
+                                                            <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')} WIB</Text.Caption>
                                                         </div>
                                                     </div>
                                                     <div className="space-y-1 text-right">
-                                                        <Text.Label className="!text-[9px]">BIAYA</Text.Label>
-                                                        <Text.Amount className="text-sm">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
+                                                        <Text.Label className="!text-[9px] text-slate-400">ESTIMASI BIAYA</Text.Label>
+                                                        <Text.Amount className="text-sm font-black text-brand-600">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
                                                     </div>
                                                 </div>
 
