@@ -143,7 +143,7 @@ export default function Login() {
                                     </div>
                                     <input 
                                         {...register('contactOrEmail', { required: true })}
-                                        className={`block w-full pl-11 pr-4 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.contactOrEmail ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
+                                        className={`block w-full !pl-14 pr-4 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.contactOrEmail ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
                                         placeholder="nama@email.com" 
                                         type="text"
                                     />
@@ -159,7 +159,7 @@ export default function Login() {
                                     </div>
                                     <input 
                                         {...register('password', { required: true })}
-                                        className={`block w-full pl-11 pr-12 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.password ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
+                                        className={`block w-full !pl-14 pr-12 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.password ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
                                         placeholder="••••••••" 
                                         type={showPassword ? "text" : "password"}
                                     />
