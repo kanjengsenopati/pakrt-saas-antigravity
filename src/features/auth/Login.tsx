@@ -2,7 +2,15 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
-import { Eye, EyeSlash, SignIn, ArrowLeft, Users, Buildings, CurrencyCircleDollar, Envelope } from '@phosphor-icons/react';
+import { 
+    Envelope, 
+    Lock, 
+    Eye, 
+    EyeSlash, 
+    ArrowLeft, 
+    ArrowRight, 
+    Question
+} from '@phosphor-icons/react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
@@ -31,7 +39,6 @@ export default function Login() {
         }
     }, [setValue]);
 
-
     const onSubmit = async (data: LoginFormData) => {
         setIsLoading(true);
         setLoginError(null);
@@ -47,7 +54,6 @@ export default function Login() {
                 authLogin(result.token, result.user);
                 await refreshTenant();
                 
-                // Role-based redirection
                 const isWarga = result.user.role?.toLowerCase() === 'warga' || 
                                 result.user.role_entity?.name?.toLowerCase() === 'warga';
                 
@@ -61,9 +67,7 @@ export default function Login() {
             }
         } catch (error: any) {
             let message = "Terjadi kesalahan sistem. Silakan coba beberapa saat lagi.";
-
             if (!error.response) {
-                // Network error (no response from server)
                 message = "Gagal terhubung ke server. Pastikan koneksi internet Anda stabil.";
             } else if (error.response.status === 404) {
                 message = "Akun tidak ditemukan. Silakan periksa kembali email atau nomor WhatsApp Anda.";
@@ -72,7 +76,6 @@ export default function Login() {
             } else if (error.response.data?.error) {
                 message = error.response.data.error;
             }
-
             setLoginError(message);
         } finally {
             setIsLoading(false);
@@ -80,182 +83,161 @@ export default function Login() {
     };
 
     return (
-        <div className="h-screen w-screen bg-white flex flex-col md:flex-row font-jakarta selection:bg-brand-500 selection:text-white overflow-hidden">
+        <div className="bg-surface font-body text-on-surface min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
             <PWAInstallBanner show={true} />
-            {/* Left Panel - Brand Display */}
-            <div className="hidden md:flex flex-col justify-between w-[45%] bg-slate-50 p-10 lg:p-14 text-slate-900 relative overflow-hidden shrink-0 border-r border-slate-100">
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[30rem] h-[30rem] bg-brand-50 rounded-full blur-[120px] opacity-60"></div>
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[24rem] h-[24rem] bg-brand-50 rounded-full blur-[100px] opacity-40"></div>
-
-                <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-10">
-                        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-400 hover:text-brand-600 transition-colors cursor-pointer text-[10px] font-bold uppercase tracking-[0.2em]">
-                            <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Beranda
+            
+            {/* High-Tech Hero Section */}
+            <section className="relative bg-gradient-to-br from-[#001a4d] via-[#003399] to-[#0050d4] pt-4 pb-24 overflow-hidden">
+                {/* Tech Patterns */}
+                <div className="absolute inset-0 tech-grid pointer-events-none opacity-40"></div>
+                <div className="absolute inset-0 hero-glow pointer-events-none opacity-40"></div>
+                <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+                <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+                
+                {/* Top Navigation */}
+                <header className="relative w-full flex items-center px-6 py-4 z-10 justify-center">
+                    <div className="flex items-center gap-2 w-full justify-center relative">
+                        <button 
+                            onClick={() => navigate('/')}
+                            className="absolute left-0 p-2 text-white/80 hover:text-white transition-colors"
+                        >
+                            <ArrowLeft weight="bold" size={24} />
                         </button>
-                        <div className="inline-flex items-center justify-center w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100">
-                            <SignIn weight="bold" className="w-5 h-5 text-brand-600" />
-                        </div>
+                        <h1 className="text-lg font-bold tracking-tighter text-white font-headline opacity-90">Aplikasi PAK-RT</h1>
                     </div>
-
-                    <div className="flex-1 flex flex-col justify-start max-w-sm">
-                        <div className="mb-8">
-                            <h1 className="text-[20px] font-bold tracking-tight text-slate-900 mb-2 leading-tight">
-                                Portal <span className="text-brand-600 font-bold">PAKRT</span>
-                            </h1>
-                            <p className="text-slate-500 text-[14px] leading-relaxed font-semibold">
-                                Sistem Manajemen RT Cerdas
-                            </p>
-                        </div>
-
-                        {/* Platform Info Box */}
-                        <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-slate-100 p-5 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4 text-slate-400 uppercase text-[9px] font-bold tracking-widest text-left">
-                                <Buildings weight="fill" className="w-3.5 h-3.5 text-brand-600" /> Platform PakRT
-                            </div>
-
-                            <div className="space-y-4 text-left">
-                                <div className="flex items-start gap-3 group">
-                                    <div className="w-8 h-8 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-600 shrink-0 group-hover:bg-brand-600 group-hover:text-white transition-all">
-                                        <CurrencyCircleDollar weight="duotone" className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Transparansi Keuangan</div>
-                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Pencatatan kas dan iuran secara akurat & real-time di wilayah Anda.</div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3 group">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                        <Envelope weight="duotone" className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Administrasi Digital</div>
-                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Layanan permohonan surat pengantar RT secara mandiri & otomatis.</div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3 group">
-                                    <div className="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-all">
-                                        <Users weight="duotone" className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <div className="text-[13px] font-bold text-slate-900 leading-tight mb-0.5">Layanan Mandiri Warga</div>
-                                        <div className="text-[11px] font-medium text-slate-500 leading-tight">Portal warga untuk bayar iuran, cek agenda, hingga lapor keluhan.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 text-slate-400 text-[10px] font-bold border border-slate-100">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                                    Sistem Berbasis Cloud & Multi-Tenant
-                                </div>
-                            </div>
-                        </div>
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 absolute right-6">
+                        <Question weight="bold" size={18} className="text-white" />
                     </div>
+                </header>
 
-                    <div className="mt-auto pt-8 border-t border-slate-100">
-                        <div className="text-slate-400 text-[9px] font-bold uppercase tracking-[0.2em]">
-                            © {new Date().getFullYear()} PT PakRT Digital.
-                        </div>
-                    </div>
+                {/* Hero Content */}
+                <div className="relative px-6 mt-8 z-10 text-center flex flex-col items-center animate-in fade-in slide-in-from-top-4 duration-500">
+                    <h2 className="text-2xl md:text-3xl font-headline font-extrabold leading-tight editorial-spacing text-white mb-3">
+                        Selamat Datang Kembali
+                    </h2>
+                    <p className="text-white/70 font-body text-sm max-w-xs md:max-w-md">
+                        Akses portal layanan warga premium Anda dengan aman dan cepat melalui sistem terintegrasi.
+                    </p>
                 </div>
-            </div>
+            </section>
 
-            {/* Right Panel - Login Form */}
-            <div className="flex-1 flex items-center justify-center p-6 md:p-12 lg:p-20 relative h-full bg-white">
-                <button onClick={() => navigate('/')} className="md:hidden absolute top-6 left-6 flex items-center gap-1.5 text-slate-400 hover:text-slate-900 transition-colors text-[10px] font-bold uppercase tracking-widest">
-                    <ArrowLeft weight="bold" className="w-3.5 h-3.5" /> Kembali
-                </button>
-
-                <div className="w-full max-w-[360px] animate-fade-in-up">
-                    <div className="mb-10">
-                        <h2 className="text-[20px] font-bold text-slate-900 mb-2 tracking-tight">Login Akun</h2>
-                        <p className="text-slate-500 text-[14px] leading-relaxed">Selamat Datang Kembali! Silakan Masuk Untuk Mengelola Wilayah RT Anda.</p>
-                    </div>
-
-                    {loginError && (
-                        <div className="mb-4 p-2.5 bg-red-50 border border-red-100 rounded-lg text-[11px] text-red-600 flex items-start gap-2 animate-fade-in font-bold">
-                            <div className="shrink-0 mt-0.5 text-red-500 italic">!</div>
-                            <span>{loginError}</span>
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="space-y-2">
-                            <label className="block text-[14px] text-slate-500 ml-1">Email / No Whatsapp</label>
-                            <input
-                                {...register('contactOrEmail', { required: true })}
-                                placeholder="Nama@Email.Com"
-                                className={`w-full rounded-xl border-slate-200 p-3.5 text-[14px] border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-normal text-slate-900 ${errors.contactOrEmail ? 'border-red-300 bg-red-50/30' : ''}`}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between ml-1">
-                                <label className="block text-[14px] text-slate-500">Kata Sandi</label>
-                                <a href="#" className="text-[12px] font-semibold text-brand-600 hover:text-brand-700 tracking-wide">Lupa Kata Sandi?</a>
+            {/* Login Card Main Area */}
+            <main className="flex-1 flex flex-col items-center px-6 pb-12 -mt-12 relative">
+                <div className="w-full max-w-md relative z-20">
+                    {/* Login Card */}
+                    <div className="bg-white rounded-[1.5rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                        {loginError && (
+                            <div className="mb-6 p-4 bg-error/10 border border-error/20 rounded-xl text-xs font-bold text-error animate-fade-in flex items-start gap-3">
+                                <div className="shrink-0 w-5 h-5 rounded-full bg-error text-white flex items-center justify-center text-[10px]">!</div>
+                                <span>{loginError}</span>
                             </div>
-                            <div className="relative">
-                                <input
-                                    {...register('password', { required: true })}
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="••••••••"
-                                    className={`w-full rounded-xl border-slate-200 p-3.5 text-[14px] border focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500/50 transition-all outline-none bg-slate-50/50 focus:bg-white font-normal text-slate-900 pr-12 ${errors.password ? 'border-red-300 bg-red-50/30' : ''}`}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                                >
-                                    {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
+                        )}
+
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            {/* Email/WA Field */}
+                            <div className="space-y-2">
+                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 uppercase tracking-wider">Email atau Nomor WhatsApp</label>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+                                        <Envelope weight="bold" size={20} />
+                                    </div>
+                                    <input 
+                                        {...register('contactOrEmail', { required: true })}
+                                        className={`block w-full pl-11 pr-4 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.contactOrEmail ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
+                                        placeholder="nama@email.com" 
+                                        type="text"
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center ml-1">
-                            <label className="flex items-center gap-2.5 cursor-pointer group">
-                                <input 
-                                    type="checkbox" 
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="w-4 h-4 border-slate-300 rounded text-brand-600 focus:ring-brand-500/20 transition-all cursor-pointer" 
-                                />
-                                <span className="text-[14px] text-slate-500 group-hover:text-slate-700 transition-colors">Ingat Akun Saya</span>
-                            </label>
-                        </div>
+                            {/* Password Field */}
+                            <div className="space-y-2">
+                                <label className="block font-medium text-[0.75rem] font-bold text-on-surface-variant px-1 uppercase tracking-wider">Kata Sandi</label>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+                                        <Lock weight="bold" size={20} />
+                                    </div>
+                                    <input 
+                                        {...register('password', { required: true })}
+                                        className={`block w-full pl-11 pr-12 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder:text-outline/60 text-on-surface text-sm font-medium ${errors.password ? 'ring-2 ring-error/20 bg-error/5' : ''}`}
+                                        placeholder="••••••••" 
+                                        type={showPassword ? "text" : "password"}
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors"
+                                    >
+                                        {showPassword ? <EyeSlash weight="bold" size={20} /> : <Eye weight="bold" size={20} />}
+                                    </button>
+                                </div>
+                            </div>
 
-                        <div className="pt-6">
-                            <button
+                            {/* Options */}
+                            <div className="flex items-center justify-between py-1 px-1">
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                        className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" 
+                                    />
+                                    <span className="text-xs font-semibold text-on-surface-variant group-hover:text-on-surface transition-colors">Ingat Saya</span>
+                                </label>
+                                <a href="#" className="text-xs font-bold text-primary hover:text-primary-dim transition-colors">Lupa Sandi?</a>
+                            </div>
+
+                            {/* Submit Button */}
+                            <button 
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-4 px-6 bg-brand-600 text-white rounded-xl font-normal text-[14px] hover:bg-brand-700 transition-all shadow-xl shadow-brand-500/10 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 gap-3 border border-brand-500"
+                                className="w-full bg-primary hover:bg-primary-dim text-on-primary py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed group"
                             >
                                 {isLoading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                                 ) : (
                                     <>
                                         <span>Masuk Sekarang</span>
-                                        <SignIn weight="bold" className="w-4 h-4" />
+                                        <ArrowRight weight="bold" size={18} className="group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
                             </button>
-                        </div>
-                    </form>
 
-                    <div className="mt-12 text-center border-t border-slate-50 pt-8">
-                        <p className="text-[14px] text-slate-400">
-                            Belum Mendaftar?{' '}
-                            <button
+                            {/* Divider */}
+                            <div className="relative flex items-center py-2 h-4">
+                                <div className="flex-grow border-t border-surface-container-highest"></div>
+                                <span className="flex-shrink mx-4 text-[10px] font-black text-outline uppercase tracking-[0.2em]">atau</span>
+                                <div className="flex-grow border-t border-surface-container-highest"></div>
+                            </div>
+
+                            {/* Google SSO */}
+                            <button type="button" className="w-full bg-white border border-outline-variant/30 hover:bg-surface-container-low py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-3 transition-all text-on-surface hover:shadow-md">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl8b2rzhrJJTzrX9PN2jBEwpQ83J3BNlcloaRTgCFXYU98s8UJAubvF_e0TG0WLYAbtLMmFzGR3K6uCb_odZO1XIw3F_3CR53EDsUjYXkRVTFF5sdfMQFCXSXDuCNqUBiOFps8gtoYZBfswjN91Mq9-cN3wrMP8QhEAhmed_LLa0vzrRn4hDyc8CYwwjOKqy50xjBE9nuLRS9Kx-k8cJl4sL7tt8NObvB0687OVJdvLC7vjv2qs6d8msEiQ4XW6PmoKjgWWCEcNtMl" alt="Google" className="w-5 h-5" />
+                                <span className="text-sm">Lanjutkan dengan Google</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Footer Link */}
+                    <div className="mt-8 text-center">
+                        <p className="text-on-surface-variant text-sm font-medium">
+                            Belum memiliki akun? 
+                            <button 
                                 onClick={() => navigate('/register')}
-                                className="text-brand-600 font-bold hover:text-brand-700 px-1 ml-1"
+                                className="text-primary font-bold hover:underline underline-offset-4 ml-1"
                             >
                                 Daftar Sekarang
                             </button>
                         </p>
                     </div>
                 </div>
-            </div>
+            </main>
+
+            <footer className="w-full py-8 px-6 text-center mt-auto">
+                <p className="text-[10px] font-bold text-outline/40 uppercase tracking-[0.2em]">
+                    © {new Date().getFullYear()} PT. SEMESTA TEKNO PARTNER INDONESIA
+                </p>
+            </footer>
         </div>
     );
 }
