@@ -199,6 +199,28 @@ export default function Dashboard() {
                                         <button onClick={() => navigate('/keuangan')} className="w-full py-4 bg-primary text-white font-bold rounded-2xl text-sm transition-all hover:bg-primary-dim active:scale-[0.98] shadow-lg shadow-primary/30">
                                             Lihat Detail Kas
                                         </button>
+
+                                        {/* Informasi Berlangganan Section */}
+                                        <div className="border-t border-slate-100 pt-5 mt-5">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-8 h-8 rounded-xl bg-orange-50 shrink-0 flex items-center justify-center">
+                                                    <ShieldCheck weight="fill" className="text-orange-500 text-lg" />
+                                                </div>
+                                                <p className="text-xs font-bold text-slate-700 truncate">Informasi Berlangganan Aplikasi PakRT</p>
+                                            </div>
+                                            <div className="flex items-center justify-between pl-11">
+                                                <span className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-full shrink-0 uppercase tracking-wider">
+                                                    Sisa 15 Hari
+                                                </span>
+                                                <button 
+                                                    onClick={() => navigate('/pengaturan')} 
+                                                    className="text-primary font-bold text-xs flex items-center gap-1 hover:underline active:scale-95 transition-all"
+                                                >
+                                                    Detail
+                                                    <ArrowRight weight="bold" className="text-[12px]" />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </section>
                             </div>
