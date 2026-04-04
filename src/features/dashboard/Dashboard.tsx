@@ -59,6 +59,17 @@ export default function Dashboard() {
     const [activityPage, setActivityPage] = useState(1);
     const [activeMenuTab, setActiveMenuTab] = useState<'utama' | 'lainnya'>('utama');
     const [expandedActivityId, setExpandedActivityId] = useState<string | null>(null);
+    
+    const subscriptionDaysRemaining = useMemo(() => {
+        if (!currentTenant?.subscription_until) return 0;
+        const until = new Date(currentTenant.subscription_until).getTime();
+        const diff = until - Date.now();
+        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    }, [currentTenant?.subscription_until]);
+
+    const isSubscriptionExpired = useMemo(() => {
+        return currentTenant?.subscription_status === 'EXPIRED' || subscriptionDaysRemaining <= 0;
+    }, [currentTenant?.subscription_status, subscriptionDaysRemaining]);
 
     const isWarga = useMemo(() =>
         authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga',
@@ -235,14 +246,14 @@ export default function Dashboard() {
                                                 <p className="text-[11px] font-bold text-slate-700 truncate">Informasi Berlangganan Aplikasi PakRT</p>
                                             </div>
                                             <div className="flex items-center justify-between pl-9">
-                                                <span className="px-2.5 py-1 bg-orange-500 text-white text-[9px] font-black rounded-full shrink-0 uppercase tracking-wider">
-                                                    Sisa 15 Hari
+                                                <span className={`px-2.5 py-1 ${isSubscriptionExpired ? 'bg-red-500' : 'bg-orange-500'} text-white text-[9px] font-black rounded-full shrink-0 uppercase tracking-wider`}>
+                                                    {isSubscriptionExpired ? 'Masa Berlaku Habis' : `Sisa ${subscriptionDaysRemaining} Hari`}
                                                 </span>
                                                 <button 
                                                     onClick={() => navigate('/pengaturan')} 
                                                     className="text-primary font-bold text-[10px] flex items-center gap-1 hover:underline active:scale-95 transition-all"
                                                 >
-                                                    Detail
+                                                    {currentTenant?.subscription_plan || 'TRIAL'} Detail
                                                     <ArrowRight weight="bold" className="text-[10px]" />
                                                 </button>
                                             </div>

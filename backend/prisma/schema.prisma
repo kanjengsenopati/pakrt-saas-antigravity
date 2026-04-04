@@ -9,10 +9,13 @@ datasource db {
 }
 
 model Tenant {
-  id        String   @id // [Prov].[Kab].[Kec].[Kel].[RW].[RT]
-  name      String
-  subdomain String
-  config    Json?
+  id                  String   @id // [Prov].[Kab].[Kec].[Kel].[RW].[RT]
+  name                String
+  subdomain          String
+  config              Json?
+  subscription_status String   @default("TRIAL") // 'TRIAL' | 'ACTIVE' | 'EXPIRED'
+  subscription_until  DateTime? 
+  subscription_plan   String   @default("FREE")  // 'FREE' | 'PREMIUM'
   
   users     User[]
   wargas    Warga[]

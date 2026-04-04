@@ -4,6 +4,9 @@ export interface Tenant {
     subdomain: string;
     config: Record<string, any>;
     location_detail?: string;
+    subscription_status?: 'TRIAL' | 'ACTIVE' | 'EXPIRED' | string;
+    subscription_until?: string | Date;
+    subscription_plan?: 'FREE' | 'PREMIUM' | string;
 }
 
 export interface User {

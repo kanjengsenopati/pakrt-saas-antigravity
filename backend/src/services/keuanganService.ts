@@ -1,5 +1,6 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
+import { aktivitasService } from './aktivitasService';
 
 export const keuanganService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -34,7 +35,22 @@ export const keuanganService = {
     if (!data.tanggal) {
         throw new Error("Tanggal tidak valid atau kosong");
     }
-    return await prisma.keuangan.create({ data });
+    const entry = await prisma.keuangan.create({ data });
+
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: entry.tenant_id,
+            scope: entry.scope || 'RT',
+            action: entry.tipe === 'pemasukan' ? 'Kas Masuk' : 'Kas Keluar',
+            details: `Transaksi ${entry.tipe}: **${entry.keterangan}** sebesar Rp ${entry.nominal.toLocaleString('id-ID')}`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for keuangan creation:", e);
+    }
+
+    return entry;
   },
 
   async update(id: string, data: any) {
@@ -45,7 +61,22 @@ export const keuanganService = {
         data.tanggal = dateUtils.normalize(data.tanggal);
         if (!data.tanggal) throw new Error("Format tanggal tidak valid");
     }
-    return await prisma.keuangan.update({ where: { id }, data });
+    const entry = await prisma.keuangan.update({ where: { id }, data });
+
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: entry.tenant_id,
+            scope: entry.scope || 'RT',
+            action: 'Update Kas',
+            details: `Memperbarui transaksi: **${entry.keterangan}**`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for keuangan update:", e);
+    }
+
+    return entry;
   },
 
   async delete(id: string) {

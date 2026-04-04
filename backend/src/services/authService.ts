@@ -64,7 +64,12 @@ export const authService = {
         // Remove interactive transaction due to PgBouncer limits on Vercel/Supabase
         // Execute sequentially.
         const tenant = await prisma.tenant.create({
-            data: tenantData
+            data: {
+                ...tenantData,
+                subscription_status: 'TRIAL',
+                subscription_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days trial
+                subscription_plan: 'PREMIUM' // Everyone starts with Premium Trial
+            }
         });
 
         const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -117,6 +122,17 @@ export const authService = {
         }
         
         return tenant;
+    },
+
+    async updateSubscription(tenantId: string, data: { status: string; until: Date; plan: string }) {
+        return await prisma.tenant.update({
+            where: { id: tenantId },
+            data: {
+                subscription_status: data.status,
+                subscription_until: data.until,
+                subscription_plan: data.plan
+            }
+        });
     },
 
     async updatePassword(userId: string, hashedPassword: string) {
