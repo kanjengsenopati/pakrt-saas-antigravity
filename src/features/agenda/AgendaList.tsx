@@ -91,10 +91,10 @@ const ReportPanel = ({
                         <button
                             onClick={() => handleSubmitReport(agenda.id)}
                             disabled={isUploading || !laporanText.trim()}
-                            className={`px-8 py-2.5 bg-brand-600 text-white rounded-[12px] text-xs font-bold transition-all shadow-premium flex items-center gap-2 ${(isUploading || !laporanText.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 active-press'}`}
+                            className={`px-6 py-2.5 bg-brand-600 text-white rounded-[14px] text-[13px] font-black transition-all shadow-premium flex items-center gap-2 ${(isUploading || !laporanText.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 active-press'}`}
                         >
                             {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
-                            Simpan Laporan Sekarang
+                            Simpan
                         </button>
                     </div>
                 </div>
