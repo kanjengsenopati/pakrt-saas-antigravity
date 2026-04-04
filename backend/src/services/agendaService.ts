@@ -1,6 +1,7 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
 import { pushService } from './pushService';
+import { aktivitasService } from './aktivitasService';
 
 export const agendaService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -81,6 +82,19 @@ export const agendaService = {
         console.error('Error sending agenda push notification:', error);
     }
 
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: agenda.tenant_id,
+            scope: agenda.scope || 'RT',
+            action: 'Agenda Baru',
+            details: `Menambahkan agenda baru: **${agenda.judul}** pada ${dateUtils.toDisplay(agenda.tanggal)}`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for agenda creation:", e);
+    }
+
     return agenda;
   },
 
@@ -106,6 +120,19 @@ export const agendaService = {
         }
     } catch (error) {
         console.error('Error sending agenda update push notification:', error);
+    }
+
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: agenda.tenant_id,
+            scope: agenda.scope || 'RT',
+            action: 'Update Agenda',
+            details: `Memperbarui agenda: **${agenda.judul}**`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for agenda update:", e);
     }
 
     return agenda;

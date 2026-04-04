@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { aktivitasService } from './aktivitasService';
 
 export const asetService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {
@@ -29,11 +30,41 @@ export const asetService = {
   },
 
   async create(data: any) {
-    return await prisma.aset.create({ data });
+    const asset = await prisma.aset.create({ data });
+    
+    // Log Activity
+    try {
+      await aktivitasService.create({
+        tenant_id: data.tenant_id,
+        scope: data.scope || 'RT',
+        action: 'Aset Baru',
+        details: `Menambahkan aset baru: **${data.nama_barang}**`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for asset creation:", e);
+    }
+
+    return asset;
   },
 
   async update(id: string, data: any) {
-    return await prisma.aset.update({ where: { id }, data });
+    const asset = await prisma.aset.update({ where: { id }, data });
+    
+    // Log Activity (e.g. borrowing status or generic update)
+    try {
+      await aktivitasService.create({
+        tenant_id: asset.tenant_id,
+        scope: asset.scope || 'RT',
+        action: 'Update Aset',
+        details: `Memperbarui data aset: **${asset.nama_barang}**`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for asset update:", e);
+    }
+
+    return asset;
   },
 
   async delete(id: string) {

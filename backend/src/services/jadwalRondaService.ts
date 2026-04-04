@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { aktivitasService } from './aktivitasService';
 
 export const jadwalRondaService = {
   async getAll(tenantId: string, scope?: string, wargaId?: string) {
@@ -71,7 +72,22 @@ export const jadwalRondaService = {
     if (existing) {
       throw new Error(`Jadwal ronda untuk Regu ${data.regu} pada tanggal ${data.tanggal} sudah ada.`);
     }
-    return await prisma.jadwalRonda.create({ data });
+    const result = await prisma.jadwalRonda.create({ data });
+    
+    // Log Activity
+    try {
+      await aktivitasService.create({
+        tenant_id: data.tenant_id,
+        scope: data.scope || 'RT',
+        action: 'Jadwal Ronda',
+        details: `Menambahkan jadwal ronda baru untuk **Regu ${data.regu || ''}** pada tanggal ${data.tanggal || ''}`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for ronda schedule creation:", e);
+    }
+
+    return result;
   },
 
   async update(id: string, data: any) {
@@ -91,7 +107,22 @@ export const jadwalRondaService = {
         throw new Error(`Jadwal ronda untuk Regu ${data.regu || current?.regu} pada tanggal ${data.tanggal || current?.tanggal} sudah ada.`);
       }
     }
-    return await prisma.jadwalRonda.update({ where: { id }, data });
+    const result = await prisma.jadwalRonda.update({ where: { id }, data });
+    
+    // Log Activity
+    try {
+      await aktivitasService.create({
+        tenant_id: result.tenant_id,
+        scope: result.scope || 'RT',
+        action: 'Update Ronda',
+        details: `Memperbarui jadwal ronda untuk **Regu ${result.regu || ''}** pada tanggal ${result.tanggal || ''}`,
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.warn("Failed to log activity for ronda schedule update:", e);
+    }
+
+    return result;
   },
 
   async delete(id: string) {

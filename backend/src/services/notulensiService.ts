@@ -1,6 +1,7 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
 import { pushService } from './pushService';
+import { aktivitasService } from './aktivitasService';
 
 export const notulensiService = {
   async getAll(tenantId: string, scope?: string) {
@@ -45,6 +46,19 @@ export const notulensiService = {
         console.error('Error sending notulensi push notification:', error);
     }
 
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: notulensi.tenant_id,
+            scope: notulensi.scope || 'RT',
+            action: 'Notulensi Baru',
+            details: `Menambahkan notulensi baru: **${notulensi.judul}** untuk pertemuan tanggal ${dateUtils.toDisplay(notulensi.tanggal)}`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for notulensi creation:", e);
+    }
+
     return notulensi;
   },
 
@@ -71,6 +85,20 @@ export const notulensiService = {
         });
       }
     }
+
+    // Log Activity
+    try {
+        await aktivitasService.create({
+            tenant_id: notulensi.tenant_id,
+            scope: notulensi.scope || 'RT',
+            action: 'Update Notulensi',
+            details: `Memperbarui notulensi: **${notulensi.judul}**`,
+            timestamp: Date.now()
+        });
+    } catch (e) {
+        console.warn("Failed to log activity for notulensi update:", e);
+    }
+
     return notulensi;
   },
 
