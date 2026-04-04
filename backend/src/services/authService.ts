@@ -15,7 +15,7 @@ const DEFAULT_ADMIN_PERMISSIONS = {
 
 export const authService = {
     async getUserByIdentifier(identifier: string) {
-        return await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 OR: [
                     { email: identifier },
