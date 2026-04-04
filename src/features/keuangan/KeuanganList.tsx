@@ -419,7 +419,7 @@ export default function KeuanganList() {
                                                                             const isCurrent = parsed.months.includes(monthNum);
                                                                             const isPaid = allMonthsPlayedByCitizen.includes(monthNum);
                                                                             
-                                                                            let colorStates = "bg-red-50 text-red-500 border border-red-100 opacity-60"; // Unpaid
+                                                                            let colorStates = "bg-rose-50 text-rose-500 border border-rose-100/50 opacity-100 font-medium"; // Unpaid (Smooth Red Card)
                                                                             if (isCurrent) {
                                                                                 colorStates = "bg-brand-600 text-white shadow-sm border-brand-500 scale-110 z-10 font-black";
                                                                             } else if (isPaid) {

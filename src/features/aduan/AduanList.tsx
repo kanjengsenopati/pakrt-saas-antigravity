@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTenant } from '../../contexts/TenantContext';
 import { aduanService, AduanUsulan } from '../../services/aduanService';
-import { dateUtils } from '../../utils/date';
+
 import { 
     Plus, 
     ChatTeardropDots, 
     Lightbulb, 
-    CheckCircle, 
-    Clock, 
     Eye, 
     Trash, 
-    ArrowRight,
     ChartBar,
     ChartPie,
     Users,
@@ -49,6 +46,7 @@ export default function AduanList() {
     const [selectedItem, setSelectedItem] = useState<AduanUsulan | null>(null);
     const [tanggapanText, setTanggapanText] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const isPengurus = authUser?.role?.toLowerCase() !== 'warga';
 
@@ -112,78 +110,53 @@ export default function AduanList() {
     return (
         <div className="space-y-8 animate-fade-in px-5 md:px-0 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
                 <div>
-                    <Text.H1>Aduan & Usulan Warga</Text.H1>
+                    <Text.H1>Informasi Aduan & Usulan</Text.H1>
                     <Text.Body className="mt-1">Media aspirasi dan pelaporan masalah lingkungan</Text.Body>
                 </div>
-                <div className="flex gap-2 w-full md:w-auto">
-                    <button
-                        onClick={() => navigate('/aduan/new')}
-                        className="hidden md:flex items-center justify-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-[12px] text-sm font-semibold transition-all shadow-premium hover-lift active-press"
-                    >
-                        <Plus weight="bold" />
-                        <span>Kirim Aspirasi</span>
-                    </button>
-                    
-                    {/* MOBILE FAB */}
-                    <button
-                        onClick={() => navigate('/aduan/new')}
-                        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
-                    >
-                        <Plus weight="bold" size={24} />
-                    </button>
-                </div>
+                {(!authUser?.role?.toLowerCase().includes('warga')) && (
+                    <HasPermission module="Aduan & Usulan" action="Buat">
+                        <button
+                            onClick={() => navigate('/aduan/new')}
+                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                        >
+                            <Plus weight="bold" size={18} />
+                            <span>Kirim Aspirasi</span>
+                        </button>
+                    </HasPermission>
+                )}
+                <button
+                    onClick={() => navigate('/aduan/new')}
+                    className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                >
+                    <Plus weight="bold" size={24} />
+                </button>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
-                        <ChartBar weight="duotone" className="text-slate-400 w-4 h-4" />
-                        Total Aspirasi
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{stats?.total || 0}</span>
-                        <span className="text-[11px] font-bold text-slate-400">Data</span>
-                    </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 -mt-2">
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Total</Text.Label>
+                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-slate-900 leading-none">{stats?.total || 0}</Text.Amount>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:shadow-md">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
-                        <Clock weight="duotone" className="text-amber-500 w-4 h-4" />
-                        Menunggu Antrian
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-amber-600 tracking-tight tabular-nums">{stats?.pending || 0}</span>
-                        <span className="text-[11px] font-bold text-slate-400">Antrian</span>
-                    </div>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Menunggu</Text.Label>
+                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-amber-600 leading-none">{stats?.pending || 0}</Text.Amount>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:shadow-md">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
-                        <ArrowRight weight="duotone" className="text-blue-500 w-4 h-4" />
-                        Sedang Diproses
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-blue-600 tracking-tight tabular-nums">{stats?.processing || 0}</span>
-                        <span className="text-[11px] font-bold text-slate-400">Aktif</span>
-                    </div>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-400" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Proses</Text.Label>
+                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-blue-600 leading-none">{stats?.processing || 0}</Text.Amount>
                 </div>
 
-                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
-                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
-                        <CheckCircle weight="duotone" className="text-brand-400 w-4 h-4" />
-                        Sudah Selesai
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{stats?.completed || 0}</span>
-                        <span className="text-[11px] font-bold text-slate-500">Tuntas</span>
-                    </div>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-emerald-400" />
+                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Selesai</Text.Label>
+                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-emerald-600 leading-none">{stats?.completed || 0}</Text.Amount>
                 </div>
             </div>
 
@@ -276,97 +249,101 @@ export default function AduanList() {
                     </div>
 
                     {/* List */}
-                    <div className="grid grid-cols-1 gap-5">
+                    <div className="bg-white rounded-[24px] shadow-premium border border-slate-100 overflow-hidden divide-y divide-slate-50">
                         {isLoading ? (
                             <div className="py-24 text-center flex flex-col items-center gap-4">
                                 <CircleNotch weight="bold" className="w-8 h-8 animate-spin text-brand-600" />
                                 <Text.Caption className="font-bold uppercase tracking-widest">Sinkronisasi Data...</Text.Caption>
                             </div>
                         ) : items.length === 0 ? (
-                            <div className="bg-white border-2 border-dashed border-slate-200 rounded-[20px] p-24 text-center flex flex-col items-center gap-4">
-                                <div className="w-20 h-20 bg-slate-50 rounded-[20px] flex items-center justify-center">
+                            <div className="p-24 text-center flex flex-col items-center gap-4">
+                                <div className="w-20 h-20 bg-slate-50 rounded-[20px] flex items-center justify-center border-2 border-dashed border-slate-100">
                                     <ChatDots weight="duotone" className="w-10 h-10 text-slate-200" />
                                 </div>
-                                <div className="space-y-1">
-                                    <Text.H2>Belum Ada Aspirasi</Text.H2>
-                                    <Text.Caption className="font-medium italic">Semua aspirasi atau aduan akan muncul di sini</Text.Caption>
-                                </div>
+                                <Text.H2>Belum Ada Aspirasi</Text.H2>
                             </div>
                         ) : (
-                            items.map((item) => (
-                                <div key={item.id} className="bg-white rounded-[20px] border border-slate-100 shadow-premium hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col md:flex-row group border-l-[6px] border-l-transparent" style={{ borderLeftColor: item.status === 'Menunggu' ? '#f59e0b' : item.status === 'Proses' ? '#3b82f6' : '#2563eb' }}>
-                                    <div className="p-6 flex-1 space-y-5">
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className={`p-3 rounded-[16px] border ${item.tipe === 'Aduan' ? 'bg-rose-50 text-rose-600 border-rose-100/50' : 'bg-brand-50 text-brand-600 border-brand-100/50'} shadow-sm`}>
-                                                    {item.tipe === 'Aduan' ? <ChatTeardropDots weight="fill" className="w-6 h-6" /> : <Lightbulb weight="fill" className="w-6 h-6" />}
+                            items
+                                .sort((a, b) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime())
+                                .map((item) => (
+                                    <div key={item.id} className="group">
+                                        <div 
+                                            onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
+                                            className={`p-5 transition-all duration-300 active:bg-slate-100 cursor-pointer ${expandedId === item.id ? 'bg-slate-50/80 shadow-inner' : 'hover:bg-slate-50/50'}`}
+                                        >
+                                            <div className="flex justify-between items-start gap-4">
+                                                <div className="flex gap-4 min-w-0">
+                                                    <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
+                                                        <span className="text-[9px] font-bold uppercase leading-none opacity-60">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                        <span className="text-lg font-bold leading-none mt-0.5">{new Date(item.tanggal).getDate()}</span>
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                                                item.status === 'Menunggu' ? 'bg-amber-600 text-white' :
+                                                                item.status === 'Proses' ? 'bg-blue-600 text-white' :
+                                                                'bg-emerald-600 text-white'
+                                                            }`}>
+                                                                {item.status}
+                                                            </span>
+                                                            <span className="text-[10px] font-medium text-slate-400 lowercase tracking-tight opacity-60">
+                                                                {item.is_anonymous ? 'Anonim' : toTitleCase(item.warga?.nama || 'Warga')}
+                                                            </span>
+                                                        </div>
+                                                        <Text.H2 className="!font-medium line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
+                                                        <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5">{item.tipe} — {item.deskripsi}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <Text.H2 className="!font-bold leading-tight line-clamp-1">{item.judul}</Text.H2>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <Text.Label className="!text-[9px] !text-slate-400">{item.tipe}</Text.Label>
-                                                        <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                                        <Text.Caption className="font-medium">{dateUtils.toDisplay(item.tanggal)}</Text.Caption>
+                                                <div className="flex flex-col items-end shrink-0 gap-1.5 pt-1">
+                                                    <div className={`p-2 rounded-lg border transition-all ${item.tipe === 'Aduan' ? 'bg-rose-50 text-rose-500 border-rose-100/50' : 'bg-brand-50 text-brand-500 border-brand-100/50'}`}>
+                                                        {item.tipe === 'Aduan' ? <ChatTeardropDots weight="bold" className="w-4 h-4" /> : <Lightbulb weight="bold" className="w-4 h-4" />}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 uppercase tracking-widest ${
-                                                    item.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                    item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                    'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                                }`}>
-                                                    {item.status === 'Menunggu' ? <Clock weight="bold" /> : item.status === 'Proses' ? <ArrowRight weight="bold" /> : <CheckCircle weight="fill" />}
-                                                    {item.status}
-                                                </span>
-                                            </div>
-                                        </div>
 
-                                        <div className="bg-slate-50/50 rounded-[16px] p-5 border border-slate-100 italic transition-colors hover:bg-slate-50">
-                                            <Text.Body className="!text-slate-700 italic tracking-tight">{item.deskripsi}</Text.Body>
-                                        </div>
+                                            {expandedId === item.id && (
+                                                <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                                                    <div className="space-y-4 text-left">
+                                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                                            <Text.Caption className="!text-[10px] !font-bold uppercase tracking-tight text-slate-400 mb-1 block">Detail Permasalahan</Text.Caption>
+                                                            <p className="text-sm text-slate-700 leading-relaxed font-medium">{item.deskripsi}</p>
+                                                        </div>
 
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-2 gap-5 border-t border-slate-50">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center text-[10px] font-black text-brand-600 shadow-inner">
-                                                    {(item.is_anonymous && !isPengurus) ? '?' : item.warga?.nama?.[0]?.toUpperCase() || '?'}
+                                                        {item.tanggapan ? (
+                                                            <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+                                                                <Text.Caption className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block">Tanggapan Pengurus</Text.Caption>
+                                                                <p className="text-sm text-blue-800 leading-relaxed font-bold italic">"{item.tanggapan}"</p>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="bg-rose-50/30 rounded-2xl p-4 border border-rose-100/50 border-dashed">
+                                                                <p className="text-[11px] text-rose-400 font-medium italic">Belum ada tanggapan resmi dari pengurus.</p>
+                                                            </div>
+                                                        )}
+
+                                                        <div className="flex gap-2 pt-2">
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); setSelectedItem(item); }}
+                                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-[11px] font-bold shadow-sm"
+                                                            >
+                                                                <Eye weight="bold" className="w-3.5 h-3.5" /> Lihat Panel Kendali
+                                                            </button>
+                                                            {isPengurus && (
+                                                                <HasPermission module="Aduan & Usulan" action="Hapus">
+                                                                    <button 
+                                                                        onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                                                                        className="p-2 text-rose-400 hover:text-rose-600 bg-rose-50 rounded-xl transition-all"
+                                                                    >
+                                                                        <Trash weight="bold" className="w-4 h-4" />
+                                                                    </button>
+                                                                </HasPermission>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <Text.Caption className="!font-bold !text-slate-900 border-b border-transparent leading-none">
-                                                        {(item.is_anonymous && !isPengurus) ? 'Warga (Anonim)' : toTitleCase(item.warga?.nama || 'Anonim')}
-                                                    </Text.Caption>
-                                                    {item.is_anonymous && isPengurus && <Text.Label className="!text-[8px] !text-amber-500 mt-1">Identitas Dirahasiakan</Text.Label>}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 w-full md:w-auto">
-                                                <button 
-                                                    onClick={() => setSelectedItem(item)}
-                                                    className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2 bg-white border border-slate-200 text-slate-800 rounded-[10px] text-xs font-bold hover:bg-slate-50 transition-all shadow-sm active-press hover:border-slate-300"
-                                                >
-                                                    <Eye weight="bold" /> Detail
-                                                </button>
-                                                {isPengurus && item.tipe === 'Usulan' && item.status !== 'Selesai' && !item.polling && (
-                                                    <button 
-                                                        onClick={() => navigate(`/aduan/polling/new/${item.id}`)}
-                                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2 bg-brand-50 text-brand-600 border border-brand-100 rounded-[10px] text-xs font-bold hover:bg-brand-100 transition-all shadow-sm active-press"
-                                                    >
-                                                        <ChartPie weight="bold" /> Buat Polling
-                                                    </button>
-                                                )}
-                                                <HasPermission module="Aduan & Usulan" action="Hapus">
-                                                    <button 
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2.5 text-slate-400 hover:text-red-500 bg-slate-50 rounded-[10px] transition-all hover:bg-red-50"
-                                                    >
-                                                        <Trash weight="bold" className="w-4 h-4" />
-                                                    </button>
-                                                </HasPermission>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            ))
+                                ))
                         )}
                     </div>
                 </div>
