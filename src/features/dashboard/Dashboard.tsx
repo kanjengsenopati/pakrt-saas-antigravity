@@ -307,21 +307,38 @@ export default function Dashboard() {
                                 <div className="space-y-4">
                                     {recentActivities.length > 0 ? (
                                         recentActivities.slice((activityPage - 1) * 5, activityPage * 5).map((act: any) => (
-                                            <div key={act.id} className="flex items-center gap-4 p-5 bg-surface-container-low rounded-2xl">
-                                                <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                                    {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? (
-                                                        <Money weight="fill" className="text-primary text-xl" />
-                                                    ) : act.module === 'Surat' ? (
-                                                        <FileText weight="fill" className="text-tertiary text-xl" />
-                                                    ) : (
-                                                        <Bell weight="fill" className="text-emerald-500 text-xl" />
-                                                    )}
+                                            <div key={act.id} className="flex flex-col gap-4 p-5 bg-surface-container-low rounded-2xl">
+                                                <div className="flex items-center gap-4 w-full">
+                                                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
+                                                        {act.tipe === 'KEUANGAN' || act.module === 'Keuangan' ? (
+                                                            <Money weight="fill" className="text-primary text-xl" />
+                                                        ) : act.module === 'Surat' ? (
+                                                            <FileText weight="fill" className="text-tertiary text-xl" />
+                                                        ) : (
+                                                            <Bell weight="fill" className="text-emerald-500 text-xl" />
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
+                                                        <p className="text-[11px] font-medium text-on-surface-variant">{formatDate(act.timestamp)}</p>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => setExpandedActivityId(expandedActivityId === act.id ? null : act.id)}
+                                                        className="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-extrabold rounded-full hover:bg-primary-dim hover:text-white transition-colors active:scale-95"
+                                                    >
+                                                        {expandedActivityId === act.id ? 'Tutup' : 'Lihat'}
+                                                    </button>
                                                 </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-bold text-on-surface line-clamp-1">{toTitleCase(act.details)}</p>
-                                                    <p className="text-[11px] font-medium text-on-surface-variant">{formatDate(act.timestamp)}</p>
-                                                </div>
-                                                <span className="px-2.5 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-extrabold rounded-full">INFO</span>
+
+                                                {expandedActivityId === act.id && (
+                                                    <div className="pt-4 border-t border-slate-100 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
+                                                            <span className="text-[0.6rem] font-black text-slate-500 uppercase tracking-widest">{act.action}</span>
+                                                        </div>
+                                                        <p className="text-[0.85rem] text-on-surface-variant leading-relaxed font-body">{act.details}</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))
                                     ) : (
