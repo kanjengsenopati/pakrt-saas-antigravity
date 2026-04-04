@@ -13,7 +13,10 @@ import {
     Users,
     X,
     CircleNotch,
-    ChatDots
+    ChatDots,
+    Clock,
+    ArrowRight,
+    CheckCircle
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 import { HasPermission } from '../../components/auth/HasPermission';
@@ -134,29 +137,40 @@ export default function AduanList() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 -mt-2">
-                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Total</Text.Label>
-                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-slate-900 leading-none">{stats?.total || 0}</Text.Amount>
+                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                        <ChartBar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
+                        Aspirasi
+                    </p>
+                    <span className="text-4xl font-bold text-slate-900 tracking-tighter leading-none">{stats?.total || 0}</span>
                 </div>
 
-                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Menunggu</Text.Label>
-                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-amber-600 leading-none">{stats?.pending || 0}</Text.Amount>
+                <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <p className="text-sm font-bold text-white/50 tracking-tight mb-1 flex items-center justify-center gap-2">
+                        <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
+                        Selesai
+                    </p>
+                    <span className="text-4xl font-bold text-white tracking-tighter leading-none">{stats?.completed || 0}</span>
                 </div>
 
-                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-400" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Proses</Text.Label>
-                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-blue-600 leading-none">{stats?.processing || 0}</Text.Amount>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
+                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                        <Clock weight="bold" className="text-amber-500 w-3.5 h-3.5" />
+                        Menunggu
+                    </p>
+                    <span className="text-4xl font-bold text-amber-600 tracking-tighter leading-none">{stats?.pending || 0}</span>
                 </div>
 
-                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-emerald-400" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Selesai</Text.Label>
-                    <Text.Amount className="text-xl lg:text-2xl font-bold tracking-tighter text-emerald-600 leading-none">{stats?.completed || 0}</Text.Amount>
+                <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                        <ArrowRight weight="bold" className="text-blue-500 w-3.5 h-3.5" />
+                        Proses
+                    </p>
+                    <span className="text-4xl font-bold text-blue-600 tracking-tighter leading-none">{stats?.processing || 0}</span>
                 </div>
             </div>
 
