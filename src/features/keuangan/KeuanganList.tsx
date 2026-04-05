@@ -782,7 +782,7 @@ export default function KeuanganList() {
                 <div className="space-y-4 animate-fade-in pb-10">
                     <div className="flex items-center justify-between px-2">
                         <div className="flex flex-col">
-                            <Text.Label className="tracking-widest uppercase opacity-60 !text-[10px]">Periode Laporan</Text.Label>
+                            <Text.Label className="font-bold opacity-80 !text-[11px] text-slate-600">Periode Laporan</Text.Label>
                             <Text.H2 className="!text-slate-900 !tracking-tight">
                                 {statFilterType === 'THIS_MONTH' ? dateUtils.toDisplay(new Date()).split(' ').slice(1).join(' ') : (statFilterType === 'THIS_YEAR' ? new Date().getFullYear() : 'Kustom Range')}
                             </Text.H2>
@@ -851,9 +851,9 @@ export default function KeuanganList() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2.5 px-0.5">
-                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-brand-100 transition-all">
-                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Target</Text.Label>
+                    <div className="grid grid-cols-3 gap-2 px-0.5">
+                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-brand-100 transition-all">
+                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Target</Text.Label>
                             <div className="flex items-center gap-1.5">
                                 <Text.Amount className="text-sm font-black text-slate-900">{formatRupiah(statistics.target).replace(/,00$/, '')}</Text.Amount>
                             </div>
@@ -868,8 +868,8 @@ export default function KeuanganList() {
                             </div>
                         </div>
 
-                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-emerald-100 transition-all">
-                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Realisasi</Text.Label>
+                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-emerald-100 transition-all">
+                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Realisasi</Text.Label>
                             <Text.Amount className="text-sm font-black text-emerald-600">{formatRupiah(statistics.realisasi).replace(/,00$/, '')}</Text.Amount>
                             <div className="flex items-center gap-1 mt-1.5">
                                 <CheckCircle weight="fill" className="w-3 h-3 text-emerald-500" />
@@ -877,8 +877,8 @@ export default function KeuanganList() {
                             </div>
                         </div>
 
-                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-indigo-100 transition-all">
-                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Capaian</Text.Label>
+                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-indigo-100 transition-all">
+                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Capaian</Text.Label>
                             <Text.Amount className="text-sm font-black transition-colors">
                                 <span style={{ color: statistics.statusColor }}>{statistics.status.toFixed(0)}%</span>
                             </Text.Amount>
@@ -918,23 +918,24 @@ export default function KeuanganList() {
                                         </linearGradient>
                                     </defs>
                                     <Tooltip 
+                                        wrapperStyle={{ zIndex: 1000 }}
                                         content={({ active, payload }) => {
                                             if (active && payload && payload.length) {
                                                 const data = payload[0].payload;
                                                 return (
-                                                    <div className="bg-white/95 backdrop-blur-xl border border-slate-100 p-4 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200">
-                                                        <div className="flex flex-col gap-2">
+                                                    <div className="bg-white/98 backdrop-blur-2xl border border-slate-200 p-3.5 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 ring-4 ring-black/5">
+                                                        <div className="flex flex-col gap-1.5">
                                                             <div className="flex items-center gap-2">
                                                                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: data.name === 'Tercapai' ? statistics.statusColor : '#f1f5f9' }} />
-                                                                <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{data.name}</span>
+                                                                <span className="text-[10px] font-bold text-slate-900 tracking-tight">{data.name}</span>
                                                             </div>
-                                                            <div className="text-lg font-black text-slate-900 leading-none">
+                                                            <div className="text-base font-black text-slate-900 tabular-nums">
                                                                 {formatRupiah(data.value)}
                                                             </div>
                                                             {data.name === 'Tercapai' && (
-                                                                <div className="pt-2 mt-1 border-t border-slate-50">
-                                                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Kekurangan dari Target</div>
-                                                                    <div className="text-sm font-black text-rose-500">
+                                                                <div className="pt-2 mt-1 border-t border-slate-100">
+                                                                    <div className="text-[9px] font-bold text-slate-500 tracking-tight mb-0.5">Kekurangan dari Target</div>
+                                                                    <div className="text-sm font-black text-rose-600">
                                                                         {formatRupiah(statistics.kekurangan)}
                                                                     </div>
                                                                 </div>
@@ -949,8 +950,8 @@ export default function KeuanganList() {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <div className="p-8 rounded-full bg-slate-50/50 backdrop-blur-sm border border-white shadow-inner flex flex-col items-center justify-center">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian</span>
+                                <div className="p-8 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-bold text-slate-700 tracking-tight mb-0.5">Capaian</span>
                                     <span className="text-5xl font-black tracking-tighter leading-none transition-colors" style={{ color: statistics.statusColor }}>
                                         {statistics.status.toFixed(0)}<span className="text-xl font-bold ml-1">%</span>
                                     </span>
@@ -961,11 +962,11 @@ export default function KeuanganList() {
                         <div className="flex gap-4 mt-6">
                             <div className={`px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg shadow-black/5`} style={{ backgroundColor: statistics.statusColor }}>
                                 <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">{statistics.statusLabel} ({statistics.status.toFixed(0)}%)</span>
+                                <span className="text-[10px] font-bold text-white tracking-wide">{statistics.statusLabel} ({statistics.status.toFixed(0)}%)</span>
                             </div>
                             <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-slate-200" />
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target Belum</span>
+                                <div className="w-2 h-2 rounded-full bg-slate-300" />
+                                <span className="text-[10px] font-bold text-slate-500 tracking-wide">Target Belum</span>
                             </div>
                         </div>
                     </div>
