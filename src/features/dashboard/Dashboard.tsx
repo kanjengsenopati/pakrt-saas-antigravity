@@ -271,47 +271,38 @@ export default function Dashboard() {
                                 <span className="text-primary font-bold text-sm cursor-pointer hover:underline" onClick={() => setActiveMenuTab('lainnya')}>Lihat Semua</span>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* Stats 1: Ajuan Surat */}
-                                <div onClick={() => navigate('/surat')} className="col-span-2 bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                                            <FileText weight="fill" className="text-primary text-2xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[15px] font-bold text-on-surface">Ajuan Surat</p>
-                                            <p className="text-on-surface-variant text-xs font-medium">{stats.pendingSurat} Surat Baru</p>
-                                        </div>
+                            <div className="grid grid-cols-3 gap-3">
+                                {/* Stats 1: Surat */}
+                                <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                                        <FileText weight="fill" className="text-primary text-xl" />
                                     </div>
-                                    <ArrowRight weight="bold" className="text-on-surface-variant" />
+                                    <div>
+                                        <p className="text-[13px] font-bold text-on-surface leading-tight">Surat</p>
+                                        <p className="text-on-surface-variant text-[9px] font-bold uppercase tracking-tight line-clamp-1">{stats.pendingSurat} Baru</p>
+                                    </div>
                                 </div>
 
-                                {/* Stats 2: Aduan Warga */}
-                                <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-11 h-11 shrink-0 rounded-xl bg-red-50 flex items-center justify-center">
-                                            <ChatDots weight="fill" className="text-error text-2xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[14px] font-bold text-on-surface leading-tight">Aduan</p>
-                                            <p className="text-[10px] font-bold text-error uppercase tracking-tight">Aktif</p>
-                                        </div>
+                                {/* Stats 2: Aduan */}
+                                <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                                        <ChatDots weight="fill" className="text-error text-xl" />
                                     </div>
-                                    <ArrowRight weight="bold" className="text-on-surface-variant text-sm" />
+                                    <div>
+                                        <p className="text-[13px] font-bold text-on-surface leading-tight">Aduan</p>
+                                        <p className="text-[9px] font-bold text-error uppercase tracking-tight">Aktif</p>
+                                    </div>
                                 </div>
 
-                                {/* Stats 3: Agenda Warga */}
-                                <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-5 shadow-[0_12px_32px_-4px_rgba(0,80,212,0.08)] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-11 h-11 shrink-0 rounded-xl bg-purple-50 flex items-center justify-center">
-                                            <CalendarBlank weight="fill" className="text-tertiary text-2xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[14px] font-bold text-on-surface leading-tight">Agenda</p>
-                                            <p className="text-[10px] font-medium text-on-surface-variant uppercase tracking-tight">{stats.agenda} Event</p>
-                                        </div>
+                                {/* Stats 3: Agenda */}
+                                <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
+                                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
+                                        <CalendarBlank weight="fill" className="text-tertiary text-xl" />
                                     </div>
-                                    <ArrowRight weight="bold" className="text-on-surface-variant text-sm" />
+                                    <div>
+                                        <p className="text-[13px] font-bold text-on-surface leading-tight">Agenda</p>
+                                        <p className="text-[9px] font-medium text-on-surface-variant uppercase tracking-tight line-clamp-1">{stats.agenda} Event</p>
+                                    </div>
                                 </div>
                             </div>
                         </section>
