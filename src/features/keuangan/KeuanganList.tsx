@@ -70,6 +70,12 @@ export default function KeuanganList() {
     const [incomeSettings, setIncomeSettings] = useState<any[]>([]);
     const [occupancySettings, setOccupancySettings] = useState<Record<string, number>>({});
 
+    // Statistics Filter State
+    const [statFilterType, setStatFilterType] = useState<FilterType>('THIS_MONTH');
+    const [isStatFilterOpen, setIsStatFilterOpen] = useState(false);
+    const [statCustomRange, setStatCustomRange] = useState({ start: '', end: '' });
+    const statFilterRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         if (currentTenant) {
             loadData();
@@ -84,6 +90,9 @@ export default function KeuanganList() {
             }
             if (typeFilterRef.current && !typeFilterRef.current.contains(event.target as Node)) {
                 setIsTypeFilterOpen(false);
+            }
+            if (statFilterRef.current && !statFilterRef.current.contains(event.target as Node)) {
+                setIsStatFilterOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -195,34 +204,67 @@ export default function KeuanganList() {
     }, [displayedTransactions]);
 
     const statistics = useMemo(() => {
-        // Target Calculation
-        // 1. Dihuni Rules
+        // 1. Calculate Period Factor
+        let monthFactor = 1;
+        const now = new Date();
+
+        if (statFilterType === 'THIS_YEAR') {
+            monthFactor = 12;
+        } else if (statFilterType === 'CUSTOM' && statCustomRange.start && statCustomRange.end) {
+            const start = new Date(statCustomRange.start);
+            const end = new Date(statCustomRange.end);
+            const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+            monthFactor = Math.max(1, months);
+        }
+
+        // 2. Base Target Calculation (per month)
         const iuranDihuni = (occupancySettings.dihuni || 0) * wargaStats.dihuni;
         const iuranKosong = (occupancySettings.kosong || 0) * wargaStats.kosong;
         
-        // 2. Mandatory Items (Insidentil, etc.)
         const mandatoryOthers = incomeSettings
             .filter(item => item.is_mandatory)
             .reduce((sum, item) => sum + (item.nominal * wargaStats.total), 0);
             
-        const target = iuranDihuni + iuranKosong + mandatoryOthers;
+        const target = (iuranDihuni + iuranKosong + mandatoryOthers) * monthFactor;
         
-        // Realisasi
-        // Sum transactions that match any mandatory item by name/category
+        // 3. Realisasi
+        // Filter transactions based on date range
         const mandatoryItemNames = [
             ...incomeSettings.filter(i => i.is_mandatory).map(i => i.nama.toLowerCase())
         ];
         
-        // We also consider 'Iuran Warga' as part of the monthly realization
         const isMandatoryMatch = (t: Keuangan) => {
             const cat = t.kategori.toLowerCase();
             return mandatoryItemNames.includes(cat) || cat === 'iuran warga';
         };
-        
-        const realisasi = transactions
-            .filter(t => t.tipe === 'pemasukan' && isMandatoryMatch(t))
-            .reduce((sum, t) => sum + t.nominal, 0);
+
+        const filteredTrx = transactions.filter(t => {
+            if (t.tipe !== 'pemasukan' || !isMandatoryMatch(t)) return false;
             
+            const trxDate = new Date(t.tanggal);
+            const itemDate = new Date(trxDate.getFullYear(), trxDate.getMonth(), trxDate.getDate());
+
+            switch (statFilterType) {
+                case 'ALL':
+                    return true;
+                case 'THIS_MONTH':
+                    return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
+                case 'THIS_YEAR':
+                    return itemDate.getFullYear() === now.getFullYear();
+                case 'CUSTOM':
+                    if (statCustomRange.start && statCustomRange.end) {
+                        const start = new Date(statCustomRange.start);
+                        const end = new Date(statCustomRange.end);
+                        end.setHours(23, 59, 59, 999);
+                        return itemDate >= start && itemDate <= end;
+                    }
+                    return true;
+                default: 
+                    return true;
+            }
+        });
+        
+        const realisasi = filteredTrx.reduce((sum, t) => sum + t.nominal, 0);
         const status = target > 0 ? (realisasi / target) * 100 : 0;
         
         return {
@@ -231,7 +273,7 @@ export default function KeuanganList() {
             status,
             wargaTotal: wargaStats.total
         };
-    }, [transactions, wargaStats, incomeSettings, occupancySettings]);
+    }, [transactions, wargaStats, incomeSettings, occupancySettings, statFilterType, statCustomRange]);
 
     const formatFormalId = (dateString: string, itemId: string) => {
         const d = new Date(dateString);
@@ -718,62 +760,112 @@ export default function KeuanganList() {
             </div>
                 </>
             ) : (
-                <div className="space-y-6 animate-fade-in pb-20">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col gap-2">
-                            <div className="flex items-center justify-between">
-                                <Text.Label className="tracking-widest uppercase opacity-60">Target Koleksi</Text.Label>
-                                <div className="w-10 h-10 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <Funnel weight="fill" size={20} />
-                                </div>
-                            </div>
-                            <Text.Amount className="text-3xl text-slate-900">{formatRupiah(statistics.target)}</Text.Amount>
-                            <div className="mt-2 space-y-1.5">
-                                <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                    <span>Progress</span>
-                                    <span>{statistics.status.toFixed(1)}%</span>
-                                </div>
-                                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div 
-                                        className="h-full bg-brand-500 rounded-full transition-all duration-700 ease-out shadow-sm"
-                                        style={{ width: `${Math.min(statistics.status, 100)}%` }}
-                                    />
-                                </div>
-                            </div>
+                <div className="space-y-4 animate-fade-in pb-10">
+                    <div className="flex items-center justify-between px-2">
+                        <div className="flex flex-col">
+                            <Text.Label className="tracking-widest uppercase opacity-60 !text-[10px]">Periode Laporan</Text.Label>
+                            <Text.H2 className="!text-slate-900 !tracking-tight">
+                                {statFilterType === 'THIS_MONTH' ? dateUtils.toDisplay(new Date()).split(' ').slice(1).join(' ') : (statFilterType === 'THIS_YEAR' ? new Date().getFullYear() : 'Kustom Range')}
+                            </Text.H2>
                         </div>
+                        
+                        <div className="relative" ref={statFilterRef}>
+                            <button 
+                                onClick={() => setIsStatFilterOpen(!isStatFilterOpen)}
+                                className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all bg-white shadow-sm border border-slate-100 text-brand-600 hover:bg-brand-50 hover:border-brand-100"
+                            >
+                                <Funnel weight="fill" className="w-4 h-4" />
+                            </button>
 
-                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-all duration-300 flex flex-col gap-2">
-                            <div className="flex items-center justify-between">
-                                <Text.Label className="tracking-widest uppercase opacity-60">Realisasi</Text.Label>
-                                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <CheckCircle weight="fill" size={20} />
-                                </div>
-                            </div>
-                            <Text.Amount className="text-3xl text-slate-900">{formatRupiah(statistics.realisasi)}</Text.Amount>
-                            <div className="mt-2 text-[10px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full w-fit">
-                                Terverifikasi sistem
-                            </div>
-                        </div>
+                            {isStatFilterOpen && (
+                                <div className="absolute top-12 right-0 z-[100] w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 animate-in zoom-in-95 duration-200">
+                                    <div className="space-y-1">
+                                        {[
+                                            { id: 'THIS_MONTH', label: 'Bulan Ini' },
+                                            { id: 'THIS_YEAR', label: 'Tahun Ini' },
+                                            { id: 'CUSTOM', label: 'Pilih Sendiri' },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    setStatFilterType(opt.id as FilterType);
+                                                    if (opt.id !== 'CUSTOM') setIsStatFilterOpen(false);
+                                                }}
+                                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${statFilterType === opt.id ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            >
+                                                <span>{opt.label}</span>
+                                                {statFilterType === opt.id && <CheckCircle weight="fill" className="w-4 h-4 text-brand-600" />}
+                                            </button>
+                                        ))}
+                                    </div>
 
-                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-indigo-200 transition-all duration-300 flex flex-col gap-2">
-                            <div className="flex items-center justify-between">
-                                <Text.Label className="tracking-widest uppercase opacity-60">Status Capaian</Text.Label>
-                                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <ArrowDownRight weight="fill" size={20} className="-rotate-90" />
+                                    {statFilterType === 'CUSTOM' && (
+                                        <div className="mt-2 p-3 bg-slate-50 rounded-xl space-y-3">
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Mulai</label>
+                                                <input 
+                                                    type="date" 
+                                                    value={statCustomRange.start}
+                                                    onChange={(e) => setStatCustomRange({ ...statCustomRange, start: e.target.value })}
+                                                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Selesai</label>
+                                                <input 
+                                                    type="date" 
+                                                    value={statCustomRange.end}
+                                                    onChange={(e) => setStatCustomRange({ ...statCustomRange, end: e.target.value })}
+                                                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                                                />
+                                            </div>
+                                            <button 
+                                                onClick={() => setIsStatFilterOpen(false)}
+                                                className="w-full py-2 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition-colors"
+                                            >
+                                                Terapkan
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                            <div className="flex items-baseline gap-2">
-                                <Text.Amount className="text-4xl text-indigo-600">{statistics.status.toFixed(1)}%</Text.Amount>
-                                <span className="text-xs font-bold text-slate-400">Total</span>
-                            </div>
-                            <div className="mt-2 text-[10px] font-medium text-slate-400">
-                                Berdasarkan data {statistics.wargaTotal} warga aktif
-                            </div>
+                            )}
                         </div>
                     </div>
 
-                    <div className="bg-white p-10 rounded-[40px] border border-slate-100 shadow-premium flex flex-col items-center">
-                        <div className="w-full max-w-md aspect-square relative flex items-center justify-center">
+                    <div className="grid grid-cols-3 gap-2.5 px-0.5">
+                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-brand-100 transition-all">
+                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Target</Text.Label>
+                            <div className="flex items-center gap-1.5">
+                                <Text.Amount className="text-sm font-black text-slate-900">{formatRupiah(statistics.target).replace(/,00$/, '')}</Text.Amount>
+                            </div>
+                            <div className="w-full h-1 bg-slate-50 rounded-full mt-1.5 overflow-hidden">
+                                <div 
+                                    className="h-full bg-brand-500 rounded-full transition-all duration-700"
+                                    style={{ width: `${Math.min(statistics.status, 100)}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-emerald-100 transition-all">
+                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Realisasi</Text.Label>
+                            <Text.Amount className="text-sm font-black text-emerald-600">{formatRupiah(statistics.realisasi).replace(/,00$/, '')}</Text.Amount>
+                            <div className="flex items-center gap-1 mt-1.5">
+                                <CheckCircle weight="fill" className="w-3 h-3 text-emerald-500" />
+                                <span className="text-[8px] font-bold text-emerald-600 uppercase">Sinkron</span>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-indigo-100 transition-all">
+                            <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Capaian</Text.Label>
+                            <Text.Amount className="text-sm font-black text-indigo-600">{statistics.status.toFixed(0)}%</Text.Amount>
+                            <Text.Caption className="!text-[8px] !font-bold text-slate-400 mt-1.5 uppercase">Dari {statistics.wargaTotal} Warga</Text.Caption>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-premium flex flex-col items-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-brand-50/10 to-transparent pointer-events-none" />
+                        
+                        <div className="w-full max-w-sm aspect-square relative flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -783,37 +875,46 @@ export default function KeuanganList() {
                                         ]}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={80}
-                                        outerRadius={120}
-                                        paddingAngle={8}
+                                        innerRadius={90}
+                                        outerRadius={125}
+                                        paddingAngle={10}
                                         dataKey="value"
                                         stroke="none"
                                         startAngle={90}
                                         endAngle={-270}
+                                        cornerRadius={12}
                                     >
-                                        <Cell fill="#0F172A" />
+                                        <Cell fill="url(#brandGradient)" />
                                         <Cell fill="#f1f5f9" />
                                     </Pie>
+                                    <defs>
+                                        <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#0F172A" />
+                                            <stop offset="100%" stopColor="#334155" />
+                                        </linearGradient>
+                                    </defs>
                                     <Tooltip 
-                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
+                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
                                         formatter={(value: any) => formatRupiah(value)}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian</span>
-                                <span className="text-4xl font-black text-slate-900 tracking-tight">{statistics.status.toFixed(0)}%</span>
+                                <div className="p-8 rounded-full bg-slate-50/50 backdrop-blur-sm border border-white shadow-inner flex flex-col items-center justify-center">
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian</span>
+                                    <span className="text-5xl font-black text-slate-900 tracking-tighter leading-none">{statistics.status.toFixed(0)}<span className="text-xl font-bold ml-1">%</span></span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-8 mt-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-slate-900" />
-                                <Text.Label className="text-slate-900 font-bold">Realisasi</Text.Label>
+                        <div className="flex gap-4 mt-6">
+                            <div className="px-4 py-2 bg-slate-900 rounded-2xl flex items-center gap-2 shadow-lg shadow-slate-900/10">
+                                <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Realisasi</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-slate-100" />
-                                <Text.Label className="text-slate-400">Belum Tercapai</Text.Label>
+                            <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-slate-200" />
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target Belum</span>
                             </div>
                         </div>
                     </div>
