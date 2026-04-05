@@ -1,3 +1,4 @@
+import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
 import { aktivitasService } from './aktivitasService';
 
