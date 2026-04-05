@@ -111,7 +111,7 @@ export default function Dashboard() {
                                 <div className="flex items-center gap-3">
                                     <h1 className="font-headline font-bold text-white text-3xl tracking-tighter leading-none">RT</h1>
                                     <div className="flex flex-col border-l border-white/20 pl-3">
-                                        <h2 className="text-white font-headline font-bold text-[1.1rem] leading-none mb-1">
+                                        <h2 className="text-white font-headline font-bold text-[0.9rem] leading-none mb-1 whitespace-nowrap">
                                             {currentTenant?.location_detail ? currentTenant.location_detail.split(' • ')[0] : 'RT 00 / RW 00'}
                                         </h2>
                                         {currentTenant?.location_detail && (
@@ -123,7 +123,7 @@ export default function Dashboard() {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/profil')}>
+                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/profile')}>
                                     <User weight="bold" className="text-xl" />
                                 </button>
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/notifications')}>
