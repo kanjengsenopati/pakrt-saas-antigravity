@@ -36,6 +36,7 @@ const toTitleCase = (str: string) => {
 };
 
 type FilterType = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'THIS_YEAR' | 'CUSTOM';
+type TrxTypeFilter = 'ALL' | 'IN' | 'OUT';
 
 export default function KeuanganList() {
     const navigate = useNavigate();
@@ -55,17 +56,25 @@ export default function KeuanganList() {
     const [customRange, setCustomRange] = useState({ start: '', end: '' });
     const filterRef = useRef<HTMLDivElement>(null);
 
+    // Transaction Type Filter state
+    const [trxTypeFilter, setTrxTypeFilter] = useState<TrxTypeFilter>('ALL');
+    const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
+    const typeFilterRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         if (currentTenant) {
             loadData();
         }
     }, [currentTenant, currentScope]);
 
-    // Handle Close Dropdown on Click Outside
+    // Handle Close Dropdowns on Click Outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
                 setIsFilterOpen(false);
+            }
+            if (typeFilterRef.current && !typeFilterRef.current.contains(event.target as Node)) {
+                setIsTypeFilterOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -98,6 +107,14 @@ export default function KeuanganList() {
             t.kategori.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
+        // Apply Transaction Type Filter
+        if (trxTypeFilter !== 'ALL') {
+            filtered = filtered.filter(t => 
+                trxTypeFilter === 'IN' ? t.tipe === 'pemasukan' : t.tipe === 'pengeluaran'
+            );
+        }
+
+        // Apply Date range Filter
         if (filterType !== 'ALL') {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -133,7 +150,7 @@ export default function KeuanganList() {
         }
 
         return filtered.sort((a, b) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime());
-    }, [transactions, searchQuery, filterType, customRange]);
+    }, [transactions, searchQuery, filterType, customRange, trxTypeFilter]);
 
     const displayedSummary = useMemo(() => {
         return displayedTransactions.reduce((acc, curr) => {
@@ -246,7 +263,7 @@ export default function KeuanganList() {
             </div>
 
             <div className="bg-white rounded-[24px] shadow-premium border border-slate-100 overflow-hidden -mt-1">
-                <div className="p-4 border-b border-slate-50 flex gap-3 items-center justify-between bg-white overflow-visible">
+                <div className="p-4 border-b border-slate-50 flex gap-2 items-center justify-between bg-white overflow-visible">
                     <div className="relative flex-1 group">
                         <input
                             type="text"
@@ -257,69 +274,106 @@ export default function KeuanganList() {
                         />
                     </div>
                     
-                    <div className="relative" ref={filterRef}>
-                        <button 
-                            onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all border ${filterType !== 'ALL' ? 'bg-brand-50 text-brand-600 border-brand-200 shadow-sm' : 'bg-slate-50 text-slate-400 border-transparent hover:text-brand-600 hover:bg-brand-50 hover:border-brand-100'}`}
-                        >
-                            <Funnel weight={filterType !== 'ALL' ? "fill" : "bold"} className="w-5 h-5" />
-                        </button>
+                    <div className="flex items-center gap-2">
+                        {/* Transaction Type Filter */}
+                        <div className="relative" ref={typeFilterRef}>
+                            <button 
+                                onClick={() => setIsTypeFilterOpen(!isTypeFilterOpen)}
+                                className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all border ${trxTypeFilter !== 'ALL' ? 'bg-indigo-50 text-indigo-600 border-indigo-200 shadow-sm' : 'bg-slate-50 text-slate-400 border-transparent hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100'}`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={trxTypeFilter !== 'ALL' ? "indigo" : "currentColor"} viewBox="0 0 256 256"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56h72V200H40ZM216,200H128V56h88V200Z"></path></svg>
+                            </button>
 
-                        {isFilterOpen && (
-                            <div className="absolute top-14 right-0 z-[100] w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 animate-in zoom-in-95 duration-200">
-                                <div className="space-y-1">
-                                    {[
-                                        { id: 'ALL', label: 'Semua Transaksi' },
-                                        { id: 'TODAY', label: 'Hari Ini' },
-                                        { id: 'THIS_WEEK', label: 'Minggu Ini' },
-                                        { id: 'THIS_MONTH', label: 'Bulan Ini' },
-                                        { id: 'THIS_YEAR', label: 'Tahun Ini' },
-                                        { id: 'CUSTOM', label: 'Pilih Sendiri' },
-                                    ].map((opt) => (
-                                        <button
-                                            key={opt.id}
-                                            onClick={() => {
-                                                setFilterType(opt.id as FilterType);
-                                                if (opt.id !== 'CUSTOM') setIsFilterOpen(false);
-                                            }}
-                                            className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${filterType === opt.id ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'}`}
-                                        >
-                                            <span>{opt.label}</span>
-                                            {filterType === opt.id && <CheckCircle weight="fill" className="w-4 h-4 text-brand-600" />}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {filterType === 'CUSTOM' && (
-                                    <div className="mt-2 p-3 bg-slate-50 rounded-xl space-y-3">
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Mulai</label>
-                                            <input 
-                                                type="date" 
-                                                value={customRange.start}
-                                                onChange={(e) => setCustomRange({ ...customRange, start: e.target.value })}
-                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Selesai</label>
-                                            <input 
-                                                type="date" 
-                                                value={customRange.end}
-                                                onChange={(e) => setCustomRange({ ...customRange, end: e.target.value })}
-                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                                            />
-                                        </div>
-                                        <button 
-                                            onClick={() => setIsFilterOpen(false)}
-                                            className="w-full py-2 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition-colors"
-                                        >
-                                            Terapkan Filter
-                                        </button>
+                            {isTypeFilterOpen && (
+                                <div className="absolute top-14 right-0 z-[100] w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 animate-in zoom-in-95 duration-200">
+                                    <div className="space-y-1">
+                                        {[
+                                            { id: 'ALL', label: 'Semua Transaksi' },
+                                            { id: 'IN', label: 'Kas Masuk' },
+                                            { id: 'OUT', label: 'Kas Keluar' },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    setTrxTypeFilter(opt.id as TrxTypeFilter);
+                                                    setIsTypeFilterOpen(false);
+                                                }}
+                                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${trxTypeFilter === opt.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            >
+                                                <span>{opt.label}</span>
+                                                {trxTypeFilter === opt.id && <CheckCircle weight="fill" className="w-4 h-4 text-indigo-600" />}
+                                            </button>
+                                        ))}
                                     </div>
-                                )}
-                            </div>
-                        )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Date Picker Filter */}
+                        <div className="relative" ref={filterRef}>
+                            <button 
+                                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                                className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all border ${filterType !== 'ALL' ? 'bg-brand-50 text-brand-600 border-brand-200 shadow-sm' : 'bg-slate-50 text-slate-400 border-transparent hover:text-brand-600 hover:bg-brand-50 hover:border-brand-100'}`}
+                            >
+                                <Funnel weight={filterType !== 'ALL' ? "fill" : "bold"} className="w-5 h-5" />
+                            </button>
+
+                            {isFilterOpen && (
+                                <div className="absolute top-14 right-0 z-[100] w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 animate-in zoom-in-95 duration-200">
+                                    <div className="space-y-1">
+                                        {[
+                                            { id: 'ALL', label: 'Semua Periode' },
+                                            { id: 'TODAY', label: 'Hari Ini' },
+                                            { id: 'THIS_WEEK', label: 'Minggu Ini' },
+                                            { id: 'THIS_MONTH', label: 'Bulan Ini' },
+                                            { id: 'THIS_YEAR', label: 'Tahun Ini' },
+                                            { id: 'CUSTOM', label: 'Pilih Sendiri' },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    setFilterType(opt.id as FilterType);
+                                                    if (opt.id !== 'CUSTOM') setIsFilterOpen(false);
+                                                }}
+                                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${filterType === opt.id ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            >
+                                                <span>{opt.label}</span>
+                                                {filterType === opt.id && <CheckCircle weight="fill" className="w-4 h-4 text-brand-600" />}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {filterType === 'CUSTOM' && (
+                                        <div className="mt-2 p-3 bg-slate-50 rounded-xl space-y-3">
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Mulai</label>
+                                                <input 
+                                                    type="date" 
+                                                    value={customRange.start}
+                                                    onChange={(e) => setCustomRange({ ...customRange, start: e.target.value })}
+                                                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black uppercase text-slate-400 pl-1 tracking-widest">Selesai</label>
+                                                <input 
+                                                    type="date" 
+                                                    value={customRange.end}
+                                                    onChange={(e) => setCustomRange({ ...customRange, end: e.target.value })}
+                                                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                                                />
+                                            </div>
+                                            <button 
+                                                onClick={() => setIsFilterOpen(false)}
+                                                className="w-full py-2 bg-brand-600 text-white rounded-lg text-xs font-bold hover:bg-brand-700 transition-colors"
+                                            >
+                                                Terapkan Filter
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -516,7 +570,6 @@ export default function KeuanganList() {
                                                     </div>
                                                 </div>
                                             </div>
-
                                             {expandedId === trx.id && (
                                                 <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                                                     <div className="space-y-3">
