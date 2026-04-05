@@ -10,6 +10,7 @@ import {
     Money,
     CalendarCheck,
     Wallet,
+    HandCoins,
 
     ArrowRight,
     Bell,
@@ -214,6 +215,12 @@ export default function Dashboard() {
                     {/* Services Section Grid 3x3 - Now without header for cleaner look */}
                     <section className="pb-10">
                         <div className="grid grid-cols-3 gap-x-4 gap-y-7">
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/iuran/baru')}>
+                                <div className="w-16 h-16 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center text-cyan-700 dark:text-cyan-400 group-active:scale-95 transition-transform">
+                                    <HandCoins weight="fill" className="text-[1.8rem]" />
+                                </div>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Iuran</span>
+                            </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/keuangan')}>
                                 <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-700 dark:text-blue-400 group-active:scale-95 transition-transform">
                                     <Money weight="fill" className="text-[1.8rem]" />
