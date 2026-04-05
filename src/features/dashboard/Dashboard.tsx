@@ -112,7 +112,7 @@ export default function Dashboard() {
                                     <h1 className="font-headline font-bold text-white text-3xl tracking-tighter leading-none">RT</h1>
                                     <div className="flex flex-col border-l border-white/20 pl-3">
                                         <h2 className="text-white font-headline font-bold text-[1.1rem] leading-none mb-1">
-                                            {currentScope || 'RT 00 / RW 00'}
+                                            {currentTenant?.location_detail ? currentTenant.location_detail.split(' • ')[0] : 'RT 00 / RW 00'}
                                         </h2>
                                         {currentTenant?.location_detail && (
                                             <p className="text-white/50 text-[0.65rem] font-bold uppercase tracking-tight line-clamp-1 leading-none">
@@ -141,7 +141,7 @@ export default function Dashboard() {
                 <div className="px-6 -mt-16 relative z-10 max-w-4xl mx-auto">
                     <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white dark:border-white/10">
                         <div className="flex justify-between items-center mb-1">
-                            <p className="text-on-surface-variant font-label text-[0.75rem] font-bold uppercase tracking-widest">Total Kas RT</p>
+                            <p className="text-on-surface-variant font-label text-[0.8rem] font-bold tracking-tight">Total Kas RT</p>
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
                                 <Wallet weight="fill" className="text-on-surface-variant text-xl" />
                             </div>
