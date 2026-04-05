@@ -331,7 +331,7 @@ export default function IuranForm() {
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-2 mb-1.5">
                                         <ChartPieSlice weight="fill" className="w-5 h-5 text-brand-200" />
-                                        <Text.Label className="!text-white !font-black !text-[10px] tracking-widest uppercase opacity-90">Ringkasan Kewajiban</Text.Label>
+                                        <span className="font-headline font-black text-white text-[10px] tracking-widest uppercase opacity-90">Ringkasan Kewajiban</span>
                                     </div>
                                     <Text.H1 className="!text-white !text-2xl !tracking-tight">Tahun {watchTahun || new Date().getFullYear()}</Text.H1>
                                 </div>
@@ -340,20 +340,20 @@ export default function IuranForm() {
                             <div className="p-6 space-y-6">
                                 <div className="flex justify-between items-start pb-4 border-b border-slate-50">
                                     <div className="space-y-1">
-                                        <Text.Label className="text-slate-400 font-bold !text-[9px]">Total Tagihan 12 Bulan</Text.Label>
+                                        <span className="font-headline font-black text-slate-500 text-[10px] tracking-tight uppercase">Total Tagihan 12 Bulan</span>
                                         <div className="flex items-baseline gap-1">
                                             <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <Text.Label className="text-slate-300 font-bold !text-[8px]">Tarif</Text.Label>
+                                        <span className="font-headline font-black text-slate-400 text-[9px] uppercase">Tarif</span>
                                         <p className="text-[10px] font-black text-slate-500 tracking-tight">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</p>
                                     </div>
                                 </div>
 
                                 <div className="pb-4 border-b border-slate-50">
                                     <div className="flex justify-between items-center mb-2">
-                                        <Text.Label className="text-emerald-600 font-bold !text-[9px]">Sudah Dibayar (Sistem)</Text.Label>
+                                        <span className="font-headline font-black text-emerald-600 text-[10px] tracking-tight uppercase">Sudah Dibayar (Sistem)</span>
                                         <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
                                     </div>
                                     {pendingAmount > 0 ? (
@@ -369,7 +369,7 @@ export default function IuranForm() {
                                 <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
                                     <div className="relative z-10 flex flex-col items-center text-center">
-                                        <Text.Label className="!text-brand-600 !font-black !text-[8px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</Text.Label>
+                                        <span className="font-headline font-black text-brand-600 text-[9px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</span>
                                         <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
                                             {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0)))).replace(/,00$/, '')}
                                         </Text.Amount>
@@ -433,7 +433,7 @@ export default function IuranForm() {
                                         >
                                             <option value="">-- Cari atau Pilih Warga --</option>
                                             {wargaList.map(w => (
-                                                <option key={w.id} value={w.id}>{w.nama} {w.alamat ? `- ${w.alamat}` : ''}</option>
+                                                <option key={w.id} value={w.id}>{w.nama}</option>
                                             ))}
                                         </select>
                                         {errors.warga_id && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.warga_id.message}</p>}
