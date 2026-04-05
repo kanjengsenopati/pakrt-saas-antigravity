@@ -37,6 +37,17 @@ type PengaturanFormData = {
     logo_kop: string;
     ttd_pake_qr: boolean;
     nama_ketua_rw: string;
+    // Jenis Pemasukan & Skema Hunian
+    jenis_pemasukan: string; // JSON string of JenisPemasukan[]
+    skema_iuran_hunian: string; // JSON string of Record<string, number>
+};
+
+type JenisPemasukan = {
+    id: string;
+    nama: string;
+    tipe: 'BULANAN' | 'INSIDENTIL';
+    nominal: number;
+    is_mandatory: boolean;
 };
 
 // Add useForm setValue to local variable for easier access in helper functions if needed
@@ -98,6 +109,11 @@ export default function Pengaturan() {
     const [pengeluaranCategories, setPengeluaranCategories] = useState<string[]>([]);
     const [tahunIuran, setTahunIuran] = useState<number[]>([]);
     const [newPemasukan, setNewPemasukan] = useState('');
+    const [newPemasukanNominal, setNewPemasukanNominal] = useState(0);
+    const [newPemasukanType, setNewPemasukanType] = useState<'BULANAN' | 'INSIDENTIL'>('BULANAN');
+    const [newPemasukanMandatory, setNewPemasukanMandatory] = useState(true);
+    const [jenisPemasukan, setJenisPemasukan] = useState<JenisPemasukan[]>([]);
+    
     const [newPengeluaran, setNewPengeluaran] = useState('');
     const [newTahun, setNewTahun] = useState('');
 
@@ -180,12 +196,16 @@ export default function Pengaturan() {
 
                 // Parse categories safely, fallback to empty array if not found in db
                 try {
+                    const parsedJenis = config.jenis_pemasukan ? JSON.parse(config.jenis_pemasukan) : [];
+                    setJenisPemasukan(Array.isArray(parsedJenis) ? parsedJenis : []);
+                    
                     setPemasukanCategories(config.kategori_pemasukan ? JSON.parse(config.kategori_pemasukan) : []);
                     setPengeluaranCategories(config.kategori_pengeluaran ? JSON.parse(config.kategori_pengeluaran) : []);
                     setTahunIuran(config.opsi_tahun_iuran ? JSON.parse(config.opsi_tahun_iuran) : []);
                     setJabatanOptions(config.jabatan_pengurus ? JSON.parse(config.jabatan_pengurus) : []);
                     setPeriodeOptions(config.periode_pengurus ? JSON.parse(config.periode_pengurus) : []);
                 } catch {
+                    setJenisPemasukan([]);
                     setPemasukanCategories([]);
                     setPengeluaranCategories([]);
                     setTahunIuran([]);
@@ -409,6 +429,7 @@ export default function Pengaturan() {
                 ttd_image: finalTtdUrl || '',
                 ttd_stempel: stempelPreview || '',
                 logo_kop: logoPreview || '',
+                jenis_pemasukan: JSON.stringify(jenisPemasukan),
                 kategori_pemasukan: JSON.stringify(pemasukanCategories),
                 kategori_pengeluaran: JSON.stringify(pengeluaranCategories),
                 opsi_tahun_iuran: JSON.stringify(tahunIuran),
@@ -428,10 +449,19 @@ export default function Pengaturan() {
 
     const addCategory = (type: 'masuk' | 'keluar' | 'tahun' | 'jabatan' | 'periode') => {
         if (type === 'masuk' && newPemasukan.trim()) {
+            const newItem: JenisPemasukan = {
+                id: crypto.randomUUID(),
+                nama: newPemasukan.trim(),
+                tipe: newPemasukanType,
+                nominal: newPemasukanNominal,
+                is_mandatory: newPemasukanMandatory
+            };
+            setJenisPemasukan([...jenisPemasukan, newItem]);
             if (!pemasukanCategories.includes(newPemasukan.trim())) {
                 setPemasukanCategories([...pemasukanCategories, newPemasukan.trim()]);
             }
             setNewPemasukan('');
+            setNewPemasukanNominal(0);
         } else if (type === 'keluar' && newPengeluaran.trim()) {
             if (!pengeluaranCategories.includes(newPengeluaran.trim())) {
                 setPengeluaranCategories([...pengeluaranCategories, newPengeluaran.trim()]);
@@ -462,36 +492,40 @@ export default function Pengaturan() {
         }
     };
 
-    const removeCategory = (type: 'masuk' | 'keluar' | 'tahun' | 'jabatan' | 'periode', catOrYear: string | number) => {
+    const removeCategory = (type: 'masuk' | 'keluar' | 'tahun' | 'jabatan' | 'periode', catOrId: string | number) => {
         if (type === 'masuk') {
-            setPemasukanCategories(pemasukanCategories.filter(c => c !== catOrYear as string));
+            const itemToRemove = jenisPemasukan.find(j => j.id === catOrId);
+            setJenisPemasukan(jenisPemasukan.filter(j => j.id !== catOrId));
+            if (itemToRemove) {
+                setPemasukanCategories(pemasukanCategories.filter(c => c !== itemToRemove.nama));
+            }
         } else if (type === 'keluar') {
-            setPengeluaranCategories(pengeluaranCategories.filter(c => c !== catOrYear as string));
+            setPengeluaranCategories(pengeluaranCategories.filter(c => c !== catOrId as string));
         } else if (type === 'tahun') {
-            setTahunIuran(tahunIuran.filter(y => y !== catOrYear as number));
+            setTahunIuran(tahunIuran.filter(y => y !== catOrId as number));
         } else if (type === 'jabatan') {
             // Guard: warn if any active Pengurus uses this jabatan
-            const inUse = (allPengurus || []).filter(p => p.jabatan === catOrYear && p.status === 'aktif');
+            const inUse = (allPengurus || []).filter(p => p.jabatan === catOrId && p.status === 'aktif');
             if (inUse.length > 0) {
                 const names = inUse.map(p => p.warga?.nama || 'Unknown').join(', ');
                 const confirm = window.confirm(
-                    `Jabatan "${catOrYear}" masih digunakan oleh ${inUse.length} pengurus aktif (${names}).\n\nHapus jabatan ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun jabatan tersebut tidak akan muncul di pilihan baru.`
+                    `Jabatan "${catOrId}" masih digunakan oleh ${inUse.length} pengurus aktif (${names}).\n\nHapus jabatan ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun jabatan tersebut tidak akan muncul di pilihan baru.`
                 );
                 if (!confirm) return;
             }
-            const updated = (jabatanOptions || []).filter(j => j !== catOrYear as string);
+            const updated = (jabatanOptions || []).filter(j => j !== catOrId as string);
             setJabatanOptions(updated);
             persistJabatan(updated);
         } else if (type === 'periode') {
             // Guard: warn if any Pengurus uses this periode
-            const inUse = (allPengurus || []).filter(p => p.periode === catOrYear);
+            const inUse = (allPengurus || []).filter(p => p.periode === catOrId);
             if (inUse.length > 0) {
                 const confirm = window.confirm(
-                    `Periode "${catOrYear}" masih memiliki ${inUse.length} data pengurus (termasuk riwayat).\n\nHapus periode ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun periode tersebut tidak akan muncul di pilihan baru.`
+                    `Periode "${catOrId}" masih memiliki ${inUse.length} data pengurus (termasuk riwayat).\n\nHapus periode ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun periode tersebut tidak akan muncul di pilihan baru.`
                 );
                 if (!confirm) return;
             }
-            const updated = (periodeOptions || []).filter(p => p !== catOrYear as string);
+            const updated = (periodeOptions || []).filter(p => p !== catOrId as string);
             setPeriodeOptions(updated);
             persistPeriode(updated);
         }
@@ -919,40 +953,95 @@ export default function Pengaturan() {
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Money weight="fill" className="text-brand-600 w-5 h-5" />
-                                                <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pemasukan</h3>
+                                                <h3 className="text-sm font-bold text-gray-900 tracking-normal">Jenis Pemasukan (Database Driven)</h3>
                                             </div>
-                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="text"
-                                                        value={newPemasukan}
-                                                        onChange={(e) => setNewPemasukan(e.target.value)}
-                                                        placeholder="Contoh: Iuran Sampah"
-                                                        className="flex-1 rounded-xl border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none bg-white transition-all shadow-sm"
-                                                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCategory('masuk'))}
-                                                    />
+                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="md:col-span-2">
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Nama Item Iuran / Pemasukan</label>
+                                                        <input
+                                                            type="text"
+                                                            value={newPemasukan}
+                                                            onChange={(e) => setNewPemasukan(e.target.value)}
+                                                            placeholder="Contoh: Iuran Sampah, Agenda Jalan Sehat"
+                                                            className="w-full rounded-xl border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none bg-white transition-all shadow-sm"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Tipe</label>
+                                                        <select 
+                                                            value={newPemasukanType}
+                                                            onChange={(e) => setNewPemasukanType(e.target.value as any)}
+                                                            className="w-full rounded-xl border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none bg-white transition-all shadow-sm"
+                                                        >
+                                                            <option value="BULANAN">Bulanan (Rutin)</option>
+                                                            <option value="INSIDENTIL">Insidentil (Acara)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Nominal (Jika Flat)</label>
+                                                        <CurrencyInput 
+                                                            value={newPemasukanNominal}
+                                                            onChange={(val) => setNewPemasukanNominal(val)}
+                                                            className="bg-white p-3 border-gray-200 rounded-xl"
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-2 flex items-center justify-between bg-white/50 p-3 rounded-xl border border-dashed border-gray-200">
+                                                        <div>
+                                                            <p className="text-xs font-bold text-gray-700">Wajib bagi semua warga?</p>
+                                                            <p className="text-[10px] text-gray-400 mt-0.5">Jika aktif, akan masuk ke perhitungan Target Statistik.</p>
+                                                        </div>
+                                                        <label className="relative inline-flex items-center cursor-pointer">
+                                                            <input 
+                                                                type="checkbox" 
+                                                                checked={newPemasukanMandatory}
+                                                                onChange={(e) => setNewPemasukanMandatory(e.target.checked)}
+                                                                className="sr-only peer" 
+                                                            />
+                                                            <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                                                        </label>
+                                                    </div>
                                                     <button
                                                         type="button"
                                                         onClick={() => addCategory('masuk')}
-                                                        className="p-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-all shadow-md active:scale-95"
+                                                        className="md:col-span-2 w-full py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 font-bold text-sm"
                                                     >
-                                                        <Plus weight="bold" className="w-5 h-5" />
+                                                        <Plus weight="bold" className="w-4 h-4" />
+                                                        Tambah Jenis Pemasukan
                                                     </button>
                                                 </div>
-                                                <div className="flex flex-wrap gap-2 min-h-[40px]">
-                                                    {pemasukanCategories.map((cat, i) => (
-                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
-                                                            <span>{cat}</span>
+
+                                                <div className="space-y-3 pt-4 border-t border-gray-100">
+                                                    {jenisPemasukan.map((item) => (
+                                                        <div key={item.id} className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:border-brand-200 transition-all group">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`p-2 rounded-xl ${item.tipe === 'BULANAN' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                                    <Money weight="fill" className="w-5 h-5" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <p className="text-sm font-bold text-gray-900">{item.nama}</p>
+                                                                        {item.is_mandatory && <span className="px-2 py-0.5 bg-brand-50 text-brand-600 text-[9px] font-bold rounded-full border border-brand-100 uppercase tracking-wider">Mandatory</span>}
+                                                                    </div>
+                                                                    <p className="text-[10px] text-gray-500 font-medium">
+                                                                        {item.tipe} • Rp {item.nominal.toLocaleString('id-ID')}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => removeCategory('masuk', cat)}
-                                                                className="text-brand-400 hover:text-red-500 transition-colors"
+                                                                onClick={() => removeCategory('masuk', item.id)}
+                                                                className="opacity-0 group-hover:opacity-100 p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                                                             >
-                                                                <X weight="bold" className="w-3 h-3" />
+                                                                <Trash weight="bold" className="w-4 h-4" />
                                                             </button>
                                                         </div>
                                                     ))}
-                                                    {pemasukanCategories.length === 0 && <p className="text-[10px] text-gray-400 italic">Belum ada kategori pemasukan</p>}
+                                                    {jenisPemasukan.length === 0 && (
+                                                        <div className="text-center py-6 border-2 border-dashed border-gray-100 rounded-2xl">
+                                                            <p className="text-xs text-gray-400 font-medium italic">Belum ada jenis pemasukan terkonfigurasi.</p>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -1003,12 +1092,12 @@ export default function Pengaturan() {
                                         <div className="space-y-4">
                                             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
                                                 <div className="w-2 h-2 rounded-full bg-brand-500"></div>
-                                                Kewajiban & Iuran
+                                                Aturan Iuran Berdasarkan Status Hunian
                                             </h3>
                                             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Tetap - Dihuni</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal uppercase">Status Rumah Berpenghuni</label>
                                                         <Controller
                                                             name="iuran_tetap_dihuni"
                                                             control={control}
@@ -1018,7 +1107,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Tetap - Kosong</label>
+                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal uppercase">Status Rumah Kosong / Lahan</label>
                                                         <Controller
                                                             name="iuran_tetap_kosong"
                                                             control={control}

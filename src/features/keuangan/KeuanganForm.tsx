@@ -22,6 +22,7 @@ export default function KeuanganForm() {
 
     const [pemasukanCategories, setPemasukanCategories] = useState<string[]>(['Lainnya']);
     const [pengeluaranCategories, setPengeluaranCategories] = useState<string[]>(['Lainnya']);
+    const [jenisPemasukanSettings, setJenisPemasukanSettings] = useState<any[]>([]);
 
     const { register, handleSubmit, watch, control, setValue, reset, formState: { errors } } = useForm<KeuanganFormData>({
         defaultValues: {
@@ -48,9 +49,21 @@ export default function KeuanganForm() {
             pengaturanService.getAll(currentTenant.id, currentScope).then(items => {
                 const config: any = {};
                 items.forEach(i => config[i.key] = i.value);
-                if (config.kategori_pemasukan) {
+                
+                // New structured format
+                if (config.jenis_pemasukan) {
+                    try { 
+                        const parsed = JSON.parse(config.jenis_pemasukan);
+                        setJenisPemasukanSettings(parsed);
+                        if (parsed.length > 0) {
+                            setPemasukanCategories(parsed.map((p: any) => p.nama));
+                        }
+                    } catch { }
+                } else if (config.kategori_pemasukan) {
+                    // Legacy fallback
                     try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch { }
                 }
+
                 if (config.kategori_pengeluaran) {
                     try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch { }
                 }
@@ -74,7 +87,18 @@ export default function KeuanganForm() {
                 });
             }
         }
-    }, [currentTenant, isEdit, id, reset]);
+    }, [currentTenant, isEdit, id, reset, currentScope]);
+
+    // Auto-fill nominal based on category selection
+    const kategoriWatch = watch('kategori');
+    useEffect(() => {
+        if (!isEdit && tipeWatch === 'pemasukan' && kategoriWatch) {
+            const setting = jenisPemasukanSettings.find(s => s.nama === kategoriWatch);
+            if (setting && setting.nominal > 0) {
+                setValue('nominal', setting.nominal);
+            }
+        }
+    }, [kategoriWatch, jenisPemasukanSettings, tipeWatch, isEdit, setValue]);
 
     const onSubmit = async (data: KeuanganFormData) => {
         if (!currentTenant) return;

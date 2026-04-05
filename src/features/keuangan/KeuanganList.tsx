@@ -19,6 +19,9 @@ import { formatRupiah } from '../../utils/currency';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
+import { wargaService } from '../../services/wargaService';
+import { pengaturanService } from '../../services/pengaturanService';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const getMonthNumber = (monthName: string) => {
     const months = {
@@ -61,6 +64,12 @@ export default function KeuanganList() {
     const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
     const typeFilterRef = useRef<HTMLDivElement>(null);
 
+    // Statistics & Tabs State
+    const [activeTab, setActiveTab] = useState<'laporan' | 'statistik'>('laporan');
+    const [wargaStats, setWargaStats] = useState<{ total: number, dihuni: number, kosong: number }>({ total: 0, dihuni: 0, kosong: 0 });
+    const [incomeSettings, setIncomeSettings] = useState<any[]>([]);
+    const [occupancySettings, setOccupancySettings] = useState<Record<string, number>>({});
+
     useEffect(() => {
         if (currentTenant) {
             loadData();
@@ -87,8 +96,32 @@ export default function KeuanganList() {
         try {
             const data = await keuanganService.getAll(currentTenant.id, currentScope);
             setTransactions(data.items || []);
+            
+            // Load Statistics Data
+            const [wargaData, configItems] = await Promise.all([
+                wargaService.getAll(currentTenant.id, currentScope, 1, 1000),
+                pengaturanService.getAll(currentTenant.id, currentScope)
+            ]);
+            
+            const config: Record<string, any> = {};
+            configItems.forEach(i => config[i.key] = i.value);
+            
+            const verifiedWarga = (wargaData.items || []).filter((w: any) => w.verification_status === 'VERIFIED');
+            const dihuni = verifiedWarga.filter((w: any) => (w.status_rumah || 'Dihuni').toLowerCase() === 'dihuni').length;
+            const kosong = verifiedWarga.filter((w: any) => (w.status_rumah || 'Dihuni').toLowerCase() === 'kosong').length;
+            setWargaStats({ total: verifiedWarga.length, dihuni, kosong });
+            
+            try {
+                setIncomeSettings(config.jenis_pemasukan ? JSON.parse(config.jenis_pemasukan) : []);
+                setOccupancySettings({
+                    'dihuni': parseFloat(config.iuran_tetap_dihuni) || 0,
+                    'kosong': parseFloat(config.iuran_tetap_kosong) || 0
+                });
+            } catch (e) {
+                console.error("Failed to parse settings", e);
+            }
         } catch (error) {
-            console.error("Failed to load keuangan:", error);
+            console.error("Failed to load keuangan data", error);
         } finally {
             setIsLoading(false);
         }
@@ -161,6 +194,45 @@ export default function KeuanganList() {
         }, { kasMasuk: 0, kasKeluar: 0, saldo: 0 });
     }, [displayedTransactions]);
 
+    const statistics = useMemo(() => {
+        // Target Calculation
+        // 1. Dihuni Rules
+        const iuranDihuni = (occupancySettings.dihuni || 0) * wargaStats.dihuni;
+        const iuranKosong = (occupancySettings.kosong || 0) * wargaStats.kosong;
+        
+        // 2. Mandatory Items (Insidentil, etc.)
+        const mandatoryOthers = incomeSettings
+            .filter(item => item.is_mandatory)
+            .reduce((sum, item) => sum + (item.nominal * wargaStats.total), 0);
+            
+        const target = iuranDihuni + iuranKosong + mandatoryOthers;
+        
+        // Realisasi
+        // Sum transactions that match any mandatory item by name/category
+        const mandatoryItemNames = [
+            ...incomeSettings.filter(i => i.is_mandatory).map(i => i.nama.toLowerCase())
+        ];
+        
+        // We also consider 'Iuran Warga' as part of the monthly realization
+        const isMandatoryMatch = (t: Keuangan) => {
+            const cat = t.kategori.toLowerCase();
+            return mandatoryItemNames.includes(cat) || cat === 'iuran warga';
+        };
+        
+        const realisasi = transactions
+            .filter(t => t.tipe === 'pemasukan' && isMandatoryMatch(t))
+            .reduce((sum, t) => sum + t.nominal, 0);
+            
+        const status = target > 0 ? (realisasi / target) * 100 : 0;
+        
+        return {
+            target,
+            realisasi,
+            status,
+            wargaTotal: wargaStats.total
+        };
+    }, [transactions, wargaStats, incomeSettings, occupancySettings]);
+
     const formatFormalId = (dateString: string, itemId: string) => {
         const d = new Date(dateString);
         const yyyy = d.getFullYear();
@@ -221,7 +293,7 @@ export default function KeuanganList() {
         <div className="space-y-4 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <Text.H1>Laporan Arus Kas Masuk Dan Keluar RT</Text.H1>
+                    <Text.H1>Laporan Kas RT</Text.H1>
                 </div>
                 {!isWarga && (
                     <HasPermission module="Buku Kas / Transaksi" action="Buat">
@@ -242,6 +314,25 @@ export default function KeuanganList() {
                     </HasPermission>
                 )}
             </div>
+
+            {/* Tab Switcher */}
+            <div className="flex bg-slate-100/80 p-1.5 rounded-[24px] border border-slate-200/60 w-full mb-1 gap-1.5 shadow-inner">
+                <button
+                    onClick={() => setActiveTab('laporan')}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-4 text-sm font-bold rounded-[20px] transition-all duration-300 ${activeTab === 'laporan' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200/40'}`}
+                >
+                    Transaksi
+                </button>
+                <button
+                    onClick={() => setActiveTab('statistik')}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-4 text-sm font-bold rounded-[20px] transition-all duration-300 ${activeTab === 'statistik' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200/40'}`}
+                >
+                    Statistik
+                </button>
+            </div>
+
+            {activeTab === 'laporan' ? (
+                <>
 
             <div className="grid grid-cols-3 gap-3 md:gap-4 -mt-1">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
@@ -625,6 +716,109 @@ export default function KeuanganList() {
                     )}
                 </div>
             </div>
+                </>
+            ) : (
+                <div className="space-y-6 animate-fade-in pb-20">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                                <Text.Label className="tracking-widest uppercase opacity-60">Target Koleksi</Text.Label>
+                                <div className="w-10 h-10 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shadow-sm">
+                                    <Funnel weight="fill" size={20} />
+                                </div>
+                            </div>
+                            <Text.Amount className="text-3xl text-slate-900">{formatRupiah(statistics.target)}</Text.Amount>
+                            <div className="mt-2 space-y-1.5">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                    <span>Progress</span>
+                                    <span>{statistics.status.toFixed(1)}%</span>
+                                </div>
+                                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-brand-500 rounded-full transition-all duration-700 ease-out shadow-sm"
+                                        style={{ width: `${Math.min(statistics.status, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-all duration-300 flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                                <Text.Label className="tracking-widest uppercase opacity-60">Realisasi</Text.Label>
+                                <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm">
+                                    <CheckCircle weight="fill" size={20} />
+                                </div>
+                            </div>
+                            <Text.Amount className="text-3xl text-slate-900">{formatRupiah(statistics.realisasi)}</Text.Amount>
+                            <div className="mt-2 text-[10px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full w-fit">
+                                Terverifikasi sistem
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-indigo-200 transition-all duration-300 flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                                <Text.Label className="tracking-widest uppercase opacity-60">Status Capaian</Text.Label>
+                                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
+                                    <ArrowDownRight weight="fill" size={20} className="-rotate-90" />
+                                </div>
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                                <Text.Amount className="text-4xl text-indigo-600">{statistics.status.toFixed(1)}%</Text.Amount>
+                                <span className="text-xs font-bold text-slate-400">Total</span>
+                            </div>
+                            <div className="mt-2 text-[10px] font-medium text-slate-400">
+                                Berdasarkan data {statistics.wargaTotal} warga aktif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-10 rounded-[40px] border border-slate-100 shadow-premium flex flex-col items-center">
+                        <div className="w-full max-w-md aspect-square relative flex items-center justify-center">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={[
+                                            { name: 'Tercapai', value: statistics.realisasi },
+                                            { name: 'Belum', value: Math.max(statistics.target - statistics.realisasi, 0) }
+                                        ]}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={80}
+                                        outerRadius={120}
+                                        paddingAngle={8}
+                                        dataKey="value"
+                                        stroke="none"
+                                        startAngle={90}
+                                        endAngle={-270}
+                                    >
+                                        <Cell fill="#0F172A" />
+                                        <Cell fill="#f1f5f9" />
+                                    </Pie>
+                                    <Tooltip 
+                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
+                                        formatter={(value: any) => formatRupiah(value)}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian</span>
+                                <span className="text-4xl font-black text-slate-900 tracking-tight">{statistics.status.toFixed(0)}%</span>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-8 mt-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-slate-900" />
+                                <Text.Label className="text-slate-900 font-bold">Realisasi</Text.Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-slate-100" />
+                                <Text.Label className="text-slate-400">Belum Tercapai</Text.Label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {selectedProof && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-5 bg-black/60 backdrop-blur-sm animate-fade-in">
