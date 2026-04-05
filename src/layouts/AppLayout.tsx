@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../components/ui/Sidebar';
 import { Header } from '../components/ui/Header';
-import { StickyHomeButton } from '../components/ui/StickyHomeButton';
 import { useTenant } from '../contexts/TenantContext';
 import { ThemeManager } from '../components/ThemeManager';
 import { BottomNav } from '../components/ui/BottomNav';
@@ -25,7 +24,6 @@ export function AppLayout() {
                     <Outlet />
                 </main>
             </div>
-            <StickyHomeButton />
             <BottomNav />
         </div>
     );

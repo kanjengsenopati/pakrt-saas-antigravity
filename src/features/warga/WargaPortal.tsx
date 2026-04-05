@@ -23,7 +23,6 @@ import { useNavigate } from 'react-router-dom';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
-import { StickyHomeButton } from '../../components/ui/StickyHomeButton';
 import { Text } from '../../components/ui/Typography';
 
 export default function WargaPortal() {
@@ -315,7 +314,6 @@ export default function WargaPortal() {
                 )}
             </div>
 
-            <StickyHomeButton />
         </div>
     );
 }
