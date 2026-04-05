@@ -8,6 +8,7 @@ import { Users, Plus, Funnel, PencilSimple, Trash, CaretDown, CaretRight, Eye, D
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
+import { Text } from '../../components/ui/Typography';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -140,8 +141,8 @@ export default function WargaList() {
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">{user?.role?.toLowerCase() === 'warga' ? 'Profil Warga' : 'Data Warga'}</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">Kelola database kependudukan lingkungan</p>
+                    <Text.H1>{user?.role?.toLowerCase() === 'warga' ? 'Profil Warga' : 'Data Warga'}</Text.H1>
+                    <Text.Body>Kelola database kependudukan lingkungan</Text.Body>
                 </div>
                 
                 <div className="flex flex-col w-full sm:w-auto gap-2">
@@ -264,25 +265,25 @@ export default function WargaList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 -mt-2">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <Text.Label className="mb-1.5 flex items-center gap-2">
                         <Users weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Warga
-                    </p>
+                    </Text.Label>
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{wargaList.length}</span>
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-none">Jiwa</span>
+                        <Text.Amount className="text-2xl text-slate-900">{wargaList.length}</Text.Amount>
+                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-400">Jiwa</Text.Caption>
                     </div>
                 </div>
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <Text.Label className="mb-1.5 flex items-center gap-2 text-slate-400">
                         <UserPlus weight="duotone" className="text-amber-400 w-4 h-4" />
                         Menunggu Verifikasi
-                    </p>
+                    </Text.Label>
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{pendingWarga.length}</span>
-                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-none">Antrian</span>
+                        <Text.Amount className="text-2xl text-white">{pendingWarga.length}</Text.Amount>
+                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-500">Antrian</Text.Caption>
                     </div>
                 </div>
             </div>
@@ -333,15 +334,15 @@ export default function WargaList() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 text-slate-500 text-[14px] capitalize tracking-wider border-b border-slate-200">
-                                <th className="p-2.5 w-8 text-center font-semibold text-slate-500">No</th>
+                            <tr className="bg-slate-50 border-b border-slate-200">
+                                <th className="p-2.5 w-8 text-center"><Text.Label>No</Text.Label></th>
                                 <th className="p-2.5 w-8 text-center"></th>
-                                <th className="p-3 font-semibold text-slate-500">Nama & Identitas</th>
-                                <th className="p-3 font-semibold text-slate-500 text-center">Kontak</th>
-                                <th className="p-3 font-semibold text-slate-500 text-center">J. Kelamin</th>
-                                <th className="p-3 font-semibold text-slate-500 text-center">Agama</th>
-                                <th className="p-3 font-semibold text-slate-500">Alamat</th>
-                                <th className="p-3 font-semibold text-slate-500 text-center">Aksi</th>
+                                <th className="p-3"><Text.Label>Nama & Identitas</Text.Label></th>
+                                <th className="p-3 text-center"><Text.Label>Kontak</Text.Label></th>
+                                <th className="p-3 text-center"><Text.Label>J. Kelamin</Text.Label></th>
+                                <th className="p-3 text-center"><Text.Label>Agama</Text.Label></th>
+                                <th className="p-3"><Text.Label>Alamat</Text.Label></th>
+                                <th className="p-3 text-center"><Text.Label>Aksi</Text.Label></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -369,10 +370,10 @@ export default function WargaList() {
                                             </td>
                                             <td className="p-3 text-center"></td>
                                             <td className="p-3">
-                                                <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
+                                                <Text.H2 className="!text-[14px] leading-tight">{warga.nama}</Text.H2>
                                                 <div className="mt-1 flex items-center gap-1.5">
-                                                    <span className="text-[9px] font-bold text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</span>
-                                                    <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none capitalize">Pending Verification</span>
+                                                    <Text.Label className="!text-[9px] text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</Text.Label>
+                                                    <Text.Label className="!text-[9px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none">Pending Verification</Text.Label>
                                                 </div>
                                             </td>
                                             <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.kontak || '-'}</td>
@@ -422,12 +423,12 @@ export default function WargaList() {
                                                 {expandedWargaId === warga.id ? <CaretDown weight="bold" size={12} /> : <CaretRight weight="bold" size={12} />}
                                             </td>
                                             <td className="p-3">
-                                                <p className="font-bold text-slate-800 leading-tight text-[14px]">{warga.nama}</p>
+                                                <Text.H2 className="!text-[14px] leading-tight">{warga.nama}</Text.H2>
                                                 <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden">
-                                                    <span className="text-[10px] font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 uppercase tracking-widest leading-none">{warga.nik}</span>
-                                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border uppercase tracking-widest leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                                                    <Text.Label className="!text-[10px] text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 leading-none">{warga.nik}</Text.Label>
+                                                    <Text.Label className={`!text-[10px] px-2 py-0.5 rounded-full border leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
                                                         {warga.status_penduduk || 'Tetap'}
-                                                    </span>
+                                                    </Text.Label>
                                                 </div>
                                             </td>
                                             <td className="p-3 text-slate-600 text-[14px] font-normal text-center whitespace-nowrap">{warga.kontak || '-'}</td>
@@ -503,40 +504,40 @@ export default function WargaList() {
                                                 <Users weight="duotone" className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900 text-[15px] tracking-tight leading-tight">{warga.nama}</h3>
+                                                <Text.H2 className="text-[15px] leading-tight">{warga.nama}</Text.H2>
                                                 <div className="flex items-center gap-1.5 mt-1">
-                                                    <span className="text-[10px] font-mono text-brand-600 font-bold">{warga.nik}</span>
+                                                    <Text.Caption className="font-mono text-brand-600 font-bold">{warga.nik}</Text.Caption>
                                                     <span className="w-1 h-1 rounded-full bg-slate-200"></span>
-                                                    <span className="text-[10px] text-slate-400 font-medium">{warga.jenis_kelamin || '-'}</span>
+                                                    <Text.Caption className="font-medium">{warga.jenis_kelamin || '-'}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             {activeTab === 'Pending' ? (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
+                                                <Text.Label className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
                                                     <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5" />
                                                     Pending
-                                                </span>
+                                                </Text.Label>
                                             ) : (
-                                                <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border flex items-center gap-1 shadow-sm uppercase tracking-tighter ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-brand-50 text-brand-600 border-brand-100'}`}>
+                                                <Text.Label className={`px-2 py-0.5 rounded-lg border flex items-center gap-1 shadow-sm ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-brand-50 text-brand-600 border-brand-100'}`}>
                                                     {warga.status_penduduk || 'Tetap'}
-                                                </span>
+                                                </Text.Label>
                                             )}
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3 mb-4">
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5">
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Agama</p>
-                                            <p className="text-[11px] font-bold text-slate-700">{warga.agama || '-'}</p>
+                                            <Text.Label className="mb-1 leading-none">Agama</Text.Label>
+                                            <Text.Body className="!text-[11px] font-bold text-slate-700">{warga.agama || '-'}</Text.Body>
                                         </div>
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5">
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Kontak</p>
-                                            <p className="text-[11px] font-bold text-slate-700 truncate">{warga.kontak || '-'}</p>
+                                            <Text.Label className="mb-1 leading-none">Kontak</Text.Label>
+                                            <Text.Body className="!text-[11px] font-bold text-slate-700 truncate">{warga.kontak || '-'}</Text.Body>
                                         </div>
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-2.5 col-span-2">
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 leading-none shadow-sm">Alamat Domisili</p>
-                                            <p className="text-[11px] font-medium text-slate-600 italic leading-relaxed">"{warga.alamat}"</p>
+                                            <Text.Label className="mb-1 leading-none">Alamat Domisili</Text.Label>
+                                            <Text.Body className="!text-[11px] font-medium text-slate-600 italic leading-relaxed">"{warga.alamat}"</Text.Body>
                                         </div>
                                     </div>
 
@@ -609,8 +610,8 @@ export default function WargaList() {
                 
                 {/* Pagination: Hide if only 1 data (typical for Warga role) */}
                 {!isLoading && filteredWarga.length > 1 && (
-                    <div className="p-4 border-t border-gray-100 bg-gray-50/50 text-sm text-gray-500 flex justify-between items-center">
-                        <span>Menampilkan {filteredWarga.length} data warga</span>
+                    <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                        <Text.Caption>Menampilkan {filteredWarga.length} data warga</Text.Caption>
                         <div className="flex gap-1">
                             <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50">Sebelumnnya</button>
                             <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50">Selanjutnya</button>

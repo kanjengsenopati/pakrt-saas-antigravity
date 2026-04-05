@@ -221,7 +221,7 @@ export default function KeuanganList() {
         <div className="space-y-4 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <Text.Body className="font-bold text-slate-800 tracking-tight text-[1.1rem]">Laporan Arus Kas Masuk Dan Keluar RT</Text.Body>
+                    <Text.H1>Laporan Arus Kas Masuk Dan Keluar RT</Text.H1>
                 </div>
                 {!isWarga && (
                     <HasPermission module="Buku Kas / Transaksi" action="Buat">
@@ -246,19 +246,19 @@ export default function KeuanganList() {
             <div className="grid grid-cols-3 gap-3 md:gap-4 -mt-1">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Kas Masuk</Text.Label>
-                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter text-brand-600 leading-none">{formatRupiah(displayedSummary.kasMasuk)}</Text.Amount>
+                    <Text.Label className="mb-1">Kas Masuk</Text.Label>
+                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl text-brand-600 leading-none">{formatRupiah(displayedSummary.kasMasuk)}</Text.Amount>
                 </div>
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-red-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-red-400" />
-                    <Text.Label className="text-sm font-bold text-slate-900 tracking-tight mb-1">Kas Keluar</Text.Label>
-                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter text-red-600 leading-none">{formatRupiah(displayedSummary.kasKeluar)}</Text.Amount>
+                    <Text.Label className="mb-1">Kas Keluar</Text.Label>
+                    <Text.Amount className="text-sm sm:text-xl lg:text-2xl text-red-600 leading-none">{formatRupiah(displayedSummary.kasKeluar)}</Text.Amount>
                 </div>
 
                 <div className={`p-4 rounded-[24px] border shadow-premium relative overflow-hidden transition-all duration-300 flex flex-col items-center justify-center text-center ${displayedSummary.saldo >= 0 ? 'bg-white border-slate-100' : 'bg-red-900 border-red-800'}`}>
-                    <Text.Label className={`text-sm font-bold tracking-tight mb-1 ${displayedSummary.saldo >= 0 ? 'text-slate-900' : 'text-white/70'}`}>Saldo</Text.Label>
-                    <Text.Amount className={`text-sm sm:text-xl lg:text-2xl font-bold tracking-tighter leading-none ${displayedSummary.saldo >= 0 ? 'text-brand-600' : 'text-white'}`}>{formatRupiah(displayedSummary.saldo)}</Text.Amount>
+                    <Text.Label className={`mb-1 ${displayedSummary.saldo >= 0 ? '' : 'text-white/70'}`}>Saldo</Text.Label>
+                    <Text.Amount className={`text-sm sm:text-xl lg:text-2xl leading-none ${displayedSummary.saldo >= 0 ? 'text-brand-600' : 'text-white'}`}>{formatRupiah(displayedSummary.saldo)}</Text.Amount>
                 </div>
             </div>
 

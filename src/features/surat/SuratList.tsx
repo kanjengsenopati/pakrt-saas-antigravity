@@ -6,6 +6,7 @@ import { SuratPengantar } from '../../database/db';
 import { dateUtils } from '../../utils/date';
 import { Plus, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCircle, Printer } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
+import { Text } from '../../components/ui/Typography';
 
 export default function SuratList() {
     const { currentTenant, currentScope } = useTenant();
@@ -68,8 +69,8 @@ export default function SuratList() {
             {/* Header Area */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="page-title">Surat Pengantar</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-tight">Kelola permohonan surat pengantar warga</p>
+                    <Text.H1>Surat Pengantar</Text.H1>
+                    <Text.Body>Kelola permohonan surat pengantar warga</Text.Body>
                 </div>
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button
@@ -94,25 +95,25 @@ export default function SuratList() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <Text.Label className="mb-1.5 flex items-center gap-2">
                         <FileText weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Surat
-                    </p>
+                    </Text.Label>
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{suratList.length}</span>
-                        <span className="text-[11px] font-bold text-slate-400">Permohonan</span>
+                        <Text.Amount className="text-2xl text-slate-900">{suratList.length}</Text.Amount>
+                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-400">Permohonan</Text.Caption>
                     </div>
                 </div>
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <Text.Label className="mb-1.5 flex items-center gap-2 text-slate-400">
                         <ClockCounterClockwise weight="duotone" className="text-amber-400 w-4 h-4" />
                         Antrian Berjalan
-                    </p>
+                    </Text.Label>
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-black text-white tracking-tight tabular-nums">{suratList.filter(s => s.status === 'proses').length}</span>
-                        <span className="text-[11px] font-bold text-slate-500">Berjalan</span>
+                        <Text.Amount className="text-2xl text-white">{suratList.filter(s => s.status === 'proses').length}</Text.Amount>
+                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-500">Berjalan</Text.Caption>
                     </div>
                 </div>
             </div>
@@ -138,12 +139,12 @@ export default function SuratList() {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-[10px] font-bold border-b border-gray-200">
-                                <th className="p-3 font-semibold">Pemohon</th>
-                                <th className="p-3 font-semibold">Jenis / Tanggal</th>
-                                <th className="p-3 font-semibold">Keperluan</th>
-                                <th className="p-3 font-semibold text-center">Status</th>
-                                <th className="p-3 font-semibold text-right whitespace-nowrap px-6">Aksi</th>
+                            <tr className="bg-gray-50 border-b border-gray-200">
+                                <th className="p-3"><Text.Label>Pemohon</Text.Label></th>
+                                <th className="p-3"><Text.Label>Jenis / Tanggal</Text.Label></th>
+                                <th className="p-3"><Text.Label>Keperluan</Text.Label></th>
+                                <th className="p-3 text-center"><Text.Label>Status</Text.Label></th>
+                                <th className="p-3 text-right whitespace-nowrap px-6"><Text.Label>Aksi</Text.Label></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -166,8 +167,8 @@ export default function SuratList() {
                                 filteredSurat.map((surat) => (
                                     <tr key={surat.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="p-3">
-                                            <p className="font-bold text-slate-800 text-sm">{surat.pemohon?.nama}</p>
-                                            <p className="text-[10px] text-gray-400 font-medium">NIK: {surat.pemohon?.nik || '-'}</p>
+                                            <Text.H2 className="!text-sm">{surat.pemohon?.nama}</Text.H2>
+                                            <Text.Caption className="!text-[10px]">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
                                         </td>
                                         <td className="p-3">
                                             <p className="font-bold text-brand-700 text-xs tracking-normal">{surat.jenis_surat}</p>
@@ -177,7 +178,7 @@ export default function SuratList() {
                                             </div>
                                         </td>
                                         <td className="p-3">
-                                            <p className="text-[11px] text-slate-500 font-medium line-clamp-2 max-w-[200px] leading-snug">{surat.keperluan}</p>
+                                            <Text.Body className="!text-[11px] line-clamp-2 max-w-[200px] leading-snug">{surat.keperluan}</Text.Body>
                                         </td>
                                         <td className="p-3 text-center">
                                             {getStatusBadge(surat.status)}
@@ -253,9 +254,9 @@ export default function SuratList() {
                                                 <span className="text-sm font-bold leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</span>
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900 text-[14px] uppercase tracking-tight leading-tight mb-1">{surat.jenis_surat}</h3>
+                                                <Text.H2 className="text-[14px] leading-tight mb-1">{surat.jenis_surat}</Text.H2>
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="text-[10px] font-mono text-slate-400 tracking-tighter uppercase italic">{surat.nomor_surat || 'DRAFT'}</span>
+                                                    <Text.Caption className="font-mono tracking-tighter italic uppercase">{surat.nomor_surat || 'DRAFT'}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
@@ -281,21 +282,21 @@ export default function SuratList() {
 
                                     <div className="space-y-4">
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Identitas Pemohon</p>
+                                            <Text.Label className="mb-2 leading-none">Identitas Pemohon</Text.Label>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-                                                    <span className="text-[10px] font-black text-brand-600">{surat.pemohon?.nama[0].toUpperCase()}</span>
+                                                    <Text.Caption className="font-black text-brand-600">{surat.pemohon?.nama[0].toUpperCase()}</Text.Caption>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[12px] font-bold text-slate-900 leading-none">{surat.pemohon?.nama}</p>
-                                                    <p className="text-[10px] text-slate-400 font-medium mt-1">NIK: {surat.pemohon?.nik || '-'}</p>
+                                                    <Text.H2 className="!text-[12px] leading-none">{surat.pemohon?.nama}</Text.H2>
+                                                    <Text.Caption className="mt-1">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2 leading-none">Tujuan / Keperluan</p>
-                                            <p className="text-[12px] text-slate-600 leading-relaxed italic font-medium">"{surat.keperluan}"</p>
+                                            <Text.Label className="mb-2 leading-none">Tujuan / Keperluan</Text.Label>
+                                            <Text.Body className="!text-[12px] italic leading-relaxed">"{surat.keperluan}"</Text.Body>
                                         </div>
                                     </div>
 

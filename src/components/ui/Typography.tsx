@@ -19,7 +19,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-[22px] font-bold tracking-[-0.5px] text-slate-900 leading-tight",
+        "font-headline text-[22px] font-bold tracking-tighter text-slate-900 leading-tight",
         className
       )}
     >
@@ -32,7 +32,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-base font-semibold text-slate-800 leading-snug",
+        "font-headline text-base font-semibold tracking-tight text-slate-800 leading-snug",
         className
       )}
     >
@@ -45,7 +45,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-lg font-bold tabular-nums text-slate-900",
+        "font-headline text-lg font-bold tabular-nums tracking-tight text-slate-900",
         className
       )}
     >
@@ -58,7 +58,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-base font-medium text-slate-500",
+        "font-label text-[11px] font-black uppercase tracking-wider text-slate-400",
         className
       )}
     >
@@ -71,7 +71,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-base font-medium text-slate-500 leading-relaxed",
+        "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
         className
       )}
     >
@@ -84,7 +84,7 @@ export const Text = {
       id={id}
       title={title}
       className={cn(
-        "text-base font-medium text-slate-500 leading-normal",
+        "font-body text-[11px] font-medium text-slate-400 leading-normal tracking-tight",
         className
       )}
     >

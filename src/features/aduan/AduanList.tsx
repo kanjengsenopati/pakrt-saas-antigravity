@@ -140,37 +140,37 @@ export default function AduanList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
                         <ChartBar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
                         Aspirasi
-                    </p>
-                    <span className="text-4xl font-bold text-slate-900 tracking-tighter leading-none">{stats?.total || 0}</span>
+                    </Text.Label>
+                    <Text.Amount className="!text-3xl lg:!text-4xl text-slate-900 leading-none">{stats?.total || 0}</Text.Amount>
                 </div>
 
                 <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <p className="text-sm font-bold text-white/50 tracking-tight mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/50">
                         <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
                         Selesai
-                    </p>
-                    <span className="text-4xl font-bold text-white tracking-tighter leading-none">{stats?.completed || 0}</span>
+                    </Text.Label>
+                    <Text.Amount className="!text-3xl lg:!text-4xl text-white leading-none">{stats?.completed || 0}</Text.Amount>
                 </div>
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
                         <Clock weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                         Menunggu
-                    </p>
-                    <span className="text-4xl font-bold text-amber-600 tracking-tighter leading-none">{stats?.pending || 0}</span>
+                    </Text.Label>
+                    <Text.Amount className="!text-3xl lg:!text-4xl text-amber-600 leading-none">{stats?.pending || 0}</Text.Amount>
                 </div>
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                    <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
                         <ArrowRight weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                         Proses
-                    </p>
-                    <span className="text-4xl font-bold text-blue-600 tracking-tighter leading-none">{stats?.processing || 0}</span>
+                    </Text.Label>
+                    <Text.Amount className="!text-3xl lg:!text-4xl text-blue-600 leading-none">{stats?.processing || 0}</Text.Amount>
                 </div>
             </div>
 
@@ -293,19 +293,19 @@ export default function AduanList() {
                                                     </div>
                                                     <div className="min-w-0">
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                                                                item.status === 'Menunggu' ? 'bg-amber-600 text-white' :
-                                                                item.status === 'Proses' ? 'bg-blue-600 text-white' :
-                                                                'bg-emerald-600 text-white'
+                                                            <Text.Label className={`px-2 py-0.5 rounded-md !text-white ${
+                                                                item.status === 'Menunggu' ? 'bg-amber-600' :
+                                                                item.status === 'Proses' ? 'bg-blue-600' :
+                                                                'bg-emerald-600'
                                                             }`}>
                                                                 {item.status}
-                                                            </span>
-                                                            <span className="text-[10px] font-medium text-slate-400 lowercase tracking-tight opacity-60">
+                                                            </Text.Label>
+                                                            <Text.Caption>
                                                                 {item.is_anonymous ? 'Anonim' : toTitleCase(item.warga?.nama || 'Warga')}
-                                                            </span>
+                                                            </Text.Caption>
                                                         </div>
-                                                        <Text.H2 className="!font-medium line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
-                                                        <p className="text-[12px] font-medium text-slate-500 line-clamp-1 mt-0.5">{item.tipe} — {item.deskripsi}</p>
+                                                        <Text.H2 className="line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
+                                                        <Text.Body className="!text-[12px] line-clamp-1 mt-0.5">{item.tipe} — {item.deskripsi}</Text.Body>
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col items-end shrink-0 gap-1.5 pt-1">
@@ -402,14 +402,14 @@ export default function AduanList() {
 
                             <div className="pt-8 border-t border-slate-100 space-y-6">
                                 <div className="flex items-center justify-between">
-                                    <Text.Label className="!text-[9px] !text-slate-900">Tanggapan Pengurus</Text.Label>
-                                    <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold border uppercase tracking-widest ${
+                                    <Text.Label className="!text-slate-900">Tanggapan Pengurus</Text.Label>
+                                    <Text.Label className={`px-2.5 py-1 rounded-full border ${
                                         selectedItem.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                         selectedItem.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                                         'bg-brand-50 text-brand-600 border-brand-100'
                                     }`}>
                                         {selectedItem.status}
-                                    </span>
+                                    </Text.Label>
                                 </div>
                                 
                                 {isPengurus && selectedItem.status !== 'Selesai' ? (
