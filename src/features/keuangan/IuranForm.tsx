@@ -116,17 +116,25 @@ export default function IuranForm() {
                 setDefaultNominal(baseIuran);
                 setValue('nominal', baseIuran);
 
-                if (config.kategori_pemasukan) {
+                if (config.jenis_pemasukan) {
                     try {
-                        const parsedKategori = JSON.parse(config.kategori_pemasukan);
-                        if (Array.isArray(parsedKategori) && parsedKategori.length > 0) {
-                            setKategoriOptions(parsedKategori);
-                            if (!parsedKategori.includes(watch('kategori'))) {
-                                setValue('kategori', parsedKategori[0]);
+                        const parsedJenis = JSON.parse(config.jenis_pemasukan);
+                        if (Array.isArray(parsedJenis)) {
+                            // Filter for citizen-related items (Mandatory or Occasional/Insidental)
+                            const citizenDues = parsedJenis.filter((item: any) => item.is_mandatory || item.is_occasional);
+                            const categories = citizenDues.map((item: any) => item.nama);
+                            
+                            setKategoriOptions(categories);
+                            
+                            // Store the full objects for nominal lookup
+                            (window as any)._citizen_dues_metadata = citizenDues;
+
+                            if (!categories.includes(watch('kategori'))) {
+                                setValue('kategori', categories[0] || 'Iuran Warga');
                             }
                         }
                     } catch (e) {
-                        console.error("Gagal parse opsi kategori", e);
+                        console.error("Gagal parse opsi kategori dari jenis_pemasukan", e);
                     }
                 }
 
@@ -155,6 +163,17 @@ export default function IuranForm() {
             setValue('nominal', 0);
         }
     }, [selectedMonths, defaultNominal, setValue, isEdit, paymentMode, hasInteracted]);
+
+    useEffect(() => {
+        const metadata = (window as any)._citizen_dues_metadata;
+        if (Array.isArray(metadata)) {
+            const selected = metadata.find((m: any) => m.nama === watchKategori);
+            if (selected && selected.nominal > 0) {
+                setDefaultNominal(selected.nominal);
+                setValue('nominal', selected.nominal * selectedMonths.length);
+            }
+        }
+    }, [watchKategori, selectedMonths.length, setValue]);
 
     useEffect(() => {
         if (watchWargaId && watchTahun && watchKategori && currentTenant) {
@@ -301,62 +320,76 @@ export default function IuranForm() {
                 {/* LEFT COLUMN: SUMMARY */}
                 <div className="md:col-span-4 space-y-6 sticky top-24">
                     {isLoadingBilling ? (
-                        <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 p-8 text-center animate-pulse">
+                        <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <p className="text-sm font-semibold text-gray-500 tracking-normal">Memuat Data Tagihan...</p>
+                            <p className="text-sm font-bold text-slate-400 tracking-tight">Memuat Data Tagihan...</p>
                         </div>
                     ) : watchWargaId && watchKategori ? (
-                        <div className="bg-white rounded-xl shadow-md border-2 border-brand-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
-                            <div className="bg-brand-600 p-4 text-white">
-                                <Text.Label className="!text-white flex items-center gap-2">
-                                    <ChartPieSlice weight="fill" className="w-5 h-5" />
-                                    Ringkasan Kewajiban
-                                </Text.Label>
-                                <Text.Caption className="!text-brand-100 mt-0.5 !tracking-normal font-medium capitalize">Tahun {watchTahun || new Date().getFullYear()}</Text.Caption>
+                        <div className="bg-white rounded-[32px] shadow-premium border border-slate-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
+                            <div className="bg-gradient-to-br from-brand-600 to-brand-700 p-6 text-white relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-2 mb-1.5">
+                                        <ChartPieSlice weight="fill" className="w-5 h-5 text-brand-200" />
+                                        <Text.Label className="!text-white !font-black !text-[10px] tracking-widest uppercase opacity-90">Ringkasan Kewajiban</Text.Label>
+                                    </div>
+                                    <Text.H1 className="!text-white !text-2xl !tracking-tight">Tahun {watchTahun || new Date().getFullYear()}</Text.H1>
+                                </div>
                             </div>
                             
-                            <div className="p-5 space-y-5 bg-gradient-to-b from-white to-gray-50">
-                                <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <Text.Label className="!text-slate-400">Total Tagihan 12 Bulan</Text.Label>
-                                    <Text.Amount className="!text-slate-900">
-                                        {formatRupiah(defaultNominal * 12)}
-                                    </Text.Amount>
-                                    <Text.Caption className="italic font-medium">Tarif: {formatRupiah(defaultNominal)} / bln</Text.Caption>
-                                </div>
-
-                                <div className="space-y-1 pb-4 border-b border-gray-100">
-                                    <Text.Label className="!text-emerald-600">Sudah Dibayar (Sistem)</Text.Label>
-                                    <Text.Amount className="!text-emerald-600">
-                                        {formatRupiah(alreadyPaid)}
-                                    </Text.Amount>
-                                    {pendingAmount > 0 && (
-                                        <div className="flex items-center gap-1.5 mt-1 text-amber-600">
-                                            <Clock className="w-3.5 h-3.5" />
-                                            <Text.Caption className="font-bold whitespace-nowrap !text-amber-600">Menunggu Verifikasi: {formatRupiah(pendingAmount)}</Text.Caption>
+                            <div className="p-6 space-y-6">
+                                <div className="flex justify-between items-start pb-4 border-b border-slate-50">
+                                    <div className="space-y-1">
+                                        <Text.Label className="text-slate-400 font-bold !text-[9px]">Total Tagihan 12 Bulan</Text.Label>
+                                        <div className="flex items-baseline gap-1">
+                                            <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
                                         </div>
-                                    )}
-                                    <Text.Caption className="!text-emerald-500/70 italic font-medium mt-1">Hingga periode saat ini</Text.Caption>
+                                    </div>
+                                    <div className="text-right">
+                                        <Text.Label className="text-slate-300 font-bold !text-[8px]">Tarif</Text.Label>
+                                        <p className="text-[10px] font-black text-slate-500 tracking-tight">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</p>
+                                    </div>
                                 </div>
 
-                                <div className="p-4 bg-brand-50 rounded-xl border border-brand-100 shadow-inner">
-                                    <Text.Label className="!text-brand-600 mb-1">Sisa Kewajiban</Text.Label>
-                                    <Text.Amount className="!text-brand-700 !text-2xl leading-none">
-                                        {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0))))}
-                                    </Text.Amount>
-                                    <Text.Caption className="!text-brand-500 mt-2 font-medium italic">
-                                        {paymentMode === 'Pas' ? '*(Otomatis Mode Pas)' : '*(Setelah nominal ini lunas)'}
-                                    </Text.Caption>
+                                <div className="pb-4 border-b border-slate-50">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <Text.Label className="text-emerald-600 font-bold !text-[9px]">Sudah Dibayar (Sistem)</Text.Label>
+                                        <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
+                                    </div>
+                                    {pendingAmount > 0 ? (
+                                        <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100/50">
+                                            <Clock weight="fill" className="w-3 h-3 text-amber-500" />
+                                            <p className="text-[9px] font-black text-amber-700 tracking-tight">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</p>
+                                        </div>
+                                    ) : (
+                                        <p className="text-[9px] font-bold text-slate-300 italic">Hingga periode saat ini</p>
+                                    )}
+                                </div>
+
+                                <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
+                                    <div className="relative z-10 flex flex-col items-center text-center">
+                                        <Text.Label className="!text-brand-600 !font-black !text-[8px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</Text.Label>
+                                        <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
+                                            {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0)))).replace(/,00$/, '')}
+                                        </Text.Amount>
+                                        <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
+                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">
+                                                {paymentMode === 'Pas' ? 'Otomatis Mode Pas' : 'Target Pelunasan'}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center space-y-3">
-                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-                                <Users weight="duotone" className="w-6 h-6 text-gray-300" />
+                        <div className="bg-white rounded-3xl border-2 border-dashed border-slate-100 p-8 text-center space-y-4">
+                            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                                <Users weight="duotone" className="w-8 h-8 text-slate-200" />
                             </div>
                             <div>
-                                <Text.Label className="!text-slate-400">Menunggu Data Warga</Text.Label>
-                                <Text.Caption className="mt-1">Pilih warga dan kategori untuk melihat ringkasan kewajiban</Text.Caption>
+                                <Text.Label className="!text-slate-400 font-bold">Menunggu Data Warga</Text.Label>
+                                <Text.Caption className="mt-1 block max-w-[160px] mx-auto !leading-relaxed">Pilih warga & jenis pembayaran untuk melihat ringkasan</Text.Caption>
                             </div>
                         </div>
                     )}
