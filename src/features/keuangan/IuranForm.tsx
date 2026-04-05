@@ -62,7 +62,6 @@ export default function IuranForm() {
         }
     });
 
-    const watchNominal = watch('nominal');
     const watchWargaId = watch('warga_id');
     const watchKategori = watch('kategori');
     const watchTahun = watch('periode_tahun');
@@ -371,7 +370,7 @@ export default function IuranForm() {
                                     <div className="relative z-10 flex flex-col items-center text-center">
                                         <span className="font-headline font-black text-brand-600 text-[9px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</span>
                                         <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
-                                            {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount - (paymentMode === 'Pas' ? (defaultNominal * selectedMonths.length) : (watchNominal || 0)))).replace(/,00$/, '')}
+                                            {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount)).replace(/,00$/, '')}
                                         </Text.Amount>
                                         <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
                                             <span className="text-[8px] font-black text-white uppercase tracking-widest">
