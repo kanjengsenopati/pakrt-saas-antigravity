@@ -13,7 +13,6 @@ import {
 
     ArrowRight,
     Bell,
-    TrendUp,
     Gavel,
     IdentificationCard,
     Megaphone,
@@ -101,9 +100,9 @@ export default function Dashboard() {
         <div className="bg-background text-on-background font-body min-h-screen pb-24 animate-fade-in" translate="no">
             <>
                 {/* Immersive Header Section */}
-                <div className="relative pb-32">
+                <div className="bg-primary bg-gradient-to-br from-primary to-primary-dim rounded-b-[2rem] pb-20">
                     {/* Large Blue Header */}
-                    <header className="w-full bg-primary text-white rounded-b-[2rem] shadow-none bg-gradient-to-br from-primary to-primary-dim pt-8 pb-48 px-6">
+                    <header className="w-full text-white pt-8 px-6">
                         <div className="flex justify-between items-center max-w-4xl mx-auto">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden shadow-lg bg-white/10 flex items-center justify-center font-bold text-lg text-white">
@@ -132,46 +131,43 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </header>
+                </div>
 
-                    {/* Floating Balance Card */}
-                    <div className="absolute -bottom-16 left-6 right-6 max-w-4xl mx-auto">
-                        <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white dark:border-white/10">
-                            <div className="flex justify-between items-center mb-1">
-                                <p className="text-on-surface-variant font-label text-[0.75rem] font-bold uppercase tracking-widest">Total Kas RT</p>
-                                <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                                    <Wallet weight="fill" className="text-on-surface-variant text-xl" />
-                                </div>
+                {/* Floating Balance Card - Now using negative margin for controlled overlap */}
+                <div className="px-6 -mt-16 relative z-10 max-w-4xl mx-auto">
+                    <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white dark:border-white/10">
+                        <div className="flex justify-between items-center mb-1">
+                            <p className="text-on-surface-variant font-label text-[0.75rem] font-bold uppercase tracking-widest">Total Kas RT</p>
+                            <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                                <Wallet weight="fill" className="text-on-surface-variant text-xl" />
                             </div>
-                            <div className="flex items-baseline gap-2 mb-4">
-                                <h2 className="text-on-surface font-headline font-black text-4xl tracking-tight">{formatRupiah(stats.saldo)}</h2>
+                        </div>
+                        <div className="flex items-baseline gap-2 mb-6">
+                            <h2 className="text-on-surface font-headline font-black text-4xl tracking-tight">{formatRupiah(stats.saldo)}</h2>
+                        </div>
+                        
+                        <button onClick={() => navigate('/keuangan')} className="w-full bg-primary py-4 rounded-2xl text-white font-headline font-bold text-[1rem] shadow-[0_12px_24px_-6px_rgba(0,80,212,0.3)] hover:shadow-[0_12px_32px_-6px_rgba(0,80,212,0.4)] transition-all active:scale-[0.98]">
+                            Lihat Detail Kas
+                        </button>
+
+                        {/* Subscription Status Section - Restructured */}
+                        <div className="mt-6 pt-6 border-t border-slate-100/80 dark:border-white/5 space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSubscriptionExpired ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-primary'}`}>
+                                    <ShieldCheck weight="bold" className="text-lg" />
+                                </div>
+                                <p className="text-[12px] font-bold text-on-surface-variant">Informasi Berlangganan Aplikasi PakRT</p>
                             </div>
                             
-                            <div className="flex items-center gap-4 py-3 px-4 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100/50 dark:border-emerald-500/10 mb-6">
-                                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500 text-white rounded-full">
-                                    <TrendUp weight="bold" className="text-[10px]" />
-                                    <span className="text-[10px] font-black uppercase tracking-tight">Active</span>
-                                </div>
-                                <span className="text-[11px] font-bold text-on-surface-variant">Update realtime</span>
-                            </div>
-
-                            <button onClick={() => navigate('/keuangan')} className="w-full bg-primary py-4 rounded-2xl text-white font-headline font-bold text-[1rem] shadow-[0_12px_24px_-6px_rgba(0,80,212,0.3)] hover:shadow-[0_12px_32px_-6px_rgba(0,80,212,0.4)] transition-all active:scale-[0.98]">
-                                Lihat Detail Kas
-                            </button>
-
-                            {/* Subscription Status Bar */}
-                            <div className="mt-8 pt-6 border-t border-slate-100/80 dark:border-white/5 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSubscriptionExpired ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-primary'}`}>
-                                        <ShieldCheck weight="bold" className="text-lg" />
-                                    </div>
-                                    <p className="text-[12px] font-bold text-on-surface-variant">Informasi Berlangganan Aplikasi PakRT</p>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${isSubscriptionExpired ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'}`}>
+                            <div className="grid grid-cols-2 gap-4 items-center">
+                                <div className="flex items-center">
+                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest text-center w-full ${isSubscriptionExpired ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'}`}>
                                         {isSubscriptionExpired ? 'Masa Berlaku Habis' : `${subscriptionDaysRemaining} Hari Tersisa`}
                                     </span>
-                                    <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
-                                        <span className="text-[10px] font-black uppercase tracking-tighter line-clamp-1">{currentTenant?.subscription_plan || 'FREE'} Detail</span>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-primary hover:underline transition-colors">
+                                        <span className="text-[11px] font-bold uppercase tracking-tight">Lihat Detil</span>
                                         <ArrowRight weight="bold" className="text-[10px]" />
                                     </button>
                                 </div>
@@ -181,7 +177,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Main Content Canvas */}
-                <main className="mt-28 px-6 space-y-8 max-w-4xl mx-auto pb-12">
+                <main className="mt-8 px-6 space-y-8 max-w-4xl mx-auto pb-12">
                     {/* Stats Bento Grid Section */}
                     <section>
                         <div className="grid grid-cols-3 gap-3">
