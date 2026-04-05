@@ -267,10 +267,29 @@ export default function KeuanganList() {
         const realisasi = filteredTrx.reduce((sum, t) => sum + t.nominal, 0);
         const status = target > 0 ? (realisasi / target) * 100 : 0;
         
+        // 4. Status Configuration (Dynamic Colors & Labels)
+        let statusColor = '#2563EB'; // Default Sedang (Blue)
+        let statusLabel = 'Sedang';
+        let statusBg = 'bg-blue-500';
+        
+        if (status <= 30) {
+            statusColor = '#E11D48'; // Buruk (Rose)
+            statusLabel = 'Buruk';
+            statusBg = 'bg-rose-500';
+        } else if (status > 70) {
+            statusColor = '#059669'; // Bagus (Emerald)
+            statusLabel = 'Bagus';
+            statusBg = 'bg-emerald-500';
+        }
+        
         return {
             target,
             realisasi,
             status,
+            statusColor,
+            statusLabel,
+            statusBg,
+            kekurangan: Math.max(0, target - realisasi),
             wargaTotal: wargaStats.total
         };
     }, [transactions, wargaStats, incomeSettings, occupancySettings, statFilterType, statCustomRange]);
@@ -840,8 +859,11 @@ export default function KeuanganList() {
                             </div>
                             <div className="w-full h-1 bg-slate-50 rounded-full mt-1.5 overflow-hidden">
                                 <div 
-                                    className="h-full bg-brand-500 rounded-full transition-all duration-700"
-                                    style={{ width: `${Math.min(statistics.status, 100)}%` }}
+                                    className={`h-full transition-all duration-700`}
+                                    style={{ 
+                                        width: `${Math.min(statistics.status, 100)}%`,
+                                        backgroundColor: statistics.statusColor
+                                    }}
                                 />
                             </div>
                         </div>
@@ -857,7 +879,9 @@ export default function KeuanganList() {
 
                         <div className="bg-white p-3.5 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-indigo-100 transition-all">
                             <Text.Label className="uppercase opacity-40 !text-[8px] tracking-widest">Capaian</Text.Label>
-                            <Text.Amount className="text-sm font-black text-indigo-600">{statistics.status.toFixed(0)}%</Text.Amount>
+                            <Text.Amount className="text-sm font-black transition-colors">
+                                <span style={{ color: statistics.statusColor }}>{statistics.status.toFixed(0)}%</span>
+                            </Text.Amount>
                             <Text.Caption className="!text-[8px] !font-bold text-slate-400 mt-1.5 uppercase">Dari {statistics.wargaTotal} Warga</Text.Caption>
                         </div>
                     </div>
@@ -889,28 +913,55 @@ export default function KeuanganList() {
                                     </Pie>
                                     <defs>
                                         <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#0F172A" />
-                                            <stop offset="100%" stopColor="#334155" />
+                                            <stop offset="0%" stopColor={statistics.statusColor} />
+                                            <stop offset="100%" stopColor={statistics.statusColor} stopOpacity={0.8} />
                                         </linearGradient>
                                     </defs>
                                     <Tooltip 
-                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
-                                        formatter={(value: any) => formatRupiah(value)}
+                                        content={({ active, payload }) => {
+                                            if (active && payload && payload.length) {
+                                                const data = payload[0].payload;
+                                                return (
+                                                    <div className="bg-white/95 backdrop-blur-xl border border-slate-100 p-4 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200">
+                                                        <div className="flex flex-col gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: data.name === 'Tercapai' ? statistics.statusColor : '#f1f5f9' }} />
+                                                                <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{data.name}</span>
+                                                            </div>
+                                                            <div className="text-lg font-black text-slate-900 leading-none">
+                                                                {formatRupiah(data.value)}
+                                                            </div>
+                                                            {data.name === 'Tercapai' && (
+                                                                <div className="pt-2 mt-1 border-t border-slate-50">
+                                                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Kekurangan dari Target</div>
+                                                                    <div className="text-sm font-black text-rose-500">
+                                                                        {formatRupiah(statistics.kekurangan)}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        }}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                 <div className="p-8 rounded-full bg-slate-50/50 backdrop-blur-sm border border-white shadow-inner flex flex-col items-center justify-center">
                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian</span>
-                                    <span className="text-5xl font-black text-slate-900 tracking-tighter leading-none">{statistics.status.toFixed(0)}<span className="text-xl font-bold ml-1">%</span></span>
+                                    <span className="text-5xl font-black tracking-tighter leading-none transition-colors" style={{ color: statistics.statusColor }}>
+                                        {statistics.status.toFixed(0)}<span className="text-xl font-bold ml-1">%</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex gap-4 mt-6">
-                            <div className="px-4 py-2 bg-slate-900 rounded-2xl flex items-center gap-2 shadow-lg shadow-slate-900/10">
+                            <div className={`px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg shadow-black/5`} style={{ backgroundColor: statistics.statusColor }}>
                                 <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Realisasi</span>
+                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">{statistics.statusLabel} ({statistics.status.toFixed(0)}%)</span>
                             </div>
                             <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-slate-200" />
