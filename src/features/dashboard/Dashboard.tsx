@@ -108,18 +108,22 @@ export default function Dashboard() {
                                 <div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden shadow-lg bg-white/10 flex items-center justify-center font-bold text-lg text-white">
                                     {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
                                 </div>
-                                <div>
-                                    <p className="text-white/60 font-label text-[0.7rem] uppercase tracking-widest font-bold mb-0.5">{authUser?.role_entity?.name || authUser?.role || 'Admin'}</p>
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="font-headline font-bold text-white text-2xl tracking-tight">{currentScope || currentTenant?.name || 'Admin RT'}</h1>
+                                <div className="flex items-center gap-3">
+                                    <h1 className="font-headline font-bold text-white text-3xl tracking-tighter leading-none">RT</h1>
+                                    <div className="flex flex-col border-l border-white/20 pl-3">
+                                        <h2 className="text-white font-headline font-bold text-[1.1rem] leading-none mb-1">
+                                            {currentScope || 'RT 00 / RW 00'}
+                                        </h2>
+                                        {currentTenant?.location_detail && (
+                                            <p className="text-white/50 text-[0.65rem] font-bold uppercase tracking-tight line-clamp-1 leading-none">
+                                                {currentTenant.location_detail.split(' • ').slice(1).map(s => s.replace(/KEL\.\s*|KEC\.\s*/g, '')).join(' ')}
+                                            </p>
+                                        )}
                                     </div>
-                                    {currentTenant?.location_detail && (
-                                        <p className="text-white/40 text-[0.65rem] font-medium uppercase tracking-tight line-clamp-1">{currentTenant.location_detail}</p>
-                                    )}
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90">
+                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/profil')}>
                                     <User weight="bold" className="text-xl" />
                                 </button>
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/notifications')}>
@@ -150,8 +154,8 @@ export default function Dashboard() {
                             Lihat Detail Kas
                         </button>
 
-                        {/* Subscription Status Section - Restructured */}
-                        <div className="mt-6 pt-6 border-t border-slate-100/80 dark:border-white/5 space-y-4">
+                        {/* Subscription Status Section - Minimize gap with mt-4 pt-4 */}
+                        <div className="mt-4 pt-4 border-t border-slate-100/80 dark:border-white/5 space-y-3">
                             <div className="flex items-center gap-3">
                                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSubscriptionExpired ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-primary'}`}>
                                     <ShieldCheck weight="bold" className="text-lg" />
@@ -166,7 +170,7 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <div className="flex justify-end">
-                                    <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-primary hover:underline transition-colors">
+                                    <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-primary hover:underline transition-colors shrink-0">
                                         <span className="text-[11px] font-bold uppercase tracking-tight">Lihat Detil</span>
                                         <ArrowRight weight="bold" className="text-[10px]" />
                                     </button>
