@@ -273,10 +273,7 @@ export default function Dashboard() {
 
                             <div className="grid grid-cols-3 gap-3">
                                 {/* Stats 1: Surat */}
-                                <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                                        <FileText weight="fill" className="text-primary text-xl" />
-                                    </div>
+                                <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                     <div>
                                         <p className="text-[13px] font-bold text-on-surface leading-tight">Surat</p>
                                         <p className="text-on-surface-variant text-[9px] font-bold uppercase tracking-tight line-clamp-1">{stats.pendingSurat} Baru</p>
@@ -284,10 +281,7 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* Stats 2: Aduan */}
-                                <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
-                                    <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-                                        <ChatDots weight="fill" className="text-error text-xl" />
-                                    </div>
+                                <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                     <div>
                                         <p className="text-[13px] font-bold text-on-surface leading-tight">Aduan</p>
                                         <p className="text-[9px] font-bold text-error uppercase tracking-tight">Aktif</p>
@@ -295,10 +289,7 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* Stats 3: Agenda */}
-                                <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col items-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98] text-center">
-                                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
-                                        <CalendarBlank weight="fill" className="text-tertiary text-xl" />
-                                    </div>
+                                <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                     <div>
                                         <p className="text-[13px] font-bold text-on-surface leading-tight">Agenda</p>
                                         <p className="text-[9px] font-medium text-on-surface-variant uppercase tracking-tight line-clamp-1">{stats.agenda} Event</p>
