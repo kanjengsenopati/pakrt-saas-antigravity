@@ -141,8 +141,7 @@ export default function KeuanganList() {
         <div className="space-y-8 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
-                    <Text.H1>Informasi Transaksi Kas</Text.H1>
-                    <Text.Body className="mt-1">Laporan arus kas masuk dan keluar RT</Text.Body>
+                    <Text.Body className="font-bold text-slate-500 uppercase tracking-widest text-[0.7rem]">Laporan arus kas masuk dan keluar RT</Text.Body>
                 </div>
                 {!isWarga && (
                     <HasPermission module="Buku Kas / Transaksi" action="Buat">
@@ -154,7 +153,7 @@ export default function KeuanganList() {
                             <span>Catat Transaksi</span>
                         </button>
                         
-                        {/* MOBILE FAB */}
+                        {/* MOBILE FAB - Repositioned to not block content */}
                         <button
                             onClick={() => navigate('/keuangan/baru')}
                             className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
@@ -188,14 +187,16 @@ export default function KeuanganList() {
                 <div className="p-4 border-b border-slate-50 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white">
                     <div className="relative w-full sm:w-80 group">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-500 transition-colors">
-                            <Funnel weight="bold" className="w-4 h-4" />
+                            <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
+                                <Funnel weight="bold" className="w-4 h-4" />
+                            </div>
                         </div>
                         <input
                             type="text"
                             placeholder="Cari transaksi..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none rounded-[16px] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
+                            className="w-full pl-14 pr-4 py-3 bg-slate-50 border-none rounded-[16px] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
                         />
                     </div>
                 </div>
