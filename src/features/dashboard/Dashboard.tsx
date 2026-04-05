@@ -211,67 +211,62 @@ export default function Dashboard() {
                         </div>
                     </section>
 
-                    {/* Services Section Grid 4x4 */}
+                    {/* Services Section Grid 3x3 - Now without header for cleaner look */}
                     <section className="pb-10">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="font-headline font-bold text-on-surface text-[1.5rem] tracking-tight -ml-0.5">Layanan Pengurus</h2>
-                            <span className="px-3 py-1 bg-tertiary-container/30 text-on-tertiary-container rounded-full text-[0.7rem] font-bold font-label uppercase tracking-widest">Akses Eksklusif</span>
-                        </div>
-                        
-                        <div className="grid grid-cols-4 gap-x-3 gap-y-8">
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/keuangan')}>
-                                <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-700 dark:text-blue-400 group-active:scale-95 transition-transform">
-                                    <Money weight="fill" className="text-[1.6rem]" />
+                        <div className="grid grid-cols-3 gap-x-4 gap-y-7">
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/keuangan')}>
+                                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-700 dark:text-blue-400 group-active:scale-95 transition-transform">
+                                    <Money weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Kas RT</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Kas RT</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/aset')}>
-                                <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center text-emerald-700 dark:text-emerald-400 group-active:scale-95 transition-transform">
-                                    <Package weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/aset')}>
+                                <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center text-emerald-700 dark:text-emerald-400 group-active:scale-95 transition-transform">
+                                    <Package weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Aset RT</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aset RT</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
-                                <div className="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center text-amber-700 dark:text-amber-400 group-active:scale-95 transition-transform">
-                                    <Gavel weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
+                                <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center text-amber-700 dark:text-amber-400 group-active:scale-95 transition-transform">
+                                    <Gavel weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">AD/ART</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">AD/ART</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/pengurus')}>
-                                <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-700 dark:text-purple-400 group-active:scale-95 transition-transform">
-                                    <IdentificationCard weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengurus')}>
+                                <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-700 dark:text-purple-400 group-active:scale-95 transition-transform">
+                                    <IdentificationCard weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Pengurus</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Pengurus</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/ronda')}>
-                                <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-700 dark:text-red-400 group-active:scale-95 transition-transform">
-                                    <ShieldCheck weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/ronda')}>
+                                <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-700 dark:text-red-400 group-active:scale-95 transition-transform">
+                                    <ShieldCheck weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Ronda</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Ronda</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/notulensi')}>
-                                <div className="w-14 h-14 bg-sky-50 dark:bg-sky-900/20 rounded-lg flex items-center justify-center text-sky-700 dark:text-sky-400 group-active:scale-95 transition-transform">
-                                    <Notebook weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/notulensi')}>
+                                <div className="w-16 h-16 bg-sky-50 dark:bg-sky-900/20 rounded-lg flex items-center justify-center text-sky-700 dark:text-sky-400 group-active:scale-95 transition-transform">
+                                    <Notebook weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Notulen</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Notulen</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/aduan')}>
-                                <div className="w-14 h-14 bg-rose-50 dark:bg-rose-900/20 rounded-lg flex items-center justify-center text-rose-700 dark:text-rose-400 group-active:scale-95 transition-transform">
-                                    <Megaphone weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/aduan')}>
+                                <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/20 rounded-lg flex items-center justify-center text-rose-700 dark:text-rose-400 group-active:scale-95 transition-transform">
+                                    <Megaphone weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Aduan</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aduan</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/agenda')}>
-                                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center text-indigo-700 dark:text-indigo-400 group-active:scale-95 transition-transform">
-                                    <CalendarCheck weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/agenda')}>
+                                <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center text-indigo-700 dark:text-indigo-400 group-active:scale-95 transition-transform">
+                                    <CalendarCheck weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Agenda</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Agenda</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 cursor-pointer group" onClick={() => navigate('/warga')}>
-                                <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-700 dark:text-slate-300 group-active:scale-95 transition-transform">
-                                    <Users weight="fill" className="text-[1.6rem]" />
+                            <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/warga')}>
+                                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-700 dark:text-slate-300 group-active:scale-95 transition-transform">
+                                    <Users weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.7rem] font-bold text-on-surface-variant leading-tight">Warga</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Warga</span>
                             </div>
                         </div>
                     </section>
