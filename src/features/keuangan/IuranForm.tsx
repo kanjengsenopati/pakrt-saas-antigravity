@@ -543,7 +543,7 @@ export default function IuranForm() {
                                                                     ? 'bg-amber-50 border-amber-200 text-amber-700 cursor-not-allowed opacity-80'
                                                                     : isSelected
                                                                         ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                                        : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50 hover:border-gray-200'
+                                                                        : 'bg-rose-50/40 border-rose-100/50 text-rose-400 hover:bg-rose-50 hover:border-rose-200'
                                                             }`}
                                                     >
                                                         {m.label.substring(0, 3)}
