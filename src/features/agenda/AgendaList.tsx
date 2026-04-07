@@ -450,8 +450,8 @@ export default function AgendaList() {
                                                 cursor={{ fill: '#f8fafc' }}
                                                 contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                                                 formatter={(value: any) => {
-                                                    const numValue = typeof value === 'number' ? value : Number(value);
-                                                    return [formatRupiah(numValue || 0), 'Total'] as [string, string];
+                                                    const numValue = typeof value === 'number' ? value : (value ? Number(value) : 0);
+                                                    return [formatRupiah(numValue), 'Total'] as [string, string];
                                                 }}
                                             />
                                             <Bar dataKey="Total" fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40} />

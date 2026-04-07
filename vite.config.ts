@@ -86,16 +86,28 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
+                        if (id.includes('react-dom') || id.includes('react-router-dom') || id.includes('@remix-run')) {
+                            return 'vendor-react-core';
+                        }
+                        if (id.includes('react')) {
+                            return 'vendor-react';
+                        }
                         if (id.includes('recharts')) {
                             return 'vendor-recharts';
                         }
                         if (id.includes('@phosphor-icons')) {
                             return 'vendor-icons';
                         }
-                        // Let others be in the default vendor or entry chunk
+                        return 'vendor';
                     }
                     if (id.includes('/src/services/')) {
                         return 'services';
+                    }
+                    if (id.includes('/src/features/')) {
+                        const parts = id.split('/src/features/')[1].split('/');
+                        if (parts.length > 1) {
+                            return `feature-${parts[0]}`;
+                        }
                     }
                 }
             }

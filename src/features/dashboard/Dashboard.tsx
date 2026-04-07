@@ -18,7 +18,8 @@ import {
     IdentificationCard,
     Megaphone,
     User,
-    SignOut
+    SignOut,
+    GearSix
 } from '@phosphor-icons/react';
 import { formatRupiah } from '../../utils/currency';
 import { agendaService } from '../../services/agendaService';
@@ -235,9 +236,9 @@ export default function Dashboard() {
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
                                 <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center text-amber-700 dark:text-amber-400 group-active:scale-95 transition-transform">
-                                    <Gavel weight="fill" className="text-[1.8rem]" />
+                                    <GearSix weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">AD/ART</span>
+                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Pengaturan</span>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengurus')}>
                                 <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-700 dark:text-purple-400 group-active:scale-95 transition-transform">
