@@ -90,18 +90,13 @@ export default defineConfig({
                         if (id.includes('@phosphor-icons')) {
                             return 'vendor-icons';
                         }
-                        // Group all other vendors to prevent circular dependency initialization errors (e.g. React 19 + Recharts)
+                        // Group all other vendors into one chunk to prevent circular
+                        // initialization errors (e.g. React 19 + Recharts)
                         return 'vendor';
                     }
-                    if (id.includes('/src/services/')) {
-                        return 'services';
-                    }
-                    if (id.includes('/src/features/')) {
-                        const parts = id.split('/src/features/')[1].split('/');
-                        if (parts.length > 1) {
-                            return `feature-${parts[0]}`;
-                        }
-                    }
+                    // Do NOT split feature/service chunks — they have circular imports
+                    // (e.g. feature-warga -> feature-aduan -> feature-warga via WargaPortal)
+                    // which cause "Cannot access before initialization" at runtime.
                 }
             }
         }
