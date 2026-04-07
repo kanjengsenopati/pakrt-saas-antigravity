@@ -40,6 +40,32 @@ export const Text = {
     </h2>
   ),
 
+  H3: ({ children, className, id, title }: TypographyProps) => (
+    <h3 
+      id={id}
+      title={title}
+      className={cn(
+        "font-headline text-[15px] font-bold tracking-tight text-slate-800 leading-snug",
+        className
+      )}
+    >
+      {children}
+    </h3>
+  ),
+
+  H4: ({ children, className, id, title }: TypographyProps) => (
+    <h4 
+      id={id}
+      title={title}
+      className={cn(
+        "font-headline text-[13px] font-bold tracking-tight text-slate-700 leading-snug",
+        className
+      )}
+    >
+      {children}
+    </h4>
+  ),
+
   Amount: ({ children, className, id, title }: TypographyProps) => (
     <span 
       id={id}

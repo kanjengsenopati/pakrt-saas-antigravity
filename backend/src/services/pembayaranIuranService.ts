@@ -479,18 +479,99 @@ export const pembayaranIuranService = {
     });
   },
 
-  async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori?: string, scope: string = 'RT') {
-    // Determine if this category is INSIDENTIL (no 12-month obligation)
-    const kategoriMeta = kategori ? await getKategoriMetadata(kategori, tenantId, scope) : null;
-    const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
+  async createBatch(items: any[], commonData: { tenant_id: string; scope: string; tanggal_bayar: string; url_bukti?: string }) {
+    return await prisma.$transaction(async (tx) => {
+        const results = [];
+        for (const item of items) {
+            const isBebas = item.metadata?.mode === 'Bebas';
+            const metadataMode = item.metadata?.mode;
+            let processedData = { 
+                ...item, 
+                ...commonData,
+                tanggal_bayar: dateUtils.normalize(commonData.tanggal_bayar)
+            };
+            
+            delete processedData.metadata;
 
-    // For BULANAN: use warga tiered rate. For INSIDENTIL: use configured event nominal.
-    const rate = isInsidentil
-      ? (kategoriMeta?.nominal || 0)
-      : await getWargaIuranRate(wargaId, tenantId, scope);
-    
-    // Normalize target category
-    const targetKat = kategori?.trim().replace(/\s+/g, ' ').toLowerCase();
+            const kategoriMeta = await getKategoriMetadata(item.kategori, commonData.tenant_id, commonData.scope);
+            const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
+
+            if (isInsidentil && kategoriMeta?.nominal > 0) {
+                // For incidental, if not specified nominal (Mode Pas), use setting
+                if (!processedData.nominal) processedData.nominal = kategoriMeta.nominal;
+            } else if (!isBebas && !isInsidentil) {
+                const rate = await getWargaIuranRate(processedData.warga_id, commonData.tenant_id, commonData.scope);
+                if (rate > 0 && Array.isArray(processedData.periode_bulan)) {
+                    processedData.nominal = rate * processedData.periode_bulan.length;
+                }
+            }
+
+            const { _autoVerify } = processedData;
+            const status = _autoVerify ? 'VERIFIED' : 'PENDING';
+
+            const sanitizedData = {
+                tenant_id: processedData.tenant_id,
+                scope:     processedData.scope || 'RT',
+                warga_id:  processedData.warga_id,
+                kategori:  processedData.kategori,
+                periode_bulan: Array.isArray(processedData.periode_bulan) ? processedData.periode_bulan : [],
+                periode_tahun: Number(processedData.periode_tahun),
+                nominal:       Number(processedData.nominal),
+                tanggal_bayar: processedData.tanggal_bayar,
+                url_bukti:     processedData.url_bukti || null,
+                status
+            };
+
+            const result = await tx.pembayaranIuran.create({ data: sanitizedData });
+            results.push(result);
+            
+            const wargaRecord = await tx.warga.findUnique({ where: { id: processedData.warga_id } });
+            const wargaNama = wargaRecord?.nama || 'Warga';
+
+            if (status === 'VERIFIED') {
+                await tx.keuangan.create({
+                    data: {
+                        tenant_id: result.tenant_id,
+                        scope: result.scope || 'RT',
+                        tipe: 'pemasukan',
+                        kategori: 'Iuran Warga',
+                        nominal: result.nominal,
+                        tanggal: result.tanggal_bayar,
+                        pembayaranIuranId: result.id,
+                        keterangan: buildKeterangan(
+                            wargaNama,
+                            result.kategori,
+                            Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
+                            result.periode_tahun,
+                            result.id
+                        )
+                    }
+                });
+            }
+
+            await aktivitasService.create({
+                tenant_id: processedData.tenant_id,
+                scope: processedData.scope || 'RT',
+                action: 'Bayar Iuran (Batch)',
+                details: `Bayar iuran **${wargaNama}**: ${processedData.kategori} - ${status}`,
+                timestamp: Date.now()
+            });
+        }
+        return results;
+    });
+  },
+
+  async getBillingSummary(tenantId: string, wargaId: string, tahun: number, kategori?: string, scope: string = 'RT') {
+    const settings = await pengaturanService.getAll(tenantId, scope);
+    const config: Record<string, any> = {};
+    settings.forEach((p: any) => { config[p.key] = p.value; });
+
+    let jenisList: any[] = [];
+    try {
+        jenisList = config.jenis_pemasukan ? JSON.parse(config.jenis_pemasukan) : [];
+    } catch {
+        jenisList = [];
+    }
 
     const allPayments = await prisma.pembayaranIuran.findMany({
       where: {
@@ -501,7 +582,48 @@ export const pembayaranIuranService = {
       }
     });
 
-    // EXACT category match — no more heuristic 'includes iuran' fallback
+    if (kategori === 'SEMUA') {
+        // Return a multi-category manifest
+        const manifest: any[] = [];
+        for (const j of jenisList) {
+            const isInsidentil = j.tipe === 'INSIDENTIL';
+            const rate = isInsidentil 
+                ? (Number(j.nominal) || 0) 
+                : await getWargaIuranRate(wargaId, tenantId, scope);
+            
+            const targetKat = j.nama.trim().replace(/\s+/g, ' ').toLowerCase();
+            const verified = allPayments.filter(p => p.status === 'VERIFIED' && p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat);
+            const pending = allPayments.filter(p => p.status === 'PENDING' && p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat);
+            
+            const totalPaid = verified.reduce((sum, curr) => sum + curr.nominal, 0);
+            const pendingAmount = pending.reduce((sum, curr) => sum + curr.nominal, 0);
+            const expectedTotal = isInsidentil ? rate : rate * 12;
+
+            manifest.push({
+                nama: j.nama,
+                tipe: j.tipe,
+                is_mandatory: !!j.is_mandatory,
+                rate,
+                expectedTotal,
+                totalPaid,
+                pendingAmount,
+                paidMonths: [...new Set(verified.flatMap(e => e.periode_bulan))].sort((a, b) => a - b),
+                pendingMonths: [...new Set(pending.flatMap(e => e.periode_bulan))].sort((a, b) => a - b),
+                sisa: Math.max(0, expectedTotal - totalPaid - pendingAmount)
+            });
+        }
+        return { type: 'MANIFEST', items: manifest };
+    }
+
+    // Default: Existing logic for single category
+    const kategoriMeta = kategori ? await getKategoriMetadata(kategori, tenantId, scope) : null;
+    const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
+    const rate = isInsidentil
+      ? (kategoriMeta?.nominal || 0)
+      : await getWargaIuranRate(wargaId, tenantId, scope);
+    
+    const targetKat = kategori?.trim().replace(/\s+/g, ' ').toLowerCase();
+
     const verifiedPayments = allPayments.filter(p => {
       if (p.status !== 'VERIFIED') return false;
       if (!targetKat) return true;

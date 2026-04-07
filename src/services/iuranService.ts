@@ -42,6 +42,11 @@ export const iuranService = {
         return response.data.id;
     },
 
+    async createBatch(items: any[], commonData: any): Promise<any> {
+        const response = await api.post('/iuran/batch', { items, ...commonData });
+        return response.data;
+    },
+
     async update(id: string, data: Partial<PembayaranIuran>, ..._args: any[]): Promise<number> {
         await api.put(`/iuran/${id}`, data);
         return 1;
