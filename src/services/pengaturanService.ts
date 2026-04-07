@@ -26,13 +26,20 @@ export const pengaturanService = {
     },
 
     async saveMultiple(tenantId: string, scope: string, data: Record<string, any>): Promise<void> {
-        const items = Object.entries(data).map(([key, value]) => ({
-            tenant_id: tenantId,
-            scope: scope,
-            key,
-            value
-        }));
-        await api.post('/pengaturan/batch', { items });
+        const items = Object.entries(data)
+            .filter(([_, value]) => value !== undefined && value !== null)
+            .map(([key, value]) => ({
+                tenant_id: tenantId,
+                scope: scope,
+                key,
+                value
+            }));
+
+        if (items.length === 0) return;
+
+        await api.post('/pengaturan/batch', { items }, {
+            params: { scope }
+        });
     },
 
     async updateWargaStatus(tenantId: string, scope: string, wargaId: string, status: string): Promise<void> {
