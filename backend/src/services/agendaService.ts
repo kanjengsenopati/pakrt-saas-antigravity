@@ -60,7 +60,28 @@ export const agendaService = {
 
   async create(data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    const agenda = await prisma.agenda.create({ data });
+    
+    const agenda = await prisma.$transaction(async (tx) => {
+        const item = await tx.agenda.create({ data });
+        
+        // SYNC KEUANGAN: If Needs Funding from RT Cash
+        if (item.butuh_pendanaan && item.sumber_dana === 'Kas' && item.nominal_biaya) {
+            await (tx.keuangan as any).create({
+                data: {
+                    tenant_id: item.tenant_id,
+                    scope: item.scope || 'RT',
+                    tipe: 'pengeluaran',
+                    kategori: 'Kegiatan Agenda',
+                    nominal: item.nominal_biaya,
+                    tanggal: item.tanggal,
+                    keterangan: `Dana untuk agenda: **${item.judul}**`,
+                    agendaId: item.id
+                }
+            });
+        }
+        
+        return item;
+    });
 
     // Trigger Push Notification
     try {
@@ -100,7 +121,46 @@ export const agendaService = {
 
   async update(id: string, data: any) {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
-    const agenda = await prisma.agenda.update({ where: { id }, data });
+    
+    const agenda = await prisma.$transaction(async (tx) => {
+        const item = await tx.agenda.update({ where: { id }, data });
+        
+        // SYNC KEUANGAN: Handle changes in funding status or amount
+        const existingKeuangan = await (tx.keuangan as any).findUnique({ where: { agendaId: id } });
+        
+        if (item.butuh_pendanaan && item.sumber_dana === 'Kas' && item.nominal_biaya) {
+            if (existingKeuangan) {
+                // Update existing expense
+                await (tx.keuangan as any).update({
+                    where: { id: existingKeuangan.id },
+                    data: {
+                        nominal: item.nominal_biaya,
+                        tanggal: item.tanggal,
+                        keterangan: `Dana untuk agenda: **${item.judul}**`
+                    }
+                });
+            } else {
+                // Create new expense if it wasn't there
+                await (tx.keuangan as any).create({
+                    data: {
+                        tenant_id: item.tenant_id,
+                        scope: item.scope || 'RT',
+                        tipe: 'pengeluaran',
+                        kategori: 'Kegiatan Agenda',
+                        nominal: item.nominal_biaya,
+                        tanggal: item.tanggal,
+                        keterangan: `Dana untuk agenda: **${item.judul}**`,
+                        agendaId: item.id
+                    }
+                });
+            }
+        } else if (existingKeuangan) {
+            // Remove expense if funding is turned off or source changed
+            await (tx.keuangan as any).delete({ where: { id: existingKeuangan.id } });
+        }
+        
+        return item;
+    });
 
     // Trigger Push Notification on Update (if important fields changed or just as a reminder)
     try {
@@ -139,6 +199,10 @@ export const agendaService = {
   },
 
   async delete(id: string) {
-    return await prisma.agenda.delete({ where: { id } });
+    return await prisma.$transaction(async (tx) => {
+        // Automatically cleanup linked financial records
+        await (tx.keuangan as any).deleteMany({ where: { agendaId: id } });
+        return await tx.agenda.delete({ where: { id } });
+    });
   }
 };

@@ -256,7 +256,9 @@ model Agenda {
   lokasi              String?
   jam_mulai           String?
   jam_selesai         String?
-
+  
+  keuangan            Keuangan?
+  
   @@index([tenant_id, scope, tanggal])
 }
 
@@ -274,6 +276,9 @@ model Keuangan {
 
   pembayaranIuranId String? @unique
   pembayaranIuran   PembayaranIuran? @relation(fields: [pembayaranIuranId], references: [id])
+
+  agendaId          String? @unique
+  agenda            Agenda? @relation(fields: [agendaId], references: [id])
 
   @@index([tenant_id, scope, tipe, kategori, tanggal])
   @@index([deletedAt])

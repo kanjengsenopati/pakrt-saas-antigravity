@@ -12,7 +12,8 @@ import {
     ArrowDownRight,
     Image as ImageIcon,
     X,
-    CheckCircle
+    CheckCircle,
+    Coins
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
@@ -21,7 +22,7 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+// Removed unused Recharts imports to fix lint warnings
 
 const getMonthNumber = (monthName: string) => {
     const months = {
@@ -281,10 +282,21 @@ export default function KeuanganList() {
             statusLabel = 'Bagus';
             statusBg = 'bg-emerald-500';
         }
+
+        // 5. Incidental & Agenda Breakdown
+        const incidentalIncome = transactions
+            .filter(t => t.tipe === 'pemasukan' && !isMandatoryMatch(t))
+            .reduce((sum, t) => sum + t.nominal, 0);
+            
+        const agendaExpenses = transactions
+            .filter(t => t.tipe === 'pengeluaran' && (t.kategori.toLowerCase().includes('agenda') || !!(t as any).agendaId))
+            .reduce((sum, t) => sum + t.nominal, 0);
         
         return {
             target,
-            realisasi,
+            realisasi, // Mandatory only
+            incidentalIncome,
+            agendaExpenses,
             status,
             statusColor,
             statusLabel,
@@ -851,15 +863,13 @@ export default function KeuanganList() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 px-0.5">
-                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-brand-100 transition-all">
-                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Target</Text.Label>
-                            <div className="flex items-center gap-1.5">
-                                <Text.Amount className="text-sm font-black text-slate-900">{formatRupiah(statistics.target).replace(/,00$/, '')}</Text.Amount>
-                            </div>
-                            <div className="w-full h-1 bg-slate-50 rounded-full mt-1.5 overflow-hidden">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 px-0.5">
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-brand-200 transition-all group">
+                            <Text.Label className="font-bold opacity-80 !text-[10px] text-slate-500 uppercase tracking-widest">Target Bulanan</Text.Label>
+                            <Text.Amount className="text-xl font-black text-slate-900">{formatRupiah(statistics.target)}</Text.Amount>
+                            <div className="w-full h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
                                 <div 
-                                    className={`h-full transition-all duration-700`}
+                                    className="h-full transition-all duration-1000 ease-out"
                                     style={{ 
                                         width: `${Math.min(statistics.status, 100)}%`,
                                         backgroundColor: statistics.statusColor
@@ -868,105 +878,95 @@ export default function KeuanganList() {
                             </div>
                         </div>
 
-                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-emerald-100 transition-all">
-                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Realisasi</Text.Label>
-                            <Text.Amount className="text-sm font-black text-emerald-600">{formatRupiah(statistics.realisasi).replace(/,00$/, '')}</Text.Amount>
-                            <div className="flex items-center gap-1 mt-1.5">
-                                <CheckCircle weight="fill" className="w-3 h-3 text-emerald-500" />
-                                <span className="text-[8px] font-bold text-emerald-600 uppercase">Sinkron</span>
-                            </div>
-                        </div>
-
-                        <div className="bg-white p-3 rounded-[20px] border border-slate-100 shadow-sm flex flex-col gap-0.5 hover:border-indigo-100 transition-all">
-                            <Text.Label className="font-bold opacity-80 !text-[9px] text-slate-500">Capaian</Text.Label>
-                            <Text.Amount className="text-sm font-black transition-colors">
-                                <span style={{ color: statistics.statusColor }}>{statistics.status.toFixed(0)}%</span>
-                            </Text.Amount>
-                            <Text.Caption className="!text-[8px] !font-bold text-slate-400 mt-1.5 uppercase">Dari {statistics.wargaTotal} Warga</Text.Caption>
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-premium flex flex-col items-center relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-brand-50/10 to-transparent pointer-events-none" />
-                        
-                        <div className="w-full max-w-sm aspect-square relative flex items-center justify-center">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={[
-                                            { name: 'Tercapai', value: statistics.realisasi },
-                                            { name: 'Belum', value: Math.max(statistics.target - statistics.realisasi, 0) }
-                                        ]}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={90}
-                                        outerRadius={125}
-                                        paddingAngle={10}
-                                        dataKey="value"
-                                        stroke="none"
-                                        startAngle={90}
-                                        endAngle={-270}
-                                        cornerRadius={12}
-                                    >
-                                        <Cell fill="url(#brandGradient)" />
-                                        <Cell fill="#f1f5f9" />
-                                    </Pie>
-                                    <defs>
-                                        <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor={statistics.statusColor} />
-                                            <stop offset="100%" stopColor={statistics.statusColor} stopOpacity={0.8} />
-                                        </linearGradient>
-                                    </defs>
-                                    <Tooltip 
-                                        wrapperStyle={{ zIndex: 1000 }}
-                                        content={({ active, payload }) => {
-                                            if (active && payload && payload.length) {
-                                                const data = payload[0].payload;
-                                                return (
-                                                    <div className="bg-white/98 backdrop-blur-2xl border border-slate-200 p-3.5 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 ring-4 ring-black/5">
-                                                        <div className="flex flex-col gap-1.5">
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: data.name === 'Tercapai' ? statistics.statusColor : '#f1f5f9' }} />
-                                                                <span className="text-[10px] font-bold text-slate-900 tracking-tight">{data.name}</span>
-                                                            </div>
-                                                            <div className="text-base font-black text-slate-900 tabular-nums">
-                                                                {formatRupiah(data.value)}
-                                                            </div>
-                                                            {data.name === 'Tercapai' && (
-                                                                <div className="pt-2 mt-1 border-t border-slate-100">
-                                                                    <div className="text-[9px] font-bold text-slate-500 tracking-tight mb-0.5">Kekurangan dari Target</div>
-                                                                    <div className="text-sm font-black text-rose-600">
-                                                                        {formatRupiah(statistics.kekurangan)}
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        }}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <div className="p-8 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm flex flex-col items-center justify-center">
-                                    <span className="text-[10px] font-bold text-slate-700 tracking-tight mb-0.5">Capaian</span>
-                                    <span className="text-5xl font-black tracking-tighter leading-none transition-colors" style={{ color: statistics.statusColor }}>
-                                        {statistics.status.toFixed(0)}<span className="text-xl font-bold ml-1">%</span>
-                                    </span>
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-emerald-200 transition-all">
+                            <Text.Label className="font-bold opacity-80 !text-[10px] text-slate-500 uppercase tracking-widest">Realisasi Bulanan</Text.Label>
+                            <Text.Amount className="text-xl font-black text-emerald-600">{formatRupiah(statistics.realisasi)}</Text.Amount>
+                            <div className="flex items-center gap-1.5 mt-2">
+                                <div className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-white ${statistics.statusBg}`}>
+                                    {statistics.statusLabel} {statistics.status.toFixed(0)}%
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-4 mt-6">
-                            <div className={`px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg shadow-black/5`} style={{ backgroundColor: statistics.statusColor }}>
-                                <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                                <span className="text-[10px] font-bold text-white tracking-wide">{statistics.statusLabel} ({statistics.status.toFixed(0)}%)</span>
+                        <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm flex flex-col gap-1 hover:border-blue-200 transition-all">
+                            <Text.Label className="font-bold opacity-80 !text-[10px] text-slate-500 uppercase tracking-widest">Iuran Insidentil</Text.Label>
+                            <Text.Amount className="text-xl font-black text-blue-600">{formatRupiah(statistics.incidentalIncome)}</Text.Amount>
+                            <Text.Caption className="!text-[9px] !font-bold text-slate-400 mt-2 uppercase">Luar Kewajiban Rutin</Text.Caption>
+                        </div>
+                    </div>
+
+                    {/* Breakdown Detail Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Pemasukan Breakdown */}
+                        <div className="bg-white rounded-[32px] p-6 shadow-premium border border-slate-100 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Detail Pemasukan</h3>
+                                <div className="p-2 bg-emerald-50 rounded-xl">
+                                    <ArrowDownRight weight="bold" className="w-4 h-4 text-emerald-600 rotate-180" />
+                                </div>
                             </div>
-                            <div className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-slate-300" />
-                                <span className="text-[10px] font-bold text-slate-500 tracking-wide">Target Belum</span>
+                            <div className="space-y-3">
+                                <div className="flex justify-between p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                    <span className="text-xs font-bold text-slate-500">Kewajiban Bulanan</span>
+                                    <span className="text-xs font-black text-slate-900">{formatRupiah(statistics.realisasi)}</span>
+                                </div>
+                                <div className="flex justify-between p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100/50">
+                                    <span className="text-xs font-bold text-slate-500">Iuran Acara / Insidentil</span>
+                                    <span className="text-xs font-black text-slate-900">{formatRupiah(statistics.incidentalIncome)}</span>
+                                </div>
+                                <div className="pt-2 flex justify-between items-center px-1">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Masuk</span>
+                                    <span className="text-lg font-black text-emerald-600">{formatRupiah(statistics.realisasi + statistics.incidentalIncome)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pengeluaran Breakdown */}
+                        <div className="bg-white rounded-[32px] p-6 shadow-premium border border-slate-100 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Detail Pengeluaran</h3>
+                                <div className="p-2 bg-rose-50 rounded-xl">
+                                    <ArrowDownRight weight="bold" className="w-4 h-4 text-rose-600" />
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <div className="flex justify-between p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100">
+                                    <span className="text-xs font-bold text-slate-500">Kegiatan & Agenda</span>
+                                    <span className="text-xs font-black text-rose-600">{formatRupiah(statistics.agendaExpenses)}</span>
+                                </div>
+                                <div className="flex justify-between p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100/50">
+                                    <span className="text-xs font-bold text-slate-500">Operasional & Umum</span>
+                                    <span className="text-xs font-black text-slate-900">{formatRupiah(displayedSummary.kasKeluar - statistics.agendaExpenses)}</span>
+                                </div>
+                                <div className="pt-2 flex justify-between items-center px-1">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Keluar</span>
+                                    <span className="text-lg font-black text-rose-600">{formatRupiah(displayedSummary.kasKeluar)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SALDO CARD */}
+                    <div className="bg-gradient-to-br from-brand-600 via-brand-700 to-indigo-900 rounded-[32px] p-8 text-white shadow-xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl transition-transform group-hover:scale-110 duration-1000" />
+                        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2 opacity-80">
+                                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                                        <Coins weight="fill" className="w-4 h-4 text-brand-200" />
+                                    </div>
+                                    <span className="text-xs font-black uppercase tracking-[0.2em]">Saldo Kas Akhir</span>
+                                </div>
+                                <Text.Amount className="!text-white !text-5xl !tracking-tighter !leading-none font-black drop-shadow-sm">
+                                    {formatRupiah(displayedSummary.saldo)}
+                                </Text.Amount>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-xl rounded-[24px] p-5 border border-white/20 shadow-inner">
+                                <p className="text-[10px] font-bold text-white/70 uppercase tracking-wider mb-2 text-center md:text-left">Status Keuangan</p>
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-3 h-3 rounded-full ${displayedSummary.saldo >= 0 ? 'bg-emerald-400 shadow-[0_0_12px_#34d399]' : 'bg-rose-400 shadow-[0_0_12px_#f87171]'} animate-pulse`} />
+                                    <span className="text-base font-black tracking-tight">{displayedSummary.saldo >= 0 ? 'Surplus / Sehat' : 'Defisit / Perhatian'}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
