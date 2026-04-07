@@ -86,16 +86,11 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        // Unify React core, routing, and Recharts to prevent synchronization errors with React 19 internals
-                        if (
-                            /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|recharts)/.test(id) ||
-                            id.includes('@remix-run')
-                        ) {
-                            return 'vendor-core';
-                        }
+                        // Keep icons separate as they are large and leaf-dependencies
                         if (id.includes('@phosphor-icons')) {
                             return 'vendor-icons';
                         }
+                        // Group all other vendors to prevent circular dependency initialization errors (e.g. React 19 + Recharts)
                         return 'vendor';
                     }
                     if (id.includes('/src/services/')) {
