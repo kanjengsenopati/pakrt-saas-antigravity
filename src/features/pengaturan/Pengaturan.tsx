@@ -955,8 +955,8 @@ export default function Pengaturan() {
                                                 <Money weight="fill" className="text-brand-600 w-5 h-5" />
                                                 <h3 className="text-sm font-bold text-gray-900 tracking-normal">Jenis Pemasukan (Database Driven)</h3>
                                             </div>
-                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-7 shadow-sm space-y-7">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                                     <div className="md:col-span-2">
                                                         <label className="block text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Nama Item Iuran / Pemasukan</label>
                                                         <input
@@ -1011,19 +1011,19 @@ export default function Pengaturan() {
                                                     </button>
                                                 </div>
 
-                                                <div className="space-y-3 pt-4 border-t border-gray-100">
+                                                <div className="space-y-4 pt-6 border-t border-gray-100">
                                                     {jenisPemasukan.map((item) => (
-                                                        <div key={item.id} className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:border-brand-200 transition-all group">
+                                                        <div key={item.id} className="flex items-center justify-between bg-white border border-gray-200 p-5 rounded-2xl shadow-sm hover:border-brand-200 hover:shadow-md transition-all group">
                                                             <div className="flex items-center gap-4">
-                                                                <div className={`p-2 rounded-xl ${item.tipe === 'BULANAN' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                                <div className={`p-3 rounded-xl ${item.tipe === 'BULANAN' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
                                                                     <Money weight="fill" className="w-5 h-5" />
                                                                 </div>
-                                                                <div>
+                                                                <div className="space-y-1">
                                                                     <div className="flex items-center gap-2">
                                                                         <p className="text-sm font-bold text-gray-900">{item.nama}</p>
-                                                                        {item.is_mandatory && <span className="px-2 py-0.5 bg-brand-50 text-brand-600 text-[9px] font-bold rounded-full border border-brand-100 uppercase tracking-wider">Mandatory</span>}
+                                                                        {item.is_mandatory && <span className="px-2.5 py-1 bg-brand-50 text-brand-600 text-[9px] font-bold rounded-full border border-brand-100 uppercase tracking-wider">Mandatory</span>}
                                                                     </div>
-                                                                    <p className="text-[10px] text-gray-500 font-medium">
+                                                                    <p className="text-[11px] text-gray-500 font-medium">
                                                                         {item.tipe} • Rp {item.nominal.toLocaleString('id-ID')}
                                                                     </p>
                                                                 </div>
@@ -1031,14 +1031,14 @@ export default function Pengaturan() {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeCategory('masuk', item.id)}
-                                                                className="opacity-0 group-hover:opacity-100 p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                                className="opacity-0 group-hover:opacity-100 p-2.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                                                             >
                                                                 <Trash weight="bold" className="w-4 h-4" />
                                                             </button>
                                                         </div>
                                                     ))}
                                                     {jenisPemasukan.length === 0 && (
-                                                        <div className="text-center py-6 border-2 border-dashed border-gray-100 rounded-2xl">
+                                                        <div className="text-center py-10 border-2 border-dashed border-gray-100 rounded-2xl">
                                                             <p className="text-xs text-gray-400 font-medium italic">Belum ada jenis pemasukan terkonfigurasi.</p>
                                                         </div>
                                                     )}
@@ -1051,7 +1051,7 @@ export default function Pengaturan() {
                                                 <Money weight="fill" className="text-brand-500 w-5 h-5" />
                                                 <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pengeluaran</h3>
                                             </div>
-                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
+                                            <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-7 shadow-sm space-y-5">
                                                 <div className="flex gap-2">
                                                     <input
                                                         type="text"
@@ -1069,9 +1069,9 @@ export default function Pengaturan() {
                                                         <Plus weight="bold" className="w-5 h-5" />
                                                     </button>
                                                 </div>
-                                                <div className="flex flex-wrap gap-2 min-h-[40px]">
+                                                <div className="flex flex-wrap gap-2.5 min-h-[44px]">
                                                     {pengeluaranCategories.map((cat, i) => (
-                                                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
+                                                        <div key={i} className="flex items-center gap-2 px-4 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
                                                             <span>{cat}</span>
                                                             <button
                                                                 type="button"
