@@ -86,16 +86,21 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('react-dom') || id.includes('react-router-dom') || id.includes('@remix-run')) {
+                        // Unify React core and routing to prevent synchronization errors with React 19 secret internals
+                        if (
+                            id.includes('/node_modules/react/') || 
+                            id.includes('/node_modules/react-dom/') || 
+                            id.includes('/node_modules/react-router/') || 
+                            id.includes('/node_modules/react-router-dom/') ||
+                            id.includes('/node_modules/scheduler/') ||
+                            id.includes('@remix-run')
+                        ) {
                             return 'vendor-react-core';
                         }
-                        if (id.includes('react')) {
-                            return 'vendor-react';
-                        }
-                        if (id.includes('recharts')) {
+                        if (id.includes('/node_modules/recharts/')) {
                             return 'vendor-recharts';
                         }
-                        if (id.includes('@phosphor-icons')) {
+                        if (id.includes('/node_modules/@phosphor-icons/')) {
                             return 'vendor-icons';
                         }
                         return 'vendor';
