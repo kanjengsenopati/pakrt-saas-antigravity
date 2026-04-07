@@ -14,7 +14,6 @@ import {
 
     ArrowRight,
     Bell,
-    Gavel,
     IdentificationCard,
     Megaphone,
     User,
