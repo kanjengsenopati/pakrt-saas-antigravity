@@ -55,8 +55,15 @@ axios.interceptors.response.use(
     }
 );
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <MainRouter />
-    </React.StrictMode>,
-)
+// --- Safe Root Initialization ---
+const container = document.getElementById('root');
+if (container) {
+    const root = (window as any)._reactRoot || ReactDOM.createRoot(container);
+    (window as any)._reactRoot = root;
+    root.render(
+        <React.StrictMode>
+            <MainRouter />
+        </React.StrictMode>,
+    );
+}
+// --------------------------------

@@ -219,14 +219,14 @@ export default function KeuanganList() {
         }
 
         // 2. Base Target Calculation (per month)
-        const iuranDihuni = (occupancySettings.dihuni || 0) * wargaStats.dihuni;
-        const iuranKosong = (occupancySettings.kosong || 0) * wargaStats.kosong;
+        const iuranDihuni = (Number(occupancySettings.dihuni) || 0) * (Number(wargaStats.dihuni) || 0);
+        const iuranKosong = (Number(occupancySettings.kosong) || 0) * (Number(wargaStats.kosong) || 0);
         
-        const mandatoryOthers = incomeSettings
-            .filter(item => item.is_mandatory)
-            .reduce((sum, item) => sum + (item.nominal * wargaStats.total), 0);
+        const mandatoryOthers = (incomeSettings || [])
+            .filter(item => item && item.is_mandatory)
+            .reduce((sum, item) => sum + ((Number(item.nominal) || 0) * (Number(wargaStats.total) || 0)), 0);
             
-        const target = (iuranDihuni + iuranKosong + mandatoryOthers) * monthFactor;
+        const target = (iuranDihuni + iuranKosong + mandatoryOthers) * (monthFactor || 1);
         
         // 3. Realisasi
         // Filter transactions based on date range
