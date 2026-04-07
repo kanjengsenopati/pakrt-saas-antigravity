@@ -25,8 +25,8 @@ export const iuranService = {
         }
     },
 
-    async getBillingSummary(wargaId: string, year: number, monthOrKategori: number | string | undefined, scope: ScopeType): Promise<any> {
-        const params: any = { year, scope };
+    async getBillingSummary(tenantId: string, wargaId: string, year: number, monthOrKategori: number | string | undefined, scope: ScopeType): Promise<any> {
+        const params: any = { year, scope, tenant_id: tenantId };
         if (typeof monthOrKategori === 'number') {
             params.month = monthOrKategori;
         } else if (typeof monthOrKategori === 'string') {

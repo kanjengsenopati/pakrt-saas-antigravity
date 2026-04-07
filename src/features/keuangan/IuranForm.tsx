@@ -34,7 +34,8 @@ export default function IuranForm() {
     const [defaultNominal, setDefaultNominal] = useState(0);
     const [selectedMonths, setSelectedMonths] = useState<number[]>([new Date().getMonth() + 1]);
     const [tahunOptions, setTahunOptions] = useState<number[]>([new Date().getFullYear()]);
-    const [kategoriOptions, setKategoriOptions] = useState<string[]>(['Iuran Warga']);
+    const [kategoriOptions, setKategoriOptions] = useState<{ nama: string; tipe: string; nominal: number; is_mandatory: boolean }[]>([]);
+    const [selectedKategoriMeta, setSelectedKategoriMeta] = useState<{ tipe: string; is_mandatory: boolean; nominal: number } | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [paymentMode, setPaymentMode] = useState<'Pas' | 'Bebas'>('Pas');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,7 +59,7 @@ export default function IuranForm() {
             tanggal_bayar: new Date().toISOString().split('T')[0],
             periode_tahun: new Date().getFullYear(),
             warga_id: loggedInWargaId || '',
-            kategori: 'Iuran Warga'
+            kategori: ''
         }
     });
 
@@ -118,18 +119,28 @@ export default function IuranForm() {
                 if (config.jenis_pemasukan) {
                     try {
                         const parsedJenis = JSON.parse(config.jenis_pemasukan);
-                        if (Array.isArray(parsedJenis)) {
-                            // Filter for citizen-related items (Mandatory or Occasional/Insidental)
-                            const citizenDues = parsedJenis.filter((item: any) => item.is_mandatory || item.is_occasional);
-                            const categories = citizenDues.map((item: any) => item.nama);
-                            
-                            setKategoriOptions(categories);
-                            
-                            // Store the full objects for nominal lookup
-                            (window as any)._citizen_dues_metadata = citizenDues;
+                        if (Array.isArray(parsedJenis) && parsedJenis.length > 0) {
+                            // All configured payment types are valid for citizens.
+                            // Use item.tipe ('BULANAN'/'INSIDENTIL') — NOT the non-existent is_occasional.
+                            const allOptions = parsedJenis.map((item: any) => ({
+                                nama: item.nama,
+                                tipe: item.tipe || 'BULANAN',
+                                nominal: Number(item.nominal) || 0,
+                                is_mandatory: !!item.is_mandatory
+                            }));
 
-                            if (!categories.includes(watch('kategori'))) {
-                                setValue('kategori', categories[0] || 'Iuran Warga');
+                            setKategoriOptions(allOptions);
+
+                            // Store full metadata for nominal lookup and UI adaptation
+                            (window as any)._citizen_dues_metadata = allOptions;
+
+                            const currentKat = watch('kategori');
+                            const existingMatch = allOptions.find((o: any) => o.nama === currentKat);
+                            if (!existingMatch) {
+                                // Default to first mandatory (BULANAN) item, or first item overall
+                                const firstMandatory = allOptions.find((o: any) => o.is_mandatory && o.tipe === 'BULANAN');
+                                const firstDefault = firstMandatory || allOptions[0];
+                                if (firstDefault) setValue('kategori', firstDefault.nama);
                             }
                         }
                     } catch (e) {
@@ -167,9 +178,19 @@ export default function IuranForm() {
         const metadata = (window as any)._citizen_dues_metadata;
         if (Array.isArray(metadata)) {
             const selected = metadata.find((m: any) => m.nama === watchKategori);
-            if (selected && selected.nominal > 0) {
-                setDefaultNominal(selected.nominal);
-                setValue('nominal', selected.nominal * selectedMonths.length);
+            if (selected) {
+                setSelectedKategoriMeta({ tipe: selected.tipe, is_mandatory: selected.is_mandatory, nominal: selected.nominal });
+                if (selected.nominal > 0) {
+                    setDefaultNominal(selected.nominal);
+                    if (selected.tipe === 'INSIDENTIL') {
+                        // For incidental: fixed nominal per item, months selection not used
+                        setValue('nominal', selected.nominal);
+                    } else {
+                        setValue('nominal', selected.nominal * selectedMonths.length);
+                    }
+                }
+            } else {
+                setSelectedKategoriMeta(null);
             }
         }
     }, [watchKategori, selectedMonths.length, setValue]);
@@ -179,7 +200,9 @@ export default function IuranForm() {
             const fetchBillingSummary = async () => {
                 setIsLoadingBilling(true);
                 try {
+                    // FIX: Pass tenantId as first parameter (was missing before)
                     const result = await iuranService.getBillingSummary(
+                        currentTenant.id,
                         watchWargaId, 
                         watchTahun, 
                         watchKategori, 
@@ -190,7 +213,6 @@ export default function IuranForm() {
                     setPaidMonthsRecord(result.paidMonths);
                     setPendingMonthsRecord(result.pendingMonths);
 
-                    // Auto-select removed - default to 0 selected months as per user request
                     if (!isEdit && !hasInteracted && result.rate > 0) {
                         setSelectedMonths([]);
                     }
@@ -325,61 +347,99 @@ export default function IuranForm() {
                         </div>
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-[32px] shadow-premium border border-slate-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
-                            <div className="bg-gradient-to-br from-brand-600 to-brand-700 p-6 text-white relative">
+                            <div className={`p-6 text-white relative ${selectedKategoriMeta?.tipe === 'INSIDENTIL' ? 'bg-gradient-to-br from-amber-500 to-amber-600' : 'bg-gradient-to-br from-brand-600 to-brand-700'}`}>
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-2 mb-1.5">
-                                        <ChartPieSlice weight="fill" className="w-5 h-5 text-brand-200" />
-                                        <span className="font-headline font-black text-white text-[10px] tracking-widest uppercase opacity-90">Ringkasan Kewajiban</span>
+                                        <ChartPieSlice weight="fill" className="w-5 h-5 opacity-80" />
+                                        <span className="font-headline font-black text-white text-[10px] tracking-widest uppercase opacity-90">
+                                            {selectedKategoriMeta?.tipe === 'INSIDENTIL' ? 'Detail Iuran Insidentil' : 'Ringkasan Kewajiban'}
+                                        </span>
                                     </div>
-                                    <Text.H1 className="!text-white !text-2xl !tracking-tight">Tahun {watchTahun || new Date().getFullYear()}</Text.H1>
+                                    <Text.H1 className="!text-white !text-2xl !tracking-tight">
+                                        {selectedKategoriMeta?.tipe === 'INSIDENTIL' ? watchKategori : `Tahun ${watchTahun || new Date().getFullYear()}`}
+                                    </Text.H1>
+                                    {selectedKategoriMeta?.tipe === 'INSIDENTIL' && (
+                                        <span className="inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-1 bg-white/20 rounded-full text-[9px] font-black uppercase tracking-widest">
+                                            INSIDENTIL • BUKAN BULANAN WAJIB
+                                        </span>
+                                    )}
                                 </div>
                             </div>
-                            
-                            <div className="p-6 space-y-6">
-                                <div className="flex justify-between items-start pb-4 border-b border-slate-50">
-                                    <div className="space-y-1">
-                                        <span className="font-headline font-black text-slate-500 text-[10px] tracking-tight uppercase">Total Tagihan 12 Bulan</span>
-                                        <div className="flex items-baseline gap-1">
-                                            <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="font-headline font-black text-slate-400 text-[9px] uppercase">Tarif</span>
-                                        <p className="text-[10px] font-black text-slate-500 tracking-tight">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</p>
-                                    </div>
-                                </div>
 
-                                <div className="pb-4 border-b border-slate-50">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="font-headline font-black text-emerald-600 text-[10px] tracking-tight uppercase">Sudah Dibayar (Sistem)</span>
+                            {selectedKategoriMeta?.tipe === 'INSIDENTIL' ? (
+                                // INSIDENTIL SUMMARY: Tidak ada kewajiban 12 bulan
+                                <div className="p-6 space-y-5">
+                                    <div className="flex justify-between items-center pb-4 border-b border-slate-50">
+                                        <div className="space-y-0.5">
+                                            <span className="font-headline font-black text-slate-500 text-[10px] tracking-tight uppercase">Nominal Per Acara</span>
+                                            <Text.Amount className="!text-slate-900 !text-xl block">{formatRupiah(defaultNominal).replace(/,00$/, '')}</Text.Amount>
+                                        </div>
+                                        <span className="px-2.5 py-1.5 bg-amber-50 text-amber-700 text-[9px] font-black rounded-full border border-amber-200 uppercase tracking-widest">Satu Kali</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-headline font-black text-emerald-600 text-[10px] tracking-tight uppercase">Sudah Dibayar</span>
                                         <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
                                     </div>
-                                    {pendingAmount > 0 ? (
+                                    {pendingAmount > 0 && (
                                         <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100/50">
                                             <Clock weight="fill" className="w-3 h-3 text-amber-500" />
                                             <p className="text-[9px] font-black text-amber-700 tracking-tight">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</p>
                                         </div>
-                                    ) : (
-                                        <p className="text-[9px] font-bold text-slate-300 italic">Hingga periode saat ini</p>
                                     )}
+                                    <div className="p-5 bg-amber-50 rounded-3xl border border-amber-100">
+                                        <p className="text-[10px] font-bold text-amber-700 text-center leading-relaxed">
+                                            Iuran insidentil tidak memiliki kewajiban bulanan tetap. Nominal disesuaikan dengan konfigurasi acara.
+                                        </p>
+                                    </div>
                                 </div>
+                            ) : (
+                                // BULANAN/MANDATORY SUMMARY: Kewajiban 12 bulan
+                                <div className="p-6 space-y-6">
+                                    <div className="flex justify-between items-start pb-4 border-b border-slate-50">
+                                        <div className="space-y-1">
+                                            <span className="font-headline font-black text-slate-500 text-[10px] tracking-tight uppercase">Total Tagihan 12 Bulan</span>
+                                            <div className="flex items-baseline gap-1">
+                                                <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="font-headline font-black text-slate-400 text-[9px] uppercase">Tarif</span>
+                                            <p className="text-[10px] font-black text-slate-500 tracking-tight">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</p>
+                                        </div>
+                                    </div>
 
-                                <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden group">
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
-                                    <div className="relative z-10 flex flex-col items-center text-center">
-                                        <span className="font-headline font-black text-brand-600 text-[9px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</span>
-                                        <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
-                                            {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount)).replace(/,00$/, '')}
-                                        </Text.Amount>
-                                        <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
-                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">
-                                                {paymentMode === 'Pas' ? 'Otomatis Mode Pas' : 'Target Pelunasan'}
-                                            </span>
+                                    <div className="pb-4 border-b border-slate-50">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="font-headline font-black text-emerald-600 text-[10px] tracking-tight uppercase">Sudah Dibayar (Sistem)</span>
+                                            <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
+                                        </div>
+                                        {pendingAmount > 0 ? (
+                                            <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100/50">
+                                                <Clock weight="fill" className="w-3 h-3 text-amber-500" />
+                                                <p className="text-[9px] font-black text-amber-700 tracking-tight">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</p>
+                                            </div>
+                                        ) : (
+                                            <p className="text-[9px] font-bold text-slate-300 italic">Hingga periode saat ini</p>
+                                        )}
+                                    </div>
+
+                                    <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
+                                        <div className="relative z-10 flex flex-col items-center text-center">
+                                            <span className="font-headline font-black text-brand-600 text-[9px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</span>
+                                            <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
+                                                {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount)).replace(/,00$/, '')}
+                                            </Text.Amount>
+                                            <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
+                                                <span className="text-[8px] font-black text-white uppercase tracking-widest">
+                                                    {paymentMode === 'Pas' ? 'Otomatis Mode Pas' : 'Target Pelunasan'}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     ) : (
                         <div className="bg-white rounded-3xl border-2 border-dashed border-slate-100 p-8 text-center space-y-4">
@@ -448,8 +508,19 @@ export default function IuranForm() {
                                         className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
                                     >
                                         <option value="">-- Pilih Jenis Pembayaran --</option>
-                                        {kategoriOptions.map(cat => (
-                                            <option key={cat} value={cat}>{cat}</option>
+                                        {kategoriOptions.map(opt => (
+                                            <optgroup key={opt.tipe} label={opt.tipe === 'INSIDENTIL' ? '— Insidentil' : '— Bulanan Wajib'}>
+                                            </optgroup>
+                                        ))}
+                                        {/* Render BULANAN first, then INSIDENTIL */}
+                                        {kategoriOptions.filter(o => o.tipe === 'BULANAN').map(opt => (
+                                            <option key={opt.nama} value={opt.nama}>{opt.nama} {opt.is_mandatory ? '(Wajib)' : ''}</option>
+                                        ))}
+                                        {kategoriOptions.filter(o => o.tipe === 'INSIDENTIL').length > 0 && (
+                                            <option disabled>── Insidentil ──</option>
+                                        )}
+                                        {kategoriOptions.filter(o => o.tipe === 'INSIDENTIL').map(opt => (
+                                            <option key={opt.nama} value={opt.nama}>{opt.nama}</option>
                                         ))}
                                     </select>
                                     {errors.kategori && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.kategori.message}</p>}
@@ -520,9 +591,16 @@ export default function IuranForm() {
 
                                 {/* ROW 4: MONTHS & NOMINAL */}
                                 <div className="md:col-span-2 space-y-3">
+                                    {selectedKategoriMeta?.tipe === 'INSIDENTIL' && (
+                                        <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                                            <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider leading-relaxed">
+                                                Iuran Insidentil — Pilih bulan acara berlangsung (satu pilihan cukup). Nominal sudah ditetapkan sesuai konfigurasi.
+                                            </span>
+                                        </div>
+                                    )}
                                     <div>
                                         <label className="text-sm font-semibold text-gray-700 mb-2 block">
-                                            Pilih Bulan Pembayaran <span className="text-red-500">*</span>
+                                            {selectedKategoriMeta?.tipe === 'INSIDENTIL' ? 'Bulan Acara / Pelaksanaan' : 'Pilih Bulan Pembayaran'} <span className="text-red-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
                                             {MONTHS.map(m => {

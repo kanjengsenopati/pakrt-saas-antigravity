@@ -198,7 +198,7 @@ export default async function pembayaranIuranRoutes(fastify: FastifyInstance) {
       user.tenant_id,
       wargaId,
       year ? parseInt(year) : (tahun ? parseInt(tahun) : new Date().getFullYear()),
-      kategori || 'Iuran Warga',
+      kategori || undefined,   // Pass undefined if not provided — no category filter
       scope || 'RT'
     );
     return result;
