@@ -61,7 +61,7 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ children }) =>
         }
     };
 
-    const toolbarPosition = viewMode === 'desktop' ? 'right-72' : 'left-1/2 -translate-x-1/2';
+    const toolbarPosition = 'left-1/2 -translate-x-1/2';
 
     return (
         <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-8 transition-colors duration-700 relative overflow-hidden">
@@ -158,7 +158,7 @@ const SimulatorToggle: React.FC<ToggleProps> = ({ current, onChange, isFloating 
     );
 };
 
-const ToggleButton = ({ active, onClick, icon, label, isFloating }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, isFloating?: boolean }) => (
+const ToggleButton = ({ onClick, icon, label }: { onClick: () => void, icon: React.ReactNode, label: string }) => (
     <button
         onClick={onClick}
         title={`Pindah ke ${label}`}

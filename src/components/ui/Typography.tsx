@@ -11,13 +11,15 @@ interface TypographyProps {
   className?: string;
   id?: string;
   title?: string;
+  style?: React.CSSProperties;
 }
 
 export const Text = {
-  H1: ({ children, className, id, title }: TypographyProps) => (
+  H1: ({ children, className, id, title, style }: TypographyProps) => (
     <h1 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-headline text-[22px] font-bold tracking-tighter text-slate-900 leading-tight",
         className
@@ -27,10 +29,11 @@ export const Text = {
     </h1>
   ),
 
-  H2: ({ children, className, id, title }: TypographyProps) => (
+  H2: ({ children, className, id, title, style }: TypographyProps) => (
     <h2 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-headline text-base font-semibold tracking-tight text-slate-800 leading-snug",
         className
@@ -40,10 +43,11 @@ export const Text = {
     </h2>
   ),
 
-  H3: ({ children, className, id, title }: TypographyProps) => (
+  H3: ({ children, className, id, title, style }: TypographyProps) => (
     <h3 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-headline text-[15px] font-bold tracking-tight text-slate-800 leading-snug",
         className
@@ -53,10 +57,11 @@ export const Text = {
     </h3>
   ),
 
-  H4: ({ children, className, id, title }: TypographyProps) => (
+  H4: ({ children, className, id, title, style }: TypographyProps) => (
     <h4 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-headline text-[13px] font-bold tracking-tight text-slate-700 leading-snug",
         className
@@ -66,10 +71,11 @@ export const Text = {
     </h4>
   ),
 
-  Amount: ({ children, className, id, title }: TypographyProps) => (
+  Amount: ({ children, className, id, title, style }: TypographyProps) => (
     <span 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-headline text-lg font-bold tabular-nums tracking-tight text-slate-900",
         className
@@ -79,10 +85,11 @@ export const Text = {
     </span>
   ),
 
-  Label: ({ children, className, id, title }: TypographyProps) => (
+  Label: ({ children, className, id, title, style }: TypographyProps) => (
     <span 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-label text-[11px] font-black uppercase tracking-wider text-slate-400",
         className
@@ -92,10 +99,11 @@ export const Text = {
     </span>
   ),
 
-  Body: ({ children, className, id, title }: TypographyProps) => (
+  Body: ({ children, className, id, title, style }: TypographyProps) => (
     <p 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
         className
@@ -105,10 +113,11 @@ export const Text = {
     </p>
   ),
 
-  Caption: ({ children, className, id, title }: TypographyProps) => (
+  Caption: ({ children, className, id, title, style }: TypographyProps) => (
     <span 
       id={id}
       title={title}
+      style={style}
       className={cn(
         "font-body text-[11px] font-medium text-slate-400 leading-normal tracking-tight",
         className
@@ -119,7 +128,7 @@ export const Text = {
   ),
 
   // Marketing & Hero Variants (Responsive via ViewMode Context)
-  Display: ({ children, className, id, title }: TypographyProps) => {
+  Display: ({ children, className, id, title, style }: TypographyProps) => {
     const { viewMode } = useViewMode();
     const sizeClasses = {
       mobile: 'text-[32px] md:text-[40px]',
@@ -131,6 +140,7 @@ export const Text = {
       <h1 
         id={id}
         title={title}
+        style={style}
         className={cn(
           "font-headline font-extrabold tracking-tighter text-slate-900 leading-[0.95]",
           sizeClasses[viewMode],
@@ -142,7 +152,7 @@ export const Text = {
     );
   },
 
-  Subtitle: ({ children, className, id, title }: TypographyProps) => {
+  Subtitle: ({ children, className, id, title, style }: TypographyProps) => {
     const { viewMode } = useViewMode();
     const sizeClasses = {
       mobile: 'text-base md:text-lg',
@@ -154,6 +164,7 @@ export const Text = {
       <p 
         id={id}
         title={title}
+        style={style}
         className={cn(
           "font-body font-medium text-slate-500 leading-relaxed",
           sizeClasses[viewMode],

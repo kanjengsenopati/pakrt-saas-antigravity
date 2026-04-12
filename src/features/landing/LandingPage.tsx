@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     CheckCircle, Users, CurrencyCircleDollar,
     ArrowRight, MapPinLine,
-    ChartLineUp, Wallet, Bell, House, Envelope,
+    ChartLineUp, Bell, House, Envelope,
     Article, Calendar, Package, Heart, Flashlight, Megaphone, CaretDown, CaretUp, Buildings,
     List, X
 } from '@phosphor-icons/react';
