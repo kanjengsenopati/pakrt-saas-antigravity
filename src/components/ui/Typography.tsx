@@ -117,4 +117,53 @@ export const Text = {
       {children}
     </span>
   ),
+
+  // Marketing & Hero Variants (Responsive via ViewMode Context)
+  Display: ({ children, className, id, title }: TypographyProps) => {
+    const { viewMode } = useViewMode();
+    const sizeClasses = {
+      mobile: 'text-[32px] md:text-[40px]',
+      tablet: 'text-[48px] md:text-[56px]',
+      desktop: 'text-[64px] md:text-[72px]'
+    };
+
+    return (
+      <h1 
+        id={id}
+        title={title}
+        className={cn(
+          "font-headline font-extrabold tracking-tighter text-slate-900 leading-[0.95]",
+          sizeClasses[viewMode],
+          className
+        )}
+      >
+        {children}
+      </h1>
+    );
+  },
+
+  Subtitle: ({ children, className, id, title }: TypographyProps) => {
+    const { viewMode } = useViewMode();
+    const sizeClasses = {
+      mobile: 'text-base md:text-lg',
+      tablet: 'text-lg md:text-xl',
+      desktop: 'text-xl md:text-2xl'
+    };
+
+    return (
+      <p 
+        id={id}
+        title={title}
+        className={cn(
+          "font-body font-medium text-slate-500 leading-relaxed",
+          sizeClasses[viewMode],
+          className
+        )}
+      >
+        {children}
+      </p>
+    );
+  },
 };
+
+import { useViewMode } from '../../contexts/ViewModeContext';
