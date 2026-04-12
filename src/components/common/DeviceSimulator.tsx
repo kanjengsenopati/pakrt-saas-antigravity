@@ -129,29 +129,23 @@ const SimulatorToggle: React.FC<ToggleProps> = ({ current, onChange, isFloating 
         `}>
             {current !== 'mobile' && (
                 <ToggleButton 
-                    active={false} 
                     onClick={() => onChange('mobile')}
                     icon={<Smartphone size={16} strokeWidth={2.5} />}
                     label="Mobile"
-                    isFloating={isFloating}
                 />
             )}
             {current !== 'tablet' && (
                 <ToggleButton 
-                    active={false} 
                     onClick={() => onChange('tablet')}
                     icon={<Tablet size={16} strokeWidth={2.5} />}
                     label="Tablet"
-                    isFloating={isFloating}
                 />
             )}
             {current !== 'desktop' && (
                 <ToggleButton 
-                    active={false} 
                     onClick={() => onChange('desktop')}
                     icon={<Monitor size={16} strokeWidth={2.5} />}
                     label="Desktop"
-                    isFloating={isFloating}
                 />
             )}
         </div>
