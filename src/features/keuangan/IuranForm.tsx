@@ -322,7 +322,7 @@ export default function IuranForm() {
                                                         >
                                                             <span className="text-[9px] font-headline font-black uppercase tracking-widest opacity-60 mb-0.5">{m.label}</span>
                                                             <span className={`text-[13px] font-black tracking-tight ${isSelected ? 'text-white' : 'text-slate-900 group-hover:text-brand-600'}`}>
-                                                                {isPaid ? 'LUNAS' : isPending ? 'PENDING' : isSelected ? 'Pilih' : formatRupiah(activeManifestItem.rate).replace(/,00$/, '').replace('Rp ', '')}
+                                                                {isPaid ? 'LUNAS' : isPending ? 'PENDING' : isSelected ? 'Pilih' : '---'}
                                                             </span>
                                                             {isSelected && <div className="absolute top-3 right-3 w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
                                                             {isPaid && <div className="absolute inset-x-0 bottom-0 h-1 bg-emerald-500" />}
@@ -454,9 +454,17 @@ export default function IuranForm() {
                                 </div>
 
                                 <div className="mt-10 pt-10 border-t border-white/10 flex flex-col items-center animate-in slide-in-from-bottom-2 duration-500">
-                                    <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Grand Total</span>
-                                    <Text.Amount className="!text-brand-400 !text-5xl !tracking-tighter font-black">{formatRupiah(cartTotal).replace('Rp ', '')}</Text.Amount>
-                                    <span className="text-[10px] font-black text-brand-400 mt-1">RUPIAH INDONESIA</span>
+                                    {cart.length > 0 ? (
+                                        <>
+                                            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Grand Total</span>
+                                            <Text.Amount className="!text-brand-400 !text-5xl !tracking-tighter font-black">{formatRupiah(cartTotal).replace('Rp ', '')}</Text.Amount>
+                                            <span className="text-[10px] font-black text-brand-400 mt-1">RUPIAH INDONESIA</span>
+                                        </>
+                                    ) : (
+                                        <div className="text-center py-4">
+                                            <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] italic">Pilih bulan di kalender</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
