@@ -122,6 +122,7 @@ interface ToggleProps {
 
 const SimulatorToggle: React.FC<ToggleProps> = ({ current, onChange, isFloating }) => {
     return (
+        <div className={`
             flex items-center gap-1 p-1 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.15)] transition-all duration-300
             bg-white/95 backdrop-blur-xl border-2 border-brand-500 animate-pulse
             ${isFloating ? 'hover:scale-105 active:scale-95' : ''}
