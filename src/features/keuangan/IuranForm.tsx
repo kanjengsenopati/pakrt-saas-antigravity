@@ -32,7 +32,7 @@ export default function IuranForm() {
 
     const [wargaList, setWargaList] = useState<Warga[]>([]);
     const [defaultNominal, setDefaultNominal] = useState(0);
-    const [selectedMonths, setSelectedMonths] = useState<number[]>([new Date().getMonth() + 1]);
+    const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
     const [tahunOptions, setTahunOptions] = useState<number[]>([new Date().getFullYear()]);
     const [kategoriOptions, setKategoriOptions] = useState<string[]>(['Iuran Warga']);
     const [isUploading, setIsUploading] = useState(false);
@@ -113,7 +113,8 @@ export default function IuranForm() {
                 // Fallback / Initial
                 const baseIuran = tieredRates['Tetap-Dihuni'] || tieredRates['Default'];
                 setDefaultNominal(baseIuran);
-                setValue('nominal', baseIuran);
+                // Biarkan nominal 0 sampai bulan dipilih
+                setValue('nominal', 0);
 
                 if (config.jenis_pemasukan) {
                     try {
@@ -154,25 +155,30 @@ export default function IuranForm() {
         }
     }, [currentTenant, currentScope, setValue]);
 
+    // Konsolidasi Kalkulasi Nominal (Mode Pas & Bebas)
     useEffect(() => {
         const shouldCalculate = !isEdit || (isEdit && hasInteracted);
-        if (shouldCalculate && paymentMode === 'Pas' && selectedMonths.length > 0 && defaultNominal > 0) {
-            setValue('nominal', defaultNominal * selectedMonths.length);
-        } else if (shouldCalculate && paymentMode === 'Pas' && selectedMonths.length === 0) {
-            setValue('nominal', 0);
-        }
-    }, [selectedMonths, defaultNominal, setValue, isEdit, paymentMode, hasInteracted]);
+        if (!shouldCalculate) return;
 
+        if (paymentMode === 'Pas') {
+            if (selectedMonths.length > 0 && defaultNominal > 0) {
+                setValue('nominal', defaultNominal * selectedMonths.length);
+            } else {
+                setValue('nominal', 0);
+            }
+        }
+    }, [selectedMonths, defaultNominal, paymentMode, setValue, isEdit, hasInteracted]);
+
+    // Handle Metadata Nominal Update
     useEffect(() => {
         const metadata = (window as any)._citizen_dues_metadata;
         if (Array.isArray(metadata)) {
             const selected = metadata.find((m: any) => m.nama === watchKategori);
             if (selected && selected.nominal > 0) {
                 setDefaultNominal(selected.nominal);
-                setValue('nominal', selected.nominal * selectedMonths.length);
             }
         }
-    }, [watchKategori, selectedMonths.length, setValue]);
+    }, [watchKategori]);
 
     useEffect(() => {
         if (watchWargaId && watchTahun && watchKategori && currentTenant) {
@@ -188,13 +194,15 @@ export default function IuranForm() {
                     );
                     setAlreadyPaid(result.totalPaid);
                     setPendingAmount(result.pendingAmount);
-                    setPaidMonthsRecord(result.paidMonths);
-                    setPendingMonthsRecord(result.pendingMonths);
+                    setPaidMonthsRecord(result.paidMonths || []);
+                    setPendingMonthsRecord(result.pendingMonths || []);
 
-                    // Auto-select removed - default to 0 selected months as per user request
-                    if (!isEdit && !hasInteracted && result.rate > 0) {
-                        setSelectedMonths([]);
-                    }
+                    // Sinkronisasi selectedMonths: Hapus bulan yang ternyata sudah dibayar/pending
+                    setSelectedMonths(prev => {
+                        const paid = result.paidMonths || [];
+                        const pending = result.pendingMonths || [];
+                        return prev.filter(m => !paid.includes(m) && !pending.includes(m));
+                    });
                 } catch (error) {
                     console.error("Failed to fetch billing summary:", error);
                     setAlreadyPaid(0);
@@ -258,7 +266,7 @@ export default function IuranForm() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12">
+        <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12 px-5">
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => navigate('/iuran')}
@@ -407,7 +415,7 @@ export default function IuranForm() {
                 </div>
 
                 {/* RIGHT COLUMN: FORM */}
-                <div className="md:col-span-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="md:col-span-8 bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
                     <div className="border-b border-gray-50 p-4 bg-slate-50/10 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-brand-500" />
                         <Text.Label className="uppercase !tracking-widest">Input Transaksi Pembayaran</Text.Label>
@@ -537,28 +545,28 @@ export default function IuranForm() {
                                                         type="button"
                                                         disabled={isPaid || isPending}
                                                         onClick={() => toggleMonth(m.value)}
-                                                        className={`py-2 px-1 text-sm font-semibold rounded-lg border transition-all relative ${
+                                                        className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
                                                             isPaid
-                                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
+                                                                ? 'bg-emerald-600 border-emerald-600 text-white cursor-not-allowed'
                                                                 : isPending
-                                                                    ? 'bg-amber-50 border-amber-200 text-amber-700 cursor-not-allowed opacity-80'
+                                                                    ? 'bg-amber-500 border-amber-500 text-white cursor-not-allowed opacity-90'
                                                                     : isSelected
-                                                                        ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                                        : 'bg-rose-50/40 border-rose-100/50 text-rose-400 hover:bg-rose-50 hover:border-rose-200'
+                                                                        ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
+                                                                        : 'bg-red-500 border-red-500 text-white hover:bg-red-600 hover:scale-105 active:scale-95'
                                                             }`}
                                                     >
                                                         {m.label.substring(0, 3)}
                                                         {isPaid ? (
-                                                            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5">
-                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                            <div className="absolute -top-2 -right-1 bg-white text-emerald-600 rounded-full p-0.5 shadow-sm border border-emerald-100">
+                                                                <CheckCircle weight="fill" className="w-3 h-3" />
                                                             </div>
                                                         ) : isPending ? (
-                                                            <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5">
-                                                                <Clock weight="fill" className="w-2.5 h-2.5" />
+                                                            <div className="absolute -top-2 -right-1 bg-white text-amber-500 rounded-full p-0.5 shadow-sm border border-amber-100">
+                                                                <Clock weight="fill" className="w-3 h-3" />
                                                             </div>
                                                         ) : isSelected && (
-                                                            <div className="absolute -top-1 -right-1 bg-brand-500 text-white rounded-full p-0.5">
-                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
+                                                            <div className="absolute -top-2 -right-1 bg-white text-blue-600 rounded-full p-0.5 shadow-sm border border-blue-100 animate-in zoom-in duration-300">
+                                                                <CheckCircle weight="fill" className="w-3 h-3" />
                                                             </div>
                                                         )}
                                                     </button>
