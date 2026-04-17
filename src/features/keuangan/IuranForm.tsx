@@ -180,6 +180,7 @@ export default function IuranForm() {
                 setIsLoadingBilling(true);
                 try {
                     const result = await iuranService.getBillingSummary(
+                        currentTenant.id,
                         watchWargaId, 
                         watchTahun, 
                         watchKategori, 
