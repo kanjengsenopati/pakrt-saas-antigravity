@@ -36,13 +36,13 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ children }) =>
     }, [viewMode, isExcluded]);
 
     if (isExcluded || viewMode === 'desktop') {
-        const togglePosition = viewMode === 'desktop' ? 'right-72' : 'left-1/2 -translate-x-1/2';
+        const togglePosition = 'right-8';
         
         return (
             <div className="relative min-h-screen">
                 {children}
                 {!isExcluded && (
-                    <div className={`fixed top-5 ${togglePosition} z-[99999] animate-fade-in group`}>
+                    <div className={`fixed top-6 ${togglePosition} z-[99999] animate-fade-in group`}>
                         <SimulatorToggle current={viewMode} onChange={setViewMode} isFloating />
                     </div>
                 )}
@@ -61,7 +61,7 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ children }) =>
         }
     };
 
-    const toolbarPosition = 'left-1/2 -translate-x-1/2';
+    const toolbarPosition = 'right-8';
 
     return (
         <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-8 transition-colors duration-700 relative overflow-hidden">
@@ -71,8 +71,8 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({ children }) =>
                 <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-200 rounded-full blur-[120px]" />
             </div>
 
-            {/* Simulator Toolbar - Dynamic Position */}
-            <div className={`fixed top-8 ${toolbarPosition} z-[99999] animate-fade-in`}>
+            {/* Simulator Toolbar - Discreet Position */}
+            <div className={`fixed top-6 ${toolbarPosition} z-[99999] animate-fade-in`}>
                 <SimulatorToggle current={viewMode} onChange={setViewMode} />
             </div>
 
@@ -123,28 +123,28 @@ interface ToggleProps {
 const SimulatorToggle: React.FC<ToggleProps> = ({ current, onChange, isFloating }) => {
     return (
         <div className={`
-            flex items-center gap-1 p-1 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300
-            bg-white/90 backdrop-blur-xl border border-slate-200/50
+            flex items-center gap-1 p-1 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300
+            bg-white/95 backdrop-blur-xl border border-slate-200/60
             ${isFloating ? 'hover:scale-105 active:scale-95' : ''}
         `}>
             {current !== 'mobile' && (
                 <ToggleButton 
                     onClick={() => onChange('mobile')}
-                    icon={<Smartphone size={16} strokeWidth={2.5} />}
+                    icon={<Smartphone size={18} strokeWidth={2.5} />}
                     label="Mobile"
                 />
             )}
             {current !== 'tablet' && (
                 <ToggleButton 
                     onClick={() => onChange('tablet')}
-                    icon={<Tablet size={16} strokeWidth={2.5} />}
+                    icon={<Tablet size={18} strokeWidth={2.5} />}
                     label="Tablet"
                 />
             )}
             {current !== 'desktop' && (
                 <ToggleButton 
                     onClick={() => onChange('desktop')}
-                    icon={<Monitor size={16} strokeWidth={2.5} />}
+                    icon={<Monitor size={18} strokeWidth={2.5} />}
                     label="Desktop"
                 />
             )}
