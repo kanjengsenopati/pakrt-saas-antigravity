@@ -306,7 +306,7 @@ export default function IuranForm() {
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-semibold tracking-normal opacity-60">Status Pembayaran:</span>
                             <span className="text-sm font-semibold tracking-normal">
-                                {currentStatus === 'VERIFIED' ? 'Sah / Diterima' :
+                                {currentStatus === 'VERIFIED' ? 'Lunas' :
                                  currentStatus === 'REJECTED' ? 'Ditolak' :
                                  'Menunggu Verifikasi'}
                             </span>

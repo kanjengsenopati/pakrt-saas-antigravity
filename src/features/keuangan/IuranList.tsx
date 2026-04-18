@@ -296,7 +296,7 @@ export default function IuranList() {
                                             <div className="flex flex-wrap gap-1.5 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
                                                     <span key={b} className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-sm border ${
-                                                    iuran.status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700' :
+                                                    iuran.status === 'VERIFIED' ? 'bg-emerald-600 text-white border-emerald-700' :
                                                         iuran.status === 'PENDING' ? 'bg-amber-400 text-slate-900 border-amber-300' :
                                                         'bg-rose-50 border-rose-200 text-rose-600'
                                                     }`}>
@@ -313,9 +313,9 @@ export default function IuranList() {
                                         <td className="p-4">
                                             <div className="flex flex-col items-center gap-1">
                                                 {iuran.status === 'VERIFIED' ? (
-                                                    <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-slate-900 text-white flex items-center gap-1.5 shadow-premium">
+                                                    <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1.5 shadow-premium">
                                                         <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                        SAH / TERIMA
+                                                        LUNAS
                                                     </span>
                                                 ) : iuran.status === 'REJECTED' ? (
                                                     <div className="flex flex-col items-center">
@@ -456,9 +456,9 @@ export default function IuranList() {
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-2">
                                             {iuran.status === 'VERIFIED' ? (
-                                                <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-slate-900 text-white flex items-center gap-1.5 shadow-premium uppercase tracking-wider">
+                                                <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1.5 shadow-premium uppercase tracking-wider">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                    VERIFIED
+                                                    LUNAS
                                                 </span>
                                             ) : iuran.status === 'REJECTED' ? (
                                                 <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
@@ -523,7 +523,7 @@ export default function IuranList() {
                                                         </div>
                                                         <div className="text-right">
                                                             <div className="font-bold text-slate-900">{formatRupiah(h.nominal)}</div>
-                                                            <div className={`font-bold ${h.status === 'VERIFIED' ? 'text-brand-600' : h.status === 'REJECTED' ? 'text-rose-500' : 'text-amber-500'}`}>{h.status}</div>
+                                                            <div className={`font-bold uppercase ${h.status === 'VERIFIED' ? 'text-emerald-600' : h.status === 'REJECTED' ? 'text-rose-500' : 'text-amber-500'}`}>{h.status === 'VERIFIED' ? 'LUNAS' : h.status}</div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -544,7 +544,7 @@ export default function IuranList() {
                                                         key={month} 
                                                         className={`flex aspect-square items-center justify-center rounded-[6px] border text-[8px] font-bold transition-all duration-300
                                                             ${isPaid 
-                                                                ? (status === 'VERIFIED' ? 'bg-brand-600 text-white border-brand-700 shadow-sm' 
+                                                                ? (status === 'VERIFIED' ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm' 
                                                                  : status === 'PENDING' ? 'bg-amber-400 text-white border-amber-500 shadow-sm'
                                                                  : 'bg-rose-500 text-white border-rose-600 shadow-sm')
                                                                 : 'bg-white text-slate-300 border-slate-100'
