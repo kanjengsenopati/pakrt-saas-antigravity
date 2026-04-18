@@ -91,7 +91,7 @@ export const Text = {
       title={title}
       style={style}
       className={cn(
-        "font-label text-[11px] font-black uppercase tracking-wider text-slate-400",
+        "font-label text-[11px] font-black tracking-wider text-slate-400",
         className
       )}
     >

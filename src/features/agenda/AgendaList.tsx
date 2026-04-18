@@ -62,7 +62,7 @@ const ReportPanel = ({
                             value={laporanText}
                             onChange={(e) => setLaporanText(e.target.value)}
                             rows={6}
-                            placeholder="Tuliskan ringkasan hasil kegiatan, kesimpulan, dan evaluasi singkat di sini..."
+                            placeholder="Tuliskan Ringkasan Hasil Kegiatan, Kesimpulan, Dan Evaluasi Singkat Di Sini..."
                             className="w-full rounded-[20px] border border-slate-200 p-5 text-sm font-medium text-slate-700 bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-slate-300 shadow-sm leading-relaxed"
                         />
                     </div>
@@ -86,7 +86,7 @@ const ReportPanel = ({
                             onClick={() => setExpandedId(null)}
                             className="px-6 py-2.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-[12px] transition-all active-press"
                         >
-                            Batal
+                            <Text.Label className="!text-slate-500">Batal</Text.Label>
                         </button>
                         <button
                             onClick={() => handleSubmitReport(agenda.id)}
@@ -94,7 +94,7 @@ const ReportPanel = ({
                             className={`px-6 py-2.5 bg-brand-600 text-white rounded-[14px] text-[13px] font-black transition-all shadow-premium flex items-center gap-2 ${(isUploading || !laporanText.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 active-press'}`}
                         >
                             {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
-                            Simpan
+                            <Text.Label className="!text-white">Simpan</Text.Label>
                         </button>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
                              <House weight="fill" className="w-3.5 h-3.5 text-brand-500" />
                              <Text.Label className="!text-brand-500 !tracking-normal">Tuan Rumah</Text.Label>
                         </div>
-                        <Text.H2 className="!text-sm !font-bold text-slate-900 truncate max-w-full px-2" title={agenda.tuan_rumah}>{agenda.tuan_rumah}</Text.H2>
+                        <Text.H2 className="!text-sm !font-bold text-slate-900 truncate max-w-full px-2 uppercase" title={agenda.tuan_rumah}>{agenda.tuan_rumah}</Text.H2>
                         <div className="flex items-center gap-1 mt-1">
                             <MapPin weight="bold" className="w-2.5 h-2.5 text-slate-400" />
                             <Text.Caption className="italic text-slate-500" title={agenda.lokasi}>{agenda.lokasi || 'Lokasi Rapat'}</Text.Caption>
@@ -157,14 +157,14 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
                                 {agenda.peserta_details.map((peserta: any) => (
                                     <div key={peserta.id} className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-[10px] shadow-sm">
                                         <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-                                        <Text.Caption className="!font-bold !text-slate-700">{peserta.nama}</Text.Caption>
+                                        <Text.Caption className="!font-bold !text-slate-700 uppercase">{peserta.nama}</Text.Caption>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="flex flex-col items-center py-10 text-slate-300 gap-3">
                                 <Users weight="thin" className="w-12 h-12 opacity-30" />
-                                <Text.Label className="!text-slate-300 italic">Data peserta tidak dimuat</Text.Label>
+                                <Text.Label className="!text-slate-300 italic">Data Peserta Tidak Dimuat</Text.Label>
                             </div>
                         )}
                     </div>
@@ -319,7 +319,7 @@ export default function AgendaList() {
                         className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
                         <Plus weight="bold" size={18} />
-                        <span>Buat Agenda Baru</span>
+                        <Text.Body component="span" className="!text-inherit !font-bold">Buat Agenda Baru</Text.Body>
                     </button>
                     
                     {/* MOBILE FAB */}
@@ -337,13 +337,13 @@ export default function AgendaList() {
                     onClick={() => setActiveTab('list')}
                     className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-sm font-bold tracking-tight rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                    <Calendar weight="bold" className="w-4 h-4" /> Daftar Aktivitas
+                    <Calendar weight="bold" className="w-4 h-4" /> <Text.Label className="!tracking-tight">Daftar Aktivitas</Text.Label>
                 </button>
                 <button
                     onClick={() => setActiveTab('summary')}
                     className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-sm font-bold tracking-tight rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'summary' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                    <ChartPieSlice weight="bold" className="w-4 h-4" /> Rekapitulasi
+                    <ChartPieSlice weight="bold" className="w-4 h-4" /> <Text.Label className="!tracking-tight">Rekapitulasi</Text.Label>
                 </button>
             </div>
 
@@ -352,36 +352,36 @@ export default function AgendaList() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                            <Text.Label className="mb-1 flex items-center justify-center gap-2">
                                 <Calendar weight="bold" className="text-brand-500 w-3.5 h-3.5" />
                                 Kegiatan
-                            </p>
-                            <span className="text-4xl font-bold text-slate-900 tracking-tighter leading-none">{totalAgenda}</span>
+                            </Text.Label>
+                            <Text.Amount className="text-4xl !tracking-tighter !leading-none">{totalAgenda}</Text.Amount>
                         </div>
 
                         <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                            <p className="text-sm font-bold text-white/50 tracking-tight mb-1 flex items-center justify-center gap-2">
+                            <Text.Label className="mb-1 flex items-center justify-center gap-2 text-slate-400">
                                 <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
                                 Selesai
-                            </p>
-                            <span className="text-4xl font-bold text-white tracking-tighter leading-none">{realizedAgenda}</span>
+                            </Text.Label>
+                            <Text.Amount className="text-4xl !text-white !tracking-tighter !leading-none">{realizedAgenda}</Text.Amount>
                         </div>
 
                         <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                            <Text.Label className="mb-1 flex items-center justify-center gap-2">
                                 <TrendUp weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                                 Review
-                            </p>
-                            <span className="text-4xl font-bold text-amber-600 tracking-tighter leading-none">{pendingAgenda}</span>
+                            </Text.Label>
+                            <Text.Amount className="text-4xl !text-amber-600 !tracking-tighter !leading-none">{pendingAgenda}</Text.Amount>
                         </div>
 
                         <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                            <p className="text-sm font-bold text-slate-900 tracking-tight mb-1 flex items-center justify-center gap-2">
+                            <Text.Label className="mb-1 flex items-center justify-center gap-2">
                                 <TrendUp weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                                 Anggaran
-                            </p>
+                            </Text.Label>
                             <span className="text-2xl font-bold text-slate-900 tracking-tighter leading-none">{formatRupiah(totalPendanaan)}</span>
                         </div>
                     </div>
@@ -476,7 +476,7 @@ export default function AgendaList() {
                             <MagnifyingGlass weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Cari agenda kegiatan..."
+                                placeholder="Cari Agenda Kegiatan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-16 pr-4 py-3 bg-slate-50/50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-300 text-sm font-medium text-slate-700"
@@ -487,19 +487,19 @@ export default function AgendaList() {
                                 onClick={() => setStatusFilter('all')}
                                 className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
-                                Semua
+                                <Text.Label className="!text-inherit">Semua</Text.Label>
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terencana')}
                                 className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'terencana' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
-                                Terencana
+                                <Text.Label className="!text-inherit">Terencana</Text.Label>
                             </button>
                             <button
                                 onClick={() => setStatusFilter('terlaksana')}
                                 className={`flex-1 lg:flex-none px-4 py-2 text-[12px] font-black rounded-lg transition-all ${statusFilter === 'terlaksana' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
-                                Selesai
+                                <Text.Label className="!text-inherit">Selesai</Text.Label>
                             </button>
                         </div>
                     </div>
@@ -564,12 +564,12 @@ export default function AgendaList() {
                                                         {agenda.is_terlaksana ? (
                                                             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-900 text-white rounded-full shadow-sm">
                                                                 <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                                <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest">Terlaksana</Text.Label>
+                                                                <Text.Label className="!text-[9px] !font-black !text-white tracking-widest">Terlaksana</Text.Label>
                                                             </div>
                                                         ) : (
                                                             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-50 border border-brand-100 text-brand-600 rounded-full">
                                                                 <Calendar weight="fill" className="w-3.5 h-3.5" />
-                                                                <Text.Label className="!text-[9px] !font-black !text-brand-600 uppercase tracking-widest">Terencana</Text.Label>
+                                                                <Text.Label className="!text-[9px] !font-black !text-brand-600 tracking-widest">Terencana</Text.Label>
                                                             </div>
                                                         )}
                                                     </td>
@@ -656,7 +656,7 @@ export default function AgendaList() {
                                         <td colSpan={5} className="py-20 text-center">
                                             <div className="flex flex-col items-center gap-3 text-slate-300">
                                                 <Calendar weight="thin" className="w-16 h-16 opacity-30" />
-                                                <Text.Label className="!text-slate-300 italic">Tidak ada agenda ditemukan</Text.Label>
+                                                <Text.Label className="!text-slate-300 italic">Tidak Ada Agenda Ditemukan</Text.Label>
                                             </div>
                                         </td>
                                     </tr>
@@ -669,7 +669,7 @@ export default function AgendaList() {
                         {filteredAgenda.length === 0 ? (
                             <div className="py-20 text-center bg-white rounded-[20px] border border-slate-100 shadow-sm">
                                 <Calendar weight="thin" className="w-16 h-16 mx-auto mb-4 text-slate-200" />
-                                <Text.Label className="italic !text-slate-300">Belum ada agenda yang terjadwal</Text.Label>
+                                <Text.Label className="italic !text-slate-300">Belum Ada Agenda Terjadwal</Text.Label>
                             </div>
                         ) : (
                             filteredAgenda.map((agenda) => {
@@ -686,13 +686,13 @@ export default function AgendaList() {
                                                     {agenda.is_terlaksana && (
                                                         <div className="bg-blue-600 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
                                                             <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                            <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest leading-none">Terlaksana</Text.Label>
+                                                            <Text.Label className="!text-[9px] !font-black !text-white tracking-widest leading-none">Terlaksana</Text.Label>
                                                         </div>
                                                     )}
                                                     {!agenda.is_terlaksana && (
                                                         <div className="bg-brand-600 text-white px-3 py-1.5 rounded-full border border-transparent shadow-sm flex items-center gap-1.5">
                                                             <Calendar weight="fill" className="w-3.5 h-3.5" />
-                                                            <Text.Label className="!text-[9px] !font-black !text-white uppercase tracking-widest leading-none">Terencana</Text.Label>
+                                                            <Text.Label className="!text-[9px] !font-black !text-white tracking-widest leading-none">Terencana</Text.Label>
                                                         </div>
                                                     )}
                                                 </div>
@@ -706,14 +706,14 @@ export default function AgendaList() {
 
                                                 <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-slate-50">
                                                     <div className="space-y-1.5">
-                                                        <Text.Label className="!text-[9px] text-slate-400 font-black uppercase tracking-widest block">Waktu & Lokasi</Text.Label>
+                                                        <Text.Label className="!text-[9px] text-slate-400 font-black tracking-widest block">Waktu & Lokasi</Text.Label>
                                                         <div className="flex items-center gap-1.5">
                                                             <Clock weight="bold" className="w-3.5 h-3.5 text-brand-500" />
                                                             <Text.Caption className="!font-bold !text-slate-700">{dateUtils.format(agenda.tanggal, 'HH:mm')} WIB</Text.Caption>
                                                         </div>
                                                     </div>
                                                     <div className="space-y-1.5 text-right">
-                                                        <Text.Label className="!text-[9px] text-slate-400 font-black uppercase tracking-widest block">Estimasi Biaya</Text.Label>
+                                                        <Text.Label className="!text-[9px] text-slate-400 font-black tracking-widest block">Estimasi Biaya</Text.Label>
                                                         <Text.Amount className="text-sm font-black text-brand-600 block leading-tight">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
                                                     </div>
                                                 </div>
@@ -735,7 +735,7 @@ export default function AgendaList() {
                                                         onClick={() => handleToggleExpand(agenda)}
                                                         className={`px-5 py-2.5 rounded-[12px] text-xs font-bold transition-all flex items-center gap-2 ${isExpanded ? 'bg-brand-600 text-white shadow-premium' : 'bg-brand-50 text-brand-600'}`}
                                                     >
-                                                        {isExpanded ? 'Tutup' : 'Lihat Detail'}
+                                                        <Text.Body component="span" className="!text-xs !font-bold !text-inherit">{isExpanded ? 'Tutup' : 'Lihat Detail'}</Text.Body>
                                                         <CaretDown weight="bold" className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                                                     </button>
                                                 </div>
@@ -831,7 +831,7 @@ export default function AgendaList() {
                                 onClick={() => setViewPhotosModal({ ...viewPhotosModal, isOpen: false })}
                                 className="px-10 py-3 bg-brand-600 text-white text-xs font-bold rounded-[14px] hover:bg-brand-700 shadow-premium transition-all active-press"
                             >
-                                Tutup Galeri
+                                <Text.Label className="!text-white">Tutup Galeri</Text.Label>
                             </button>
                         </div>
                     </div>

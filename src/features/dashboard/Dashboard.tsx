@@ -110,15 +110,15 @@ export default function Dashboard() {
                                     {authUser?.name ? authUser.name.substring(0,2).toUpperCase() : 'RT'}
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <h1 className="font-headline font-bold text-white text-3xl tracking-tighter leading-none">RT</h1>
+                                    <Text.H1 className="!text-white !text-3xl">RT</Text.H1>
                                     <div className="flex flex-col border-l border-white/20 pl-3">
-                                        <h2 className="text-white font-headline font-bold text-[0.9rem] leading-none mb-1 whitespace-nowrap">
+                                        <Text.H2 className="!text-white !text-[0.9rem] leading-none mb-1 whitespace-nowrap">
                                             {currentTenant?.location_detail ? currentTenant.location_detail.split(' • ')[0] : 'RT 00 / RW 00'}
-                                        </h2>
+                                        </Text.H2>
                                         {currentTenant?.location_detail && (
-                                            <p className="text-white/50 text-[0.65rem] font-bold uppercase tracking-tight line-clamp-1 leading-none">
+                                            <Text.Caption className="!text-white/50 !text-[0.65rem] !font-bold uppercase tracking-tight line-clamp-1 leading-none">
                                                 {currentTenant.location_detail.split(' • ').slice(1).map(s => s.replace(/KEL\.\s*|KEC\.\s*/g, '')).join(' ')}
-                                            </p>
+                                            </Text.Caption>
                                         )}
                                     </div>
                                 </div>
@@ -142,13 +142,13 @@ export default function Dashboard() {
                 <div className="px-6 -mt-16 relative z-10 max-w-4xl mx-auto">
                     <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white dark:border-white/10">
                         <div className="flex justify-between items-center mb-1">
-                            <p className="text-on-surface-variant font-label text-[0.8rem] font-bold tracking-tight">Total Kas RT</p>
+                            <Text.Label className="!text-on-surface-variant !text-[0.8rem]">Total Kas RT</Text.Label>
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
                                 <Wallet weight="fill" className="text-on-surface-variant text-xl" />
                             </div>
                         </div>
                         <div className="flex items-baseline gap-2 mb-6">
-                            <h2 className="text-on-surface font-headline font-black text-4xl tracking-tight">{formatRupiah(stats.saldo)}</h2>
+                            <Text.Amount className="!text-on-surface !text-4xl tracking-tight">{formatRupiah(stats.saldo)}</Text.Amount>
                         </div>
                         
                         <button onClick={() => navigate('/keuangan')} className="w-full bg-primary py-4 rounded-2xl text-white font-headline font-bold text-[1rem] shadow-[0_12px_24px_-6px_rgba(0,80,212,0.3)] hover:shadow-[0_12px_32px_-6px_rgba(0,80,212,0.4)] transition-all active:scale-[0.98]">
@@ -161,18 +161,17 @@ export default function Dashboard() {
                                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSubscriptionExpired ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-primary'}`}>
                                     <ShieldCheck weight="bold" className="text-lg" />
                                 </div>
-                                <p className="text-[12px] font-bold text-on-surface-variant">Informasi Berlangganan Aplikasi PakRT</p>
+                                <Text.Body className="!text-[12px] !font-bold !text-on-surface-variant">Informasi Berlangganan Aplikasi PakRT</Text.Body>
                             </div>
-                            
                             <div className="grid grid-cols-2 gap-4 items-center">
                                 <div className="flex items-center">
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest text-center w-full ${isSubscriptionExpired ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'}`}>
+                                    <Text.Label className={`!px-3 !py-1 !rounded-full !text-center !w-full !text-white ${isSubscriptionExpired ? '!bg-red-500' : '!bg-emerald-500'}`}>
                                         {isSubscriptionExpired ? 'Masa Berlaku Habis' : `${subscriptionDaysRemaining} Hari Tersisa`}
-                                    </span>
+                                    </Text.Label>
                                 </div>
                                 <div className="flex justify-end">
                                     <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-primary hover:underline transition-colors shrink-0">
-                                        <span className="text-[11px] font-bold uppercase tracking-tight">Lihat Detil</span>
+                                        <Text.Label className="!text-primary !normal-case !tracking-normal">Lihat Detil</Text.Label>
                                         <ArrowRight weight="bold" className="text-[10px]" />
                                     </button>
                                 </div>
@@ -189,24 +188,24 @@ export default function Dashboard() {
                             {/* Stats 1: Surat */}
                             <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
-                                    <p className="text-[13px] font-bold text-on-surface leading-tight">Surat</p>
-                                    <p className="text-on-surface-variant text-[9px] font-bold uppercase tracking-tight line-clamp-1">{stats.pendingSurat} Baru</p>
+                                    <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Surat</Text.Body>
+                                    <Text.Caption className="!text-on-surface-variant !text-[9px] !font-bold uppercase tracking-tight line-clamp-1">{stats.pendingSurat} Baru</Text.Caption>
                                 </div>
                             </div>
 
                             {/* Stats 2: Aduan */}
                             <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
-                                    <p className="text-[13px] font-bold text-on-surface leading-tight">Aduan</p>
-                                    <p className="text-[9px] font-bold text-error uppercase tracking-tight">Aktif</p>
+                                    <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Aduan</Text.Body>
+                                    <Text.Caption className="!text-[9px] !font-bold !text-error uppercase tracking-tight">Aktif</Text.Caption>
                                 </div>
                             </div>
 
                             {/* Stats 3: Agenda */}
                             <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
-                                    <p className="text-[13px] font-bold text-on-surface leading-tight">Agenda</p>
-                                    <p className="text-[9px] font-medium text-on-surface-variant uppercase tracking-tight line-clamp-1">{stats.agenda} Event</p>
+                                    <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Agenda</Text.Body>
+                                    <Text.Caption className="!text-[9px] !font-medium !text-on-surface-variant uppercase tracking-tight line-clamp-1">{stats.agenda} Event</Text.Caption>
                                 </div>
                             </div>
                         </div>
@@ -219,61 +218,61 @@ export default function Dashboard() {
                                 <div className="w-16 h-16 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center text-cyan-700 dark:text-cyan-400 group-active:scale-95 transition-transform">
                                     <HandCoins weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Iuran</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Iuran</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/keuangan')}>
                                 <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-700 dark:text-blue-400 group-active:scale-95 transition-transform">
                                     <Money weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Kas RT</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Kas RT</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/aset')}>
                                 <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center text-emerald-700 dark:text-emerald-400 group-active:scale-95 transition-transform">
                                     <Package weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aset RT</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Aset RT</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
                                 <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center text-amber-700 dark:text-amber-400 group-active:scale-95 transition-transform">
                                     <GearSix weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Pengaturan</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Pengaturan</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/pengurus')}>
                                 <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-700 dark:text-purple-400 group-active:scale-95 transition-transform">
                                     <IdentificationCard weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Pengurus</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Pengurus</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/ronda')}>
                                 <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-700 dark:text-red-400 group-active:scale-95 transition-transform">
                                     <ShieldCheck weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Ronda</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Ronda</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/notulensi')}>
                                 <div className="w-16 h-16 bg-sky-50 dark:bg-sky-900/20 rounded-lg flex items-center justify-center text-sky-700 dark:text-sky-400 group-active:scale-95 transition-transform">
                                     <Notebook weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Notulen</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Notulen</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/aduan')}>
                                 <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/20 rounded-lg flex items-center justify-center text-rose-700 dark:text-rose-400 group-active:scale-95 transition-transform">
                                     <Megaphone weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Aduan</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Aduan</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/agenda')}>
                                 <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center text-indigo-700 dark:text-indigo-400 group-active:scale-95 transition-transform">
                                     <CalendarCheck weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Agenda</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Agenda</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-2.5 cursor-pointer group" onClick={() => navigate('/warga')}>
                                 <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-700 dark:text-slate-300 group-active:scale-95 transition-transform">
                                     <Users weight="fill" className="text-[1.8rem]" />
                                 </div>
-                                <span className="text-center font-label text-[0.8rem] font-semibold text-on-surface-variant leading-tight">Warga</span>
+                                <Text.Label className="text-center !text-on-surface-variant !normal-case !text-[0.8rem] !font-semibold leading-tight">Warga</Text.Label>
                             </div>
                         </div>
                     </section>

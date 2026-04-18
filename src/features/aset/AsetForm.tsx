@@ -7,6 +7,7 @@ import { Aset } from '../../database/db';
 import { ArrowLeft, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
+import { Text } from '../../components/ui/Typography';
 
 type AsetFormData = Omit<Aset, 'id' | 'tenant_id' | 'scope'>;
 
@@ -70,12 +71,12 @@ export default function AsetForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <Text.H1>
                         {isEditing ? 'Ubah Informasi Aset' : 'Tambah Aset Inventaris'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">
-                        Dicatat untuk scope: <span className="font-semibold text-brand-600">{currentScope}</span>
-                    </p>
+                    </Text.H1>
+                    <Text.Body className="!text-gray-500 !mt-1">
+                        Dicatat untuk scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 uppercase">{currentScope}</Text.Label>
+                    </Text.Body>
                 </div>
             </div>
 
@@ -84,22 +85,22 @@ export default function AsetForm() {
                     <div className="grid grid-cols-1 gap-6">
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Barang <span className="text-red-500">*</span>
-                            </label>
+                            <Text.Label className="!text-gray-700 mb-1">
+                                Nama Barang <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <input
                                 type="text"
                                 {...register('nama_barang', { required: 'Nama barang wajib diisi' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.nama_barang ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                                 placeholder="Contoh: Tenda Hajatan, Kursi Plastik, dll"
                             />
-                            {errors.nama_barang && <p className="text-red-500 text-xs mt-1">{errors.nama_barang.message}</p>}
+                            {errors.nama_barang && <Text.Caption className="!text-red-500 !mt-1">{errors.nama_barang.message}</Text.Caption>}
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Kondisi Fisik <span className="text-red-500">*</span>
-                            </label>
+                         <div>
+                            <Text.Label className="!text-gray-700 mb-1">
+                                Kondisi Fisik <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <select
                                 {...register('kondisi', { required: 'Kondisi wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.kondisi ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
@@ -108,13 +109,13 @@ export default function AsetForm() {
                                 <option value="rusak_ringan">Rusak Ringan</option>
                                 <option value="rusak_berat">Rusak Berat</option>
                             </select>
-                            {errors.kondisi && <p className="text-red-500 text-xs mt-1">{errors.kondisi.message}</p>}
+                            {errors.kondisi && <Text.Caption className="!text-red-500 !mt-1">{errors.kondisi.message}</Text.Caption>}
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Jumlah Barang / Nominal Saat Ini <span className="text-red-500">*</span>
-                            </label>
+                         <div>
+                            <Text.Label className="!text-gray-700 mb-1">
+                                Jumlah Barang / Nominal Saat Ini <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <input
                                 type="number"
                                 min="0"
@@ -122,12 +123,12 @@ export default function AsetForm() {
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.jumlah ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                                 placeholder="10"
                             />
-                            {errors.jumlah && <p className="text-red-500 text-xs mt-1">{errors.jumlah.message}</p>}
+                            {errors.jumlah && <Text.Caption className="!text-red-500 !mt-1">{errors.jumlah.message}</Text.Caption>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="!text-gray-700 mb-1">
                                 Tanggal Pembelian (Opsional)
-                            </label>
+                            </Text.Label>
                             <input
                                 type="date"
                                 {...register('tanggal_beli')}
@@ -136,11 +137,11 @@ export default function AsetForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="!text-gray-700 mb-1">
                                 Harga Pembelian (Opsional)
-                            </label>
+                            </Text.Label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium z-10">Rp</span>
+                                <Text.Body component="span" className="absolute left-4 top-1/2 -translate-y-1/2 !text-gray-500 !font-medium z-10">Rp</Text.Body>
                                 <Controller
                                     name="harga_beli"
                                     control={control}
@@ -156,9 +157,9 @@ export default function AsetForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="!text-gray-700 mb-1">
                                 Vendor / Toko (Opsional)
-                            </label>
+                            </Text.Label>
                             <input
                                 type="text"
                                 {...register('vendor')}
@@ -184,7 +185,7 @@ export default function AsetForm() {
                             onClick={() => navigate('/aset')}
                             className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                         >
-                            Batal
+                            <Text.Label className="!text-gray-700">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
@@ -192,7 +193,7 @@ export default function AsetForm() {
                             className={`px-6 py-2.5 bg-brand-600 text-white rounded-lg flex items-center gap-2 font-medium transition-all ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-brand-700 hover-lift active-press shadow-sm hover:shadow-md'}`}
                         >
                             {isUploading ? <CircleNotch weight="bold" className="animate-spin" /> : <FloppyDisk weight="bold" />}
-                            <span>{isUploading ? 'Menyimpan...' : 'Simpan Inventaris'}</span>
+                            <Text.Label className="!text-white">{isUploading ? 'Menyimpan...' : 'Simpan Inventaris'}</Text.Label>
                         </button>
                     </div>
                 </form>

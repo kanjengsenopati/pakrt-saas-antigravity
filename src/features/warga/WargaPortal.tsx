@@ -87,30 +87,33 @@ export default function WargaPortal() {
         load();
     }, [currentScope, currentTenant, user?.warga_id, authLoading, tenantLoading]);
 
-    if (isLoading || authLoading || tenantLoading) return <div className="min-h-screen bg-[var(--warga-bg)] p-8 text-center animate-pulse flex items-center justify-center text-[var(--warga-primary)] font-bold">Memuat Dashboard Warga...</div>;
+    if (isLoading || authLoading || tenantLoading) return (
+        <div className="min-h-screen bg-slate-50 p-8 text-center animate-pulse flex items-center justify-center">
+            <Text.Body className="!text-brand-600 !font-bold">Memuat Dashboard Warga...</Text.Body>
+        </div>
+    );
     
     if (!user?.warga_id || !data?.warga) {
         return (
-            <div className="min-h-screen bg-[var(--warga-bg)] p-6 flex flex-col items-center justify-center space-y-6">
+            <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center space-y-6">
                 <div className="w-24 h-24 bg-white shadow-xl rounded-3xl flex items-center justify-center text-slate-300">
                     <User size={48} weight="duotone" />
                 </div>
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-slate-900 font-outfit uppercase tracking-tight">Akun Belum Terhubung</h2>
-                    <p className="text-sm text-slate-500 max-w-xs mx-auto mt-2">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda.</p>
+                    <Text.H1 className="!text-xl">Akun Belum Terhubung</Text.H1>
+                    <Text.Body className="max-w-xs mx-auto mt-2">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda.</Text.Body>
                 </div>
                 <button 
                   onClick={() => navigate('/login')} 
-                  className="px-8 py-3 bg-[var(--warga-primary)] text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-900/20 active:scale-95 transition-all"
+                  className="px-8 py-3 bg-brand-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-brand-900/20 active:scale-95 transition-all"
                 >
-                  Masuk Kembali
+                  <Text.Label className="!text-white">Masuk Kembali</Text.Label>
                 </button>
             </div>
         );
     }
  
     const { warga } = data;
- 
  
     const formatAvatarText = (name: string) => {
         if (!name) return 'W';
@@ -128,12 +131,12 @@ export default function WargaPortal() {
                 {/* Info & Avatar */}
                 <div className="flex justify-between items-center mb-6 pt-2">
                     <div>
-                        <p className="text-[0.8125rem] text-brand-100/90 tracking-tight font-medium mb-1">
+                        <Text.Body className="!text-[0.8125rem] !text-brand-100/90 !font-medium mb-1">
                             {getGreeting()}, Warga!
-                        </p>
-                        <h1 className="text-2xl font-bold text-white tracking-tight leading-tight line-clamp-1 max-w-[13.75rem]">
-                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}
-                        </h1>
+                        </Text.Body>
+                        <Text.H1 className="!text-2xl !text-white !leading-tight line-clamp-1 max-w-[13.75rem] !uppercase">
+                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama}
+                        </Text.H1>
                     </div>
                     <div className="flex items-center gap-2">
                         {/* Font Resizer */}
@@ -141,7 +144,7 @@ export default function WargaPortal() {
                             <button onClick={() => setFontScale(s => Math.max(0.8, Number((s - 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
                                 <Minus size={12} weight="bold" />
                             </button>
-                            <span className="text-[0.5625rem] font-bold text-white w-7 text-center tabular-nums">{Math.round(fontScale * 100)}%</span>
+                            <Text.Label className="!text-[0.5625rem] !font-bold !text-white w-7 text-center tabular-nums">{Math.round(fontScale * 100)}%</Text.Label>
                             <button onClick={() => setFontScale(s => Math.min(1.5, Number((s + 0.1).toFixed(1))))} className="p-1 text-white hover:text-brand-100 active:scale-95 transition-all">
                                 <Plus size={12} weight="bold" />
                             </button>
@@ -161,18 +164,16 @@ export default function WargaPortal() {
 
                 {/* Card Status (Floating) - Tagihan Iuran */}
                 <div className="bg-white rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
-                    <p className="text-[0.6875rem] text-slate-500 font-semibold tracking-tight mb-2">
-                        Status Tagihan Iuran Anda
-                    </p>
+                    <Text.Label className="mb-2">Status Tagihan Iuran Anda</Text.Label>
                     <div className="flex justify-between items-center">
-                        <h2 className="text-[1.5rem] font-bold text-brand-600 tracking-tight leading-none">
+                        <Text.Amount className="!text-[1.5rem] !leading-none">
                             {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
-                        </h2>
+                        </Text.Amount>
                         <button 
                             onClick={() => navigate('/iuran')}
                             className="bg-brand-50 border border-brand-100 text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
                         >
-                            {data.iuranPendingCount > 0 ? 'Bayar' : 'Cek'} <ArrowRight weight="bold" />
+                            <Text.Label className="!text-brand-600">{data.iuranPendingCount > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
                         </button>
                     </div>
                 </div>
@@ -182,7 +183,7 @@ export default function WargaPortal() {
             <div className="px-6 pt-24 pb-6 space-y-8">
                 {/* Layanan Mandiri */}
                 <div className="animate-fade-in-up">
-                    <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Layanan Mandiri</h3>
+                    <Text.Label className="!text-slate-800 mb-4">Layanan Mandiri</Text.Label>
                     <div className="grid grid-cols-4 gap-3">
                         <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/surat')}>
                             <button className="w-[3.75rem] h-[3.75rem] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
@@ -214,27 +215,29 @@ export default function WargaPortal() {
                 {/* Jadwal Ronda (Dark Theme Box) */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.1s'}}>
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Jadwal Ronda Anda</h3>
-                        <span className="text-[0.625rem] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/ronda')}>Lihat Jadwal</span>
+                        <Text.Label className="!text-slate-800">Jadwal Ronda Anda</Text.Label>
+                        <Text.Label onClick={() => navigate('/ronda')} className="!text-brand-600 cursor-pointer !normal-case tracking-normal">Lihat Jadwal</Text.Label>
                     </div>
                     
                     <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[1.25rem] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
                         <Flashlight weight="fill" className="absolute -right-4 -bottom-4 text-[5rem] text-slate-700/50 -rotate-12" />
                         
                         <div className="bg-slate-700/80 rounded-2xl w-14 h-14 flex flex-col items-center justify-center text-white border border-slate-600 shadow-inner z-10 shrink-0">
-                            <span className="text-[0.5625rem] font-bold uppercase tracking-wider text-slate-300 mt-1">Cek</span>
-                            <span className="text-[1.125rem] leading-none font-black mt-0.5"><ClockCounterClockwise size={20} weight="bold"/></span>
+                            <Text.Label className="!text-slate-300 !mt-1">Cek</Text.Label>
+                            <div className="flex items-center justify-center mt-0.5">
+                                <ClockCounterClockwise size={20} weight="bold" className="text-white" />
+                            </div>
                         </div>
                         <div className="z-10">
-                            <h4 className="text-white font-bold text-[0.9375rem] tracking-tight mb-0.5">Jadwal Siskamling</h4>
-                            <p className="text-slate-400 text-[0.6875rem] font-medium leading-tight">Pastikan Anda hadir sesuai jadwal blok/RT Anda.</p>
+                            <Text.H2 className="!text-white !text-[0.9375rem] mb-0.5">Jadwal Siskamling</Text.H2>
+                            <Text.Caption className="!text-slate-400">Pastikan Anda hadir sesuai jadwal blok/RT Anda.</Text.Caption>
                         </div>
                     </div>
                 </div>
 
                 {/* Menu Lainnya Section */}
                 <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-                    <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight mb-4 flex items-center">Pintasan Lainnya</h3>
+                    <Text.Label className="!text-slate-800 mb-4">Pintasan Lainnya</Text.Label>
                     <div className="grid grid-cols-4 gap-3">
                         {[
                             { label: 'Data Warga', icon: Users, path: '/warga', color: 'bg-amber-50 text-amber-600 border-amber-100', hoverBg: 'group-hover:bg-amber-100' },
@@ -270,8 +273,8 @@ export default function WargaPortal() {
                 {agendas.length > 0 && (
                     <div className="animate-fade-in-up" style={{animationDelay: '0.3s'}}>
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Pengumuman Terbaru</h3>
-                            <span className="text-[0.625rem] font-bold text-brand-600 cursor-pointer" onClick={() => navigate('/agenda')}>Semua</span>
+                            <Text.Label className="!text-slate-800">Pengumuman Terbaru</Text.Label>
+                            <Text.Label onClick={() => navigate('/agenda')} className="!text-brand-600 cursor-pointer !normal-case tracking-normal">Semua</Text.Label>
                         </div>
                         <div className="space-y-4">
                             {agendas.map((agenda: any) => (
@@ -282,14 +285,14 @@ export default function WargaPortal() {
                                 >
                                     <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
                                     <div className="relative z-10">
-                                        <div className="inline-flex px-3 py-1 bg-white/20 rounded-full text-[0.625rem] font-bold uppercase tracking-widest mb-4">
-                                            Penting
+                                        <div className="inline-flex px-3 py-1 bg-white/20 rounded-full mb-4">
+                                            <Text.Label className="!text-white !tracking-widest">Penting</Text.Label>
                                         </div>
-                                        <h4 className="text-[1.0625rem] font-bold leading-tight mb-2 tracking-tight">{agenda.judul}</h4>
-                                        <p className="text-white/80 text-[0.8125rem] line-clamp-2 leading-snug mb-4 font-medium">{agenda.deskripsi}</p>
-                                        <button className="flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-widest group/btn">
-                                            Lihat Detail
-                                            <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform" />
+                                        <Text.H2 className="!text-[1.0625rem] !text-white !leading-tight mb-2">{agenda.judul}</Text.H2>
+                                        <Text.Body className="!text-white/80 !text-[0.8125rem] line-clamp-2 !leading-snug mb-4 !font-medium">{agenda.deskripsi}</Text.Body>
+                                        <button className="flex items-center gap-2 text-[0.6875rem] font-bold tracking-widest group/btn">
+                                            <Text.Label component="span" className="!text-white !tracking-widest">Lihat Detail</Text.Label>
+                                            <Plus weight="bold" className="group-hover/btn:rotate-90 transition-transform text-white" />
                                         </button>
                                     </div>
                                 </div>
@@ -303,7 +306,7 @@ export default function WargaPortal() {
                     <div className="animate-fade-in-up" style={{animationDelay: '0.4s'}}>
                         <div className="flex items-center gap-2 mb-4">
                             <ChartPieSlice size={20} weight="fill" className="text-brand-500" />
-                            <h3 className="text-[0.8125rem] font-bold text-slate-800 tracking-tight flex items-center">Jajak Pendapat Aktif</h3>
+                            <Text.Label className="!text-slate-800">Jajak Pendapat Aktif</Text.Label>
                         </div>
                         <div className="space-y-4">
                             {activePolls.map((p: any) => (

@@ -142,7 +142,7 @@ export default function NotulensiList() {
                                                         <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-[10px] text-slate-400">
                                                             {k.warga?.nama.charAt(0) || '?'}
                                                         </div>
-                                                        <span className="font-medium text-slate-900">{k.warga?.nama || 'Unknown'}</span>
+                                                        <span className="font-medium text-slate-900 uppercase">{k.warga?.nama || 'Unknown'}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
@@ -209,7 +209,7 @@ export default function NotulensiList() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <Notebook weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Arsip Notulensi
                     </p>
@@ -221,7 +221,7 @@ export default function NotulensiList() {
 
                 <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 titlecase tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 tracking-[0.05em] mb-1.5 flex items-center gap-2">
                         <CalendarBlank weight="duotone" className="text-brand-400 w-4 h-4" />
                         Pertemuan Bulan Ini
                     </p>
@@ -349,7 +349,7 @@ export default function NotulensiList() {
                                             </td>
                                             <td className="p-4 align-top">
                                                 <div className="text-sm border-l-2 border-brand-100 pl-4 py-0.5 group-hover:border-brand-500 transition-all">
-                                                    <p className="font-bold text-slate-900 capitalize tracking-tight leading-none mb-1.5">{notulensi.tuan_rumah || 'Tanpa Tuan Rumah'}</p>
+                                                    <p className="font-bold text-slate-900 uppercase tracking-tight leading-none mb-1.5">{notulensi.tuan_rumah || 'Tanpa Tuan Rumah'}</p>
                                                     <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-normal capitalize tracking-widest">
                                                         <MapPin size={12} className="text-brand-400" />
                                                         {notulensi.lokasi || '-'}
@@ -440,7 +440,7 @@ export default function NotulensiList() {
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner min-w-[50px]">
-                                                    <span className="text-[8px] font-bold leading-none uppercase">{new Date(notulensi.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
+                                                    <span className="text-[8px] font-bold leading-none">{new Date(notulensi.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
                                                     <span className="text-sm font-bold leading-none mt-0.5">{new Date(notulensi.tanggal).getDate()}</span>
                                                     {notulensi.jam_mulai && (
                                                         <span className="text-[8px] font-bold mt-1 text-slate-500 bg-white/50 px-1 rounded border border-slate-200/50">
@@ -482,7 +482,7 @@ export default function NotulensiList() {
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 items-center gap-1.5">
                                                         <div className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{notulensi.tuan_rumah || 'Tanpa Tuan Rumah'}</span>
+                                                        <span className="text-[10px] font-bold text-slate-500 tracking-tighter uppercase">{notulensi.tuan_rumah || 'Tanpa Tuan Rumah'}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">

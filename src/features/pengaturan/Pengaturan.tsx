@@ -14,6 +14,7 @@ import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus
 import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
+import { Text } from '../../components/ui/Typography';
 
 type PengaturanFormData = {
     nama_wilayah: string;
@@ -744,10 +745,10 @@ export default function Pengaturan() {
         <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-10">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="page-title">Pengaturan Sistem</h1>
-                    <p className="text-slate-500 text-[12px] mt-1 font-medium flex items-center gap-1.5 tracking-normal">
-                        Konfigurasi khusus untuk scope <span className="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">{currentScope}</span>
-                    </p>
+                    <Text.H1>Pengaturan Sistem</Text.H1>
+                    <Text.Body className="!text-[12px] mt-1 !font-medium flex items-center gap-1.5 tracking-normal">
+                        Konfigurasi khusus untuk scope <Text.Label component="span" className="!bg-brand-50 !px-2 !py-0.5 !rounded-lg !border !border-brand-100 !text-brand-600 !normal-case !tracking-normal">{currentScope}</Text.Label>
+                    </Text.Body>
                 </div>
                 <div className="px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-xs font-bold border border-brand-100 tracking-normal shadow-sm">
                     {currentScope} Active
@@ -758,31 +759,31 @@ export default function Pengaturan() {
             <div className="flex flex-wrap lg:flex-nowrap bg-gray-100/70 p-1.5 rounded-2xl border border-gray-200/60 w-full mb-6 gap-1 relative overflow-hidden">
                 <button
                     onClick={() => setActiveTab('profil')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 text-sm font-semibold rounded-xl transition-all duration-300 ${activeTab === 'profil' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'profil' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <FileText weight={activeTab === 'profil' ? 'fill' : 'duotone'} className="w-5 h-5" />
-                    <span className="hidden sm:inline">Profil & Tema</span>
+                    <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Profil & Tema</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('keuangan')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 text-sm font-semibold rounded-xl transition-all duration-300 ${activeTab === 'keuangan' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'keuangan' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <Money weight={activeTab === 'keuangan' ? 'fill' : 'duotone'} className="w-5 h-5" />
-                    <span className="hidden sm:inline">Keuangan ({currentScope})</span>
+                    <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Keuangan ({currentScope})</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('user')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 text-sm font-semibold rounded-xl transition-all duration-300 ${activeTab === 'user' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'user' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <ShieldCheck weight={activeTab === 'user' ? 'fill' : 'duotone'} className="w-5 h-5" />
-                    <span className="hidden sm:inline">User & Hak Akses</span>
+                    <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">User & Hak Akses</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('surat')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 text-sm font-semibold rounded-xl transition-all duration-300 ${activeTab === 'surat' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'surat' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <FileText weight={activeTab === 'surat' ? 'fill' : 'duotone'} className="w-5 h-5" />
-                    <span className="hidden sm:inline">Surat & Cetak</span>
+                    <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Surat & Cetak</Text.Body>
                 </button>
             </div>
 
@@ -797,9 +798,9 @@ export default function Pengaturan() {
                                 <div className="grid grid-cols-1 gap-8">
                                     <div className="md:col-span-2 flex justify-between items-end gap-4">
                                         <div className="flex-1">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Wilayah / Institusi ({currentScope})</label>
+                                            <Text.Body className="!font-bold mb-1">Nama Wilayah / Institusi ({currentScope})</Text.Body>
                                             <input type="text" {...register('nama_wilayah', { required: 'Wajib diisi' })} className="w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none" />
-                                            {errors.nama_wilayah && <p className="text-red-500 text-xs mt-1">{errors.nama_wilayah.message}</p>}
+                                            {errors.nama_wilayah && <Text.Caption className="!text-red-500 mt-1">{errors.nama_wilayah.message}</Text.Caption>}
                                         </div>
                                         <button
                                             type="button"
@@ -827,7 +828,7 @@ export default function Pengaturan() {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-gray-50/50 p-6 rounded-2xl border border-gray-200/50">
                                         <div>
-                                            <p className="text-sm text-gray-600 mb-4">Pilih warna primer yang mewakili identitas wilayah <span className="font-bold uppercase text-brand-700">{currentScope}</span>.</p>
+                                            <Text.Body className="!text-sm !text-gray-600 mb-4">Pilih warna primer yang mewakili identitas wilayah <Text.Label component="span" className="!text-brand-700">{currentScope}</Text.Label>.</Text.Body>
                                             <div className="flex flex-wrap gap-3">
                                                 {['blue', 'rose', 'indigo', 'amber', 'sky', 'slate'].map((color) => {
                                                     const colorMap: Record<string, string> = {
@@ -876,8 +877,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 tracking-normal">Daftar Jabatan {currentScope}</label>
-                                            {jabatanSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
-                                            {!jabatanSaving && jabatanOptions.length > 0 && <span className="text-[10px] text-brand-600 font-bold">✓ Tersimpan</span>}
+                                            {jabatanSaving && <Text.Label className="!text-brand-500 !animate-pulse !normal-case !tracking-normal">● Menyimpan...</Text.Label>}
+                                            {!jabatanSaving && jabatanOptions.length > 0 && <Text.Label className="!text-brand-600 !normal-case !tracking-normal">✓ Tersimpan</Text.Label>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -891,16 +892,15 @@ export default function Pengaturan() {
                                             <button type="button" onClick={() => addCategory('jabatan')} className="px-3 bg-brand-100 text-brand-700 hover:bg-brand-200 rounded-lg text-sm font-medium transition-colors">Tambah</button>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {jabatanOptions.length === 0 && <p className="text-[10px] text-gray-400 italic">Belum ada jabatan. Tambahkan di atas.</p>}
+                                            {jabatanOptions.length === 0 && <Text.Caption className="!italic">Belum Ada Jabatan. Tambahkan Di Atas.</Text.Caption>}
                                             {jabatanOptions.map(jab => {
                                                 const usageCount = allPengurus.filter(p => p.jabatan === jab && p.status === 'aktif').length;
                                                 return (
-                                                    <span key={jab} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${usageCount > 0 ? 'bg-brand-50 text-brand-700 border-brand-200' : 'bg-white text-gray-700 border-gray-200'
-                                                        }`}>
+                                                    <Text.Label key={jab} className={`!inline-flex !items-center !gap-1.5 !px-3 !py-1 !rounded-md !border !shadow-sm !normal-case !tracking-normal ${usageCount > 0 ? '!bg-brand-50 !text-brand-700 !border-brand-200' : '!bg-white !text-gray-700 !border-gray-200'}`}>
                                                         {jab}
-                                                        {usageCount > 0 && <span className="ml-1 text-[9px] bg-brand-200 text-brand-800 rounded-full px-1 font-bold">{usageCount}</span>}
+                                                        {usageCount > 0 && <Text.Label component="span" className="!ml-1 !bg-brand-200 !text-brand-800 !rounded-full !px-1.5">{usageCount}</Text.Label>}
                                                         <button type="button" onClick={() => removeCategory('jabatan', jab)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
-                                                    </span>
+                                                    </Text.Label>
                                                 );
                                             })}
                                         </div>
@@ -910,8 +910,8 @@ export default function Pengaturan() {
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <label className="block text-sm font-bold text-gray-900 tracking-normal">Periode ({currentScope})</label>
-                                            {periodeSaving && <span className="text-[10px] text-brand-500 font-bold animate-pulse">● Menyimpan...</span>}
-                                            {!periodeSaving && periodeOptions.length > 0 && <span className="text-[10px] text-brand-600 font-bold">✓ Tersimpan</span>}
+                                            {periodeSaving && <Text.Label className="!text-brand-500 !animate-pulse !normal-case !tracking-normal">● Menyimpan...</Text.Label>}
+                                            {!periodeSaving && periodeOptions.length > 0 && <Text.Label className="!text-brand-600 !normal-case !tracking-normal">✓ Tersimpan</Text.Label>}
                                         </div>
                                         <div className="flex gap-2 mb-3">
                                             <input
@@ -925,18 +925,16 @@ export default function Pengaturan() {
                                             <button type="button" onClick={() => addCategory('periode')} className="px-3 bg-brand-100 text-brand-700 hover:bg-brand-200 rounded-lg text-sm font-medium transition-colors">Tambah</button>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {periodeOptions.length === 0 && <p className="text-[10px] text-gray-400 italic">Belum ada periode. Tambahkan di atas.</p>}
+                                            {periodeOptions.length === 0 && <Text.Caption className="!italic">Belum Ada Periode. Tambahkan Di Atas.</Text.Caption>}
                                             {periodeOptions.map(per => {
                                                 const total = allPengurus.filter(p => p.periode === per).length;
                                                 const aktif = allPengurus.filter(p => p.periode === per && p.status === 'aktif').length;
                                                 return (
-                                                    <span key={per} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border shadow-sm ${aktif > 0 ? 'bg-brand-50 text-brand-700 border-brand-200' : total > 0 ? 'bg-gray-50 text-gray-600 border-gray-200' : 'bg-white text-gray-700 border-gray-200'
-                                                        }`}>
+                                                    <Text.Label key={per} className={`!inline-flex !items-center !gap-1.5 !px-3 !py-1 !rounded-md !border !shadow-sm !normal-case !tracking-normal ${aktif > 0 ? '!bg-brand-50 !text-brand-700 !border-brand-200' : total > 0 ? '!bg-gray-50 !text-gray-600 !border-gray-200' : '!bg-white !text-gray-700 !border-gray-200'}`}>
                                                         {per}
-                                                        {total > 0 && <span className={`ml-1 text-[9px] rounded-full px-1 font-bold ${aktif > 0 ? 'bg-brand-200 text-brand-800' : 'bg-gray-200 text-gray-600'
-                                                            }`}>{aktif > 0 ? `${aktif} aktif` : `${total} riwayat`}</span>}
+                                                        {total > 0 && <Text.Label component="span" className={`!ml-1 !rounded-full !px-1.5 ${aktif > 0 ? '!bg-brand-200 !text-brand-800' : '!bg-gray-200 !text-gray-600'}`}>{aktif > 0 ? `${aktif} Aktif` : `${total} Riwayat`}</Text.Label>}
                                                         <button type="button" onClick={() => removeCategory('periode', per)} className="w-4 h-4 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 flex items-center justify-center font-bold text-[10px] transition-colors">&times;</button>
-                                                    </span>
+                                                    </Text.Label>
                                                 );
                                             })}
                                         </div>
@@ -1009,9 +1007,7 @@ export default function Pengaturan() {
                                                         <Plus weight="bold" className="w-4 h-4" />
                                                         Tambah Jenis Pemasukan
                                                     </button>
-                                                </div>
-
-                                                <div className="space-y-4 pt-6 border-t border-gray-100">
+                                                                                            <div className="space-y-4 pt-6 border-t border-gray-100">
                                                     {jenisPemasukan.map((item) => (
                                                         <div key={item.id} className="flex items-center justify-between bg-white border border-gray-200 p-5 rounded-2xl shadow-sm hover:border-brand-200 hover:shadow-md transition-all group">
                                                             <div className="flex items-center gap-4">
@@ -1020,12 +1016,12 @@ export default function Pengaturan() {
                                                                 </div>
                                                                 <div className="space-y-1">
                                                                     <div className="flex items-center gap-2">
-                                                                        <p className="text-sm font-bold text-gray-900">{item.nama}</p>
-                                                                        {item.is_mandatory && <span className="px-2.5 py-1 bg-brand-50 text-brand-600 text-[9px] font-bold rounded-full border border-brand-100 uppercase tracking-wider">Mandatory</span>}
+                                                                        <Text.Body className="!font-bold !text-gray-900">{item.nama}</Text.Body>
+                                                                        {item.is_mandatory && <Text.Label className="!px-2.5 !py-1 !bg-brand-50 !text-brand-600 !rounded-full !border !border-brand-100 uppercase tracking-normal">Wajib</Text.Label>}
                                                                     </div>
-                                                                    <p className="text-[11px] text-gray-500 font-medium">
+                                                                    <Text.Caption className="!font-medium">
                                                                         {item.tipe} • Rp {item.nominal.toLocaleString('id-ID')}
-                                                                    </p>
+                                                                    </Text.Caption>
                                                                 </div>
                                                             </div>
                                                             <button
@@ -1039,7 +1035,7 @@ export default function Pengaturan() {
                                                     ))}
                                                     {jenisPemasukan.length === 0 && (
                                                         <div className="text-center py-10 border-2 border-dashed border-gray-100 rounded-2xl">
-                                                            <p className="text-xs text-gray-400 font-medium italic">Belum ada jenis pemasukan terkonfigurasi.</p>
+                                                            <Text.Caption className="!font-medium !italic">Belum Ada Jenis Pemasukan Terkonfigurasi.</Text.Caption>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1049,7 +1045,7 @@ export default function Pengaturan() {
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Money weight="fill" className="text-brand-500 w-5 h-5" />
-                                                <h3 className="text-sm font-bold text-gray-900 tracking-normal">Kategori Pengeluaran</h3>
+                                                <Text.H2 className="!font-bold">Kategori Pengeluaran</Text.H2>
                                             </div>
                                             <div className="bg-gray-50/50 border border-gray-200 rounded-2xl p-7 shadow-sm space-y-5">
                                                 <div className="flex gap-2">
@@ -1071,8 +1067,8 @@ export default function Pengaturan() {
                                                 </div>
                                                 <div className="flex flex-wrap gap-2.5 min-h-[44px]">
                                                     {pengeluaranCategories.map((cat, i) => (
-                                                        <div key={i} className="flex items-center gap-2 px-4 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-100 group hover:bg-brand-100 transition-all">
-                                                            <span>{cat}</span>
+                                                        <Text.Label key={i} className={`flex items-center gap-2 px-4 py-1.5 !bg-brand-50 !text-brand-700 !rounded-full !border !border-brand-100 group hover:!bg-brand-100 transition-all !normal-case !tracking-normal`}>
+                                                            {cat}
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeCategory('keluar', cat)}
@@ -1080,9 +1076,9 @@ export default function Pengaturan() {
                                                             >
                                                                 <X weight="bold" className="w-3 h-3" />
                                                             </button>
-                                                        </div>
+                                                        </Text.Label>
                                                     ))}
-                                                    {pengeluaranCategories.length === 0 && <p className="text-[10px] text-gray-400 italic">Belum ada kategori pengeluaran</p>}
+                                                    {pengeluaranCategories.length === 0 && <Text.Caption className="!italic">Belum Ada Kategori Pengeluaran</Text.Caption>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1090,14 +1086,14 @@ export default function Pengaturan() {
 
                                     <div className="space-y-8">
                                         <div className="space-y-4">
-                                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                                            <div className="flex items-center gap-2 mb-2">
                                                 <div className="w-2 h-2 rounded-full bg-brand-500"></div>
-                                                Aturan Iuran Berdasarkan Status Hunian
-                                            </h3>
+                                                <Text.H2 className="!font-bold">Aturan Iuran Berdasarkan Status Hunian</Text.H2>
+                                            </div>
                                             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal uppercase">Status Rumah Berpenghuni</label>
+                                                        <Text.Label className="!text-gray-400 mb-2 uppercase block">Status Rumah Berpenghuni</Text.Label>
                                                         <Controller
                                                             name="iuran_tetap_dihuni"
                                                             control={control}
@@ -1107,7 +1103,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal uppercase">Status Rumah Kosong / Lahan</label>
+                                                        <Text.Label className="!text-gray-400 mb-2 uppercase block">Status Rumah Kosong / Lahan</Text.Label>
                                                         <Controller
                                                             name="iuran_tetap_kosong"
                                                             control={control}
@@ -1117,7 +1113,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Kontrak - Dihuni</label>
+                                                        <Text.Label className="!text-gray-400 mb-2 uppercase block">Kontrak - Dihuni</Text.Label>
                                                         <Controller
                                                             name="iuran_kontrak_dihuni"
                                                             control={control}
@@ -1127,7 +1123,7 @@ export default function Pengaturan() {
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-[10px] font-bold text-gray-400 mb-2 tracking-normal">Kontrak - Kosong</label>
+                                                        <Text.Label className="!text-gray-400 mb-2 uppercase block">Kontrak - Kosong</Text.Label>
                                                         <Controller
                                                             name="iuran_kontrak_kosong"
                                                             control={control}
@@ -1139,7 +1135,7 @@ export default function Pengaturan() {
                                                 </div>
 
                                                 <div className="pt-4 border-t border-gray-100">
-                                                    <label className="block text-sm font-bold text-gray-700 mb-3 tracking-normal">Opsi Tahun Pembayaran</label>
+                                                    <Text.Label className="!text-gray-700 mb-3 block">Opsi Tahun Pembayaran</Text.Label>
                                                     <div className="flex gap-2 mb-4">
                                                         <input
                                                             type="number"
@@ -1153,10 +1149,10 @@ export default function Pengaturan() {
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
                                                         {tahunIuran.map(tahun => (
-                                                            <div key={tahun} className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-full text-xs font-bold border border-brand-200">
+                                                            <Text.Label key={tahun} className="!flex !items-center !gap-2 !px-3 !py-1.5 !bg-brand-50 !text-brand-700 !rounded-full !border !border-brand-200 !normal-case !tracking-normal">
                                                                 {tahun}
                                                                 <button type="button" onClick={() => removeCategory('tahun', tahun)} className="text-brand-300 hover:text-red-500 transition-colors">&times;</button>
-                                                            </div>
+                                                            </Text.Label>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -1166,8 +1162,8 @@ export default function Pengaturan() {
                                         <div className="bg-slate-900 text-white rounded-2xl p-7 space-y-5 shadow-xl shadow-slate-200">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <h4 className="text-base font-bold">Sistem Denda Ronda</h4>
-                                                    <p className="text-xs text-slate-400 mt-1">Terapkan denda otomatis bagi yang tidak hadir.</p>
+                                                    <Text.H2 className="!text-white !font-bold">Sistem Denda Ronda</Text.H2>
+                                                    <Text.Caption className="!text-slate-400 mt-1">Terapkan Denda Otomatis Bagi Yang Tidak Hadir.</Text.Caption>
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
                                                     <input type="checkbox" {...register('denda_ronda_aktif')} className="sr-only peer" />
@@ -1177,7 +1173,7 @@ export default function Pengaturan() {
 
                                             {dendaRondaAktif && (
                                                 <div className="animate-fade-in pt-4 border-t border-slate-700">
-                                                    <label className="block text-[10px] font-bold text-slate-400 mb-2 tracking-normal">Nominal Denda Per Ketidakhadiran</label>
+                                                    <Text.Label className="!text-slate-400 mb-2 uppercase block">Nominal Denda Per Ketidakhadiran</Text.Label>
                                                     <Controller
                                                         name="denda_ronda_nominal"
                                                         control={control}
@@ -1200,13 +1196,13 @@ export default function Pengaturan() {
                                     {/* Column 1: Konfigurasi dan Validasi Tanda Tangan */}
                                     <div className="space-y-8 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
                                         <div className="space-y-6">
-                                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-b border-brand-100 pb-2 flex items-center gap-2">
+                                            <div className="flex items-center gap-2 mb-2">
                                                 <div className="w-2 h-2 rounded-full bg-brand-500"></div>
-                                                Konfigurasi Kop & Nomor
-                                            </h3>
+                                                <Text.H2 className="!font-bold">Konfigurasi Kop & Nomor</Text.H2>
+                                            </div>
                                             <div>
                                                 <div className="flex justify-between items-center mb-2">
-                                                    <label className="block text-sm font-medium text-gray-700">Teks Kop Surat (Enter untuk Baris Baru)</label>
+                                                    <Text.Label className="!text-gray-700 block">Teks Kop Surat (Enter Untuk Baris Baru)</Text.Label>
                                                     <button
                                                         type="button"
                                                         onClick={handleSyncOfficialKop}
@@ -1223,7 +1219,7 @@ export default function Pengaturan() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">Unggah Logo Kop (PNG/JPG)</label>
+                                                <Text.Label className="!text-gray-700 mb-2 block">Unggah Logo Kop (PNG/JPG)</Text.Label>
                                                 <div className="relative group mb-4">
                                                     <div className="border border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50 group-hover:bg-brand-50/30 group-hover:border-brand-300 transition-all cursor-pointer h-24 overflow-hidden">
                                                         <input
@@ -1248,19 +1244,19 @@ export default function Pengaturan() {
                                                                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 group-hover:scale-110 transition-all">
                                                                     <Plus weight="bold" className="text-gray-400 w-4 h-4" />
                                                                 </div>
-                                                                <span className="text-xs font-semibold text-gray-500">Klik untuk upload logo</span>
+                                                                <Text.Label className="!text-gray-500">Klik Untuk Upload Logo</Text.Label>
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">Format Nomor Surat</label>
+                                                <Text.Label className="!text-gray-700 mb-2 block">Format Nomor Surat</Text.Label>
                                                 <input
                                                     type="text"
                                                     {...register('format_nomor_surat')}
                                                     className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none font-mono text-sm bg-gray-50 focus:bg-white transition-all"
                                                     placeholder="[NOMOR]/[SCOPE]/[BULAN_ROMAWI]/[TAHUN]"
                                                 />
-                                                <p className="text-[10px] text-gray-400 mt-2 italic px-1">Placeholder: [NOMOR], [SCOPE], [BULAN_ROMAWI], [TAHUN], [KODE_WILAYAH]</p>
+                                                <Text.Caption className="!mt-2 !italic !px-1">Placeholder: [NOMOR], [SCOPE], [BULAN_ROMAWI], [TAHUN], [KODE_WILAYAH]</Text.Caption>
                                             </div>
                                         </div>
 
@@ -1280,16 +1276,16 @@ export default function Pengaturan() {
                                             </div>
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Nama Penandatangan RT</label>
-                                                    <input type="text" {...register('penandatangan_nama')} placeholder="Contoh: Budi Santoso" className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all text-sm" />
+                                                    <Text.Label className="!text-gray-700 mb-2 block">Nama Penandatangan RT</Text.Label>
+                                                    <input type="text" {...register('penandatangan_nama')} placeholder="Contoh: Budi Santoso" className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all text-sm uppercase" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Jabatan Penandatangan RT</label>
+                                                    <Text.Label className="!text-gray-700 mb-2 block">Jabatan Penandatangan RT</Text.Label>
                                                     <input type="text" {...register('penandatangan_jabatan')} placeholder="Contoh: Ketua RT. 01" className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all text-sm" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Nama Ketua RW (Mengetahui)</label>
-                                                    <input type="text" {...register('nama_ketua_rw')} placeholder="Contoh: Drs. Sukirno, M.Pd." className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all text-sm" />
+                                                    <Text.Label className="!text-gray-700 mb-2 block">Nama Ketua RW (Mengetahui)</Text.Label>
+                                                    <input type="text" {...register('nama_ketua_rw')} placeholder="Contoh: Drs. Sukirno, M.Pd." className="w-full rounded-xl shadow-sm p-4 border border-gray-200 focus:ring-2 focus:ring-brand-500 outline-none bg-gray-50 focus:bg-white transition-all text-sm uppercase" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1335,7 +1331,7 @@ export default function Pengaturan() {
                                                         />
                                                         {!ttdPreview && (
                                                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-40 bg-gray-50/10">
-                                                                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Goreskan Tanda Tangan</p>
+                                                                <Text.Label className="!text-gray-400 uppercase tracking-widest block">Goreskan Tanda Tangan</Text.Label>
                                                             </div>
                                                         )}
                                                     </div>
@@ -1365,7 +1361,7 @@ export default function Pengaturan() {
                                                             ) : (
                                                                 <div className="text-center flex flex-col items-center gap-1">
                                                                     <Plus weight="bold" className="text-gray-400 w-5 h-5" />
-                                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unggah Stempel</span>
+                                                                    <Text.Label className="!text-gray-400 uppercase tracking-widest block">Unggah Stempel</Text.Label>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -1423,7 +1419,7 @@ export default function Pengaturan() {
                                                 {/* Signature Preview */}
                                                 <div className="mt-6 flex justify-end">
                                                     <div className="text-center w-28 relative">
-                                                        <p className="text-[6px] mb-1 font-bold leading-tight uppercase tracking-wider">Ketua {currentScope}</p>
+                                                        <Text.Caption className="!text-[6px] !mb-1 !font-bold !leading-tight uppercase tracking-wider">Ketua {currentScope}</Text.Caption>
 
                                                         <div className="h-12 flex items-center justify-center relative translate-y-[2px]">
                                                             {watch('ttd_pake_qr') ? (
@@ -1452,7 +1448,7 @@ export default function Pengaturan() {
                                                             )}
                                                         </div>
 
-                                                        <p className="text-[7px] font-bold underline mt-3 uppercase leading-none">( {watch('penandatangan_nama') || 'RT NAME'} )</p>
+                                                        <Text.Caption className="!text-[7px] !font-bold !underline !mt-3 uppercase !leading-none">( {watch('penandatangan_nama') || 'RT NAME'} )</Text.Caption>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1466,7 +1462,7 @@ export default function Pengaturan() {
                                                 className="w-full py-4 bg-gray-900 hover:bg-slate-800 text-white rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl shadow-gray-200 hover-lift active-press transition-all disabled:opacity-70 group"
                                             >
                                                 <FloppyDisk weight="bold" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                                <span className="uppercase tracking-widest text-xs">{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan Pengaturan ${currentScope}`}</span>
+                                                <Text.Label className="uppercase tracking-widest text-xs">{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan Pengaturan ${currentScope}`}</Text.Label>
                                             </button>
                                         </HasPermission>
                                     </div>
@@ -1487,7 +1483,7 @@ export default function Pengaturan() {
                                 <HasPermission module="Setup / Pengaturan" action="Ubah">
                                     <button type="submit" disabled={isSaving || isUploading} className="px-6 py-2.5 bg-gray-900 hover:bg-slate-800 text-white rounded-lg flex items-center gap-2 font-medium hover-lift active-press transition-all disabled:opacity-70">
                                         <FloppyDisk weight="bold" />
-                                        <span>{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan ${currentScope}`}</span>
+                                        <Text.Label>{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan ${currentScope}`}</Text.Label>
                                     </button>
                                 </HasPermission>
                             </div>
@@ -1503,8 +1499,8 @@ export default function Pengaturan() {
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white border border-gray-200 p-6 rounded-3xl shadow-sm">
                             <div className="flex items-center gap-6">
                                 <div>
-                                    <h3 className="text-[20px] font-bold text-slate-800 leading-none">Manajemen Akses</h3>
-                                    <p className="text-[12px] text-slate-500 mt-2 font-medium tracking-normal">Pengaturan RBAC & Hak Akses per tenant.</p>
+                                    <Text.H1 className="!text-[20px] !font-bold !text-slate-800 !leading-none">Manajemen Akses</Text.H1>
+                                    <Text.Caption className="!text-[12px] !text-slate-500 !mt-2 !font-medium !tracking-normal">Pengaturan RBAC & Hak Akses Per Tenant.</Text.Caption>
                                 </div>
                                 <div className="h-10 w-[1px] bg-gray-100 hidden md:block"></div>
                                 <div className="flex bg-gray-100 p-1 rounded-xl">
@@ -1527,7 +1523,7 @@ export default function Pengaturan() {
                                             onClick={() => { setShowAddUserForm(v => !v); setExpandedUserId(null); }}
                                             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddUserForm ? 'bg-slate-800 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddUserForm ? <X weight="bold" /> : <Plus weight="bold" />}
-                                            <span>{showAddUserForm ? 'Batal' : 'Tambah Pengguna'}</span>
+                                            <Text.Label className="!normal-case !tracking-normal">{showAddUserForm ? 'Batal' : 'Tambah Pengguna'}</Text.Label>
                                         </button>
                                     </HasPermission>
                                 ) : (
@@ -1536,7 +1532,7 @@ export default function Pengaturan() {
                                             onClick={() => setShowAddRoleForm(v => !v)}
                                             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-slate-800 text-white shadow-slate-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
-                                            <span>{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</span>
+                                            <Text.Label className="!normal-case !tracking-normal">{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</Text.Label>
                                         </button>
                                     </HasPermission>
                                 )}
@@ -1548,7 +1544,7 @@ export default function Pengaturan() {
                             <div className="bg-white border border-brand-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                                 <div className="px-6 py-4 bg-brand-50 border-b border-brand-100 flex items-center gap-3">
                                     <UserIcon weight="fill" className="w-5 h-5 text-brand-600" />
-                                    <h3 className="text-[14px] font-semibold text-slate-800 tracking-normal">Tambah Pengguna Baru</h3>
+                                    <Text.H2 className="!text-slate-800">Tambah Pengguna Baru</Text.H2>
                                 </div>
                                 <form onSubmit={handleAddUser} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {/* Warga Selector */}
@@ -1571,7 +1567,7 @@ export default function Pengaturan() {
                                             }
                                         </select>
                                         {wargaList.filter(w => currentScope === 'RT' ? w.jenis_kelamin === 'Laki-laki' : w.jenis_kelamin === 'Perempuan').length === 0 && (
-                                            <p className="text-[12px] text-amber-600 mt-1 italic">Tidak ada data warga {currentScope === 'RT' ? 'laki-laki' : 'perempuan'} yang tersedia.</p>
+                                            <Text.Caption className="!text-amber-600 italic">Tidak Ada Data Warga {currentScope === 'RT' ? 'Laki-Laki' : 'Perempuan'} Yang Tersedia.</Text.Caption>
                                         )}
                                     </div>
                                     <div>
@@ -1628,7 +1624,7 @@ export default function Pengaturan() {
                             <div className="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                                 <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
                                     <ShieldCheck weight="fill" className="w-5 h-5 text-slate-700" />
-                                    <h3 className="text-sm font-bold text-slate-900 tracking-normal">Tambah Peran Baru</h3>
+                                    <Text.H2 className="!text-slate-900">Tambah Peran Baru</Text.H2>
                                 </div>
                                 <form onSubmit={handleAddRole} className="p-6 flex gap-4 items-end">
                                     <div className="flex-1">

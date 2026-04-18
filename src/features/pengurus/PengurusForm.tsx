@@ -7,6 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { Pengurus, Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
+import { Text } from '../../components/ui/Typography';
 
 type PengurusFormData = Omit<Pengurus, 'id' | 'tenant_id' | 'scope'>;
 
@@ -129,12 +130,12 @@ export default function PengurusForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
-                        {isEditing ? 'Edit Jabatan Pengurus' : 'Tambah Jabatan Kepengurusan'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">
-                        Ditetapkan untuk scope: <span className="font-semibold text-brand-600">{currentScope}</span>
-                    </p>
+                    <Text.H1>
+                        {isEditing ? 'Ubah Jabatan Pengurus' : 'Tambah Jabatan Kepengurusan'}
+                    </Text.H1>
+                    <Text.Body className="mt-1">
+                        Ditetapkan Untuk Scope: <Text.Body component="span" className="!font-semibold !text-brand-600">{currentScope}</Text.Body>
+                    </Text.Body>
                 </div>
             </div>
 
@@ -143,28 +144,28 @@ export default function PengurusForm() {
                     <div className="grid grid-cols-1 gap-6">
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 !text-slate-700">
                                 Pilih Warga (Pejabat) <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <select
                                 {...register('warga_id', { required: 'Warga wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                             >
                                 <option value="">-- Pilih Warga --</option>
                                 {wargaList.map(w => (
-                                    <option key={w.id} value={w.id}>{w.nama} ({w.nik})</option>
+                                    <option key={w.id} value={w.id}>{w.nama.toUpperCase()} ({w.nik})</option>
                                 ))}
                             </select>
-                            {errors.warga_id && <p className="text-red-500 text-xs mt-1">{errors.warga_id.message}</p>}
+                            {errors.warga_id && <Text.Caption className="!text-red-500 !mt-1">{errors.warga_id.message}</Text.Caption>}
                             {wargaList.length === 0 && (
-                                <p className="text-amber-600 text-xs mt-2 italic">Belum ada data warga di scope {currentScope}. Silakan tambahkan warga terlebih dahulu.</p>
+                                <Text.Caption className="!text-amber-600 !mt-2 !italic">Belum Ada Data Warga Di Scope {currentScope}. Silakan Tambahkan Warga Terlebih Dahulu.</Text.Caption>
                             )}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 !text-slate-700">
                                 Nama Jabatan <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <select
                                 {...register('jabatan', { required: 'Jabatan wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.jabatan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
@@ -174,7 +175,7 @@ export default function PengurusForm() {
                                     <option key={i} value={opt}>{opt}</option>
                                 ))}
                             </select>
-                            {errors.jabatan && <p className="text-red-500 text-xs mt-1">{errors.jabatan.message}</p>}
+                            {errors.jabatan && <Text.Caption className="!text-red-500 !mt-1">{errors.jabatan.message}</Text.Caption>}
                             {jabatanOptions.length === 0 && (
                                 <div className="mt-2 p-4 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs flex flex-col gap-3 shadow-sm">
                                     <div className="flex items-center gap-2">
@@ -203,9 +204,9 @@ export default function PengurusForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 !text-slate-700">
                                 Periode Menjabat <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <select
                                 {...register('periode', { required: 'Periode wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.periode ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
@@ -215,13 +216,13 @@ export default function PengurusForm() {
                                     <option key={i} value={opt}>{opt}</option>
                                 ))}
                             </select>
-                            {errors.periode && <p className="text-red-500 text-xs mt-1">{errors.periode.message}</p>}
+                            {errors.periode && <Text.Caption className="!text-red-500 !mt-1">{errors.periode.message}</Text.Caption>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 !text-slate-700">
                                 Status Jabatan <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <select
                                 {...register('status', { required: 'Status wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.status ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
@@ -229,20 +230,20 @@ export default function PengurusForm() {
                                 <option value="aktif">Aktif (Saat Ini Menjabat)</option>
                                 <option value="tidak aktif">Tidak Aktif (Mantan / Riwayat)</option>
                             </select>
-                            {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status.message}</p>}
+                            {errors.status && <Text.Caption className="!text-red-500 !mt-1">{errors.status.message}</Text.Caption>}
                         </div>
 
                         {/* Keep consistency but hide second prompt if first one handles both */}
                         {periodeOptions.length === 0 && jabatanOptions.length > 0 && (
                             <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs flex flex-col gap-1">
-                                <p className="font-bold tracking-normal text-[10px]">Data Periode Kosong!</p>
-                                <p>Opsi periode belum diatur di Pengaturan Sistem.</p>
+                                <Text.Label className="!text-amber-800 !normal-case !tracking-normal !font-black !text-[10px]">Data Periode Kosong!</Text.Label>
+                                <Text.Caption className="!text-amber-700">Opsi periode belum diatur di Pengaturan Sistem.</Text.Caption>
                                 <button
                                     type="button"
                                     onClick={() => navigate('/pengaturan')}
                                     className="mt-1 font-bold underline hover:text-amber-900 w-fit"
                                 >
-                                    Atur di Pengaturan &rarr;
+                                    <Text.Label className="!text-inherit !normal-case !tracking-normal">Atur Di Pengaturan &rarr;</Text.Label>
                                 </button>
                             </div>
                         )}
@@ -254,14 +255,14 @@ export default function PengurusForm() {
                             onClick={() => navigate('/pengurus')}
                             className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                         >
-                            Batal
+                            <Text.Label className="!text-slate-600">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
                             className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 font-medium hover-lift active-press shadow-sm hover:shadow-md transition-all"
                         >
                             <FloppyDisk weight="bold" />
-                            <span>Simpan Jabatan</span>
+                            <Text.Label className="!text-white">Simpan Jabatan</Text.Label>
                         </button>
                     </div>
                 </form>

@@ -142,10 +142,10 @@ export default function AgendaForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-normal text-gray-900">
+                    <Text.H1>
                         {isEditing ? 'Ubah Agenda Kegiatan' : 'Buat Agenda Kegiatan Baru'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">Dicatat untuk scope: <span className="font-normal text-brand-600">{currentScope}</span></p>
+                    </Text.H1>
+                    <Text.Body className="mt-1">Dicatat Untuk Scope: <Text.Body component="span" className="!font-normal !text-brand-600">{currentScope}</Text.Body></Text.Body>
                 </div>
             </div>
 
@@ -155,9 +155,9 @@ export default function AgendaForm() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-semibold tracking-tight text-slate-500 mb-1.5">
+                                    <Text.Label className="mb-1.5 block">
                                         Jenis Kegiatan <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <select
                                         {...register('jenis_kegiatan', { required: 'Jenis kegiatan wajib diisi' })}
                                         className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.jenis_kegiatan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
@@ -170,11 +170,11 @@ export default function AgendaForm() {
                                         <option value="Pembangunan">Pembangunan</option>
                                         <option value="Lainnya">Lainnya</option>
                                     </select>
-                                    {errors.jenis_kegiatan && <p className="text-red-500 text-xs mt-1">{errors.jenis_kegiatan.message}</p>}
+                                    {errors.jenis_kegiatan && <Text.Caption className="!text-red-500 !mt-1">{errors.jenis_kegiatan.message}</Text.Caption>}
                                 </div>
                                 
                                 <div className="flex items-center justify-between p-3 bg-brand-50 rounded-lg border border-brand-100 h-fit self-end text-left">
-                                    <span className="text-sm font-medium text-brand-900">Perlu Rapat?</span>
+                                    <Text.Body className="!text-brand-900 font-medium">Perlu Rapat?</Text.Body>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" {...register('perlu_rapat')} className="sr-only peer" />
                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
@@ -186,21 +186,21 @@ export default function AgendaForm() {
                                 <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-4 animate-in slide-in-from-top-2 duration-300 text-left">
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="w-1 h-4 bg-brand-500 rounded-full"></div>
-                                        <h4 className="text-sm font-bold text-slate-800 tracking-tight uppercase">Detail Rapat</h4>
+                                        <Text.Label className="!text-slate-800">Detail Rapat</Text.Label>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="relative">
-                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
                                                 <UserCircle className="text-brand-500 w-3.5 h-3.5" /> Tuan Rumah (Host)
-                                            </label>
+                                            </Text.Label>
                                             <div className="flex gap-2">
                                                 <div
                                                     onClick={() => setShowHostSelector(true)}
                                                     className="w-full rounded-lg p-3 border border-slate-200 bg-white hover:border-brand-500 cursor-pointer transition-all flex items-center justify-between group/input shadow-sm"
                                                 >
-                                                    <span className={`text-sm ${selectedHostId ? 'text-slate-900' : 'text-slate-400'}`}>
+                                                    <Text.Body className={`!text-sm uppercase ${selectedHostId ? '!text-slate-900' : '!text-slate-400'}`}>
                                                         {selectedHostId ? wargaList.find(w => w.id === selectedHostId)?.nama : 'Pilih Warga...'}
-                                                    </span>
+                                                    </Text.Body>
                                                     <div className="p-1 rounded-md bg-slate-100 group-hover/input:bg-brand-100 group-hover/input:text-brand-600 transition-colors">
                                                         <Users weight="bold" className="w-4 h-4" />
                                                     </div>
@@ -210,7 +210,7 @@ export default function AgendaForm() {
                                             {showHostSelector && (
                                                 <div className="absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                                     <div className="p-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Pilih Warga</span>
+                                                        <Text.Label className="!text-slate-400">Pilih Warga</Text.Label>
                                                         <button onClick={() => setShowHostSelector(false)} className="text-slate-400 hover:text-rose-500 transition-colors">
                                                             <XCircle size={20} weight="fill" />
                                                         </button>
@@ -228,14 +228,14 @@ export default function AgendaForm() {
                                                                         {w.nama.charAt(0)}
                                                                     </div>
                                                                     <div>
-                                                                        <p className="text-xs font-bold text-slate-900 leading-none mb-1">{w.nama}</p>
-                                                                        <p className="text-[9px] text-slate-400 tracking-tight">{w.alamat}</p>
+                                                                        <Text.Body className="!text-xs font-bold !text-slate-900 leading-none mb-1 uppercase">{w.nama}</Text.Body>
+                                                                        <Text.Caption className="tracking-tight">{w.alamat}</Text.Caption>
                                                                     </div>
                                                                 </div>
                                                                 {pastHosts.has(w.id) && (
-                                                                    <div className="text-[8px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-md font-bold tracking-tight border border-amber-100">
+                                                                    <Text.Label className="!text-[8px] !bg-amber-50 !text-amber-700 !px-1.5 !py-0.5 !rounded-md !border !border-amber-100">
                                                                         H-Host
-                                                                    </div>
+                                                                    </Text.Label>
                                                                 )}
                                                             </button>
                                                         ))}
@@ -245,9 +245,9 @@ export default function AgendaForm() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
                                                 <MapPin className="text-brand-500 w-3.5 h-3.5" /> Atau Host Lainnya
-                                            </label>
+                                            </Text.Label>
                                             <input
                                                 type="text"
                                                 {...register('tuan_rumah')}
@@ -258,21 +258,21 @@ export default function AgendaForm() {
                                                     setValue('tuan_rumah', e.target.value);
                                                 }}
                                                 className="w-full rounded-lg p-3 border border-slate-200 bg-white focus:border-brand-500 outline-none text-sm transition-all shadow-sm"
-                                                placeholder="Contoh: Balai Pertemuan, Musholla, dll"
+                                                placeholder="Contoh: Balai Pertemuan, Musholla, Dll"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Lokasi Rapat */}
                                     <div className="pt-2">
-                                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 px-0.5 flex items-center gap-2">
+                                        <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
                                             <MapPin className="text-brand-500 w-3.5 h-3.5" /> Lokasi Spesifik / Alamat
-                                        </label>
+                                        </Text.Label>
                                         <input
                                             type="text"
                                             {...register('lokasi')}
                                             className="w-full rounded-lg p-3 border border-slate-200 bg-white focus:border-brand-500 outline-none text-sm transition-all shadow-sm"
-                                            placeholder="Contoh: Jl. Merdeka No. 10, atau detail lokasi lainnya..."
+                                            placeholder="Contoh: Jl. Merdeka No. 10, Atau Detail Lokasi Lainnya..."
                                         />
                                     </div>
                                 </div>
@@ -280,36 +280,36 @@ export default function AgendaForm() {
 
                             {watch('jenis_kegiatan') && (
                                 <div className="animate-in fade-in slide-in-from-top-2">
-                                    <label className="block text-sm font-normal text-gray-700 mb-1">
+                                    <Text.Label className="mb-1 block">
                                         Keterangan Terkait {watch('jenis_kegiatan')} <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <textarea
                                         rows={4}
-                                        {...register('keterangan_tambahan', { required: 'Keterangan wajib diisi' })}
+                                        {...register('keterangan_tambahan', { required: 'Keterangan Wajib Diisi' })}
                                         className={`w-full rounded-xl p-4 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors text-sm leading-relaxed ${errors.keterangan_tambahan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
-                                        placeholder={`Detail pelaksanaan kegiatan ${watch('jenis_kegiatan')}...`}
+                                        placeholder={`Detail Pelaksanaan Kegiatan ${watch('jenis_kegiatan')}...`}
                                     />
-                                    {errors.keterangan_tambahan && <p className="text-red-500 text-xs mt-1">{errors.keterangan_tambahan.message}</p>}
+                                    {errors.keterangan_tambahan && <Text.Caption className="!text-red-500 !mt-1">{errors.keterangan_tambahan.message}</Text.Caption>}
                                 </div>
                             )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-normal text-gray-700 mb-1">
+                                    <Text.Label className="mb-1 block">
                                         Tanggal Pelaksanaan <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <input
                                         type="date"
                                         {...register('tanggal', { required: 'Tanggal wajib diisi' })}
                                         className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.tanggal ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50'}`}
                                     />
-                                    {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal.message}</p>}
+                                    {errors.tanggal && <Text.Caption className="!text-red-500 !mt-1">{errors.tanggal.message}</Text.Caption>}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-normal text-gray-700 mb-1">
+                                        <Text.Label className="mb-1 block">
                                             Jam Mulai
-                                        </label>
+                                        </Text.Label>
                                         <input
                                             type="time"
                                             {...register('jam_mulai')}
@@ -317,9 +317,9 @@ export default function AgendaForm() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-normal text-gray-700 mb-1">
+                                        <Text.Label className="mb-1 block">
                                             Jam Selesai
-                                        </label>
+                                        </Text.Label>
                                         <input
                                             type="time"
                                             {...register('jam_selesai')}
@@ -346,7 +346,7 @@ export default function AgendaForm() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <Coins weight="duotone" className="w-5 h-5 text-amber-500" />
-                                    <span className="font-normal text-gray-900">Butuh Pendanaan?</span>
+                                    <Text.Body className="font-medium text-slate-700">Butuh Pendanaan?</Text.Body>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" {...register('butuh_pendanaan')} className="sr-only peer" />
@@ -358,7 +358,7 @@ export default function AgendaForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-amber-50 rounded-xl border border-amber-100 animate-in slide-in-from-top-2 duration-300">
                                     <div>
                                         <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 font-bold z-10 text-xs pointer-events-none">Rp</span>
+                                            <Text.Body className="absolute left-3 top-1/2 -translate-y-1/2 !text-amber-600 !font-bold z-10 !text-xs pointer-events-none">Rp</Text.Body>
                                             <Controller
                                                 name="nominal_biaya"
                                                 control={control}
@@ -373,9 +373,9 @@ export default function AgendaForm() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-normal text-amber-700 capitalize tracking-wider mb-1">
+                                        <Text.Label className="mb-1 block text-amber-700">
                                             Sumber Dana
-                                        </label>
+                                        </Text.Label>
                                         <select
                                             {...register('sumber_dana')}
                                             className="w-full rounded-lg shadow-sm p-2.5 border border-amber-200 focus:ring-2 focus:ring-amber-500 outline-none"
@@ -396,19 +396,19 @@ export default function AgendaForm() {
                             onClick={() => navigate('/agenda')}
                             className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-normal transition-colors"
                         >
-                            Batal
+                            <Text.Label className="!text-slate-600">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
                             disabled={isUploading}
                             className={`px-6 py-2.5 bg-brand-600 text-white rounded-lg flex items-center gap-2 font-normal hover-lift active-press shadow-sm hover:shadow-md transition-all ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            {isUploading ? (
+                                {isUploading ? (
                                 <CircleNotch weight="bold" className="animate-spin w-5 h-5" />
                             ) : (
                                 <FloppyDisk weight="bold" />
                             )}
-                            <span>{isUploading ? 'Mengunggah...' : id ? 'Simpan Perubahan' : 'Buat Agenda'}</span>
+                            <Text.Label className="!text-white">{isUploading ? 'Mengunggah...' : id ? 'Simpan Perubahan' : 'Buat Agenda'}</Text.Label>
                         </button>
                     </div>
                 </div>
@@ -417,11 +417,11 @@ export default function AgendaForm() {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-2 mb-4 border-b border-gray-50 pb-2">
                             <Users weight="duotone" className="w-5 h-5 text-brand-600" />
-                            <h3 className="font-normal text-gray-900 truncate">Peserta Terlibat</h3>
+                            <Text.Label className="!text-gray-900">Peserta Terlibat</Text.Label>
                         </div>
 
                         <div className="mb-4 p-3 bg-brand-50/50 rounded-xl border border-brand-100 flex items-center justify-between">
-                            <span className="text-xs font-bold text-brand-900">Semua Warga</span>
+                            <Text.Label className="!text-brand-900">Semua Warga</Text.Label>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input 
                                     type="checkbox" 
@@ -438,9 +438,9 @@ export default function AgendaForm() {
 
                         {!isAllWarga && (
                             <>
-                                <p className="text-xs text-gray-500 mb-4 italic">
+                                <Text.Caption className="mb-4 block italic">
                                     Pilih warga spesifik yang terlibat:
-                                </p>
+                                </Text.Caption>
 
                                 <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar animate-in fade-in slide-in-from-top-1 duration-300">
                                     {wargaList.map((warga) => (
@@ -457,10 +457,10 @@ export default function AgendaForm() {
                                                 {warga.nama.charAt(0)}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-normal truncate ${selectedParticipants.includes(warga.id) ? 'text-brand-900' : 'text-gray-700'}`}>
+                                                <Text.Body className={`!font-medium truncate uppercase ${selectedParticipants.includes(warga.id) ? '!text-brand-900' : '!text-gray-700'}`}>
                                                     {warga.nama}
-                                                </p>
-                                                <p className="text-[10px] text-gray-400 capitalize tracking-tighter">NIK: {warga.nik.substring(0, 10)}...</p>
+                                                </Text.Body>
+                                                <Text.Caption className="!text-[10px] !text-gray-400 capitalize tracking-tighter">NIK: {warga.nik.substring(0, 10)}...</Text.Caption>
                                             </div>
                                             <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedParticipants.includes(warga.id) ? 'bg-brand-500 border-brand-500' : 'border-gray-300'
                                                 }`}>
@@ -471,20 +471,20 @@ export default function AgendaForm() {
                                         </div>
                                     ))}
                                     {wargaList.length === 0 && (
-                                        <p className="text-center py-4 text-gray-400 text-xs italic">Belum ada data warga.</p>
+                                        <Text.Caption className="text-center py-4 !text-slate-400 !italic">Belum ada data warga.</Text.Caption>
                                     )}
                                 </div>
 
                                 <div className="mt-4 pt-4 border-t border-gray-50">
-                                    <p className="text-xs font-normal text-slate-500 capitalize">Terpilih: <span className="text-brand-600">{selectedParticipants.length} orang</span></p>
+                                    <Text.Caption>Terpilih: <span className="text-brand-600 font-bold">{selectedParticipants.length} orang</span></Text.Caption>
                                 </div>
                             </>
                         )}
                         
                         {isAllWarga && (
-                            <p className="text-[11px] text-slate-400 italic text-center py-4">
+                            <Text.Caption className="!text-[11px] !text-slate-400 !italic text-center py-4 block">
                                 Pengumuman ini bersifat publik untuk seluruh warga.
-                            </p>
+                            </Text.Caption>
                         )}
                     </div>
                 </div>

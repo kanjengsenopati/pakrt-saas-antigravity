@@ -154,7 +154,7 @@ export default function WargaList() {
                                 className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                             >
                                 <Plus weight="bold" size={18} />
-                                <span>Tambah Warga</span>
+                                <Text.Body component="span" className="!text-white !font-bold">Tambah Warga</Text.Body>
                             </button>
                             
                             {/* MOBILE FAB */}
@@ -171,9 +171,8 @@ export default function WargaList() {
                                 onClick={() => setShowShareModal(true)}
                                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-sm transition-all shadow-sm active-press"
                             >
-                                <ShareNetwork weight="bold" />
-                                <span className={user?.role?.toLowerCase() === 'warga' ? 'inline' : 'hidden sm:inline'}>Share Link</span>
-                                {user?.role?.toLowerCase() !== 'warga' && <span className="sm:hidden text-xs tracking-normal">Share</span>}
+                                 <ShareNetwork weight="bold" />
+                                <Text.Label className="!text-slate-700 leading-none">Bagikan Link</Text.Label>
                             </button>
                         </HasPermission>
 
@@ -191,35 +190,33 @@ export default function WargaList() {
                                     <div className="fixed inset-0 z-[60]" onClick={() => setShowMobileMenu(false)}></div>
                                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-[70] animate-zoom-in">
                                         <div className="px-4 py-2 mb-1">
-                                            <p className="text-[10px] font-bold text-slate-400 tracking-normal">Aksi Lainnya</p>
+                                            <Text.Label className="!text-slate-400">Aksi Lainnya</Text.Label>
                                         </div>
-                                        <HasPermission module="Warga" action="Buat">
+                                         <HasPermission module="Warga" action="Buat">
                                             <button
                                                 onClick={() => { handleDownloadTemplate(); setShowMobileMenu(false); }}
                                                 className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
                                             >
                                                 <FileArrowDown weight="bold" className="text-brand-600" />
-                                                <span>Download Template</span>
+                                                <Text.Body component="span" className="!text-inherit !font-bold">Unduh Template</Text.Body>
                                             </button>
                                         </HasPermission>
 
-                                        <button
-                                            onClick={() => { handleExport(); setShowMobileMenu(false); }}
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
-                                        >
-                                            <DownloadSimple weight="bold" className="text-blue-600" />
-                                            <span>Export Excel</span>
-                                        </button>
+                                            <button
+                                                onClick={() => { handleExport(); setShowMobileMenu(false); }}
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
+                                            >
+                                                <DownloadSimple weight="bold" className="text-blue-600" />
+                                                <Text.Body component="span" className="!text-inherit !font-bold">Ekspor Excel</Text.Body>
+                                            </button>
 
-                                        <HasPermission module="Warga" action="Buat">
                                             <button
                                                 onClick={() => { fileInputRef.current?.click(); setShowMobileMenu(false); }}
                                                 className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
                                             >
                                                 <UploadSimple weight="bold" className="text-amber-600" />
-                                                <span>Import Excel</span>
+                                                <Text.Body component="span" className="!text-inherit !font-bold">Impor Excel</Text.Body>
                                             </button>
-                                        </HasPermission>
                                     </div>
                                 </>
                             )}
@@ -235,7 +232,7 @@ export default function WargaList() {
                                 title="Download Template Import"
                             >
                                 <FileArrowDown weight="bold" />
-                                <span>Template</span>
+                                <Text.Label className="!text-inherit">Template</Text.Label>
                             </button>
                         </HasPermission>
 
@@ -244,7 +241,7 @@ export default function WargaList() {
                             className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 rounded-lg font-bold text-xs transition-all shadow-sm active-press"
                         >
                             <DownloadSimple weight="bold" />
-                            <span>Export</span>
+                            <Text.Label className="!text-inherit">Export</Text.Label>
                         </button>
 
                         <HasPermission module="Warga" action="Buat">
@@ -253,7 +250,7 @@ export default function WargaList() {
                                 className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 rounded-lg font-bold text-xs transition-all shadow-sm active-press"
                             >
                                 <UploadSimple weight="bold" />
-                                <span>Import</span>
+                                <Text.Label className="!text-inherit">Import</Text.Label>
                             </button>
                         </HasPermission>
                         <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xlsx, .xls" className="hidden" />
@@ -271,7 +268,7 @@ export default function WargaList() {
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
                         <Text.Amount className="text-2xl text-slate-900">{wargaList.length}</Text.Amount>
-                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-400">Jiwa</Text.Caption>
+                        <Text.Caption className="leading-none tracking-widest text-slate-400">Jiwa</Text.Caption>
                     </div>
                 </div>
 
@@ -283,26 +280,26 @@ export default function WargaList() {
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
                         <Text.Amount className="text-2xl text-white">{pendingWarga.length}</Text.Amount>
-                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-500">Antrian</Text.Caption>
+                        <Text.Caption className="leading-none tracking-widest text-slate-500">Antrian</Text.Caption>
                     </div>
                 </div>
             </div>
 
             {/* Tabs for Admin */}
             <HasPermission module="Warga" action="Buat">
-                <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
+                 <div className="flex bg-slate-100/50 p-1.5 rounded-xl w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
                     <button
                         onClick={() => setActiveTab('Verified')}
                         className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'Verified' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <UserCheck weight="bold" className="w-4 h-4" /> Terverifikasi
+                        <UserCheck weight="bold" className="w-4 h-4" /> <Text.Label className={activeTab === 'Verified' ? '!text-brand-600' : '!text-slate-500'}>Terverifikasi</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('Pending')}
                         className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'Pending' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         <ClockCounterClockwise weight="bold" className="w-4 h-4" /> 
-                        Permintaan
+                        <Text.Label className={activeTab === 'Pending' ? '!text-brand-600' : '!text-slate-500'}>Permintaan</Text.Label>
                         {pendingWarga.length > 0 && (
                             <span className="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-full animate-pulse ml-1">
                                 {pendingWarga.length}
@@ -326,7 +323,7 @@ export default function WargaList() {
                     </div>
                     <button className="flex-none flex justify-center items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
                         <Funnel weight="bold" className="text-brand-600" />
-                        <span>Filter Lanjutan</span>
+                        <Text.Body component="span" className="!text-inherit !font-bold">Filter Lanjutan</Text.Body>
                     </button>
                 </div>
 
@@ -358,7 +355,7 @@ export default function WargaList() {
                                                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                                                     <UserPlus weight="bold" className="w-6 h-6 text-gray-400" />
                                                 </div>
-                                                <p>Tidak ada permintaan bergabung baru.</p>
+                                                <Text.Body>Tidak Ada Permintaan Bergabung Baru.</Text.Body>
                                             </div>
                                         </td>
                                     </tr>
@@ -370,32 +367,32 @@ export default function WargaList() {
                                             </td>
                                             <td className="p-3 text-center"></td>
                                             <td className="p-3">
-                                                <Text.H2 className="!text-[14px] leading-tight">{warga.nama}</Text.H2>
+                                                <Text.H2 className="!text-[14px] leading-tight uppercase">{warga.nama}</Text.H2>
                                                 <div className="mt-1 flex items-center gap-1.5">
                                                     <Text.Label className="!text-[9px] text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</Text.Label>
-                                                    <Text.Label className="!text-[9px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none">Pending Verification</Text.Label>
+                                                    <Text.Label className="!text-[9px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none">Menunggu Verifikasi</Text.Label>
                                                 </div>
                                             </td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.kontak || '-'}</td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.jenis_kelamin || '-'}</td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.agama || '-'}</td>
-                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
+                                            <td className="p-3 text-center"><Text.Body className="!text-slate-600 truncate">{warga.kontak || '-'}</Text.Body></td>
+                                            <td className="p-3 text-center"><Text.Body className="!text-slate-600">{warga.jenis_kelamin || '-'}</Text.Body></td>
+                                            <td className="p-3 text-center"><Text.Body className="!text-slate-600">{warga.agama || '-'}</Text.Body></td>
+                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><Text.Body className="!text-inherit truncate leading-tight">{warga.alamat}</Text.Body></td>
                                             <td className="p-3 px-4">
                                                 <div className="flex gap-2 justify-center">
-                                                    <button
-                                                        onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-bold tracking-normal transition-all shadow-sm shadow-green-500/10"
-                                                    >
-                                                        <UserCheck weight="bold" />
-                                                        Setujui
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleVerify(warga.id, 'REJECTED', warga.nama)}
-                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-[10px] font-bold tracking-normal transition-all"
-                                                    >
-                                                        <XCircle weight="bold" />
-                                                        Tolak
-                                                    </button>
+                                                     <button
+                                                         onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
+                                                         className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all shadow-sm shadow-green-500/10"
+                                                     >
+                                                         <UserCheck weight="bold" />
+                                                         <Text.Label className="!text-white">Setujui</Text.Label>
+                                                     </button>
+                                                     <button
+                                                         onClick={() => handleVerify(warga.id, 'REJECTED', warga.nama)}
+                                                         className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg transition-all"
+                                                     >
+                                                         <XCircle weight="bold" />
+                                                         <Text.Label className="!text-red-600">Tolak</Text.Label>
+                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -408,7 +405,7 @@ export default function WargaList() {
                                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                                                 <Users className="w-6 h-6 text-gray-400" />
                                             </div>
-                                            <p>Belum ada data warga di scope ini.</p>
+                                            <Text.Body>Belum ada data warga di scope ini.</Text.Body>
                                         </div>
                                     </td>
                                 </tr>
@@ -423,7 +420,7 @@ export default function WargaList() {
                                                 {expandedWargaId === warga.id ? <CaretDown weight="bold" size={12} /> : <CaretRight weight="bold" size={12} />}
                                             </td>
                                             <td className="p-3">
-                                                <Text.H2 className="!text-[14px] leading-tight">{warga.nama}</Text.H2>
+                                                <Text.H2 className="!text-[14px] leading-tight uppercase">{warga.nama}</Text.H2>
                                                 <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden">
                                                     <Text.Label className="!text-[10px] text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 leading-none">{warga.nik}</Text.Label>
                                                     <Text.Label className={`!text-[10px] px-2 py-0.5 rounded-full border leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
@@ -431,10 +428,10 @@ export default function WargaList() {
                                                     </Text.Label>
                                                 </div>
                                             </td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center whitespace-nowrap">{warga.kontak || '-'}</td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.jenis_kelamin || '-'}</td>
-                                            <td className="p-3 text-slate-600 text-[14px] font-normal text-center">{warga.agama || '-'}</td>
-                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><p className="truncate leading-tight">{warga.alamat}</p></td>
+                                             <td className="p-3 text-center"><Text.Body className="!text-slate-600 truncate">{warga.kontak || '-'}</Text.Body></td>
+                                             <td className="p-3 text-center"><Text.Body className="!text-slate-600">{warga.jenis_kelamin || '-'}</Text.Body></td>
+                                             <td className="p-3 text-center"><Text.Body className="!text-slate-600">{warga.agama || '-'}</Text.Body></td>
+                                            <td className="p-3 text-slate-500 text-[14px] max-w-xs "><Text.Body className="!text-inherit truncate leading-tight">{warga.alamat}</Text.Body></td>
                                             <td className="p-3 px-4">
                                                 <div className="flex flex-col items-center gap-1" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex gap-1">
@@ -480,9 +477,9 @@ export default function WargaList() {
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {isLoading ? (
-                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                        <div className="py-20 text-center animate-pulse flex flex-col items-center gap-3">
                             <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span>Sinkronisasi...</span>
+                            <Text.Label className="!text-slate-400">Sinkronisasi...</Text.Label>
                         </div>
                     ) : (activeTab === 'Pending' ? pendingWarga : filteredWarga).length === 0 ? (
                         <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
@@ -490,8 +487,8 @@ export default function WargaList() {
                                 <Users weight="duotone" className="w-8 h-8" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-900 tracking-tight">Data Tidak Ditemukan</p>
-                                <p className="text-[10px] text-slate-400 mt-1 font-medium italic">Coba ubah kata kunci atau ganti tab verifikasi</p>
+                                <Text.Body className="!font-bold !text-slate-900">Data Tidak Ditemukan</Text.Body>
+                                <Text.Caption className="mt-1 !italic">Coba ubah kata kunci atau ganti tab verifikasi</Text.Caption>
                             </div>
                         </div>
                     ) : (
@@ -504,22 +501,22 @@ export default function WargaList() {
                                                 <Users weight="duotone" className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <Text.H2 className="text-[15px] leading-tight">{warga.nama}</Text.H2>
-                                                <div className="flex items-center gap-1.5 mt-1">
-                                                    <Text.Caption className="font-mono text-brand-600 font-bold">{warga.nik}</Text.Caption>
-                                                    <span className="w-1 h-1 rounded-full bg-slate-200"></span>
-                                                    <Text.Caption className="font-medium">{warga.jenis_kelamin || '-'}</Text.Caption>
-                                                </div>
+                                                <Text.H2 className="text-[15px] leading-tight uppercase">{warga.nama}</Text.H2>
+                                                 <div className="flex items-center gap-1.5 mt-1">
+                                                     <Text.Caption className="font-mono !text-brand-600 !font-bold">{warga.nik}</Text.Caption>
+                                                     <div className="w-1 h-1 rounded-full bg-slate-200" />
+                                                     <Text.Caption className="!font-medium">{warga.jenis_kelamin || '-'}</Text.Caption>
+                                                 </div>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            {activeTab === 'Pending' ? (
-                                                <Text.Label className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
+                                             {activeTab === 'Pending' ? (
+                                                <Text.Label className="px-2 py-0.5 bg-amber-50 !text-amber-600 border border-amber-100 rounded-lg flex items-center gap-1 shadow-sm">
                                                     <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5" />
-                                                    Pending
+                                                    Menunggu
                                                 </Text.Label>
                                             ) : (
-                                                <Text.Label className={`px-2 py-0.5 rounded-lg border flex items-center gap-1 shadow-sm ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-brand-50 text-brand-600 border-brand-100'}`}>
+                                                <Text.Label className={`px-2 py-0.5 rounded-lg border flex items-center gap-1 shadow-sm ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 !text-amber-600 border-amber-100' : 'bg-brand-50 !text-brand-600 border-brand-100'}`}>
                                                     {warga.status_penduduk || 'Tetap'}
                                                 </Text.Label>
                                             )}
@@ -546,19 +543,19 @@ export default function WargaList() {
                                             onClick={(e) => { e.stopPropagation(); toggleExpand(warga.id); }}
                                             className="px-3 py-1.5 text-[11px] font-bold text-slate-500 bg-slate-50 rounded-lg flex items-center gap-1.5 transition-colors hover:bg-slate-100"
                                         >
-                                            ANGGOTA KELUARGA
+                                            <Text.Body component="span" className="!text-inherit !font-bold !text-[11px]">Anggota Keluarga</Text.Body>
                                             {expandedWargaId === warga.id ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />}
                                         </button>
                                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                             {activeTab === 'Pending' ? (
                                                 <div className="flex gap-2">
                                                     <HasPermission module="Warga" action="Buat">
-                                                        <button
-                                                            onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
-                                                            className="px-4 py-2 bg-brand-600 text-white rounded-xl text-[11px] font-bold uppercase tracking-tight shadow-md active:scale-95"
-                                                        >
-                                                            SETUJUI
-                                                        </button>
+                                                         <button
+                                                             onClick={() => handleVerify(warga.id, 'VERIFIED', warga.nama)}
+                                                             className="px-4 py-2 bg-brand-600 text-white rounded-xl shadow-md active:scale-95"
+                                                         >
+                                                             <Text.Label className="!text-white">Setujui</Text.Label>
+                                                         </button>
                                                     </HasPermission>
                                                     <HasPermission module="Warga" action="Buat">
                                                         <button
@@ -612,10 +609,10 @@ export default function WargaList() {
                 {!isLoading && filteredWarga.length > 1 && (
                     <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
                         <Text.Caption>Menampilkan {filteredWarga.length} data warga</Text.Caption>
-                        <div className="flex gap-1">
-                            <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50">Sebelumnnya</button>
-                            <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50">Selanjutnya</button>
-                        </div>
+                         <div className="flex gap-1">
+                             <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50"><Text.Label className="!text-slate-500">Sebelumnya</Text.Label></button>
+                             <button className="px-3 py-1 border border-gray-200 rounded-md bg-white hover:bg-gray-50 disabled:opacity-50"><Text.Label className="!text-slate-500">Selanjutnya</Text.Label></button>
+                         </div>
                     </div>
                 )}
             </div>
@@ -627,8 +624,8 @@ export default function WargaList() {
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">Share Link Pendaftaran</h3>
-                                    <p className="text-slate-500 text-xs font-medium mt-1 tracking-normal">Undang warga untuk isi data mandiri</p>
+                                    <Text.H2 className="!text-xl !leading-tight">Share Link Pendaftaran</Text.H2>
+                                    <Text.Caption className="!text-slate-500 mt-1 !italic">Undang warga untuk isi data mandiri</Text.Caption>
                                 </div>
                                 <button onClick={() => setShowShareModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                     <XCircle size={24} className="text-slate-400" />
@@ -640,13 +637,13 @@ export default function WargaList() {
                                     <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center shrink-0">
                                         <Info weight="fill" className="text-brand-600 w-5 h-5" />
                                     </div>
-                                    <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
-                                        Kirimkan link di bawah ini ke grup WhatsApp warga. Setiap warga dapat mendaftar dan mengisi data mereka sendiri. Pendaftaran membutuhkan persetujuan Anda.
-                                    </p>
+                                     <Text.Body className="!text-slate-600 leading-relaxed !font-medium">
+                                         Kirimkan link di bawah ini ke grup WhatsApp warga. Setiap warga dapat mendaftar dan mengisi data mereka sendiri. Pendaftaran membutuhkan persetujuan Anda.
+                                     </Text.Body>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-400 tracking-normal pl-1">Link Pendaftaran</label>
+                                 <div className="space-y-2">
+                                     <Text.Label className="!text-slate-400 pl-1 block">Link Pendaftaran</Text.Label>
                                     <div className="flex gap-2">
                                         <div className="flex-1 bg-white border border-slate-200 px-4 py-3 rounded-xl text-xs font-mono text-brand-700 truncate select-all">
                                             {`${window.location.origin}/join/${currentTenant?.id}`}

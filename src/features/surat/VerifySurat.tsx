@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { suratService, SuratWithWarga } from '../../services/suratService';
 import { dateUtils } from '../../utils/date';
 import { CheckCircle, Warning, SealCheck, Info, FileText, User, CalendarBlank, MapPin } from '@phosphor-icons/react';
+import { Text } from '../../components/ui/Typography';
 
 export default function VerifySurat() {
     const { id } = useParams<{ id: string }>();
@@ -36,7 +37,7 @@ export default function VerifySurat() {
             <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
                 <div className="text-center space-y-4 animate-pulse">
                     <div className="w-16 h-16 bg-brand-200 rounded-full mx-auto"></div>
-                    <p className="text-slate-500 font-medium">Memverifikasi Keaslian Dokumen...</p>
+                    <Text.Body className="!text-slate-500 !font-bold">Memverifikasi Keaslian Dokumen...</Text.Body>
                 </div>
             </div>
         );
@@ -49,10 +50,10 @@ export default function VerifySurat() {
                     <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-red-500">
                         <Warning weight="fill" className="w-12 h-12" />
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2 tracking-tight">Verifikasi Gagal</h1>
-                    <p className="text-slate-500 mb-8">{error || "Dokumen ini tidak terdaftar dalam sistem kami."}</p>
-                    <div className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-700 text-xs font-bold tracking-normal">
-                        Peringatan: Dokumen Tidak Sah
+                    <Text.H1 className="!text-2xl mb-2">Verifikasi Gagal</Text.H1>
+                    <Text.Body className="!text-slate-500 mb-8">{error || "Dokumen ini tidak terdaftar dalam sistem kami."}</Text.Body>
+                    <div className="p-4 bg-red-50 rounded-2xl border border-red-100">
+                        <Text.Label className="!text-red-700">Peringatan: Dokumen Tidak Sah</Text.Label>
                     </div>
                 </div>
             </div>
@@ -75,8 +76,8 @@ export default function VerifySurat() {
                                 <SealCheck weight="fill" className="w-14 h-14 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-white tracking-tight">Dokumen Sah</h1>
-                                <p className="text-brand-50 font-bold tracking-normal text-xs">Terkonfirmasi Sistem PakRT</p>
+                                <Text.H1 className="!text-3xl !text-white">Dokumen Sah</Text.H1>
+                                <Text.Label className="!text-brand-50">Terkonfirmasi Sistem PakRT</Text.Label>
                             </div>
                         </div>
                     </div>
@@ -87,9 +88,9 @@ export default function VerifySurat() {
                             <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-sm shrink-0">
                                 <CheckCircle weight="fill" className="w-6 h-6 text-brand-600" />
                             </div>
-                            <p className="text-sm font-bold leading-tight">
+                            <Text.Label className="!text-brand-800 tracking-normal !normal-case">
                                 Data ini ditarik langsung dari database resmi Kelurahan/RT melalui sistem digital.
-                            </p>
+                            </Text.Label>
                         </div>
 
                         {/* Document Details Grid */}
@@ -97,56 +98,56 @@ export default function VerifySurat() {
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <FileText weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Jenis Dokumen</span>
+                                    <Text.Label className="!text-slate-400">Jenis Dokumen</Text.Label>
                                 </div>
-                                <p className="font-bold text-slate-900 text-lg leading-tight">{surat.jenis_surat}</p>
+                                <Text.Body className="!font-bold !text-slate-900 !text-lg">{surat.jenis_surat}</Text.Body>
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <Info weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Nomor Surat</span>
+                                    <Text.Label className="!text-slate-400">Nomor Surat</Text.Label>
                                 </div>
-                                <p className="font-mono font-bold text-slate-900">{surat.nomor_surat || 'DALAM PROSES'}</p>
+                                <Text.Body className="font-mono !font-bold !text-slate-900">{surat.nomor_surat || 'DALAM PROSES'}</Text.Body>
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <User weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Nama Pemohon</span>
+                                    <Text.Label className="!text-slate-400">Nama Pemohon</Text.Label>
                                 </div>
-                                <p className="font-bold text-slate-900 text-lg">{surat.pemohon?.nama}</p>
+                                <Text.Body className="!font-bold !text-slate-900 !text-lg !uppercase">{surat.pemohon?.nama}</Text.Body>
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <CalendarBlank weight="bold" className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold text-slate-400 tracking-normal">Tanggal Terbit</span>
+                                    <Text.Label className="!text-slate-400">Tanggal Terbit</Text.Label>
                                 </div>
-                                <p className="font-bold text-slate-900 leading-tight">
+                                <Text.Body className="!font-bold !text-slate-900">
                                     {dateUtils.toDisplay(surat.tanggal)}
-                                </p>
+                                </Text.Body>
                             </div>
                         </div>
 
                         <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
                             <div className="flex items-center gap-2 text-slate-400">
                                 <MapPin weight="bold" className="w-4 h-4" />
-                                <span className="text-[10px] font-bold text-slate-400 tracking-normal">Keterangan / Keperluan</span>
+                                <Text.Label className="!text-slate-400">Keterangan / Keperluan</Text.Label>
                             </div>
-                            <p className="text-slate-700 font-medium leading-relaxed">{surat.keperluan}</p>
+                            <Text.Body className="!text-slate-700 !font-medium">{surat.keperluan}</Text.Body>
                         </div>
                     </div>
 
                     <div className="p-8 border-t border-slate-100 bg-slate-50/50 text-center">
-                        <p className="text-[10px] font-bold text-slate-400 tracking-normal">Hak Cipta © PakRT Digital System</p>
+                        <Text.Caption className="!font-bold !text-slate-400">Hak Cipta © PakRT Digital System</Text.Caption>
                     </div>
                 </div>
 
-                <p className="text-center text-slate-400 text-xs font-medium">
+                <Text.Caption className="text-center !text-slate-400 !font-medium block">
                     Halaman ini dikelola secara ketat oleh sistem keamanan PakRT.<br />
                     Pemanfaatan data dokumen secara ilegal dapat diproses hukum.
-                </p>
+                </Text.Caption>
             </div>
         </div>
     );

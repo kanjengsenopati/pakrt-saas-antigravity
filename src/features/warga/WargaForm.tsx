@@ -120,12 +120,12 @@ export default function WargaForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <Text.H1>
                         {isEditing ? 'Edit Data Warga' : 'Tambah Warga Baru'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">
-                        Scope aktif: <span className="font-semibold text-brand-600">{currentScope}</span>
-                    </p>
+                    </Text.H1>
+                    <Text.Body className="!text-slate-500 !mt-1">
+                        Scope Aktif: <Text.Body component="span" className="!font-bold !text-brand-600">{currentScope}</Text.Body>
+                    </Text.Body>
                 </div>
             </div>
 
@@ -133,10 +133,10 @@ export default function WargaForm() {
                 <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 animate-fade-in">
                     <Warning weight="fill" className="w-5 h-5 mt-0.5 flex-shrink-0 text-red-500" />
                     <div>
-                        <p className="font-semibold text-sm">Gagal Menyimpan</p>
-                        <p className="text-xs mt-0.5">{submitError}</p>
+                        <Text.H2 className="!text-red-700 !font-bold">Gagal Menyimpan</Text.H2>
+                        <Text.Body className="!text-red-600 !mt-0.5">{submitError}</Text.Body>
                     </div>
-                    <button onClick={() => setSubmitError(null)} className="ml-auto p-1 hover:bg-red-100 rounded-full">
+                    <button onClick={() => setSubmitError(null)} className="ml-auto p-1 hover:bg-red-100 rounded-full transition-colors">
                         <X weight="bold" className="w-4 h-4" />
                     </button>
                 </div>
@@ -146,9 +146,9 @@ export default function WargaForm() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Nomor Induk Kependudukan (NIK) <span className="text-red-500">*</span>
-                            </label>
+                            <Text.Label className="block mb-1">
+                                Nomor Induk Kependudukan (NIK) <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <input
                                 type="text"
                                 {...register('nik', {
@@ -162,9 +162,9 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Lengkap <span className="text-red-500">*</span>
-                            </label>
+                            <Text.Label className="block mb-1">
+                                Nama Lengkap <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <input
                                 type="text"
                                 {...register('nama', { required: 'Nama wajib diisi' })}
@@ -175,9 +175,9 @@ export default function WargaForm() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="block mb-1">
                                 Nomor Telepon / WhatsApp
-                            </label>
+                            </Text.Label>
                             <input
                                 type="text"
                                 {...register('kontak')}
@@ -187,7 +187,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
+                            <Text.Label className="block mb-1">Tempat Lahir</Text.Label>
                             <input
                                 type="text"
                                 {...register('tempat_lahir')}
@@ -197,7 +197,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                            <Text.Label className="block mb-1">Tanggal Lahir</Text.Label>
                             <input
                                 type="date"
                                 {...register('tanggal_lahir')}
@@ -206,21 +206,21 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                            <Text.Label className="block mb-1">Jenis Kelamin</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Laki-laki" {...register('jenis_kelamin')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Laki-laki</span>
+                                    <Text.Body>Laki-Laki</Text.Body>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Perempuan" {...register('jenis_kelamin')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Perempuan</span>
+                                    <Text.Body>Perempuan</Text.Body>
                                 </label>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Status Domisili</label>
+                            <Text.Label className="block mb-1">Status Domisili</Text.Label>
                             <select
                                 {...register('status_domisili')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -232,7 +232,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Agama</label>
+                            <Text.Label className="block mb-1">Agama</Text.Label>
                             <select
                                 {...register('agama')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -245,7 +245,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Pendidikan Terakhir</label>
+                            <Text.Label className="block mb-1">Pendidikan Terakhir</Text.Label>
                             <select
                                 {...register('pendidikan')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -262,7 +262,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
+                            <Text.Label className="block mb-1">Pekerjaan</Text.Label>
                             <input
                                 type="text"
                                 {...register('pekerjaan')}
@@ -273,24 +273,24 @@ export default function WargaForm() {
 
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Status Penduduk</label>
+                            <Text.Label className="block mb-1">Status Penduduk</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Tetap" {...register('status_penduduk')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Tetap</span>
+                                    <Text.Body>Tetap</Text.Body>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Kontrak" {...register('status_penduduk')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Kontrak</span>
+                                    <Text.Body>Kontrak</Text.Body>
                                 </label>
                             </div>
                         </div>
 
                         {watch('status_penduduk') === 'Kontrak' && (
                             <div className="md:col-span-2 p-4 bg-brand-50/50 border border-brand-100 rounded-xl space-y-4 animate-fade-in">
-                                <div className="flex items-center gap-2 text-brand-800 font-semibold text-sm">
-                                    <CheckCircle weight="fill" className="w-4 h-4" />
-                                    <span>Informasi Penanggung Jawab (Owner/Responsible Person)</span>
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle weight="fill" className="text-brand-800 w-4 h-4" />
+                                    <Text.H2 className="!text-brand-800">Informasi Penanggung Jawab</Text.H2>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="md:col-span-2">
@@ -298,18 +298,18 @@ export default function WargaForm() {
                                         <div className="flex gap-4">
                                             <label className="flex items-center gap-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-gray-200">
                                                 <input type="radio" value="Warga" {...register('pj_tipe')} className="text-brand-600 focus:ring-brand-500" />
-                                                <span className="text-sm">Dari Data Warga RT</span>
+                                                <Text.Body>Dari Data Warga RT</Text.Body>
                                             </label>
                                             <label className="flex items-center gap-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-gray-200">
                                                 <input type="radio" value="Luar" {...register('pj_tipe')} className="text-brand-600 focus:ring-brand-500" />
-                                                <span className="text-sm">Orang Luar / Manual</span>
+                                                <Text.Body>Orang Luar / Manual</Text.Body>
                                             </label>
                                         </div>
                                     </div>
 
                                     {watch('pj_tipe') === 'Warga' ? (
                                         <div className="md:col-span-2">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Warga</label>
+                                            <Text.Label className="block mb-1">Pilih Warga</Text.Label>
                                             <select
                                                 {...register('pj_warga_id')}
                                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -319,12 +319,12 @@ export default function WargaForm() {
                                                     <option key={w.id} value={w.id}>{w.nama} - {w.nik}</option>
                                                 ))}
                                             </select>
-                                            <p className="text-[10px] text-gray-400 mt-1 italic">* Pilih warga yang bertanggung jawab atas rumah ini</p>
+                                            <Text.Caption className="!mt-1 italic">* Pilih warga yang bertanggung jawab atas rumah ini</Text.Caption>
                                         </div>
                                     ) : (
                                         <>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Penanggung Jawab</label>
+                                                <Text.Label className="block mb-1">Nama Penanggung Jawab</Text.Label>
                                                 <input
                                                     type="text"
                                                     {...register('pj_nama')}
@@ -333,7 +333,7 @@ export default function WargaForm() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">No. Kontak / WA</label>
+                                                <Text.Label className="block mb-1">No. Kontak / WA</Text.Label>
                                                 <input
                                                     type="text"
                                                     {...register('pj_kontak')}
@@ -348,22 +348,22 @@ export default function WargaForm() {
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Status Rumah</label>
+                            <Text.Label className="block mb-1">Status Rumah</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Dihuni" {...register('status_rumah')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Dihuni</span>
+                                    <Text.Body>Dihuni</Text.Body>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Kosong" {...register('status_rumah')} className="text-brand-600 focus:ring-brand-500" />
-                                    <span className="text-sm">Kosong</span>
+                                    <Text.Body>Kosong</Text.Body>
                                 </label>
                             </div>
                         </div>
 
                         {watch('status_domisili') === 'Pindah' && (
                             <div className="md:col-span-2 animate-fade-in">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Alamat Pindah</label>
+                                <Text.Label className="block mb-1">Alamat Pindah</Text.Label>
                                 <textarea
                                     rows={2}
                                     {...register('alamat_pindah')}
@@ -376,7 +376,7 @@ export default function WargaForm() {
                         {watch('status_domisili') === 'Meninggal Dunia' && (
                             <>
                                 <div className="animate-fade-in">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Meninggal</label>
+                                    <Text.Label className="block mb-1">Tanggal Meninggal</Text.Label>
                                     <input
                                         type="date"
                                         {...register('tanggal_meninggal')}
@@ -384,7 +384,7 @@ export default function WargaForm() {
                                     />
                                 </div>
                                 <div className="animate-fade-in">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi Makam</label>
+                                    <Text.Label className="block mb-1">Lokasi Makam</Text.Label>
                                     <input
                                         type="text"
                                         {...register('lokasi_makam')}
@@ -406,9 +406,9 @@ export default function WargaForm() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Alamat Lengkap <span className="text-red-500">*</span>
-                            </label>
+                            <Text.Label className="block mb-1">
+                                Alamat Lengkap <Text.Body component="span" className="!text-red-500">*</Text.Body>
+                            </Text.Label>
                             <textarea
                                 rows={3}
                                 {...register('alamat', { required: 'Alamat wajib diisi' })}
@@ -423,9 +423,9 @@ export default function WargaForm() {
                         <button
                             type="button"
                             onClick={() => navigate('/warga')}
-                            className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                            className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                         >
-                            Batal
+                            <Text.Label className="!text-inherit">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
@@ -435,12 +435,12 @@ export default function WargaForm() {
                             {isSubmitting ? (
                                 <>
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    <span>Menyimpan...</span>
+                                    <Text.Label className="!text-white">Menyimpan...</Text.Label>
                                 </>
                             ) : (
                                 <>
                                     <FloppyDisk weight="bold" />
-                                    <span>Simpan Data</span>
+                                    <Text.Label className="!text-white">Simpan Data</Text.Label>
                                 </>
                             )}
                         </button>

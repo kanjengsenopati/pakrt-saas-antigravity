@@ -56,11 +56,11 @@ export default function SuratList() {
     const getStatusBadge = (status: SuratPengantar['status']) => {
         switch (status) {
             case 'proses':
-                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-widest"><ClockCounterClockwise weight="bold" /> Proses</span>;
+                return <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 shadow-sm"><ClockCounterClockwise weight="bold" className="text-amber-600" /><Text.Label className="!text-amber-600 !text-[10px] !normal-case">Diproses</Text.Label></div>;
             case 'selesai':
-                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest"><CheckCircle weight="fill" /> Selesai</span>;
+                return <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 shadow-sm"><CheckCircle weight="fill" className="text-emerald-600" /><Text.Label className="!text-emerald-600 !text-[10px] !normal-case">Selesai</Text.Label></div>;
             case 'ditolak':
-                return <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-600 border border-rose-100 uppercase tracking-widest"><XCircle weight="bold" /> Ditolak</span>;
+                return <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 shadow-sm"><XCircle weight="bold" className="text-rose-600" /><Text.Label className="!text-rose-600 !text-[10px] !normal-case">Ditolak</Text.Label></div>;
         }
     };
 
@@ -70,7 +70,7 @@ export default function SuratList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <Text.H1>Surat Pengantar</Text.H1>
-                    <Text.Body>Kelola permohonan surat pengantar warga</Text.Body>
+                    <Text.Body>Kelola Permohonan Surat Pengantar Warga</Text.Body>
                 </div>
                 <HasPermission module="Surat Pengantar" action="Buat">
                     <button
@@ -78,7 +78,7 @@ export default function SuratList() {
                         className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
                         <Plus weight="bold" size={18} />
-                        <span>Buat Permohonan Baru</span>
+                        <Text.Label className="!text-white">Buat Permohonan Baru</Text.Label>
                     </button>
                     
                     {/* MOBILE FAB */}
@@ -101,7 +101,7 @@ export default function SuratList() {
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
                         <Text.Amount className="text-2xl text-slate-900">{suratList.length}</Text.Amount>
-                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-400">Permohonan</Text.Caption>
+                        <Text.Caption className="leading-none tracking-widest text-slate-400">Permohonan</Text.Caption>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@ export default function SuratList() {
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
                         <Text.Amount className="text-2xl text-white">{suratList.filter(s => s.status === 'proses').length}</Text.Amount>
-                        <Text.Caption className="leading-none uppercase tracking-widest text-slate-500">Berjalan</Text.Caption>
+                        <Text.Caption className="leading-none tracking-widest text-slate-500">Berjalan</Text.Caption>
                     </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@ export default function SuratList() {
                     </div>
                     <button className="w-full sm:w-auto flex justify-center items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
                         <Funnel weight="bold" className="text-slate-400" />
-                        <span>Filter Status</span>
+                        <Text.Label className="!text-slate-700">Filter Status</Text.Label>
                     </button>
                 </div>
 
@@ -150,7 +150,7 @@ export default function SuratList() {
                         <tbody className="divide-y divide-gray-100">
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={5} className="p-8 text-center text-gray-500">Memuat data...</td>
+                                    <td colSpan={5} className="p-8 text-center text-gray-500"><Text.Body>Memuat Data...</Text.Body></td>
                                 </tr>
                             ) : filteredSurat.length === 0 ? (
                                 <tr>
@@ -159,7 +159,7 @@ export default function SuratList() {
                                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                                                 <FileText className="w-6 h-6 text-gray-400" />
                                             </div>
-                                            <p>Belum ada permohonan surat di scope ini.</p>
+                                            <Text.Body className="!text-slate-500">Belum Ada Permohonan Surat Di Scope Ini.</Text.Body>
                                         </div>
                                     </td>
                                 </tr>
@@ -167,14 +167,14 @@ export default function SuratList() {
                                 filteredSurat.map((surat) => (
                                     <tr key={surat.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="p-3">
-                                            <Text.H2 className="!text-sm">{surat.pemohon?.nama}</Text.H2>
+                                            <Text.H2 className="!text-sm uppercase">{surat.pemohon?.nama}</Text.H2>
                                             <Text.Caption className="!text-[10px]">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
                                         </td>
                                         <td className="p-3">
-                                            <p className="font-bold text-brand-700 text-xs tracking-normal">{surat.jenis_surat}</p>
+                                            <Text.Body className="!font-bold !text-brand-700 !text-xs">{surat.jenis_surat}</Text.Body>
                                             <div className="flex items-center gap-1.5 mt-0.5">
-                                                <span className="text-[9px] text-brand-600 font-bold bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</span>
-                                                <span className="text-[10px] text-gray-400 font-medium">{dateUtils.toDisplay(surat.tanggal)}</span>
+                                                <Text.Caption className="!text-[9px] !text-brand-600 !font-bold bg-brand-50 px-1 rounded-sm border border-brand-100">{surat.nomor_surat || '-'}</Text.Caption>
+                                                <Text.Caption className="!text-[10px] !font-medium">{dateUtils.toDisplay(surat.tanggal)}</Text.Caption>
                                             </div>
                                         </td>
                                         <td className="p-3">
@@ -229,9 +229,9 @@ export default function SuratList() {
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
                     {isLoading ? (
-                        <div className="py-20 text-center text-slate-400 font-bold text-[11px] uppercase tracking-widest animate-pulse flex flex-col items-center gap-3">
+                        <div className="py-20 text-center animate-pulse flex flex-col items-center gap-3">
                             <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span>Sinkronisasi...</span>
+                            <Text.Label className="!text-slate-400">Sinkronisasi...</Text.Label>
                         </div>
                     ) : filteredSurat.length === 0 ? (
                         <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
@@ -239,8 +239,8 @@ export default function SuratList() {
                                 <FileText weight="duotone" className="w-8 h-8 text-slate-300" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-900 tracking-tight">Belum Ada Permohonan</p>
-                                <p className="text-[10px] text-slate-400 mt-1 font-medium">Riwayat permohonan surat akan muncul di sini</p>
+                                <Text.Body className="!font-bold !text-slate-900">Belum Ada Permohonan</Text.Body>
+                                <Text.Caption className="mt-1 !font-medium">Riwayat permohonan surat akan muncul di sini</Text.Caption>
                             </div>
                         </div>
                     ) : (
@@ -250,31 +250,31 @@ export default function SuratList() {
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex flex-col items-center justify-center border border-brand-100 shadow-inner">
-                                                <span className="text-[8px] font-bold leading-none uppercase">{new Date(surat.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                <span className="text-sm font-bold leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</span>
+                                                <Text.Caption className="!text-[8px] !font-bold !leading-none uppercase">{new Date(surat.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Caption>
+                                                <Text.Body className="!text-sm !font-bold !leading-none mt-0.5">{new Date(surat.tanggal).getDate()}</Text.Body>
                                             </div>
                                             <div>
                                                 <Text.H2 className="text-[14px] leading-tight mb-1">{surat.jenis_surat}</Text.H2>
                                                 <div className="flex items-center gap-1.5">
-                                                    <Text.Caption className="font-mono tracking-tighter italic uppercase">{surat.nomor_surat || 'DRAFT'}</Text.Caption>
+                                                    <Text.Caption className="font-mono tracking-tighter italic">{surat.nomor_surat || 'Draft'}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             {surat.status === 'proses' ? (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider animate-pulse">
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm tracking-wider animate-pulse">
                                                     <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5" />
-                                                    Pending
+                                                    <Text.Label className="!text-amber-600 !text-[10px]">Menunggu</Text.Label>
                                                 </span>
                                             ) : surat.status === 'selesai' ? (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm tracking-wider">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
-                                                    Selesai
+                                                    <Text.Label className="!text-emerald-600 !text-[10px]">Selesai</Text.Label>
                                                 </span>
                                             ) : (
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm uppercase tracking-wider">
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm tracking-wider">
                                                     <XCircle weight="bold" className="w-3.5 h-3.5" />
-                                                    Ditolak
+                                                    <Text.Label className="!text-rose-600 !text-[10px]">Ditolak</Text.Label>
                                                 </span>
                                             )}
                                         </div>
@@ -288,7 +288,7 @@ export default function SuratList() {
                                                     <Text.Caption className="font-black text-brand-600">{surat.pemohon?.nama[0].toUpperCase()}</Text.Caption>
                                                 </div>
                                                 <div>
-                                                    <Text.H2 className="!text-[12px] leading-none">{surat.pemohon?.nama}</Text.H2>
+                                                    <Text.H2 className="!text-[12px] leading-none uppercase">{surat.pemohon?.nama}</Text.H2>
                                                     <Text.Caption className="mt-1">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
                                                 </div>
                                             </div>
@@ -306,10 +306,10 @@ export default function SuratList() {
                                                 <HasPermission module="Surat Pengantar" action="Ubah">
                                                     <button
                                                         onClick={() => handleUpdateStatus(surat.id, 'selesai')}
-                                                        className="flex-1 py-2 bg-brand-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-md active:scale-95"
+                                                        className="flex-1 py-2 bg-brand-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold tracking-tighter shadow-md active:scale-95"
                                                     >
                                                         <CheckCircle weight="bold" className="w-4 h-4" />
-                                                        SETUJUI
+                                                        <Text.Label className="!text-white !text-[11px]">Setujui</Text.Label>
                                                     </button>
                                                 </HasPermission>
                                                 <HasPermission module="Surat Pengantar" action="Ubah">
@@ -324,10 +324,10 @@ export default function SuratList() {
                                         ) : surat.status === 'selesai' ? (
                                             <button
                                                 onClick={() => navigate(`/surat/cetak/${surat.id}`)}
-                                                className="flex-1 py-2 bg-blue-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-tighter shadow-md active:scale-95"
+                                                className="flex-1 py-2 bg-blue-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold tracking-tighter shadow-md active:scale-90"
                                             >
                                                 <Printer weight="bold" className="w-4 h-4" />
-                                                CETAK SURAT
+                                                <Text.Label className="!text-white !text-[11px]">Cetak Surat</Text.Label>
                                             </button>
                                         ) : null}
                                         <HasPermission module="Surat Pengantar" action="Hapus">

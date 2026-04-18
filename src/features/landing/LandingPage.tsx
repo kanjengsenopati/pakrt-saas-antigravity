@@ -80,7 +80,7 @@ export default function LandingPage() {
                         {!isMobileUI ? (
                             <>
                                 {/* Desktop Menu */}
-                                <div className="flex items-center space-x-10 font-bold text-[13px] uppercase tracking-wider text-slate-500">
+                                <div className="flex items-center space-x-10 font-bold text-[13px] tracking-wider text-slate-500">
                                     {navLinks.map(link => (
                                         <a key={link.label} href={link.href} className="hover:text-brand-600 transition-colors">{link.label}</a>
                                     ))}
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 <div className="absolute top-60 left-0 -ml-20 w-[30rem] h-[30rem] bg-blue-100 rounded-full blur-[100px] opacity-60"></div>
 
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-brand-50 border border-brand-100 text-brand-700 font-bold tracking-tight mb-8 animate-fade-in-up text-[13px] uppercase">
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-brand-50 border border-brand-100 text-brand-700 font-bold tracking-tight mb-8 animate-fade-in-up text-[13px]">
                         <span className="relative flex h-3 w-3">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
@@ -199,13 +199,13 @@ export default function LandingPage() {
                                         <span className="font-bold text-sm tracking-wide">PAKRT.</span>
                                     </div>
                                     <div className="space-y-1 flex-1 overflow-y-auto pr-2 pb-6" style={{ scrollbarWidth: 'none' }}>
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 mt-2 px-1 text-left">Menu Utama</div>
+                                        <div className="text-[10px] font-bold text-gray-500 tracking-wider mb-2 mt-2 px-1 text-left">Menu Utama</div>
                                         <div className="flex items-center gap-3 bg-brand-600 px-3 py-2 rounded-lg text-xs font-semibold shadow-inner mb-2"><House weight="fill" className="w-4 h-4" /> Dashboard</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><Users weight="fill" className="w-4 h-4" /> Data Warga</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><CurrencyCircleDollar weight="fill" className="w-4 h-4" /> Keuangan</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><Envelope weight="fill" className="w-4 h-4" /> Persuratan</div>
 
-                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 mt-6 px-1 text-left">Modul Ekstra</div>
+                                        <div className="text-[10px] font-bold text-gray-500 tracking-wider mb-2 mt-6 px-1 text-left">Modul Ekstra</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><Article weight="fill" className="w-4 h-4" /> Notulensi Rapat</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><Heart weight="fill" className="w-4 h-4" /> PKK & Dasa Wisma</div>
                                         <div className="flex items-center gap-3 text-gray-400 px-3 py-2 text-xs font-medium hover:text-white rounded-lg"><Calendar weight="fill" className="w-4 h-4" /> Agenda Kegiatan</div>
@@ -229,16 +229,16 @@ export default function LandingPage() {
                                         {/* Grid Cards */}
                                         <div className={`grid ${viewMode === 'tablet' ? 'grid-cols-2' : 'grid-cols-3'} gap-4 mb-6 relative z-0`}>
                                             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider uppercase">Total Warga</div>
+                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider">Total Warga</div>
                                                 <div className="text-xl font-bold text-gray-900 flex items-center gap-2">124 <span className="text-brand-500 text-[10px] font-bold flex items-center bg-brand-50 px-1.5 py-0.5 rounded-md"><ChartLineUp weight="bold" className="inline w-3 h-3 mr-0.5" /> 2 Baru</span></div>
                                             </div>
                                             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider uppercase">Saldo Kas Utama</div>
+                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider">Saldo Kas Utama</div>
                                                 <div className="text-xl font-bold text-gray-900">Rp 4.520.000</div>
                                             </div>
                                             <div className={`bg-white p-4 rounded-xl shadow-sm border border-brand-100/50 relative overflow-hidden ${viewMode === 'tablet' ? 'hidden' : 'block'}`}>
                                                 <div className="absolute right-[-10px] bottom-[-10px] opacity-10"><CurrencyCircleDollar weight="fill" className="w-16 h-16 text-brand-500" /></div>
-                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider uppercase relative">Iuran Bulan Ini</div>
+                                                <div className="text-[9px] text-gray-400 font-bold mb-1 tracking-wider relative">Iuran Bulan Ini</div>
                                                 <div className="text-[10px] text-brand-700 bg-brand-100 px-2 py-1 rounded-md inline-block font-bold relative">85% Terkumpul</div>
                                             </div>
                                         </div>
@@ -259,7 +259,7 @@ export default function LandingPage() {
                                         <div className="flex justify-between items-start mb-6">
                                             <div>
                                                 <div className="text-[10px] text-brand-100 mb-1">Selamat datang, Warga!</div>
-                                                <div className="font-bold text-sm">Bpk. Budi Santoso</div>
+                                                <div className="font-bold text-sm uppercase">Bpk. Budi Santoso</div>
                                             </div>
                                             <div className="w-8 h-8 rounded-full border-2 border-brand-400 bg-brand-500 overflow-hidden text-center flex items-center justify-center text-xs font-bold shadow-inner">BS</div>
                                         </div>
@@ -275,7 +275,7 @@ export default function LandingPage() {
                                     {/* Mobile Quick Menus */}
                                     <div className="p-5 flex-1 overflow-y-auto relative z-10 -mt-2" style={{ scrollbarWidth: 'none' }}>
                                         <div className="flex justify-between items-center mb-4">
-                                            <div className="text-xs font-extrabold text-gray-800 tracking-wide uppercase">Layanan Mandiri</div>
+                                            <div className="text-xs font-extrabold text-gray-800 tracking-wide">Layanan Mandiri</div>
                                         </div>
 
                                         <div className="grid grid-cols-4 gap-3 mb-6">
@@ -461,7 +461,7 @@ export default function LandingPage() {
                                     <div className="w-16 h-16 bg-slate-800 border border-slate-700 shrink-0 rounded-2xl flex items-center justify-center text-brand-400 group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-white transition-all duration-500 shadow-lg">
                                         <Buildings weight="duotone" className="w-8 h-8" />
                                     </div>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-900/50 border border-brand-800 text-brand-300 text-[10px] font-bold tracking-widest uppercase w-fit">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-900/50 border border-brand-800 text-brand-300 text-[10px] font-bold tracking-widest w-fit">
                                         <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
                                         Ekosistem Terintegrasi
                                     </div>
@@ -478,11 +478,11 @@ export default function LandingPage() {
                                     <div className="p-6 bg-slate-800/50">
                                         <div className="grid grid-cols-3 gap-3 mb-5">
                                             <div className="bg-slate-900 rounded-xl p-3 border border-slate-700 shadow-inner">
-                                                <div className="text-[10px] text-slate-500 font-bold uppercase mb-1 tracking-widest">Total RT</div>
+                                                <div className="text-[10px] text-slate-500 font-bold mb-1 tracking-widest">Total RT</div>
                                                 <div className="text-xl font-bold text-white">12</div>
                                             </div>
                                             <div className="bg-brand-900/20 rounded-xl p-3 border border-brand-800/30 relative overflow-hidden shadow-inner">
-                                                <div className="text-[10px] text-brand-400 font-bold uppercase mb-1 tracking-widest">Warga</div>
+                                                <div className="text-[10px] text-brand-400 font-bold mb-1 tracking-widest">Warga</div>
                                                 <div className="text-lg font-bold text-brand-300">1.8K</div>
                                             </div>
                                         </div>
@@ -532,7 +532,7 @@ export default function LandingPage() {
 
                         {/* Pro */}
                         <div className={`bg-slate-900 rounded-[32px] p-8 border border-slate-800 flex flex-col items-center text-center shadow-2xl relative transform ${viewMode === 'desktop' ? 'md:-translate-y-4' : ''}`}>
-                            <div className="absolute top-0 transform -translate-y-1/2 bg-brand-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                            <div className="absolute top-0 transform -translate-y-1/2 bg-brand-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest">
                                 PALING POPULER
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">RT Aktif</h3>
@@ -652,9 +652,9 @@ export default function LandingPage() {
                             PAKRT
                         </span>
                     </div>
-                    <p className="mb-2 font-bold text-slate-300 text-sm tracking-wide">PENGELOLAAN ADMINISTRASI & KEUANGAN RT</p>
+                    <p className="mb-2 font-bold text-slate-300 text-sm tracking-wide">Pengelolaan Administrasi & Keuangan RT</p>
                     <p className="mb-8 text-xs text-slate-500 font-medium tracking-wider">© {new Date().getFullYear()} PT PAKRT DIGITAL TEKNOLOGI. ALL RIGHTS RESERVED.</p>
-                    <div className={`flex justify-center space-x-6 text-[11px] font-bold uppercase tracking-widest text-slate-500 ${viewMode === 'mobile' ? 'flex-col space-x-0 space-y-4' : ''}`}>
+                    <div className={`flex justify-center space-x-6 text-[11px] font-bold tracking-widest text-slate-500 ${viewMode === 'mobile' ? 'flex-col space-x-0 space-y-4' : ''}`}>
                         <a href="#" className="hover:text-white transition-colors">Syarat Ketentuan</a>
                         <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
                         <a href="#faq" className="hover:text-white transition-colors">Bantuan/FAQ</a>
