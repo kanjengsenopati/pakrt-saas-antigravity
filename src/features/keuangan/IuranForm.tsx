@@ -280,6 +280,7 @@ export default function IuranForm() {
                 </div>
             </div>
 
+            {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
                     <Warning className="w-5 h-5 shrink-0 mt-0.5" />
                     <Text.Label className="!text-red-600">{errorMessage}</Text.Label>
@@ -326,6 +327,7 @@ export default function IuranForm() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 {/* LEFT COLUMN: SUMMARY */}
                 <div className="md:col-span-4 space-y-6 sticky top-24">
+                    {isLoadingBilling ? (
                         <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
                             <Text.Caption className="!font-bold !text-slate-400">Memuat Data Tagihan...</Text.Caption>

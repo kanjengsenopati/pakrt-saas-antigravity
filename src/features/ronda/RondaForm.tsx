@@ -274,7 +274,6 @@ export default function RondaForm() {
                                                         </Text.Label>
                                                     )}
                                                 </div>
-                                            </div>
                                         );
                                     })}
                                 </div>
@@ -320,7 +319,6 @@ export default function RondaForm() {
                             </div>
                         </div>
                     )}
-
 
                     {currentStep === 2 && (
                         <div className="space-y-6 animate-fade-in">

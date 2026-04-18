@@ -7,6 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { Notulensi, Warga, Kehadiran } from '../../database/db';
 import { ArrowLeft, FloppyDisk, CheckCircle, XCircle, MinusCircle, UserCircle, ClockCounterClockwise, CircleNotch, CalendarBlank, MapPin, Notebook, UsersThree, Info, Image as ImageIcon } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 type NotulensiFormData = Omit<Notulensi, 'id' | 'tenant_id' | 'scope'>;
 

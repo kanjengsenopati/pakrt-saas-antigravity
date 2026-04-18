@@ -1187,7 +1187,8 @@ export default function Pengaturan() {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
                         {/* Tab: Surat & Cetak with Live Preview */}
                         {activeTab === 'surat' && (

@@ -24,6 +24,7 @@ import { formatRupiah } from '../../utils/currency';
 import { agendaService } from '../../services/agendaService';
 import { statsService } from '../../services/statsService';
 import { pengurusService } from '../../services/pengurusService';
+import { Text } from '../../components/ui/Typography';
 
 export default function Dashboard() {
     const navigate = useNavigate();

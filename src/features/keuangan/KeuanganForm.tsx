@@ -8,6 +8,7 @@ import { Keuangan } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
 import { ArrowLeft, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 type KeuanganFormData = Omit<Keuangan, 'id' | 'tenant_id' | 'scope'>;
 

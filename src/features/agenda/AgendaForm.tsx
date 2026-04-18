@@ -8,6 +8,8 @@ import { Agenda, Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk, Users, Coins, CircleNotch, UserCircle, XCircle, MapPin } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
+import { Text } from '../../components/ui/Typography';
+
 type AgendaFormData = Omit<Agenda, 'id' | 'tenant_id' | 'scope' | 'is_terlaksana' | 'laporan_kegiatan' | 'foto_dokumentasi'>;
 
 export default function AgendaForm() {

@@ -8,6 +8,7 @@ import { ArrowLeft, FloppyDisk, X, CheckCircle, Warning } from '@phosphor-icons/
 import { useState } from 'react';
 import { dateUtils } from '../../utils/date';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 
 const AGAMA_OPTIONS = [

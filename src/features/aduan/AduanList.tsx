@@ -30,10 +30,6 @@ const STATUS_COLORS = {
     'Selesai': '#2563eb'
 };
 
-const toTitleCase = (str: string) => {
-    if (!str) return '';
-    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
 
 export default function AduanList() {
     const { currentTenant, currentScope } = useTenant();
@@ -331,7 +327,7 @@ export default function AduanList() {
                                                             <div className="bg-rose-50/30 rounded-2xl p-4 border border-rose-100/50 border-dashed">
                                                                 <Text.Caption className="!font-medium !italic !text-rose-400">Belum ada tanggapan resmi dari pengurus.</Text.Caption>
                                                             </div>
-                                                        )})}
+                                                        )}
 
                                                         <div className="flex gap-2 pt-2">
                                                             <button 

@@ -397,6 +397,7 @@ export default function IuranList() {
 
                 {/* MOBILE VIEW: CARD GRID */}
                 <div className="md:hidden space-y-4 p-4 bg-slate-50/50">
+                    {(!iuranServerData && isLoading) ? (
                         <div className="py-20 text-center animate-pulse flex flex-col items-center gap-3">
                             <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
                             <Text.Caption className="!font-bold !uppercase !tracking-widest">Sinkronisasi...</Text.Caption>

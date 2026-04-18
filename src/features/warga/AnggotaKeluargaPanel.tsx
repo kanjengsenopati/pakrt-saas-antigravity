@@ -4,6 +4,7 @@ import { anggotaKeluargaService } from '../../services/anggotaKeluargaService';
 import { useForm } from 'react-hook-form';
 import { Plus, PencilSimple, Trash, FloppyDisk, Users } from '@phosphor-icons/react';
 import { dateUtils } from '../../utils/date';
+import { Text } from '../../components/ui/Typography';
 
 interface Props {
     wargaId: string;
