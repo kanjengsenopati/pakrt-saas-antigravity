@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Smartphone, Tablet, Monitor } from 'lucide-react';
 import { Text } from '../ui/Typography';
 import { useLocation } from 'react-router-dom';
