@@ -36,81 +36,111 @@ export default function SAAffiliate() {
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div>
-                <Text.H1 className="!text-white">Program Afiliasi</Text.H1>
-                <Text.Caption className="!text-slate-500 !mt-1 !font-medium !tracking-normal">Kelola reward dan referral antar tenant</Text.Caption>
+                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Program Afiliasi</Text.H1>
+                <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex items-center gap-2">
+                    <Trophy size={14} weight="bold" className="text-emerald-500" />
+                    <span>Kelola reward dan referral antar tenant</span>
+                </Text.Caption>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
-                {stats.map((s) => (
-                    <div key={s.label} className="rounded-[24px] bg-slate-900/80 border border-white/5 p-5 shadow-sm">
-                        <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center mb-3`}>
-                            <s.icon size={22} weight="duotone" className={s.color} />
+            {/* Stats (Refined Summary Cards) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {stats.map((s, idx) => (
+                    <div key={s.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
+                            <div className={`w-9 h-9 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                                <s.icon size={20} weight="bold" />
+                            </div>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{s.label}</Text.Label>
                         </div>
-                        <Text.Amount className="!text-white block">{s.value}</Text.Amount>
-                        <Text.Label className="!text-slate-500 !mt-1 block">{s.label}</Text.Label>
+                        <div className={idx === 0 ? 'text-left' : 'text-center'}>
+                            <Text.Amount className={`${s.color} !text-3xl !font-black leading-none !tracking-tighter`}>
+                                {idx === 0 ? `Rp ${s.value.toLocaleString('id-ID')}` : s.value.toLocaleString('id-ID')}
+                            </Text.Amount>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            {/* Top Referrers */}
-            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-sm">
-                <Text.H2 className="!text-white mb-4">🏆 Top Referrers</Text.H2>
-                {data?.topReferrers?.length > 0 ? (
-                    <div className="space-y-3">
-                        {data.topReferrers.map((ref: any, i: number) => (
-                            <div key={ref.tenantId} className="flex items-center gap-4">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                                    i === 0 ? 'bg-amber-500/20 text-amber-400' :
-                                    i === 1 ? 'bg-slate-400/20 text-slate-300' :
-                                    i === 2 ? 'bg-orange-500/20 text-orange-400' :
-                                    'bg-slate-700 text-slate-400'
-                                }`}>
-                                    #{i + 1}
-                                </div>
-                                <div className="flex-1">
-                                    <Text.Body className="!font-medium !text-white">{ref.tenantName}</Text.Body>
-                                    <Text.Caption className="!text-slate-600 font-mono !text-[9px]">{ref.tenantId}</Text.Caption>
-                                </div>
-                                <Text.Body className="!font-bold !text-emerald-400 tabular-nums">{ref.count} referral</Text.Body>
-                            </div>
-                        ))}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Top Referrers */}
+                <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                            <Trophy size={18} weight="bold" />
+                        </div>
+                        <Text.H2 className="!text-slate-900 !font-black">Top Referrers</Text.H2>
                     </div>
-                ) : (
-                    <div className="text-center py-8 text-sm text-slate-500">
-                        Belum ada data referral
-                    </div>
-                )}
-            </div>
 
-            {/* Recent Rewards */}
-            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-sm">
-                <Text.H2 className="!text-white mb-4">Recent Rewards</Text.H2>
-                {data?.recentRewards?.length > 0 ? (
-                    <div className="space-y-2">
-                        {data.recentRewards.map((rw: any) => (
-                            <div key={rw.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
-                                <Text.Caption className="!text-slate-400 flex-1">
-                                    <span className="text-white font-medium">{rw.referrer_tenant}</span>
-                                    {' → '}
-                                    <span className="text-emerald-400 font-medium">{rw.referred_tenant}</span>
-                                </Text.Caption>
-                                <Text.Caption className="!font-bold !text-amber-400 tabular-nums">{rw.reward_type}</Text.Caption>
-                                <span className={`text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full ${
-                                    rw.status === 'CLAIMED' ? 'bg-emerald-500/10 text-emerald-400' :
-                                    rw.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400' :
-                                    'bg-slate-500/10 text-slate-400'
-                                }`}>{rw.status}</span>
-                            </div>
-                        ))}
+                    {data?.topReferrers?.length > 0 ? (
+                        <div className="space-y-4">
+                            {data.topReferrers.map((ref: any, i: number) => (
+                                <div key={ref.tenantId} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black shadow-sm group-hover:scale-110 transition-transform ${
+                                        i === 0 ? 'bg-amber-500 text-white shadow-amber-500/20' :
+                                        i === 1 ? 'bg-slate-200 text-slate-600' :
+                                        i === 2 ? 'bg-orange-100 text-orange-600' :
+                                        'bg-slate-50 text-slate-400'
+                                    }`}>
+                                        {i + 1}
+                                    </div>
+                                    <div className="flex-1">
+                                        <Text.Body className="!font-black !text-slate-900 !text-[15px]">{ref.tenantName}</Text.Body>
+                                        <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[9px]">{ref.tenantId}</Text.Caption>
+                                    </div>
+                                    <div className="text-right">
+                                        <Text.Body className="!font-black !text-emerald-600 tabular-nums">{ref.count}</Text.Body>
+                                        <Text.Caption className="!text-slate-400 !text-[10px]">referrals</Text.Caption>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <Text.Caption className="!text-slate-400">Belum ada data referral</Text.Caption>
+                        </div>
+                    )}
+                </div>
+
+                {/* Recent Rewards */}
+                <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                            <Gift size={18} weight="bold" />
+                        </div>
+                        <Text.H2 className="!text-slate-900 !font-black">Recent Rewards</Text.H2>
                     </div>
-                ) : (
-                    <div className="text-center py-8 text-sm text-slate-500">
-                        Belum ada reward
-                    </div>
-                )}
+
+                    {data?.recentRewards?.length > 0 ? (
+                        <div className="space-y-4">
+                            {data.recentRewards.map((rw: any) => (
+                                <div key={rw.id} className="flex items-center gap-4 p-3 rounded-2xl border border-slate-50 hover:border-emerald-100 transition-all hover:shadow-md">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-[13px] font-black text-slate-900">{rw.referrer_tenant}</span>
+                                            <Clock size={12} className="text-slate-300" />
+                                            <span className="text-[13px] font-bold text-emerald-600">{rw.referred_tenant}</span>
+                                        </div>
+                                        <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[9px]">{rw.reward_type}</Text.Caption>
+                                    </div>
+                                    <div className={`px-3 py-1.5 rounded-xl text-[10px] font-black tracking-wider uppercase border ${
+                                        rw.status === 'CLAIMED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                        rw.status === 'PENDING' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                        'bg-slate-50 text-slate-400 border-slate-100'
+                                    }`}>
+                                        {rw.status}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <Text.Caption className="!text-slate-400">Belum ada data reward</Text.Caption>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

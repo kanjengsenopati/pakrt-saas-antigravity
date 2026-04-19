@@ -56,8 +56,8 @@ export default function SASubscriptionManager() {
     return (
         <div className="space-y-6">
             <div>
-                <Text.H1>Subscription & Invoices</Text.H1>
-                <Text.Caption className="!text-slate-500 !mt-1 !font-medium !tracking-normal">Kelola pembayaran subscription tenant</Text.Caption>
+                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Subscription & Invoices</Text.H1>
+                <Text.Caption className="!text-slate-500 !mt-1.5 !font-black !tracking-widest uppercase !text-[10px]">Kelola pembayaran subscription tenant</Text.Caption>
             </div>
 
             {/* Filter */}

@@ -81,115 +81,146 @@ export default function SATenantDetail() {
     const moduleStats = tenant.module_stats || {};
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Header */}
-            <div className="flex items-center gap-4">
-                <button onClick={() => navigate('/super-admin/tenants')} className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
-                    <ArrowLeft size={18} />
+            <div className="flex items-center gap-5">
+                <button 
+                    onClick={() => navigate('/super-admin/tenants')} 
+                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-900 hover:shadow-md transition-all active:scale-90"
+                >
+                    <ArrowLeft size={22} weight="bold" />
                 </button>
                 <div>
-                    <Text.H1 className="!text-white">{tenant.name}</Text.H1>
-                    <Text.Caption className="!text-slate-500 font-mono !mt-0.5">{tenant.id}</Text.Caption>
+                    <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">{tenant.name}</Text.H1>
+                    <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex items-center gap-2">
+                        <span className="bg-slate-100 px-2 py-0.5 rounded-md">{tenant.id}</span>
+                        <span>• Detail Tenant Platform</span>
+                    </Text.Caption>
                 </div>
             </div>
 
-            {/* Info Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
-                    <Users size={18} className="text-emerald-400 mb-2" weight="duotone" />
-                    <Text.Amount className="!text-white block">{tenant._count?.wargas || 0}</Text.Amount>
-                    <Text.Label className="!text-slate-500 block mt-1">Warga</Text.Label>
-                </div>
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
-                    <Users size={18} className="text-blue-400 mb-2" weight="duotone" />
-                    <Text.Amount className="!text-white block">{tenant._count?.users || 0}</Text.Amount>
-                    <Text.Label className="!text-slate-500 block mt-1">Users</Text.Label>
-                </div>
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
-                    <Calendar size={18} className="text-violet-400 mb-2" weight="duotone" />
-                    <Text.Amount className="!text-white block">{moduleStats.agendaCount || 0}</Text.Amount>
-                    <Text.Label className="!text-slate-500 block mt-1">Agenda</Text.Label>
-                </div>
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
-                    <CreditCard size={18} className="text-amber-400 mb-2" weight="duotone" />
-                    <Text.Amount className="!text-white block">{moduleStats.iuranCount || 0}</Text.Amount>
-                    <Text.Label className="!text-slate-500 block mt-1">Iuran</Text.Label>
-                </div>
+            {/* Info Grid (Refined Summary Cards) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                {[
+                    { label: 'Warga', value: tenant._count?.wargas || 0, icon: Users, text: 'text-emerald-600', bg: 'bg-emerald-50' },
+                    { label: 'Users', value: tenant._count?.users || 0, icon: Users, text: 'text-blue-600', bg: 'bg-blue-50' },
+                    { label: 'Agenda', value: moduleStats.agendaCount || 0, icon: Calendar, text: 'text-violet-600', bg: 'bg-violet-50' },
+                    { label: 'Iuran', value: moduleStats.iuranCount || 0, icon: CreditCard, text: 'text-amber-600', bg: 'bg-amber-50' }
+                ].map((card) => (
+                    <div key={card.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
+                            <div className={`w-9 h-9 rounded-xl ${card.bg} ${card.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                                <card.icon size={20} weight="bold" />
+                            </div>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{card.label}</Text.Label>
+                        </div>
+                        <div className="text-center">
+                            <Text.Amount className={`${card.text} !text-3xl !font-black leading-none !tracking-tighter`}>
+                                {card.value.toLocaleString('id-ID')}
+                            </Text.Amount>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Admin Info */}
             {tenant.admin && (
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-5 shadow-sm">
-                    <Text.H2 className="!text-white mb-3">Admin RT</Text.H2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div><Text.Label className="!text-slate-500">Nama:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.name}</Text.Body></div>
-                        <div><Text.Label className="!text-slate-500">Email:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.email}</Text.Body></div>
-                        <div><Text.Label className="!text-slate-500">Kontak:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.kontak || '-'}</Text.Body></div>
+                <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                        <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                            <Users size={18} weight="bold" />
+                        </div>
+                        <Text.H2 className="!text-slate-900 !font-black">Admin Pengurus</Text.H2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-1">
+                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Nama Lengkap</Text.Label>
+                            <Text.Body className="!text-slate-900 !font-black !text-[15px]">{tenant.admin.name}</Text.Body>
+                        </div>
+                        <div className="space-y-1">
+                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Email Address</Text.Label>
+                            <Text.Body className="!text-slate-900 !font-black !text-[15px]">{tenant.admin.email}</Text.Body>
+                        </div>
+                        <div className="space-y-1">
+                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Kontak</Text.Label>
+                            <Text.Body className="!text-slate-900 !font-black !text-[15px] font-mono">{tenant.admin.kontak || '-'}</Text.Body>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Subscription Management */}
-            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-5 shadow-sm">
-                <Text.H2 className="!text-white mb-4">Kelola Subscription</Text.H2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <Text.Label className="!text-slate-500 mb-1 block">Plan</Text.Label>
+            <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-50">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <CreditCard size={18} weight="bold" />
+                    </div>
+                    <Text.H2 className="!text-slate-900 !font-black">Kelola Subscription</Text.H2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="space-y-2">
+                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Subscription Plan</Text.Label>
                         <select
                             value={subForm.plan}
                             onChange={(e) => setSubForm({ ...subForm, plan: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
                         >
-                            <option value="FREE">FREE</option>
-                            <option value="PREMIUM">PREMIUM</option>
+                            <option value="FREE">FREE PLAN</option>
+                            <option value="PREMIUM">PREMIUM PLAN</option>
                         </select>
                     </div>
-                    <div>
-                        <Text.Label className="!text-slate-500 mb-1 block">Status</Text.Label>
+                    <div className="space-y-2">
+                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Account Status</Text.Label>
                         <select
                             value={subForm.status}
                             onChange={(e) => setSubForm({ ...subForm, status: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
                         >
-                            <option value="TRIAL">TRIAL</option>
-                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="TRIAL">TRIAL PERIOD</option>
+                            <option value="ACTIVE">ACTIVE SUBS</option>
                             <option value="EXPIRED">EXPIRED</option>
                             <option value="SUSPENDED">SUSPENDED</option>
                         </select>
                     </div>
-                    <div>
-                        <Text.Label className="!text-slate-500 mb-1 block">Berlaku Hingga</Text.Label>
+                    <div className="space-y-2">
+                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Valid Until</Text.Label>
                         <input
                             type="date"
                             value={subForm.until}
                             onChange={(e) => setSubForm({ ...subForm, until: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all"
                         />
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="flex items-center gap-4">
                     <button
                         onClick={handleSaveSub}
                         disabled={saving}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
+                        className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-black text-white text-sm font-black transition-all shadow-lg shadow-slate-900/10 active:scale-95 disabled:opacity-50"
                     >
-                        <CheckCircle size={16} />
-                        {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        {saving ? (
+                            <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <CheckCircle size={20} weight="bold" />
+                        )}
+                        {saving ? 'Saving...' : 'Simpan Perubahan'}
                     </button>
                     {tenant.subscription_status !== 'SUSPENDED' ? (
                         <button
                             onClick={handleSuspend}
-                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 text-sm font-medium border border-red-500/20 transition-colors"
+                            className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-red-50 text-red-600 hover:bg-red-100 text-sm font-black transition-all border border-red-100 active:scale-95"
                         >
-                            <Prohibit size={16} />
+                            <Prohibit size={20} weight="bold" />
                             Suspend Tenant
                         </button>
                     ) : (
                         <button
                             onClick={handleUnsuspend}
-                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-400 text-sm font-medium border border-emerald-500/20 transition-colors"
+                            className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-sm font-black transition-all border border-emerald-100 active:scale-95"
                         >
-                            <CheckCircle size={16} />
+                            <CheckCircle size={20} weight="bold" />
                             Unsuspend
                         </button>
                     )}

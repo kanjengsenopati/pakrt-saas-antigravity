@@ -51,8 +51,8 @@ export default function SATenantList() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <Text.H1>Kelola Tenant</Text.H1>
-                    <Text.Caption className="!text-slate-500 !mt-1 !font-medium !tracking-normal">{total} RT/RW terdaftar</Text.Caption>
+                    <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Kelola Tenant</Text.H1>
+                    <Text.Caption className="!text-slate-500 !mt-1.5 !font-black !tracking-widest uppercase !text-[10px]">{total} RT/RW terdaftar</Text.Caption>
                 </div>
             </div>
 

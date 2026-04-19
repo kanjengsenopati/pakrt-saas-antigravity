@@ -89,41 +89,41 @@ export default function SADashboard() {
     const totalSubs = subBreakdown.reduce((s, b) => s + b.value, 0) || 1;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Header */}
             <div>
-                <Text.H1>Platform Dashboard</Text.H1>
-                <Text.Body className="!text-slate-500 mt-1">Overview platform PakRT SaaS</Text.Body>
+                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Platform Dashboard</Text.H1>
+                <Text.Body className="!text-slate-400 !font-medium mt-1.5">Overview platform PakRT SaaS</Text.Body>
             </div>
 
             {/* Pending Invoice Alert */}
             {(overview?.pendingInvoices || 0) > 0 && (
                 <div 
                     onClick={() => navigate('/super-admin/subscriptions')}
-                    className="flex items-center gap-3 px-5 py-3 rounded-[24px] bg-amber-50 border border-amber-100 cursor-pointer hover:bg-amber-100/50 transition-colors shadow-sm shadow-amber-900/5"
+                    className="flex items-center gap-4 px-6 py-4 rounded-[24px] bg-white border border-amber-100 cursor-pointer hover:bg-amber-50/50 transition-all shadow-sm group active:scale-[0.98]"
                 >
-                    <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
-                        <CreditCard size={20} weight="bold" />
+                    <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform">
+                        <CreditCard size={22} weight="bold" />
                     </div>
-                    <Text.Body className="!text-amber-700 !font-bold">
+                    <Text.Body className="!text-slate-700 !font-black !text-[15px]">
                         {overview?.pendingInvoices} invoice menunggu verifikasi pembayaran
                     </Text.Body>
-                    <ArrowRight size={16} className="text-amber-500 ml-auto" />
+                    <ArrowRight size={18} className="text-amber-500 ml-auto group-hover:translate-x-1 transition-transform" />
                 </div>
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
                 {stats.map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
-                        <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-50">
-                            <div className={`w-8 h-8 rounded-[10px] ${stat.bg} ${stat.text} flex items-center justify-center shrink-0`}>
-                                <stat.icon size={18} weight="bold" />
+                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
+                            <div className={`w-9 h-9 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                                <stat.icon size={20} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !normal-case !tracking-normal !text-[11px] truncate leading-none">{stat.label}</Text.Label>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{stat.label}</Text.Label>
                         </div>
                         <div className={stat.type === 'count' ? 'text-center' : 'text-left'}>
-                            <Text.Amount className={`${stat.text} !text-2xl !font-black leading-none`}>
+                            <Text.Amount className={`${stat.text} !text-3xl !font-black leading-none !tracking-tighter`}>
                                 {stat.value.toLocaleString('id-ID')}
                             </Text.Amount>
                         </div>
