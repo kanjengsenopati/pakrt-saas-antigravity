@@ -2,10 +2,13 @@ import api from './api';
 
 export const superAdminService = {
     // ── TENANTS ──
-    async getTenants(page = 1, limit = 20, search?: string, status?: string) {
+    async getTenants(page = 1, limit = 20, search?: string, status?: string, kecamatan?: string, kelurahan?: string, rw?: string) {
         const params: any = { page, limit };
         if (search) params.search = search;
         if (status) params.status = status;
+        if (kecamatan) params.kecamatan = kecamatan;
+        if (kelurahan) params.kelurahan = kelurahan;
+        if (rw) params.rw = rw;
         const res = await api.get('/super-admin/tenants', { params });
         return res.data;
     },

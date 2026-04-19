@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { superAdminService } from '../../services/superAdminService';
-import { Eye, CheckCircle, XCircle, Clock, Upload, Receipt } from '@phosphor-icons/react';
+import { Eye, CheckCircle, XCircle, Clock, Upload, Receipt, CaretUp, CurrencyCircleDollar, WarningCircle } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 
 export default function SASubscriptionManager() {
@@ -9,13 +9,20 @@ export default function SASubscriptionManager() {
     const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState('');
     const [loading, setLoading] = useState(true);
+    const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+    const [zoomImg, setZoomImg] = useState<string | null>(null);
+    const [statsData, setStatsData] = useState<any>(null);
 
     const loadInvoices = async () => {
         setLoading(true);
         try {
-            const data = await superAdminService.getInvoices(page, 15, statusFilter || undefined);
+            const [data, revenueData] = await Promise.all([
+                superAdminService.getInvoices(page, 15, statusFilter || undefined),
+                superAdminService.getRevenue()
+            ]);
             setInvoices(data.items || []);
             setTotal(data.total || 0);
+            setStatsData(revenueData);
         } catch (e) {
             console.error('Failed to load invoices:', e);
         } finally {
@@ -53,11 +60,40 @@ export default function SASubscriptionManager() {
 
     const totalPages = Math.ceil(total / 15);
 
+    const stats = [
+        { label: 'Total Revenue', value: statsData?.totalRevenue || 0, icon: CurrencyCircleDollar, color: 'text-emerald-600', bg: 'bg-emerald-50', isAmount: true },
+        { label: 'Wait Verify', value: invoices.filter(i => i.status === 'UPLOADED').length, icon: Upload, color: 'text-amber-600', bg: 'bg-amber-50', isAmount: false },
+        { label: 'Total Invoices', value: total, icon: Receipt, color: 'text-blue-600', bg: 'bg-blue-50', isAmount: false },
+        { label: 'Rejected', value: invoices.filter(i => i.status === 'REJECTED').length, icon: WarningCircle, color: 'text-red-600', bg: 'bg-red-50', isAmount: false },
+    ];
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div>
                 <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Subscription & Invoices</Text.H1>
-                <Text.Caption className="!text-slate-500 !mt-1.5 !font-black !tracking-widest uppercase !text-[10px]">Kelola pembayaran subscription tenant</Text.Caption>
+                <Text.Caption className="!text-slate-500 !mt-1.5 !font-black !tracking-widest uppercase !text-[10px] flex items-center gap-2">
+                    <Receipt size={14} weight="bold" />
+                    <span>Financial Control Panel</span>
+                </Text.Caption>
+            </div>
+
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {stats.map((s) => (
+                    <div key={s.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                                <s.icon size={18} weight="bold" />
+                            </div>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{s.label}</Text.Label>
+                        </div>
+                        <div className={s.isAmount ? 'text-left' : 'text-center'}>
+                            <Text.Amount className={`${s.color} !text-2xl !font-black leading-none !tracking-tighter`}>
+                                {s.isAmount ? formatCurrency(s.value) : s.value.toLocaleString('id-ID')}
+                            </Text.Amount>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Filter */}
@@ -65,119 +101,173 @@ export default function SASubscriptionManager() {
                 <select
                     value={statusFilter}
                     onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                    className="px-5 py-3 rounded-2xl bg-white border border-slate-100 text-sm text-slate-700 font-bold focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all appearance-none cursor-pointer min-w-[200px] shadow-sm"
+                    className="px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-sm font-black text-slate-700 hover:border-slate-300 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all appearance-none cursor-pointer min-w-[220px] shadow-sm"
                 >
-                    <option value="">Semua Status</option>
-                    <option value="PENDING">Pending</option>
-                    <option value="UPLOADED">Uploaded (Verify Needed)</option>
-                    <option value="VERIFIED">Verified</option>
-                    <option value="REJECTED">Rejected</option>
+                    <option value="">STATUS PEMBAYARAN</option>
+                    <option value="PENDING">PENDING (Waiting Pay)</option>
+                    <option value="UPLOADED">UPLOADED (Verify Needed)</option>
+                    <option value="VERIFIED">VERIFIED (Paid)</option>
+                    <option value="REJECTED">REJECTED (Issue)</option>
                 </select>
             </div>
 
             {/* Invoice Table */}
             <div className="rounded-[24px] bg-white border border-slate-100 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 {loading ? (
-                    <div className="flex items-center justify-center h-56">
-                        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center justify-center py-32">
+                        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin shadow-lg" />
                     </div>
                 ) : (
                     <div className="overflow-x-auto no-scrollbar">
-                        <table className="w-full">
+                        <table className="w-full border-collapse">
                             <thead>
                                 <tr className="bg-slate-50/50 border-b border-slate-50">
+                                    <th className="py-4 px-6 w-16 text-center">
+                                        <Text.Label className="!text-slate-400 !font-black">#</Text.Label>
+                                    </th>
                                     <th className="text-left py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-bold">Invoice & Tenant</Text.Label>
+                                        <Text.Label className="!text-slate-400 !font-black">Invoice & Tenant</Text.Label>
                                     </th>
                                     <th className="text-right py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-bold">Nominal</Text.Label>
+                                        <Text.Label className="!text-slate-400 !font-black">Nominal</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-bold">Status</Text.Label>
+                                        <Text.Label className="!text-slate-400 !font-black">Status</Text.Label>
                                     </th>
-                                    <th className="text-center py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-bold">Aksi</Text.Label>
+                                    <th className="text-center py-4 px-6 w-32">
+                                        <Text.Label className="!text-slate-400 !font-black">Aksi</Text.Label>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {invoices.map((inv) => {
+                                {invoices.map((inv, idx) => {
+                                    const isExpanded = expandedRowId === inv.id;
                                     const badge = statusBadge(inv.status);
                                     const BadgeIcon = badge.icon;
                                     return (
-                                        <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
-                                            <td className="py-4 px-6">
-                                                <div className="flex flex-col">
-                                                    <Text.Body className="!text-slate-900 !font-black font-mono !text-[14px] leading-none">{inv.invoice_number}</Text.Body>
-                                                    <Text.Body className="!text-slate-700 !text-sm !font-bold mt-1.5">{inv.tenant?.name || inv.tenant_id}</Text.Body>
-                                                    <Text.Caption className="!text-slate-400 block mt-1 uppercase tracking-tighter !font-bold !not-italic">
-                                                        {inv.plan} • {inv.duration_months} bulan
-                                                    </Text.Caption>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <div className="flex flex-col items-end">
-                                                    <Text.Amount className="!text-slate-900 !text-[15px] !font-black">{formatCurrency(inv.total_amount)}</Text.Amount>
-                                                    <div className="flex items-center gap-1.5 mt-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
-                                                        <Text.Caption className="!text-amber-700 !font-black font-mono !not-italic">Unique: {inv.unique_code}</Text.Caption>
+                                        <React.Fragment key={inv.id}>
+                                            <tr className={`hover:bg-slate-50/50 transition-colors ${isExpanded ? 'bg-slate-50/80' : ''}`}>
+                                                <td className="py-4 px-6 text-center">
+                                                    <span className="text-[12px] font-black text-slate-300">{(page - 1) * 15 + idx + 1}</span>
+                                                </td>
+                                                <td className="py-4 px-6">
+                                                    <div className="flex flex-col">
+                                                        <Text.Body className="!text-slate-900 !font-black font-mono !text-[14px] leading-none">{inv.invoice_number}</Text.Body>
+                                                        <Text.Body className="!text-slate-700 !text-sm !font-bold mt-1.5">{inv.tenant?.name || inv.tenant_id}</Text.Body>
+                                                        <Text.Caption className="!text-slate-400 block mt-1 uppercase tracking-tighter !font-bold !not-italic">
+                                                            {inv.plan} • {inv.duration_months} bulan
+                                                        </Text.Caption>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6 text-center">
-                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase border shadow-sm ${badge.class}`}>
-                                                    <BadgeIcon size={12} weight="bold" />
-                                                    {inv.status}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-6 text-center">
-                                                {inv.status === 'UPLOADED' && (
+                                                </td>
+                                                <td className="py-4 px-6 text-right">
+                                                    <div className="flex flex-col items-end">
+                                                        <Text.Amount className="!text-slate-900 !text-[15px] !font-black">{formatCurrency(inv.total_amount)}</Text.Amount>
+                                                        <div className="flex items-center gap-1.5 mt-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
+                                                            <Text.Caption className="!text-amber-700 !font-black font-mono !not-italic !text-[10px]">Code: {inv.unique_code}</Text.Caption>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6 text-center">
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase border shadow-sm ${badge.class}`}>
+                                                        <BadgeIcon size={12} weight="bold" />
+                                                        {inv.status}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-6 text-center">
                                                     <div className="flex items-center justify-center gap-2">
                                                         <button
-                                                            onClick={() => handleVerify(inv.id, 'VERIFY')}
-                                                            className="p-2.5 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition-all shadow-md shadow-emerald-500/20 active:scale-90"
-                                                            title="Verifikasi"
+                                                            onClick={() => setExpandedRowId(isExpanded ? null : inv.id)}
+                                                            className={`p-2.5 rounded-xl transition-all shadow-sm active:scale-90 ${isExpanded ? 'bg-slate-900 text-white shadow-slate-900/20' : 'bg-slate-50 text-slate-400 hover:text-slate-900 border border-slate-100'}`}
+                                                            title="Lihat Detail"
                                                         >
-                                                            <CheckCircle size={18} weight="bold" />
+                                                            {isExpanded ? <CaretUp size={18} weight="bold" /> : <Eye size={18} weight="bold" />}
                                                         </button>
-                                                        <button
-                                                            onClick={() => handleVerify(inv.id, 'REJECT')}
-                                                            className="p-2.5 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-all border border-red-100 active:scale-95"
-                                                            title="Tolak"
-                                                        >
-                                                            <XCircle size={18} weight="bold" />
-                                                        </button>
-                                                        {inv.payment_proof && (
-                                                            <a
-                                                                href={inv.payment_proof}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="p-2.5 rounded-xl bg-slate-900 text-white hover:bg-black transition-all shadow-md shadow-slate-900/10 active:scale-95"
-                                                                title="Lihat Bukti"
+                                                        {inv.status === 'UPLOADED' && (
+                                                            <button
+                                                                onClick={() => handleVerify(inv.id, 'VERIFY')}
+                                                                className="p-2.5 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition-all shadow-md shadow-emerald-500/20 active:scale-90"
+                                                                title="Verifikasi"
                                                             >
-                                                                <Eye size={18} weight="bold" />
-                                                            </a>
+                                                                <CheckCircle size={18} weight="bold" />
+                                                            </button>
                                                         )}
                                                     </div>
-                                                )}
-                                                {inv.status === 'VERIFIED' && (
-                                                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[11px] font-black border border-emerald-100">
-                                                        <CheckCircle size={14} weight="bold" />
-                                                        VERIFIED
-                                                    </div>
-                                                )}
-                                                {inv.status === 'PENDING' && (
-                                                    <span className="text-[11px] text-slate-400 font-bold italic">Waiting for upload...</span>
-                                                )}
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                            {isExpanded && (
+                                                <tr className="bg-slate-50/80">
+                                                    <td colSpan={5} className="px-6 pb-6 pt-0">
+                                                        <div className="bg-white rounded-[24px] border border-slate-100 p-6 shadow-inner flex flex-col md:flex-row gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                            {/* Details */}
+                                                            <div className="flex-1 space-y-6">
+                                                                <div className="grid grid-cols-2 gap-6">
+                                                                    <div className="space-y-1">
+                                                                        <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Metode Pembayaran</Text.Label>
+                                                                        <Text.Body className="!text-slate-900 !font-black uppercase">{inv.payment_method || 'BANK TRANSFER'}</Text.Body>
+                                                                    </div>
+                                                                    <div className="space-y-1">
+                                                                        <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Waktu Upload</Text.Label>
+                                                                        <Text.Body className="!text-slate-900 !font-black uppercase">{inv.updated_at ? new Date(inv.updated_at).toLocaleString('id-ID') : '-'}</Text.Body>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="space-y-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                                                    <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Catatan Pembayaran</Text.Label>
+                                                                    <Text.Body className="!text-slate-600 !italic !text-[13px] !font-medium">
+                                                                        {inv.user_notes || "Tidak ada catatan tambahan dari tenant."}
+                                                                    </Text.Body>
+                                                                </div>
+                                                                {inv.status === 'UPLOADED' && (
+                                                                    <div className="flex gap-3">
+                                                                        <button
+                                                                            onClick={() => handleVerify(inv.id, 'VERIFY')}
+                                                                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500 text-white text-[13px] font-black hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+                                                                        >
+                                                                            <CheckCircle size={18} weight="bold" />
+                                                                            VERIFIKASI SEKARANG
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => handleVerify(inv.id, 'REJECT')}
+                                                                            className="px-6 py-3 rounded-xl bg-red-50 text-red-600 text-[13px] font-black hover:bg-red-100 transition-all border border-red-100"
+                                                                        >
+                                                                            TOLAK
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                            {/* Proof Image */}
+                                                            <div className="w-full md:w-64 space-y-2">
+                                                                <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase mb-1 block">Bukti Transfer</Text.Label>
+                                                                {inv.payment_proof ? (
+                                                                    <div 
+                                                                        className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-slate-200 cursor-zoom-in group shadow-sm"
+                                                                        onClick={() => setZoomImg(inv.payment_proof)}
+                                                                    >
+                                                                        <img src={inv.payment_proof} alt="Proof" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                                                            <Eye size={32} weight="bold" />
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-100 flex flex-col items-center justify-center gap-2 text-slate-400">
+                                                                        <Receipt size={32} weight="thin" />
+                                                                        <span className="text-[10px] font-bold uppercase tracking-widest">No Proof Image</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
                                     );
                                 })}
                                 {invoices.length === 0 && (
                                     <tr>
-                                        <td colSpan={4} className="py-24 text-center">
-                                            <div className="flex flex-col items-center gap-2 opacity-20">
-                                                <Receipt size={48} weight="thin" />
-                                                <span className="text-sm font-bold">Tidak ada invoice ditemukan</span>
+                                        <td colSpan={5} className="py-32 text-center">
+                                            <div className="flex flex-col items-center gap-4 opacity-20">
+                                                <Receipt size={64} weight="thin" />
+                                                <span className="text-sm font-black uppercase tracking-widest">No transactions found</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -195,10 +285,10 @@ export default function SASubscriptionManager() {
                         <button
                             key={p}
                             onClick={() => setPage(p)}
-                            className={`w-10 h-10 rounded-xl text-sm font-black transition-all ${
+                            className={`w-11 h-11 rounded-2xl text-[13px] font-black transition-all ${
                                 p === page
-                                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20'
-                                    : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50'
+                                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20'
+                                    : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50 hover:shadow-md'
                             }`}
                         >
                             {p}
@@ -206,6 +296,31 @@ export default function SASubscriptionManager() {
                     ))}
                 </div>
             )}
+
+            {/* Zoom Modal */}
+            {zoomImg && (
+                <div 
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md animate-in fade-in duration-300"
+                    onClick={() => setZoomImg(null)}
+                >
+                    <div className="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center p-2 rounded-3xl bg-white/10 border border-white/20 shadow-2xl">
+                        <img 
+                            src={zoomImg} 
+                            alt="Refined Proof Zoom" 
+                            className="max-w-full max-h-[85vh] object-contain rounded-2xl animate-in zoom-in-95 duration-300 shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                        <button 
+                            className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center rounded-2xl bg-white text-slate-900 shadow-xl hover:scale-110 active:scale-90 transition-all font-black"
+                            onClick={() => setZoomImg(null)}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
+import React from 'react';
