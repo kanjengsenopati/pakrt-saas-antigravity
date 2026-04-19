@@ -1715,32 +1715,32 @@ export default function Pengaturan() {
                                                     </div>
                                                     <div className="lg:col-span-2">
                                                         <div className="bg-white rounded-[22px] border border-slate-100 shadow-sm overflow-hidden">
-                                                            <div className="px-5 py-3.5 bg-slate-900 flex items-center justify-between">
-                                                                <div className="flex items-center gap-2">
-                                                                    <ShieldCheck weight="fill" className="w-4 h-4 text-brand-400" />
-                                                                    <Text.Label className="text-white !normal-case !tracking-normal !text-[12px]">Matrix Hak Akses Khusus</Text.Label>
+                                                            <div className="px-5 py-4 bg-slate-900 flex items-center justify-between gap-3">
+                                                                <div className="flex items-center gap-2 min-w-0">
+                                                                    <ShieldCheck weight="fill" className="w-5 h-5 text-brand-400 shrink-0" />
+                                                                    <Text.Label className="text-white !normal-case !tracking-normal !text-[13px] truncate">Matrix Hak Akses</Text.Label>
                                                                 </div>
-                                                                <div className="flex gap-2">
-                                                                    <button onClick={() => setExpandedUserId(null)} className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-bold transition-colors">Batal</button>
-                                                                    <button onClick={() => savePermissions()} className="px-4 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan</button>
+                                                                <div className="flex gap-2 shrink-0">
+                                                                    <button onClick={() => setExpandedUserId(null)} className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-bold transition-colors">Batal</button>
+                                                                    <button onClick={() => savePermissions()} className="px-3.5 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan</button>
                                                                 </div>
                                                             </div>
                                                             <div className="overflow-x-auto no-scrollbar">
-                                                                <table className="w-full text-left">
+                                                                <table className="w-full text-left min-w-[500px]">
                                                                     <thead>
                                                                         <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                            <th className="p-4 pl-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Modul</th>
+                                                                            <th className="py-3 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
                                                                             {CRUD_ACTIONS.map(action => (
-                                                                                <th key={action.id} className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
+                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
                                                                             ))}
-                                                                            <th className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scope</th>
+                                                                            <th className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scope</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody className="divide-y divide-slate-50">
                                                                         {APP_MODULES.map((module) => (
                                                                             <tr key={module.id} className="hover:bg-slate-50/30 transition-colors">
-                                                                                <td className="p-4 pl-6">
-                                                                                    <Text.Body className="!text-[12px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
+                                                                                <td className="py-3 px-4 pl-5 sticky left-0 bg-white z-10 border-r border-slate-50 shadow-[4px_0_8px_rgba(0,0,0,0.02)]">
+                                                                                    <Text.Body className="!text-[11px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
                                                                                 </td>
                                                                                 {CRUD_ACTIONS.map(action => {
                                                                                     const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
@@ -1814,21 +1814,21 @@ export default function Pengaturan() {
                                             {expandedRoleId === role.id && (
                                                 <div className="p-5 pt-0 border-t border-slate-50 bg-slate-50/10">
                                                     <div className="mt-4 bg-white rounded-[22px] border border-slate-100 shadow-sm overflow-hidden">
-                                                        <div className="px-5 py-3.5 bg-slate-900 flex items-center justify-between">
-                                                            <div className="flex items-center gap-2">
-                                                                <ShieldCheck weight="fill" className="w-4 h-4 text-brand-400" />
-                                                                <Text.Label className="text-white !normal-case !tracking-normal !text-[12px]">Matrix Hak Akses Role: {role.name}</Text.Label>
+                                                        <div className="px-5 py-4 bg-slate-900 flex items-center justify-between gap-3">
+                                                            <div className="flex items-center gap-2 min-w-0">
+                                                                <ShieldCheck weight="fill" className="w-5 h-5 text-brand-400 shrink-0" />
+                                                                <Text.Label className="text-white !normal-case !tracking-normal !text-[13px] truncate">Matrix Akses: {role.name}</Text.Label>
                                                             </div>
-                                                            <div className="flex gap-2">
-                                                                <button onClick={() => setExpandedRoleId(null)} className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-bold transition-colors">Batal</button>
-                                                                <button onClick={() => savePermissions(undefined, role)} className="px-4 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan Perubahan Role</button>
+                                                            <div className="flex gap-2 shrink-0">
+                                                                <button onClick={() => setExpandedRoleId(null)} className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-bold transition-colors">Batal</button>
+                                                                <button onClick={() => savePermissions(undefined, role)} className="px-3.5 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan</button>
                                                             </div>
                                                         </div>
                                                         <div className="overflow-x-auto no-scrollbar">
-                                                            <table className="w-full text-left">
+                                                            <table className="w-full text-left min-w-[450px]">
                                                                 <thead>
                                                                     <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                        <th className="p-4 pl-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Modul</th>
+                                                                        <th className="py-3 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
                                                                         {CRUD_ACTIONS.map(action => (
                                                                             <th key={action.id} className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
                                                                         ))}
@@ -1837,8 +1837,8 @@ export default function Pengaturan() {
                                                                 <tbody className="divide-y divide-slate-50">
                                                                     {APP_MODULES.map((module) => (
                                                                         <tr key={module.id} className="hover:bg-slate-50/30 transition-colors">
-                                                                            <td className="p-4 pl-6">
-                                                                                <Text.Body className="!text-[12px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
+                                                                            <td className="py-3 px-4 pl-5 sticky left-0 bg-white z-10 border-r border-slate-50 shadow-[4px_0_8px_rgba(0,0,0,0.02)]">
+                                                                                <Text.Body className="!text-[11px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
                                                                             </td>
                                                                             {CRUD_ACTIONS.map(action => {
                                                                                 const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
