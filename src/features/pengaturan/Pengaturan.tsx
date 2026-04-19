@@ -1490,8 +1490,9 @@ export default function Pengaturan() {
             {/* TAB CONTENT: USER MANAGEMENT */}
             {
                 activeTab === 'user' && (
+                <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-6 md:p-8 space-y-8 animate-fade-in">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white border border-gray-200 p-6 rounded-3xl shadow-sm">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                             <div className="flex items-center gap-6">
                                 <div>
                                     <Text.H1 className="!text-[20px] !font-bold !text-slate-800 !leading-none">Manajemen Akses</Text.H1>
@@ -1642,7 +1643,7 @@ export default function Pengaturan() {
 
 
                         {activeRoleSubTab === 'users' ? (
-                            <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+                            <div className="border border-gray-100 rounded-2xl overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
@@ -1789,7 +1790,7 @@ export default function Pengaturan() {
                             </div>
                         ) : (
                             activeRoleSubTab === 'roles' && (
-                                <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+                                <div className="border border-gray-100 rounded-2xl overflow-hidden">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left border-collapse">
                                             <thead>
@@ -1894,6 +1895,7 @@ export default function Pengaturan() {
                             )
                         )}
                     </div>
+                </div>
                 )
             }
 
