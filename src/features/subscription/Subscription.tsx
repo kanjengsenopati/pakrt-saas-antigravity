@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { subscriptionService } from '../../services/subscriptionService';
 import {
     CrownSimple, CheckCircle, Clock, XCircle, Upload,
-    CreditCard, ArrowRight, Star, Receipt
+    CreditCard, ArrowRight, Star, Receipt, ArrowLeft
 } from '@phosphor-icons/react';
 
 interface Plan {
@@ -34,6 +35,7 @@ interface Invoice {
 type Tab = 'status' | 'plans' | 'history';
 
 export default function Subscription() {
+    const navigate = useNavigate();
     const [tab, setTab] = useState<Tab>('status');
     const [subStatus, setSubStatus] = useState<any>(null);
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -147,9 +149,17 @@ export default function Subscription() {
     return (
         <div className="space-y-6 pb-20 pt-12 px-5">
             {/* Header */}
-            <div>
-                <h1 className="text-[22px] font-bold text-slate-900">Berlangganan</h1>
-                <p className="text-[14px] text-slate-500 mt-0.5">Kelola paket langganan PakRT Premium</p>
+            <div className="flex items-center gap-3">
+                <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                >
+                    <ArrowLeft size={20} weight="bold" />
+                </button>
+                <div>
+                    <h1 className="text-[22px] font-bold text-slate-900">Berlangganan</h1>
+                    <p className="text-[14px] text-slate-500 mt-0.5">Kelola paket langganan PakRT Premium</p>
+                </div>
             </div>
 
             {/* Tabs */}
