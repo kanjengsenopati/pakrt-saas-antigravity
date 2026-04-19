@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { dateUtils } from '../../utils/date';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
+import { parseApiError } from '../../utils/errorParser';
 
 
 const AGAMA_OPTIONS = [
@@ -104,7 +105,7 @@ export default function WargaForm() {
         } catch (error: any) {
             console.error('Gagal menyimpan data:', error);
             const serverDetails = error?.response?.data?.details;
-            const msg = error?.response?.data?.error || error?.message || 'Terjadi kesalahan tidak diketahui.';
+            const msg = parseApiError(error, 'Terjadi kesalahan tidak diketahui.');
             setSubmitError(`Gagal menyimpan data: ${msg}${serverDetails ? ` (${serverDetails})` : ''}`);
         } finally {
             setIsSubmitting(false);

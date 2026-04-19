@@ -16,6 +16,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
 import { Text } from '../../components/ui/Typography';
+import { parseApiError } from '../../utils/errorParser';
 
 type PengaturanFormData = {
     nama_wilayah: string;
@@ -274,8 +275,7 @@ export default function Pengaturan() {
             alert('User berhasil ditambahkan.');
         } catch (error: any) {
             console.error('Failed to create user', error);
-            const message = error.response?.data?.error || 'Gagal menambahkan user. Silakan coba lagi.';
-            alert(message);
+            alert(parseApiError(error, 'Gagal menambahkan user. Silakan coba lagi.'));
         }
     };
 

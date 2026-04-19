@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { authService } from '../../services/authService';
+import { parseApiError } from '../../utils/errorParser';
 import { Eye, EyeSlash, ArrowLeft, UserPlus, CheckCircle } from '@phosphor-icons/react';
 
 type JoinFormData = {
@@ -67,7 +68,7 @@ export default function JoinRT() {
             setIsSuccess(true);
         } catch (err: any) {
             console.error("Join failed:", err);
-            setError(err.response?.data?.error || "Pendaftaran gagal. Silakan coba lagi.");
+            setError(parseApiError(err, "Pendaftaran gagal. Silakan coba lagi."));
         } finally {
             setIsLoading(false);
         }

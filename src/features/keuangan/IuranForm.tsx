@@ -12,6 +12,7 @@ import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotc
 import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
+import { parseApiError } from '../../utils/errorParser';
 
 type IuranFormData = Omit<PembayaranIuran, 'id' | 'tenant_id'>;
 
@@ -262,8 +263,7 @@ export default function IuranForm() {
         } catch (error: any) {
             console.error("Gagal menyimpan pembayaran iuran:", error);
             // Capture specific errorMessage sent from the backend API if available
-            const backendMsg = error.response?.data?.error;
-            setErrorMessage(backendMsg ? `Gagal menyimpan: ${backendMsg}` : "Terjadi kesalahan koneksi saat menyimpan data transaksi.");
+            setErrorMessage(parseApiError(error, "Terjadi kesalahan koneksi saat menyimpan data transaksi."));
         }
     };
 

@@ -8,6 +8,7 @@ import { pengaturanService } from '../../services/pengaturanService';
 import { Pengurus, Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
+import { parseApiError } from '../../utils/errorParser';
 
 type PengurusFormData = Omit<Pengurus, 'id' | 'tenant_id' | 'scope'>;
 
@@ -115,8 +116,7 @@ export default function PengurusForm() {
             navigate('/pengurus');
         } catch (error: any) {
             console.error("Gagal menyimpan data pengurus:", error);
-            const message = error.response?.data?.error || error.message || "Terjadi kesalahan saat menyimpan data.";
-            alert(message);
+            alert(parseApiError(error, "Terjadi kesalahan saat menyimpan data."));
         }
     };
 
