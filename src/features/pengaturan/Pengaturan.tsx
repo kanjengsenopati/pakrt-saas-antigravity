@@ -11,7 +11,7 @@ import { wargaService } from '../../services/wargaService';
 import { User } from '../../database/db';
 import { Warga } from '../../types/database';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretUp, Key, Trash } from '@phosphor-icons/react';
+import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretUp, Key, Trash, Printer } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
@@ -750,33 +750,33 @@ export default function Pengaturan() {
             </div>
 
             {/* System Tabs (Premium Segmented Control) */}
-            <div className="flex flex-wrap lg:flex-nowrap bg-gray-100/70 p-1.5 rounded-2xl border border-gray-200/60 w-full mb-6 gap-1 relative overflow-hidden">
+            <div className="flex flex-wrap lg:flex-nowrap bg-gray-100 p-1 rounded-[24px] border border-gray-200 w-full mb-6 gap-1 relative overflow-hidden shadow-inner">
                 <button
                     onClick={() => setActiveTab('profil')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'profil' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-[20px] transition-all duration-300 ${activeTab === 'profil' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <FileText weight={activeTab === 'profil' ? 'fill' : 'duotone'} className="w-5 h-5" />
                     <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Profil & Tema</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('keuangan')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'keuangan' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-[20px] transition-all duration-300 ${activeTab === 'keuangan' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <Money weight={activeTab === 'keuangan' ? 'fill' : 'duotone'} className="w-5 h-5" />
                     <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Keuangan ({currentScope})</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('user')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'user' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-[20px] transition-all duration-300 ${activeTab === 'user' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
                     <ShieldCheck weight={activeTab === 'user' ? 'fill' : 'duotone'} className="w-5 h-5" />
                     <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">User & Hak Akses</Text.Body>
                 </button>
                 <button
                     onClick={() => setActiveTab('surat')}
-                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-xl transition-all duration-300 ${activeTab === 'surat' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
+                    className={`flex-1 flex justify-center items-center gap-2 py-3 px-2 rounded-[20px] transition-all duration-300 ${activeTab === 'surat' ? 'bg-white text-brand-700 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200/50'}`}
                 >
-                    <FileText weight={activeTab === 'surat' ? 'fill' : 'duotone'} className="w-5 h-5" />
+                    <Printer weight={activeTab === 'surat' ? 'fill' : 'duotone'} className="w-5 h-5" />
                     <Text.Body className="hidden sm:inline !text-sm !font-semibold !text-inherit">Surat & Cetak</Text.Body>
                 </button>
             </div>
@@ -1454,7 +1454,7 @@ export default function Pengaturan() {
                                             <button
                                                 type="submit"
                                                 disabled={isSaving || isUploading}
-                                                className="w-full py-4 bg-gray-900 hover:bg-slate-800 text-white rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl shadow-gray-200 hover-lift active-press transition-all disabled:opacity-70 group"
+                                                className="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-xl flex items-center justify-center gap-3 font-bold shadow-xl shadow-brand-200 hover-lift active-press transition-all disabled:opacity-70 group"
                                             >
                                                 <FloppyDisk weight="bold" className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                                 <Text.Label className="uppercase tracking-widest text-xs">{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan Pengaturan ${currentScope}`}</Text.Label>
@@ -1476,9 +1476,9 @@ export default function Pengaturan() {
                                     )}
                                 </div>
                                 <HasPermission module="Setup / Pengaturan" action="Ubah">
-                                    <button type="submit" disabled={isSaving || isUploading} className="px-6 py-2.5 bg-gray-900 hover:bg-slate-800 text-white rounded-lg flex items-center gap-2 font-medium hover-lift active-press transition-all disabled:opacity-70">
+                                    <button type="submit" disabled={isSaving || isUploading} className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl flex items-center gap-2 font-bold shadow-md shadow-brand-200 hover-lift active-press transition-all disabled:opacity-70">
                                         <FloppyDisk weight="bold" />
-                                        <Text.Label>{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan ${currentScope}`}</Text.Label>
+                                        <Text.Label className="!normal-case !tracking-normal">{isSaving ? 'Menyimpan...' : isUploading ? 'Mengunggah...' : `Simpan ${currentScope}`}</Text.Label>
                                     </button>
                                 </HasPermission>
                             </div>
@@ -1499,15 +1499,15 @@ export default function Pengaturan() {
                                     <Text.Caption className="!text-[12px] !text-slate-500 !mt-2 !font-medium !tracking-normal">Pengaturan RBAC & Hak Akses Per Tenant.</Text.Caption>
                                 </div>
                                 <div className="h-10 w-[1px] bg-gray-100 hidden md:block"></div>
-                                <div className="flex bg-gray-100 p-1 rounded-xl">
+                                <div className="flex bg-gray-100 p-1 rounded-xl shadow-inner">
                                     <button 
                                         onClick={() => setActiveRoleSubTab('users')}
-                                        className={`px-4 py-2 text-[14px] font-normal rounded-lg transition-all ${activeRoleSubTab === 'users' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+                                        className={`px-5 py-2 text-[14px] font-bold rounded-lg transition-all ${activeRoleSubTab === 'users' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
                                         Pengguna
                                     </button>
                                     <button 
                                         onClick={() => setActiveRoleSubTab('roles')}
-                                        className={`px-4 py-2 text-[14px] font-normal rounded-lg transition-all ${activeRoleSubTab === 'roles' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+                                        className={`px-5 py-2 text-[14px] font-bold rounded-lg transition-all ${activeRoleSubTab === 'roles' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
                                         Role / Peran
                                     </button>
                                 </div>
@@ -1517,7 +1517,7 @@ export default function Pengaturan() {
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
                                             onClick={() => { setShowAddUserForm(v => !v); setExpandedUserId(null); }}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddUserForm ? 'bg-slate-800 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-[14px] ${showAddUserForm ? 'bg-slate-800 text-white shadow-slate-500/20' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddUserForm ? <X weight="bold" /> : <Plus weight="bold" />}
                                             <Text.Label className="!normal-case !tracking-normal">{showAddUserForm ? 'Batal' : 'Tambah Pengguna'}</Text.Label>
                                         </button>
@@ -1526,7 +1526,7 @@ export default function Pengaturan() {
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
                                             onClick={() => setShowAddRoleForm(v => !v)}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-normal shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-slate-800 text-white shadow-slate-500/20 hover:scale-105 active:scale-95'}`}>
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-brand-600 text-white shadow-brand-500/20 hover:scale-105 active:scale-95'}`}>
                                             {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
                                             <Text.Label className="!normal-case !tracking-normal">{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</Text.Label>
                                         </button>
@@ -1605,9 +1605,9 @@ export default function Pengaturan() {
                                     </div>
                                     <div className="md:col-span-2 flex justify-end gap-3 pt-2 border-t border-gray-100">
                                         <button type="button" onClick={() => { setShowAddUserForm(false); setSelectedWargaId(''); }}
-                                            className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all">Batal</button>
+                                            className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all">Batal</button>
                                         <button type="submit"
-                                            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md transition-all active:scale-95">
+                                            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md shadow-brand-100 transition-all active:scale-95">
                                             <UserIcon weight="bold" className="inline w-4 h-4 mr-1.5" />Simpan Pengguna
                                         </button>
                                     </div>
@@ -1634,7 +1634,7 @@ export default function Pengaturan() {
                                         <button type="button" onClick={() => setShowAddRoleForm(false)}
                                             className="px-5 py-3 rounded-xl text-[14px] font-normal text-slate-500 hover:bg-gray-100 transition-all">Batal</button>
                                         <button type="submit"
-                                            className="px-6 py-3 rounded-xl text-[14px] font-normal text-white bg-slate-800 hover:bg-slate-900 shadow-md transition-all active:scale-95">Simpan Role</button>
+                                            className="px-6 py-3 rounded-xl text-[14px] font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-md transition-all active:scale-95">Simpan Role</button>
                                     </div>
                                 </form>
                             </div>
