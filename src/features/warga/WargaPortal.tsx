@@ -249,7 +249,7 @@ export default function WargaPortal() {
                                 key={idx} 
                                 onClick={() => {
                                     if (item.isLogout) {
-                                        if(window.confirm('Keluar dari aplikasi?')) logout();
+                                        logout();
                                     } else if (item.extra?.tab) {
                                         navigate(item.path as string, { state: { activeTab: item.extra.tab } });
                                     } else {

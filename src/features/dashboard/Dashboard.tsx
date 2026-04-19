@@ -131,7 +131,7 @@ export default function Dashboard() {
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/notifications')}>
                                     <Bell weight="bold" className="text-xl" />
                                 </button>
-                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => { if(window.confirm('Keluar dari aplikasi?')) logout(); }}>
+                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => logout()}>
                                     <SignOut weight="bold" className="text-xl" />
                                 </button>
                             </div>
