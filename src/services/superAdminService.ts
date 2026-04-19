@@ -13,6 +13,11 @@ export const superAdminService = {
         return res.data;
     },
 
+    async getTenantRegionStats() {
+        const res = await api.get('/super-admin/tenants-stats');
+        return res.data;
+    },
+
     async getTenantDetail(id: string) {
         const res = await api.get(`/super-admin/tenants/${id}`);
         return res.data;

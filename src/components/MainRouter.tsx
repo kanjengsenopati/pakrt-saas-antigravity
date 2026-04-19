@@ -45,6 +45,7 @@ import SATenantDetail from '../features/superadmin/SATenantDetail';
 import SASubscriptionManager from '../features/superadmin/SASubscriptionManager';
 import SAAffiliate from '../features/superadmin/SAAffiliate';
 import SAAnalytics from '../features/superadmin/SAAnalytics';
+import SAMonitorWilayah from '../features/superadmin/SAMonitorWilayah';
 import Subscription from '../features/subscription/Subscription';
 
 const router = createBrowserRouter([
@@ -385,7 +386,8 @@ const router = createBrowserRouter([
             { index: true, element: <SADashboard /> },
             { path: 'tenants', element: <SATenantList /> },
             { path: 'tenants/:id', element: <SATenantDetail /> },
-            { path: 'subscriptions', element: <SASubscriptionManager /> },
+             { path: 'subscriptions', element: <SASubscriptionManager /> },
+            { path: 'monitor', element: <SAMonitorWilayah /> },
             { path: 'affiliates', element: <SAAffiliate /> },
             { path: 'analytics', element: <SAAnalytics /> }
         ]
