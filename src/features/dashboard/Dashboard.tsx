@@ -28,7 +28,7 @@ import { Text } from '../../components/ui/Typography';
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const { user: authUser } = useAuth();
+    const { user: authUser, logout } = useAuth();
     const { currentTenant, currentScope } = useTenant();
     
     const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0, pendingIuran: 0 });
@@ -131,7 +131,7 @@ export default function Dashboard() {
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/notifications')}>
                                     <Bell weight="bold" className="text-xl" />
                                 </button>
-                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/logout')}>
+                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => { if(window.confirm('Keluar dari aplikasi?')) logout(); }}>
                                     <SignOut weight="bold" className="text-xl" />
                                 </button>
                             </div>
