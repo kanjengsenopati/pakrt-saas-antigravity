@@ -184,30 +184,30 @@ export default function WargaPortal() {
                 {/* Layanan Mandiri */}
                 <div className="animate-fade-in-up">
                     <Text.Label className="!text-slate-800 mb-4">Layanan Mandiri</Text.Label>
-                    <div className="grid grid-cols-4 gap-3">
-                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/surat')}>
-                            <button className="w-[3.75rem] h-[3.75rem] bg-blue-50/80 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50 group-active:scale-95 transition-all">
-                                <EnvelopeSimple size={28} weight="duotone" />
-                            </button>
-                            <Text.Label className="text-center group-active:scale-95 transition-transform">Minta<br/>Surat</Text.Label>
+                    <div className="grid grid-cols-4 gap-2">
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/surat')}>
+                            <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
+                                <EnvelopeSimple weight="regular" className="text-[1.8rem] text-blue-600" />
+                            </div>
+                            <Text.Label className="text-center leading-[1.2]">SURAT</Text.Label>
                         </div>
-                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/aduan/new')}>
-                            <button className="w-[3.75rem] h-[3.75rem] bg-rose-50/80 group-hover:bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border border-rose-100/50 group-active:scale-95 transition-all">
-                                <Megaphone size={28} weight="duotone" />
-                            </button>
-                            <Text.Label className="text-center group-active:scale-95 transition-transform">Lapor<br/>Masalah</Text.Label>
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aduan/new')}>
+                            <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
+                                <Megaphone weight="regular" className="text-[1.8rem] text-rose-500" />
+                            </div>
+                            <Text.Label className="text-center leading-[1.2]">ADUAN</Text.Label>
                         </div>
-                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/iuran')}>
-                            <button className="w-[3.75rem] h-[3.75rem] bg-emerald-50/80 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 group-active:scale-95 transition-all">
-                                <CurrencyCircleDollar size={28} weight="duotone" />
-                            </button>
-                            <Text.Label className="text-center group-active:scale-95 transition-transform">Riwayat<br/>Bayar</Text.Label>
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran')}>
+                            <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
+                                <CurrencyCircleDollar weight="regular" className="text-[1.8rem] text-emerald-600" />
+                            </div>
+                            <Text.Label className="text-center leading-[1.2]">IURAN</Text.Label>
                         </div>
-                        <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate('/agenda')}>
-                            <button className="w-[3.75rem] h-[3.75rem] bg-purple-50/80 group-hover:bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/50 group-active:scale-95 transition-all">
-                                <CalendarCheck size={28} weight="duotone" />
-                            </button>
-                            <Text.Label className="text-center group-active:scale-95 transition-transform">Agenda<br/>Warga</Text.Label>
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/agenda')}>
+                            <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
+                                <CalendarCheck weight="regular" className="text-[1.8rem] text-purple-600" />
+                            </div>
+                            <Text.Label className="text-center leading-[1.2]">AGENDA</Text.Label>
                         </div>
                     </div>
                 </div>
@@ -240,10 +240,10 @@ export default function WargaPortal() {
                     <Text.Label className="!text-slate-800 mb-4">Pintasan Lainnya</Text.Label>
                     <div className="grid grid-cols-4 gap-3">
                         {[
-                            { label: 'Data Warga', icon: Users, path: '/warga', color: 'bg-amber-50 text-amber-600 border-amber-100', hoverBg: 'group-hover:bg-amber-100' },
-                            { label: 'Aset RT', icon: Package, path: '/aset', color: 'bg-cyan-50 text-cyan-600 border-cyan-100', hoverBg: 'group-hover:bg-cyan-100' },
-                            { label: 'AD/ART', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' }, color: 'bg-slate-100 text-slate-600 border-slate-200', hoverBg: 'group-hover:bg-slate-200' },
-                            { label: 'Logout', icon: SignOut, isLogout: true, color: 'bg-red-50 text-red-600 border-red-100', hoverBg: 'group-hover:bg-red-100' },
+                            { label: 'WARGA', icon: Users, path: '/warga', color: 'text-amber-600' },
+                            { label: 'ASET', icon: Package, path: '/aset', color: 'text-cyan-600' },
+                            { label: 'PENGURUS', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' }, color: 'text-slate-600' },
+                            { label: 'LOGOUT', icon: SignOut, isLogout: true, color: 'text-red-500' },
                         ].map((item, idx) => (
                             <div 
                                 key={idx} 
@@ -256,12 +256,12 @@ export default function WargaPortal() {
                                         navigate(item.path as string);
                                     }
                                 }}
-                                className="flex flex-col items-center gap-2 group cursor-pointer"
+                                className="flex flex-col items-center gap-3 cursor-pointer group"
                             >
-                                <button className={`w-[3.75rem] h-[3.75rem] ${item.color} ${item.hoverBg} rounded-2xl flex items-center justify-center shadow-sm border group-active:scale-95 transition-all`}>
-                                    <item.icon size={26} weight="duotone" />
-                                </button>
-                                <Text.Label className="text-center truncate w-full px-1 group-active:scale-95 transition-transform">
+                                <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
+                                    <item.icon weight="regular" className={`text-[1.8rem] ${item.color}`} />
+                                </div>
+                                <Text.Label className="text-center truncate w-full px-1 group-active:scale-95 transition-transform leading-[1.2]">
                                     {item.label}
                                 </Text.Label>
                             </div>
