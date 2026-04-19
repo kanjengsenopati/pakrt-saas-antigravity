@@ -113,14 +113,14 @@ export default function SADashboard() {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
-                            <div className={`w-9 h-9 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
-                                <stat.icon size={20} weight="bold" />
+                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                        <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                                <stat.icon size={18} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{stat.label}</Text.Label>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{stat.label}</Text.Label>
                         </div>
                         <div className={stat.type === 'count' ? 'text-center' : 'text-left'}>
                             <Text.Amount className={`${stat.text} !text-3xl !font-black leading-none !tracking-tighter`}>

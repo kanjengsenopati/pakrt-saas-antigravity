@@ -100,19 +100,19 @@ export default function SATenantDetail() {
             </div>
 
             {/* Info Grid (Refined Summary Cards) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                     { label: 'Warga', value: tenant._count?.wargas || 0, icon: Users, text: 'text-emerald-600', bg: 'bg-emerald-50' },
                     { label: 'Users', value: tenant._count?.users || 0, icon: Users, text: 'text-blue-600', bg: 'bg-blue-50' },
                     { label: 'Agenda', value: moduleStats.agendaCount || 0, icon: Calendar, text: 'text-violet-600', bg: 'bg-violet-50' },
                     { label: 'Iuran', value: moduleStats.iuranCount || 0, icon: CreditCard, text: 'text-amber-600', bg: 'bg-amber-50' }
                 ].map((card) => (
-                    <div key={card.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
-                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
-                            <div className={`w-9 h-9 rounded-xl ${card.bg} ${card.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                                <card.icon size={20} weight="bold" />
+                    <div key={card.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-xl ${card.bg} ${card.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                                <card.icon size={18} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{card.label}</Text.Label>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{card.label}</Text.Label>
                         </div>
                         <div className="text-center">
                             <Text.Amount className={`${card.text} !text-3xl !font-black leading-none !tracking-tighter`}>

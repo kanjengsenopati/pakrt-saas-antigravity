@@ -51,18 +51,18 @@ export default function SAAnalytics() {
             </div>
 
             {/* Revenue Stats (Refined Summary Cards) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     { label: 'Total Revenue', value: formatCurrency(revenue?.totalRevenue || 0), icon: CurrencyCircleDollar, text: 'text-emerald-600', bg: 'bg-emerald-50', align: 'left' },
                     { label: 'Verified Invoices', value: (revenue?.invoiceCount || 0).toLocaleString('id-ID'), icon: ChartLineUp, text: 'text-blue-600', bg: 'bg-blue-50', align: 'center' },
                     { label: 'Bulan Aktif Data', value: growth.length.toLocaleString('id-ID'), icon: TrendUp, text: 'text-violet-600', bg: 'bg-violet-50', align: 'center' }
                 ].map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
-                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
-                            <div className={`w-9 h-9 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
-                                <stat.icon size={20} weight="bold" />
+                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                                <stat.icon size={18} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{stat.label}</Text.Label>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{stat.label}</Text.Label>
                         </div>
                         <div className={stat.align === 'center' ? 'text-center' : 'text-left'}>
                             <Text.Amount className={`${stat.text} !text-3xl !font-black leading-none !tracking-tighter`}>

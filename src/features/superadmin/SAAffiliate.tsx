@@ -46,14 +46,14 @@ export default function SAAffiliate() {
             </div>
 
             {/* Stats (Refined Summary Cards) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {stats.map((s, idx) => (
-                    <div key={s.label} className="bg-white rounded-[24px] border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
-                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
-                            <div className={`w-9 h-9 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
-                                <s.icon size={20} weight="bold" />
+                    <div key={s.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl transition-all group">
+                        <div className="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                                <s.icon size={18} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-widest !text-[10px] truncate leading-none uppercase">{s.label}</Text.Label>
+                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{s.label}</Text.Label>
                         </div>
                         <div className={idx === 0 ? 'text-left' : 'text-center'}>
                             <Text.Amount className={`${s.color} !text-3xl !font-black leading-none !tracking-tighter`}>
