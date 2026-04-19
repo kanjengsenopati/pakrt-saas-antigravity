@@ -49,33 +49,33 @@ export default function SADashboard() {
             label: 'Total RT/RW',
             value: overview?.totalTenants || 0,
             icon: Buildings,
-            color: 'from-blue-500 to-blue-600',
-            bg: 'bg-blue-500/10',
-            text: 'text-blue-400'
+            bg: 'bg-blue-50',
+            text: 'text-blue-600',
+            type: 'count'
         },
         {
             label: 'Total Pengguna',
             value: overview?.totalUsers || 0,
             icon: Users,
-            color: 'from-violet-500 to-violet-600',
-            bg: 'bg-violet-500/10',
-            text: 'text-violet-400'
+            bg: 'bg-violet-50',
+            text: 'text-violet-600',
+            type: 'count'
         },
         {
             label: 'Total Warga',
             value: overview?.totalWarga || 0,
             icon: Users,
-            color: 'from-emerald-500 to-emerald-600',
-            bg: 'bg-emerald-500/10',
-            text: 'text-emerald-400'
+            bg: 'bg-emerald-50',
+            text: 'text-emerald-600',
+            type: 'count'
         },
         {
-            label: 'Active Subscriptions',
+            label: 'Active Subs',
             value: overview?.subscriptions?.active || 0,
             icon: CreditCard,
-            color: 'from-amber-500 to-amber-600',
-            bg: 'bg-amber-500/10',
-            text: 'text-amber-400'
+            bg: 'bg-amber-50',
+            text: 'text-amber-600',
+            type: 'count'
         }
     ];
 
@@ -92,33 +92,41 @@ export default function SADashboard() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <Text.H1 className="!text-white">Platform Dashboard</Text.H1>
-                <Text.Body className="!text-slate-400 mt-1">Overview platform PakRT SaaS</Text.Body>
+                <Text.H1>Platform Dashboard</Text.H1>
+                <Text.Body className="!text-slate-500 mt-1">Overview platform PakRT SaaS</Text.Body>
             </div>
 
             {/* Pending Invoice Alert */}
             {(overview?.pendingInvoices || 0) > 0 && (
                 <div 
                     onClick={() => navigate('/super-admin/subscriptions')}
-                    className="flex items-center gap-3 px-5 py-3 rounded-[24px] bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition-colors"
+                    className="flex items-center gap-3 px-5 py-3 rounded-[24px] bg-amber-50 border border-amber-100 cursor-pointer hover:bg-amber-100/50 transition-colors shadow-sm shadow-amber-900/5"
                 >
-                    <CreditCard size={22} className="text-amber-400" weight="duotone" />
-                    <Text.Body className="!text-amber-300 !font-medium">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
+                        <CreditCard size={20} weight="bold" />
+                    </div>
+                    <Text.Body className="!text-amber-700 !font-bold">
                         {overview?.pendingInvoices} invoice menunggu verifikasi pembayaran
                     </Text.Body>
-                    <ArrowRight size={16} className="text-amber-400 ml-auto" />
+                    <ArrowRight size={16} className="text-amber-500 ml-auto" />
                 </div>
             )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat) => (
-                    <div key={stat.label} className="relative overflow-hidden rounded-[24px] bg-slate-900/80 border border-white/5 p-5">
-                        <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
-                            <stat.icon size={22} weight="duotone" className={stat.text} />
+                    <div key={stat.label} className="bg-white rounded-[24px] border border-slate-100 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-50">
+                            <div className={`w-8 h-8 rounded-[10px] ${stat.bg} ${stat.text} flex items-center justify-center shrink-0`}>
+                                <stat.icon size={18} weight="bold" />
+                            </div>
+                            <Text.Label className="!text-slate-400 !normal-case !tracking-normal !text-[11px] truncate leading-none">{stat.label}</Text.Label>
                         </div>
-                        <Text.Amount className="!text-white !text-2xl block">{stat.value.toLocaleString('id-ID')}</Text.Amount>
-                        <Text.Label className="!text-slate-500 mt-1 block">{stat.label}</Text.Label>
+                        <div className={stat.type === 'count' ? 'text-center' : 'text-left'}>
+                            <Text.Amount className={`${stat.text} !text-2xl !font-black leading-none`}>
+                                {stat.value.toLocaleString('id-ID')}
+                            </Text.Amount>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -126,18 +134,21 @@ export default function SADashboard() {
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Subscription Breakdown */}
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                    <Text.H2 className="!text-white mb-4">Subscription Breakdown</Text.H2>
-                    <div className="space-y-3">
+                <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center justify-between mb-6">
+                        <Text.H2>Subscription Status</Text.H2>
+                        <CreditCard size={20} className="text-slate-300" weight="bold" />
+                    </div>
+                    <div className="space-y-4">
                         {subBreakdown.map((item) => (
                             <div key={item.label}>
-                                <div className="flex items-center justify-between mb-1">
-                                    <Text.Label className="!text-slate-500">{item.label}</Text.Label>
-                                    <Text.Body className="!text-white !font-bold">{item.value}</Text.Body>
+                                <div className="flex items-center justify-between mb-2">
+                                    <Text.Label className="!text-slate-500 !normal-case !tracking-normal !font-bold">{item.label}</Text.Label>
+                                    <Text.Body className="!text-slate-900 !font-black">{item.value}</Text.Body>
                                 </div>
-                                <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+                                <div className="h-2.5 rounded-full bg-slate-50 overflow-hidden border border-slate-100/50 p-[1px]">
                                     <div
-                                        className={`h-full rounded-full ${item.color} transition-all duration-500`}
+                                        className={`h-full rounded-full ${item.color} shadow-sm transition-all duration-700 ease-out`}
                                         style={{ width: `${(item.value / totalSubs) * 100}%` }}
                                     />
                                 </div>
@@ -147,28 +158,34 @@ export default function SADashboard() {
                 </div>
 
                 {/* Tenant Growth */}
-                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                    <Text.H2 className="!text-white mb-4">Pertumbuhan Tenant (12 Bulan)</Text.H2>
+                <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center justify-between mb-6">
+                        <Text.H2>Pertumbuhan Tenant</Text.H2>
+                        <ChartLineUp size={20} className="text-slate-300" weight="bold" />
+                    </div>
                     {growth.length > 0 ? (
-                        <div className="flex items-end gap-2 h-40">
+                        <div className="flex items-end gap-2.5 h-44 px-2">
                             {growth.map((g, i) => {
                                 const maxCount = Math.max(...growth.map(x => x.count), 1);
                                 const height = (g.count / maxCount) * 100;
                                 return (
-                                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                                        <Text.Caption className="!text-emerald-400 !font-bold !text-[9px]">{g.count}</Text.Caption>
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative">
+                                        <div className="absolute -top-7 scale-0 group-hover:scale-100 transition-transform bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg z-10">
+                                            {g.count}
+                                        </div>
                                         <div 
-                                            className="w-full rounded-t-lg bg-gradient-to-t from-emerald-600 to-emerald-400 transition-all duration-500"
+                                            className="w-full rounded-t-xl bg-gradient-to-t from-emerald-600 to-emerald-400 transition-all duration-500 shadow-sm"
                                             style={{ height: `${Math.max(height, 4)}%` }}
                                         />
-                                        <Text.Caption className="!text-slate-600 !text-[8px]">{g.month.slice(5)}</Text.Caption>
+                                        <Text.Caption className="!text-slate-400 !text-[8px] !font-bold !not-italic">{g.month.slice(5)}</Text.Caption>
                                     </div>
                                 );
                             })}
                         </div>
                     ) : (
-                        <div className="flex items-center justify-center h-40 text-sm text-slate-500">
-                            Belum ada data pertumbuhan
+                        <div className="flex flex-col items-center justify-center h-44 gap-2 text-slate-400">
+                            <Buildings size={32} weight="thin" />
+                            <span className="text-xs font-medium italic">Belum ada data pertumbuhan</span>
                         </div>
                     )}
                 </div>
@@ -176,30 +193,23 @@ export default function SADashboard() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button
-                    onClick={() => navigate('/super-admin/tenants')}
-                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-emerald-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
-                >
-                    <Buildings size={20} className="text-slate-400 group-hover:text-emerald-400 transition-colors" weight="duotone" />
-                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Kelola Tenant</Text.Body>
-                    <ArrowRight size={16} className="text-slate-600 group-hover:text-emerald-400 ml-auto transition-colors" />
-                </button>
-                <button
-                    onClick={() => navigate('/super-admin/subscriptions')}
-                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-amber-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
-                >
-                    <CreditCard size={20} className="text-slate-400 group-hover:text-amber-400 transition-colors" weight="duotone" />
-                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Verifikasi Payment</Text.Body>
-                    <ArrowRight size={16} className="text-slate-600 group-hover:text-amber-400 ml-auto transition-colors" />
-                </button>
-                <button
-                    onClick={() => navigate('/super-admin/analytics')}
-                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-violet-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
-                >
-                    <ChartLineUp size={20} className="text-slate-400 group-hover:text-violet-400 transition-colors" weight="duotone" />
-                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Lihat Analytics</Text.Body>
-                    <ArrowRight size={16} className="text-slate-600 group-hover:text-violet-400 ml-auto transition-colors" />
-                </button>
+                {[
+                    { label: 'Kelola Tenant', icon: Buildings, color: 'text-emerald-500', bg: 'bg-emerald-50', path: '/super-admin/tenants' },
+                    { label: 'Verifikasi Payment', icon: CreditCard, color: 'text-amber-500', bg: 'bg-amber-50', path: '/super-admin/subscriptions' },
+                    { label: 'Lihat Analytics', icon: ChartLineUp, color: 'text-violet-500', bg: 'bg-violet-50', path: '/super-admin/analytics' }
+                ].map((action) => (
+                    <button
+                        key={action.label}
+                        onClick={() => navigate(action.path)}
+                        className="flex items-center gap-4 p-5 rounded-[24px] bg-white border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                    >
+                        <div className={`w-10 h-10 rounded-xl ${action.bg} ${action.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                            <action.icon size={20} weight="bold" />
+                        </div>
+                        <Text.Body className="!text-slate-700 !font-bold group-hover:!text-slate-900 transition-colors">{action.label}</Text.Body>
+                        <ArrowRight size={18} className="text-slate-300 group-hover:text-slate-900 ml-auto transition-all" />
+                    </button>
+                ))}
             </div>
         </div>
     );
