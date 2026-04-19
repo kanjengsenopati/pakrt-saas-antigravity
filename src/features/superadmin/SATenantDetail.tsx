@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { superAdminService } from '../../services/superAdminService';
 import { ArrowLeft, Users, CreditCard, Calendar, Prohibit, CheckCircle } from '@phosphor-icons/react';
+import { Text } from '../../components/ui/Typography';
 
 export default function SATenantDetail() {
     const { id } = useParams<{ id: string }>();
@@ -87,53 +88,53 @@ export default function SATenantDetail() {
                     <ArrowLeft size={18} />
                 </button>
                 <div>
-                    <h1 className="text-xl font-bold text-white">{tenant.name}</h1>
-                    <p className="text-xs text-slate-400 font-mono mt-0.5">{tenant.id}</p>
+                    <Text.H1 className="!text-white">{tenant.name}</Text.H1>
+                    <Text.Caption className="!text-slate-500 font-mono !mt-0.5">{tenant.id}</Text.Caption>
                 </div>
             </div>
 
             {/* Info Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-4">
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
                     <Users size={18} className="text-emerald-400 mb-2" weight="duotone" />
-                    <div className="text-lg font-bold text-white">{tenant._count?.wargas || 0}</div>
-                    <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Warga</div>
+                    <Text.Amount className="!text-white block">{tenant._count?.wargas || 0}</Text.Amount>
+                    <Text.Label className="!text-slate-500 block mt-1">Warga</Text.Label>
                 </div>
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-4">
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
                     <Users size={18} className="text-blue-400 mb-2" weight="duotone" />
-                    <div className="text-lg font-bold text-white">{tenant._count?.users || 0}</div>
-                    <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Users</div>
+                    <Text.Amount className="!text-white block">{tenant._count?.users || 0}</Text.Amount>
+                    <Text.Label className="!text-slate-500 block mt-1">Users</Text.Label>
                 </div>
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-4">
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
                     <Calendar size={18} className="text-violet-400 mb-2" weight="duotone" />
-                    <div className="text-lg font-bold text-white">{moduleStats.agendaCount || 0}</div>
-                    <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Agenda</div>
+                    <Text.Amount className="!text-white block">{moduleStats.agendaCount || 0}</Text.Amount>
+                    <Text.Label className="!text-slate-500 block mt-1">Agenda</Text.Label>
                 </div>
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-4">
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-4 shadow-sm">
                     <CreditCard size={18} className="text-amber-400 mb-2" weight="duotone" />
-                    <div className="text-lg font-bold text-white">{moduleStats.iuranCount || 0}</div>
-                    <div className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Iuran</div>
+                    <Text.Amount className="!text-white block">{moduleStats.iuranCount || 0}</Text.Amount>
+                    <Text.Label className="!text-slate-500 block mt-1">Iuran</Text.Label>
                 </div>
             </div>
 
             {/* Admin Info */}
             {tenant.admin && (
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-5">
-                    <h2 className="text-sm font-semibold text-white mb-3">Admin RT</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div><span className="text-slate-500">Nama:</span> <span className="text-white font-medium ml-2">{tenant.admin.name}</span></div>
-                        <div><span className="text-slate-500">Email:</span> <span className="text-white font-medium ml-2">{tenant.admin.email}</span></div>
-                        <div><span className="text-slate-500">Kontak:</span> <span className="text-white font-medium ml-2">{tenant.admin.kontak || '-'}</span></div>
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-5 shadow-sm">
+                    <Text.H2 className="!text-white mb-3">Admin RT</Text.H2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div><Text.Label className="!text-slate-500">Nama:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.name}</Text.Body></div>
+                        <div><Text.Label className="!text-slate-500">Email:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.email}</Text.Body></div>
+                        <div><Text.Label className="!text-slate-500">Kontak:</Text.Label> <Text.Body className="!text-white inline ml-2">{tenant.admin.kontak || '-'}</Text.Body></div>
                     </div>
                 </div>
             )}
 
             {/* Subscription Management */}
-            <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-5">
-                <h2 className="text-sm font-semibold text-white mb-4">Kelola Subscription</h2>
+            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-5 shadow-sm">
+                <Text.H2 className="!text-white mb-4">Kelola Subscription</Text.H2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Plan</label>
+                        <Text.Label className="!text-slate-500 mb-1 block">Plan</Text.Label>
                         <select
                             value={subForm.plan}
                             onChange={(e) => setSubForm({ ...subForm, plan: e.target.value })}
@@ -144,7 +145,7 @@ export default function SATenantDetail() {
                         </select>
                     </div>
                     <div>
-                        <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Status</label>
+                        <Text.Label className="!text-slate-500 mb-1 block">Status</Text.Label>
                         <select
                             value={subForm.status}
                             onChange={(e) => setSubForm({ ...subForm, status: e.target.value })}
@@ -157,7 +158,7 @@ export default function SATenantDetail() {
                         </select>
                     </div>
                     <div>
-                        <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Berlaku Hingga</label>
+                        <Text.Label className="!text-slate-500 mb-1 block">Berlaku Hingga</Text.Label>
                         <input
                             type="date"
                             value={subForm.until}

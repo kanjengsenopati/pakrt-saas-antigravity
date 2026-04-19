@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { superAdminService } from '../../services/superAdminService';
 import { Eye, CheckCircle, XCircle, Clock, Upload } from '@phosphor-icons/react';
+import { Text } from '../../components/ui/Typography';
 
 export default function SASubscriptionManager() {
     const [invoices, setInvoices] = useState<any[]>([]);
@@ -55,8 +56,8 @@ export default function SASubscriptionManager() {
     return (
         <div className="space-y-5">
             <div>
-                <h1 className="text-xl font-bold text-white">Subscription & Invoices</h1>
-                <p className="text-xs text-slate-400 mt-0.5">Kelola pembayaran subscription tenant</p>
+                <Text.H1 className="!text-white">Subscription & Invoices</Text.H1>
+                <Text.Caption className="!text-slate-500 !mt-1 !font-medium !tracking-normal">Kelola pembayaran subscription tenant</Text.Caption>
             </div>
 
             {/* Filter */}
@@ -75,7 +76,7 @@ export default function SASubscriptionManager() {
             </div>
 
             {/* Invoice Table */}
-            <div className="rounded-2xl bg-slate-900/80 border border-white/5 overflow-hidden">
+            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 {loading ? (
                     <div className="flex items-center justify-center h-48">
                         <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
@@ -85,12 +86,24 @@ export default function SASubscriptionManager() {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-white/5">
-                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Invoice</th>
-                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Tenant</th>
-                                    <th className="text-right py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Total</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Kode Unik</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Status</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Aksi</th>
+                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Invoice</Text.Label>
+                                    </th>
+                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Tenant</Text.Label>
+                                    </th>
+                                    <th className="text-right py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Total</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Kode Unik</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Status</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Aksi</Text.Label>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,20 +113,20 @@ export default function SASubscriptionManager() {
                                     return (
                                         <tr key={inv.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
                                             <td className="py-3 px-5">
-                                                <div className="text-sm font-medium text-white font-mono">{inv.invoice_number}</div>
-                                                <div className="text-[10px] text-slate-500">
+                                                <Text.Body className="!text-white !font-bold font-mono">{inv.invoice_number}</Text.Body>
+                                                <Text.Caption className="!text-slate-600 block mt-0.5 uppercase tracking-tighter">
                                                     {inv.plan} • {inv.duration_months} bulan
-                                                </div>
+                                                </Text.Caption>
                                             </td>
                                             <td className="py-3 px-5">
-                                                <div className="text-sm text-white">{inv.tenant?.name || inv.tenant_id}</div>
+                                                <Text.Body className="!text-white">{inv.tenant?.name || inv.tenant_id}</Text.Body>
                                             </td>
                                             <td className="py-3 px-5 text-right">
-                                                <div className="text-sm font-bold text-emerald-400">{formatCurrency(inv.total_amount)}</div>
-                                                <div className="text-[10px] text-slate-500">Base: {formatCurrency(inv.base_amount)}</div>
+                                                <Text.Amount className="!text-emerald-400 !text-sm block">{formatCurrency(inv.total_amount)}</Text.Amount>
+                                                <Text.Caption className="!text-slate-600 block">Base: {formatCurrency(inv.base_amount)}</Text.Caption>
                                             </td>
                                             <td className="py-3 px-5 text-center">
-                                                <span className="text-sm font-bold text-amber-400">{inv.unique_code}</span>
+                                                <Text.H3 className="!text-amber-400 font-mono tracking-widest">{inv.unique_code}</Text.H3>
                                             </td>
                                             <td className="py-3 px-5 text-center">
                                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${badge.class}`}>

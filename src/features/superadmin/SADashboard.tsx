@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { superAdminService } from '../../services/superAdminService';
 import { Buildings, Users, ChartLineUp, CreditCard, ArrowRight } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
+import { Text } from '../../components/ui/Typography';
 
 interface OverviewData {
     totalTenants: number;
@@ -91,20 +92,20 @@ export default function SADashboard() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-white">Platform Dashboard</h1>
-                <p className="text-sm text-slate-400 mt-1">Overview platform PakRT SaaS</p>
+                <Text.H1 className="!text-white">Platform Dashboard</Text.H1>
+                <Text.Body className="!text-slate-400 mt-1">Overview platform PakRT SaaS</Text.Body>
             </div>
 
             {/* Pending Invoice Alert */}
             {(overview?.pendingInvoices || 0) > 0 && (
                 <div 
                     onClick={() => navigate('/super-admin/subscriptions')}
-                    className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition-colors"
+                    className="flex items-center gap-3 px-5 py-3 rounded-[24px] bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition-colors"
                 >
                     <CreditCard size={22} className="text-amber-400" weight="duotone" />
-                    <span className="text-sm font-medium text-amber-300">
+                    <Text.Body className="!text-amber-300 !font-medium">
                         {overview?.pendingInvoices} invoice menunggu verifikasi pembayaran
-                    </span>
+                    </Text.Body>
                     <ArrowRight size={16} className="text-amber-400 ml-auto" />
                 </div>
             )}
@@ -112,12 +113,12 @@ export default function SADashboard() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat) => (
-                    <div key={stat.label} className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-white/5 p-5">
+                    <div key={stat.label} className="relative overflow-hidden rounded-[24px] bg-slate-900/80 border border-white/5 p-5">
                         <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
                             <stat.icon size={22} weight="duotone" className={stat.text} />
                         </div>
-                        <div className="text-2xl font-bold text-white">{stat.value.toLocaleString('id-ID')}</div>
-                        <div className="text-xs font-medium text-slate-400 mt-1">{stat.label}</div>
+                        <Text.Amount className="!text-white !text-2xl block">{stat.value.toLocaleString('id-ID')}</Text.Amount>
+                        <Text.Label className="!text-slate-500 mt-1 block">{stat.label}</Text.Label>
                     </div>
                 ))}
             </div>
@@ -125,14 +126,14 @@ export default function SADashboard() {
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Subscription Breakdown */}
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-6">
-                    <h2 className="text-sm font-semibold text-white mb-4">Subscription Breakdown</h2>
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <Text.H2 className="!text-white mb-4">Subscription Breakdown</Text.H2>
                     <div className="space-y-3">
                         {subBreakdown.map((item) => (
                             <div key={item.label}>
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-medium text-slate-400">{item.label}</span>
-                                    <span className="text-xs font-bold text-white">{item.value}</span>
+                                    <Text.Label className="!text-slate-500">{item.label}</Text.Label>
+                                    <Text.Body className="!text-white !font-bold">{item.value}</Text.Body>
                                 </div>
                                 <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
                                     <div
@@ -146,8 +147,8 @@ export default function SADashboard() {
                 </div>
 
                 {/* Tenant Growth */}
-                <div className="rounded-2xl bg-slate-900/80 border border-white/5 p-6">
-                    <h2 className="text-sm font-semibold text-white mb-4">Pertumbuhan Tenant (12 Bulan)</h2>
+                <div className="rounded-[24px] bg-slate-900/80 border border-white/5 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <Text.H2 className="!text-white mb-4">Pertumbuhan Tenant (12 Bulan)</Text.H2>
                     {growth.length > 0 ? (
                         <div className="flex items-end gap-2 h-40">
                             {growth.map((g, i) => {
@@ -155,12 +156,12 @@ export default function SADashboard() {
                                 const height = (g.count / maxCount) * 100;
                                 return (
                                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                                        <span className="text-[10px] font-bold text-emerald-400">{g.count}</span>
+                                        <Text.Caption className="!text-emerald-400 !font-bold !text-[9px]">{g.count}</Text.Caption>
                                         <div 
                                             className="w-full rounded-t-lg bg-gradient-to-t from-emerald-600 to-emerald-400 transition-all duration-500"
                                             style={{ height: `${Math.max(height, 4)}%` }}
                                         />
-                                        <span className="text-[9px] text-slate-500">{g.month.slice(5)}</span>
+                                        <Text.Caption className="!text-slate-600 !text-[8px]">{g.month.slice(5)}</Text.Caption>
                                     </div>
                                 );
                             })}
@@ -177,26 +178,26 @@ export default function SADashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <button
                     onClick={() => navigate('/super-admin/tenants')}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900/80 border border-white/5 hover:border-emerald-500/30 transition-all group"
+                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-emerald-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                     <Buildings size={20} className="text-slate-400 group-hover:text-emerald-400 transition-colors" weight="duotone" />
-                    <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Kelola Tenant</span>
+                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Kelola Tenant</Text.Body>
                     <ArrowRight size={16} className="text-slate-600 group-hover:text-emerald-400 ml-auto transition-colors" />
                 </button>
                 <button
                     onClick={() => navigate('/super-admin/subscriptions')}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900/80 border border-white/5 hover:border-amber-500/30 transition-all group"
+                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-amber-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                     <CreditCard size={20} className="text-slate-400 group-hover:text-amber-400 transition-colors" weight="duotone" />
-                    <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Verifikasi Payment</span>
+                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Verifikasi Payment</Text.Body>
                     <ArrowRight size={16} className="text-slate-600 group-hover:text-amber-400 ml-auto transition-colors" />
                 </button>
                 <button
                     onClick={() => navigate('/super-admin/analytics')}
-                    className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900/80 border border-white/5 hover:border-violet-500/30 transition-all group"
+                    className="flex items-center gap-3 p-4 rounded-[24px] bg-slate-900/80 border border-white/5 hover:border-violet-500/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 >
                     <ChartLineUp size={20} className="text-slate-400 group-hover:text-violet-400 transition-colors" weight="duotone" />
-                    <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Lihat Analytics</span>
+                    <Text.Body className="!text-slate-300 group-hover:!text-white transition-colors !font-medium">Lihat Analytics</Text.Body>
                     <ArrowRight size={16} className="text-slate-600 group-hover:text-violet-400 ml-auto transition-colors" />
                 </button>
             </div>

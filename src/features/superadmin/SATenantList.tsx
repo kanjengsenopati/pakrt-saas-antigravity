@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { superAdminService } from '../../services/superAdminService';
 import { useNavigate } from 'react-router-dom';
 import { MagnifyingGlass, Eye } from '@phosphor-icons/react';
+import { Text } from '../../components/ui/Typography';
 
 export default function SATenantList() {
     const navigate = useNavigate();
@@ -50,8 +51,8 @@ export default function SATenantList() {
         <div className="space-y-5">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-xl font-bold text-white">Kelola Tenant</h1>
-                    <p className="text-xs text-slate-400 mt-0.5">{total} RT/RW terdaftar</p>
+                    <Text.H1 className="!text-white">Kelola Tenant</Text.H1>
+                    <Text.Caption className="!text-slate-500 !mt-1 !font-medium !tracking-normal">{total} RT/RW terdaftar</Text.Caption>
                 </div>
             </div>
 
@@ -86,7 +87,7 @@ export default function SATenantList() {
             </div>
 
             {/* Table */}
-            <div className="rounded-2xl bg-slate-900/80 border border-white/5 overflow-hidden">
+            <div className="rounded-[24px] bg-slate-900/80 border border-white/5 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 {loading ? (
                     <div className="flex items-center justify-center h-48">
                         <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
@@ -96,34 +97,46 @@ export default function SATenantList() {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-white/5">
-                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Nama</th>
-                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500 hidden md:table-cell">Tenant ID</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Warga</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Plan</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Status</th>
-                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">Aksi</th>
+                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Nama</Text.Label>
+                                    </th>
+                                    <th className="text-left py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500 hidden md:table-cell">
+                                        <Text.Label className="!text-slate-500">Tenant ID</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Warga</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Plan</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px) font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Status</Text.Label>
+                                    </th>
+                                    <th className="text-center py-3 px-5 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                                        <Text.Label className="!text-slate-500">Aksi</Text.Label>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {tenants.map((t) => (
                                     <tr key={t.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
                                         <td className="py-3 px-5">
-                                            <div className="text-sm font-medium text-white">{t.name}</div>
-                                            <div className="text-[11px] text-slate-500 md:hidden">{t.id}</div>
+                                            <Text.Body className="!text-white !font-bold">{t.name}</Text.Body>
+                                            <Text.Caption className="!text-slate-600 md:hidden block mt-0.5">{t.id}</Text.Caption>
                                         </td>
                                         <td className="py-3 px-5 hidden md:table-cell">
-                                            <span className="text-xs text-slate-400 font-mono">{t.id}</span>
+                                            <Text.Caption className="!text-slate-500 font-mono">{t.id}</Text.Caption>
                                         </td>
                                         <td className="py-3 px-5 text-center">
-                                            <span className="text-sm font-semibold text-white">{t._count?.wargas || 0}</span>
+                                            <Text.Body className="!text-white !font-bold tabular-nums">{t._count?.wargas || 0}</Text.Body>
                                         </td>
                                         <td className="py-3 px-5 text-center">
-                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${statusBadge(t.subscription_plan)}`}>
+                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBadge(t.subscription_plan)}`}>
                                                 {t.subscription_plan}
                                             </span>
                                         </td>
                                         <td className="py-3 px-5 text-center">
-                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${statusBadge(t.subscription_status)}`}>
+                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBadge(t.subscription_status)}`}>
                                                 {t.subscription_status}
                                             </span>
                                         </td>
