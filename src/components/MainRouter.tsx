@@ -38,6 +38,14 @@ import AduanForm from '../features/aduan/AduanForm';
 import PollingForm from '../features/aduan/PollingForm';
 import { DeviceSimulator } from './common/DeviceSimulator';
 import { Outlet } from 'react-router-dom';
+import { SuperAdminLayout } from '../layouts/SuperAdminLayout';
+import SADashboard from '../features/superadmin/SADashboard';
+import SATenantList from '../features/superadmin/SATenantList';
+import SATenantDetail from '../features/superadmin/SATenantDetail';
+import SASubscriptionManager from '../features/superadmin/SASubscriptionManager';
+import SAAffiliate from '../features/superadmin/SAAffiliate';
+import SAAnalytics from '../features/superadmin/SAAnalytics';
+import Subscription from '../features/subscription/Subscription';
 
 const router = createBrowserRouter([
     {
@@ -349,6 +357,14 @@ const router = createBrowserRouter([
                 ]
             },
             {
+                path: 'subscription',
+                element: (
+                    <ProtectedRoute>
+                        <Subscription />
+                    </ProtectedRoute>
+                )
+            },
+            {
                 path: 'warga-portal',
                 element: (
                     <ProtectedRoute>
@@ -356,6 +372,22 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             }
+        ]
+    },
+    {
+        path: '/super-admin',
+        element: (
+            <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminLayout />
+            </ProtectedRoute>
+        ),
+        children: [
+            { index: true, element: <SADashboard /> },
+            { path: 'tenants', element: <SATenantList /> },
+            { path: 'tenants/:id', element: <SATenantDetail /> },
+            { path: 'subscriptions', element: <SASubscriptionManager /> },
+            { path: 'affiliates', element: <SAAffiliate /> },
+            { path: 'analytics', element: <SAAnalytics /> }
         ]
     }
 ]);

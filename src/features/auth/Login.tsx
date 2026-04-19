@@ -54,13 +54,18 @@ export default function Login() {
                 authLogin(result.user);
                 await refreshTenant();
                 
-                const isWarga = result.user.role?.toLowerCase() === 'warga' || 
-                                result.user.role_entity?.name?.toLowerCase() === 'warga';
-                
-                if (isWarga) {
-                    navigate('/warga-portal');
+                // Route based on role
+                if (result.user.role === 'super_admin') {
+                    navigate('/super-admin');
                 } else {
-                    navigate('/dashboard');
+                    const isWarga = result.user.role?.toLowerCase() === 'warga' || 
+                                    result.user.role_entity?.name?.toLowerCase() === 'warga';
+                    
+                    if (isWarga) {
+                        navigate('/warga-portal');
+                    } else {
+                        navigate('/dashboard');
+                    }
                 }
             } else {
                 setLoginError("Kredensial tidak valid. Silakan coba lagi.");

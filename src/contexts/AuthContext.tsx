@@ -16,12 +16,14 @@ interface User {
     warga_id?: string;
     scope?: string;
     kontak?: string;
-    permissions?: any; // Standard: { [module]: { actions: string[], scope: 'all' | 'personal' } }
+    permissions?: any;
+    is_super_admin?: boolean;
 }
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
+    isSuperAdmin: boolean;
     login: (user: User) => void;
     updateUser: (user: User) => void;
     logout: () => void;
@@ -138,16 +140,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return user?.role === role;
     }, [user]);
 
+    const isSuperAdmin = useMemo(() => user?.role === 'super_admin' || user?.is_super_admin === true, [user]);
+
     const value = useMemo(() => ({ 
         user, 
         isAuthenticated: !!user, 
+        isSuperAdmin,
         login, 
         updateUser,
         logout, 
         hasPermission, 
         hasRole,
         isLoading 
-    }), [user, login, updateUser, logout, hasPermission, hasRole, isLoading]);
+    }), [user, isSuperAdmin, login, updateUser, logout, hasPermission, hasRole, isLoading]);
 
     return (
         <AuthContext.Provider value={value}>

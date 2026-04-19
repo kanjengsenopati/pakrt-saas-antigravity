@@ -81,7 +81,8 @@ export default async function authRoutes(fastify: FastifyInstance) {
                 scope: user.scope,
                 kontak: user.kontak,
                 permissions: user.permissions,
-                role_entity: user.role_entity
+                role_entity: user.role_entity,
+                is_super_admin: user.role === 'super_admin'
             }
         };
     });
