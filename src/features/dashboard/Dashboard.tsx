@@ -171,7 +171,7 @@ export default function Dashboard() {
                                     </Text.Label>
                                 </div>
                                 <div className="flex justify-end">
-                                    <button onClick={() => navigate('/billing')} className="flex items-center gap-1 text-primary hover:underline transition-colors shrink-0">
+                                    <button onClick={() => navigate('/subscription')} className="flex items-center gap-1 text-primary hover:underline transition-colors shrink-0">
                                         <Text.Label className="!text-primary !normal-case !tracking-normal">Lihat Detil</Text.Label>
                                         <ArrowRight weight="bold" className="text-[10px]" />
                                     </button>
