@@ -44,7 +44,7 @@ export default function Subscription() {
     // Invoice creation state
     const [activeInvoice, setActiveInvoice] = useState<Invoice | null>(null);
     const [uploadMethod, setUploadMethod] = useState('BCA');
-    const [uploadUrl, setUploadUrl] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -94,13 +94,20 @@ export default function Subscription() {
     };
 
     const handleUploadProof = async () => {
-        if (!activeInvoice || !uploadUrl) return;
+        if (!activeInvoice || !selectedFile) return;
         setSubmitting(true);
         try {
-            await subscriptionService.uploadProof(activeInvoice.id, uploadUrl, uploadMethod);
-            setActiveInvoice({ ...activeInvoice, status: 'UPLOADED', payment_proof: uploadUrl, payment_method: uploadMethod });
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = error => reject(error);
+            });
+
+            await subscriptionService.uploadProof(activeInvoice.id, base64, uploadMethod);
+            setActiveInvoice({ ...activeInvoice, status: 'UPLOADED', payment_proof: base64, payment_method: uploadMethod });
             alert('Bukti pembayaran berhasil diunggah! Mohon tunggu verifikasi dari admin.');
-            setUploadUrl('');
+            setSelectedFile(null);
         } catch (e) {
             alert('Gagal mengunggah bukti');
         } finally {
@@ -138,7 +145,7 @@ export default function Subscription() {
     ];
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="space-y-6 pb-20 pt-12 px-5">
             {/* Header */}
             <div>
                 <h1 className="text-[22px] font-bold text-slate-900">Berlangganan</h1>
@@ -262,15 +269,18 @@ export default function Subscription() {
                                         ))}
                                     </select>
                                     <input
-                                        type="url"
-                                        value={uploadUrl}
-                                        onChange={(e) => setUploadUrl(e.target.value)}
-                                        placeholder="URL bukti transfer (link gambar)"
-                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 border-0 text-[14px] text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-200"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setSelectedFile(e.target.files[0]);
+                                            }
+                                        }}
+                                        className="w-full rounded-xl bg-slate-50 border border-slate-200 text-[14px] text-slate-800 focus:ring-2 focus:ring-blue-200 file:mr-4 file:py-3 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
                                     />
                                     <button
                                         onClick={handleUploadProof}
-                                        disabled={!uploadUrl || submitting}
+                                        disabled={!selectedFile || submitting}
                                         className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-[14px] transition-colors disabled:opacity-50"
                                     >
                                         <Upload size={18} weight="bold" />
