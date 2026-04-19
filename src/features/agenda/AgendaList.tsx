@@ -211,7 +211,7 @@ export default function AgendaList() {
         fetcher: () => notulensiService.getAll(currentTenant?.id || '', currentScope),
         enabled: !!currentTenant
     });
-    // @ts-ignore - Used in legacy logic or for future status indicators
+    // @ts-expect-error - Used in legacy logic or for future status indicators
     const _notulensiList = notulensiItems || [];
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -449,10 +449,7 @@ export default function AgendaList() {
                                             <Tooltip 
                                                 cursor={{ fill: '#f8fafc' }}
                                                 contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                                                formatter={(value: any) => {
-                                                    const numValue = typeof value === 'number' ? value : (value ? Number(value) : 0);
-                                                    return [formatRupiah(numValue), 'Total'] as [string, string];
-                                                }}
+                                                formatter={(value: any) => [formatRupiah(Number(value || 0)), 'Total']}
                                             />
                                             <Bar dataKey="Total" fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40} />
                                         </BarChart>

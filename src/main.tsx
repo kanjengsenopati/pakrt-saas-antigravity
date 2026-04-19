@@ -39,11 +39,9 @@ import { MainRouter } from './components/MainRouter.tsx'
 import axios from 'axios'
 import './index.css'
 
+axios.defaults.withCredentials = true;
+
 axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
 });
 

@@ -2,6 +2,7 @@ import api from './api';
 import { Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
+import { fileUtils } from '../utils/fileUtils';
 
 export const wargaService = {
     async getAll(tenantId: string, scope: ScopeType, page: number = 1, limit: number = 100): Promise<{ items: Warga[], total: number, page: number, limit: number }> {
@@ -84,14 +85,8 @@ export const wargaService = {
                 responseType: 'blob'
             });
             
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `data_warga_${scope || 'semua'}.xlsx`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            window.URL.revokeObjectURL(url);
+            const fileName = `data_warga_${scope || 'semua'}.xlsx`;
+            fileUtils.downloadFile(response.data, fileName);
         } catch (error) {
             console.error('Error exporting warga:', error);
             throw error;
@@ -131,14 +126,7 @@ export const wargaService = {
                 responseType: 'blob'
             });
             
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'template_import_warga.xlsx');
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            window.URL.revokeObjectURL(url);
+            fileUtils.downloadFile(response.data, 'template_import_warga.xlsx');
         } catch (error) {
             console.error('Error downloading template:', error);
             throw error;

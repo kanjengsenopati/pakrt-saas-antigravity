@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import SignatureCanvas from 'react-signature-canvas';
-import axios from 'axios';
+import api from '../../services/api';
+
 import { useTenant } from '../../contexts/TenantContext';
 import { pengaturanService } from '../../services/pengaturanService';
 import { userService } from '../../services/userService';
@@ -88,7 +89,8 @@ export default function Pengaturan() {
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
 
-    const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+
 
 
     // User Management State
@@ -231,9 +233,7 @@ export default function Pengaturan() {
 
     const loadRoles = async () => {
         if (currentTenant) {
-            const response = await axios.get(`${API_URL}/role?tenant_id=${currentTenant.id}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
-            });
+            const response = await api.get(`/role?tenant_id=${currentTenant.id}`);
             setRoles(response.data);
         }
     };
@@ -296,12 +296,10 @@ export default function Pengaturan() {
         if (!currentTenant?.id || !newRoleForm.name) return;
 
         try {
-            await axios.post(`${API_URL}/role`, {
+            await api.post(`/role`, {
                 tenant_id: currentTenant.id,
                 name: newRoleForm.name,
                 permissions: {}
-            }, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
             });
             setShowAddRoleForm(false);
             setNewRoleForm({ name: '' });
@@ -314,9 +312,7 @@ export default function Pengaturan() {
 
     const handleDeleteRole = async (id: string, name: string) => {
         if (confirm(`Apakah Anda yakin ingin menghapus role ${name}? User dengan role ini mungkin kehilangan akses.`)) {
-            await axios.delete(`${API_URL}/role/${id}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
-            });
+            await api.delete(`/role/${id}`);
             loadRoles();
         }
     };
@@ -420,7 +416,7 @@ export default function Pengaturan() {
                 const formData = new FormData();
                 formData.append('file', file);
 
-                const response = await axios.post(`${API_URL}/upload`, formData);
+                const response = await api.post(`/upload`, formData);
                 finalTtdUrl = response.data.url;
                 setTtdPreview(finalTtdUrl); // Update state to the new URL
             }
@@ -646,11 +642,9 @@ export default function Pengaturan() {
                 setExpandedUserId(null);
                 loadUsers();
             } else if (role) {
-                await axios.put(`${API_URL}/role/${role.id}`, {
+                await api.put(`/role/${role.id}`, {
                     ...role,
                     permissions: userPermissions
-                }, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
                 });
                 alert('Izin akses Role berhasil diperbarui!');
                 setExpandedRoleId(null);
@@ -692,7 +686,7 @@ export default function Pengaturan() {
             formData.append('file', file);
 
             try {
-                const response = await axios.post(`${API_URL}/upload`, formData);
+                const response = await api.post(`/upload`, formData);
                 setStempelPreview(response.data.url);
             } catch (err) {
                 console.error("Gagal upload stempel:", err);
@@ -730,7 +724,7 @@ export default function Pengaturan() {
             formData.append('file', file);
 
             try {
-                const response = await axios.post(`${API_URL}/upload`, formData);
+                const response = await api.post(`/upload`, formData);
                 setLogoPreview(response.data.url);
             } catch (err) {
                 console.error("Gagal upload logo:", err);

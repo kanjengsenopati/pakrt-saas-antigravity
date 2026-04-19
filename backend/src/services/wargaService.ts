@@ -316,7 +316,7 @@ export const wargaService = {
             if (!nik || nik.length < 5) return null;
 
             // Handle Tanggal Lahir formatting if needed
-            let tanggalLahir = dateUtils.normalize(String(row['Tanggal Lahir'] || ''));
+            const tanggalLahir = dateUtils.normalize(String(row['Tanggal Lahir'] || ''));
 
             return {
                 tenant_id: tenantId,

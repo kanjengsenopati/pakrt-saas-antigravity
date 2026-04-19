@@ -49,6 +49,8 @@ export default function IuranForm() {
     const [paidMonthsRecord, setPaidMonthsRecord] = useState<number[]>([]);
     const [pendingMonthsRecord, setPendingMonthsRecord] = useState<number[]>([]);
 
+    const isYearFullySettled = (paidMonthsRecord.length + pendingMonthsRecord.length) === 12;
+
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const loggedInWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
@@ -533,47 +535,59 @@ export default function IuranForm() {
                                         <Text.Label className="mb-2 block">
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
                                         </Text.Label>
-                                        <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
-                                            {MONTHS.map(m => {
-                                                const isPaid = paidMonthsRecord.includes(m.value);
-                                                const isPending = pendingMonthsRecord.includes(m.value);
-                                                const isSelected = selectedMonths.includes(m.value);
+                                        {isYearFullySettled ? (
+                                            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-4 animate-in zoom-in duration-500 shadow-sm">
+                                                <div className="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shrink-0">
+                                                    <CheckCircle weight="bold" className="w-7 h-7" />
+                                                </div>
+                                                <div className="text-left">
+                                                    <Text.H2 className="!text-emerald-700 !text-sm">Status Pembayaran Sudah Lunas</Text.H2>
+                                                    <Text.Caption className="!text-emerald-600/80 !font-bold">Seluruh periode tahun {watchTahun} telah terbayar/diverifikasi.</Text.Caption>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
+                                                {MONTHS.map(m => {
+                                                    const isPaid = paidMonthsRecord.includes(m.value);
+                                                    const isPending = pendingMonthsRecord.includes(m.value);
+                                                    const isSelected = selectedMonths.includes(m.value);
 
-                                                return (
-                                                    <button
-                                                        key={m.value}
-                                                        type="button"
-                                                        disabled={isPaid || isPending}
-                                                        onClick={() => toggleMonth(m.value)}
-                                                        className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
-                                                            isPaid
-                                                                ? 'bg-emerald-600 border-emerald-600 text-white cursor-not-allowed'
-                                                                : isPending
-                                                                    ? 'bg-amber-500 border-amber-500 text-white cursor-not-allowed opacity-90'
-                                                                    : isSelected
-                                                                        ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
-                                                                        : 'bg-red-500 border-red-500 text-white hover:bg-red-600 hover:scale-105 active:scale-95'
-                                                            }`}
-                                                    >
-                                                        {m.label.substring(0, 3)}
-                                                        {isPaid ? (
-                                                            <div className="absolute -top-2 -right-1 bg-white text-emerald-600 rounded-full p-0.5 shadow-sm border border-emerald-100">
-                                                                <CheckCircle weight="fill" className="w-3 h-3" />
-                                                            </div>
-                                                        ) : isPending ? (
-                                                            <div className="absolute -top-2 -right-1 bg-white text-amber-500 rounded-full p-0.5 shadow-sm border border-amber-100">
-                                                                <Clock weight="fill" className="w-3 h-3" />
-                                                            </div>
-                                                        ) : isSelected && (
-                                                            <div className="absolute -top-2 -right-1 bg-white text-blue-600 rounded-full p-0.5 shadow-sm border border-blue-100 animate-in zoom-in duration-300">
-                                                                <CheckCircle weight="fill" className="w-3 h-3" />
-                                                            </div>
-                                                        )}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                        {selectedMonths.length === 0 && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
+                                                    return (
+                                                        <button
+                                                            key={m.value}
+                                                            type="button"
+                                                            disabled={isPaid || isPending}
+                                                            onClick={() => toggleMonth(m.value)}
+                                                            className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
+                                                                isPaid
+                                                                    ? 'bg-emerald-600 border-emerald-600 text-white cursor-not-allowed'
+                                                                    : isPending
+                                                                        ? 'bg-amber-500 border-amber-500 text-white cursor-not-allowed opacity-90'
+                                                                        : isSelected
+                                                                            ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
+                                                                            : 'bg-red-500 border-red-500 text-white hover:bg-red-600 hover:scale-105 active:scale-95'
+                                                                }`}
+                                                        >
+                                                            {m.label.substring(0, 3)}
+                                                            {isPaid ? (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-emerald-600 rounded-full p-0.5 shadow-sm border border-emerald-100">
+                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            ) : isPending ? (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-amber-500 rounded-full p-0.5 shadow-sm border border-amber-100">
+                                                                    <Clock weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            ) : isSelected && (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-blue-600 rounded-full p-0.5 shadow-sm border border-blue-100 animate-in zoom-in duration-300">
+                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                        {selectedMonths.length === 0 && !isYearFullySettled && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
                                     </div>
 
                                      {selectedMonths.length > 0 ? (
@@ -591,7 +605,7 @@ export default function IuranForm() {
                                                 <Controller
                                                     name="nominal"
                                                     control={control}
-                                                    rules={{ required: 'Nominal wajib diisi', min: { value: 1, message: 'Nominal tidak boleh 0' } }}
+                                                    rules={{ required: !isYearFullySettled && 'Nominal wajib diisi', min: { value: 1, message: 'Nominal tidak boleh 0' } }}
                                                     render={({ field }) => (
                                                         <CurrencyInput
                                                             {...field}
@@ -610,32 +624,36 @@ export default function IuranForm() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center group">
-                                            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                                                <CalendarBlank weight="fill" className="text-slate-300 w-5 h-5" />
+                                        !isYearFullySettled && (
+                                            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center group">
+                                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                                                    <CalendarBlank weight="fill" className="text-slate-300 w-5 h-5" />
+                                                </div>
+                                                <p className="text-[11px] font-black text-slate-400 tracking-widest">Pilih Bulan Pembayaran</p>
+                                                <p className="text-[10px] text-slate-400/60 mt-1 font-medium italic">Nominal otomatis muncul setelah periode dipilih</p>
                                             </div>
-                                            <p className="text-[11px] font-black text-slate-400 tracking-widest">Pilih Bulan Pembayaran</p>
-                                            <p className="text-[10px] text-slate-400/60 mt-1 font-medium italic">Nominal otomatis muncul setelah periode dipilih</p>
-                                        </div>
+                                        )
                                     )}
                                 </div>
 
                                 {/* ROW 5: BUKTI */}
-                                <div className="md:col-span-2">
-                                    <Text.Label className="!text-slate-400 mb-2 block">
-                                        Lampiran Bukti (Opsional)
-                                    </Text.Label>
-                                    <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                        <FileUpload
-                                            onUploadSuccess={(url) => setValue('url_bukti', url)}
-                                            existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
-                                            onRemove={() => setValue('url_bukti', '')}
-                                            label=""
-                                            helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
-                                            onLoadingChange={setIsUploading}
-                                        />
+                                 {!isYearFullySettled && (
+                                    <div className="md:col-span-2">
+                                        <Text.Label className="!text-slate-400 mb-2 block">
+                                            Lampiran Bukti (Opsional)
+                                        </Text.Label>
+                                        <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
+                                            <FileUpload
+                                                onUploadSuccess={(url) => setValue('url_bukti', url)}
+                                                existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
+                                                onRemove={() => setValue('url_bukti', '')}
+                                                label=""
+                                                helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
+                                                onLoadingChange={setIsUploading}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
 
                             <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
@@ -650,8 +668,8 @@ export default function IuranForm() {
                                     </button>
                                     <button
                                         type="submit"
-                                        disabled={isUploading || currentStatus === 'VERIFIED'}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={isUploading || currentStatus === 'VERIFIED' || isYearFullySettled}
+                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' || isYearFullySettled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
                                         <Text.Label className="!text-white">{isEdit ? 'Simpan' : 'Bayar'}</Text.Label>

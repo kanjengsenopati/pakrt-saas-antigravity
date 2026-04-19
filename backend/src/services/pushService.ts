@@ -17,7 +17,7 @@ if (vapidPublicKey && vapidPrivateKey) {
 }
 
 export const pushService = {
-    async subscribe(wargaId: String, subscription: any) {
+    async subscribe(wargaId: string, subscription: any) {
         const { endpoint, keys } = subscription;
         return prisma.pushSubscription.upsert({
             where: { endpoint },

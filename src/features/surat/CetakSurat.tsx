@@ -55,7 +55,7 @@ export default function CetakSurat() {
     const getNomorSuratDisplay = () => {
         if (surat.nomor_surat) return surat.nomor_surat;
 
-        let formatTemplate = config.format_nomor_surat || `[NOMOR]/[SCOPE]/[BULAN_ROMAWI]/[TAHUN]`;
+        const formatTemplate = config.format_nomor_surat || `[NOMOR]/[SCOPE]/[BULAN_ROMAWI]/[TAHUN]`;
         const dateObj = new Date(surat.tanggal);
         const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 

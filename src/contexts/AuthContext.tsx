@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { userService } from '../services/userService';
+import { authService } from '../services/authService';
 
 interface User {
     id: string;
@@ -21,9 +21,8 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    token: string | null;
     isAuthenticated: boolean;
-    login: (token: string, user: User) => void;
+    login: (user: User) => void;
     updateUser: (user: User) => void;
     logout: () => void;
     hasPermission: (module: string, action: string, recordOwnerId?: string) => boolean;
@@ -35,53 +34,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const storedToken = localStorage.getItem('auth_token');
-            const storedUser = localStorage.getItem('auth_user');
-    
-            if (storedToken && storedUser) {
-                const parsedUser = JSON.parse(storedUser);
-                setToken(storedToken);
-                setUser(parsedUser);
-                setIsLoading(false); // Unblock UI immediately if we have local data
-
-                // Refresh user data from server in background
-                userService.getById(parsedUser.id).then((latestUser: any) => {
-                    if (latestUser) {
-                        // More stable comparison: check key fields instead of naive stringify
-                        const hasChanges = 
-                            latestUser.role !== parsedUser.role ||
-                            latestUser.role_id !== parsedUser.role_id ||
-                            latestUser.scope !== parsedUser.scope ||
-                            JSON.stringify(latestUser.permissions) !== JSON.stringify(parsedUser.permissions) ||
-                            latestUser.name !== parsedUser.name;
-                        
-                        if (hasChanges) {
-                            setUser(latestUser);
-                            localStorage.setItem('auth_user', JSON.stringify(latestUser));
-                            console.log('AuthContext: User data updated after background refresh');
-                        } else {
-                            console.log('AuthContext: Background refresh confirmed data is identical');
-                        }
-                    }
-                }).catch((error: any) => {
-                    console.error('AuthContext: Background refresh failed', error);
-                });
-            } else {
+            try {
+                // Try to get current user from session cookie
+                const { user: latestUser } = await authService.getMe();
+                if (latestUser) {
+                    setUser(latestUser);
+                    localStorage.setItem('auth_user', JSON.stringify(latestUser));
+                }
+            } catch (error) {
+                console.log('AuthContext: No active session found');
+                localStorage.removeItem('auth_user');
+                setUser(null);
+            } finally {
                 setIsLoading(false);
             }
         };
         initializeAuth();
     }, []);
 
-    const login = useCallback((newToken: string, newUser: User) => {
-        setToken(newToken);
+    const login = useCallback((newUser: User) => {
         setUser(newUser);
-        localStorage.setItem('auth_token', newToken);
         localStorage.setItem('auth_user', JSON.stringify(newUser));
     }, []);
 
@@ -90,10 +66,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('auth_user', JSON.stringify(updatedUser));
     }, []);
 
-    const logout = useCallback(() => {
-        setToken(null);
+    const logout = useCallback(async () => {
+        try {
+            await authService.logout();
+        } catch (e) {
+            console.error("Logout failed at server, but clearing local state anyway", e);
+        }
         setUser(null);
-        localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
         window.location.href = '/login';
     }, []);
@@ -161,15 +140,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const value = useMemo(() => ({ 
         user, 
-        token, 
-        isAuthenticated: !!token, 
+        isAuthenticated: !!user, 
         login, 
         updateUser,
         logout, 
         hasPermission, 
         hasRole,
         isLoading 
-    }), [user, token, login, updateUser, logout, hasPermission, hasRole, isLoading]);
+    }), [user, login, updateUser, logout, hasPermission, hasRole, isLoading]);
 
     return (
         <AuthContext.Provider value={value}>

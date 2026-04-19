@@ -59,14 +59,17 @@ export default function KeuanganForm() {
                         if (parsed.length > 0) {
                             setPemasukanCategories(parsed.map((p: any) => p.nama));
                         }
-                    } catch { }
+                    } catch (err) { console.warn('Pemasukan parse error:', err); }
+
                 } else if (config.kategori_pemasukan) {
                     // Legacy fallback
-                    try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch { }
+                    try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch (err) { console.warn('Legacy pemasukan parse error:', err); }
+
                 }
 
                 if (config.kategori_pengeluaran) {
-                    try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch { }
+                    try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch (err) { console.warn('Pengeluaran parse error:', err); }
+
                 }
             });
 

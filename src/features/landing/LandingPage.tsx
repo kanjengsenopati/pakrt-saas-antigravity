@@ -7,13 +7,11 @@ import {
     Article, Calendar, Package, Heart, Flashlight, Megaphone, CaretDown, CaretUp, Buildings,
     List, X
 } from '@phosphor-icons/react';
-import { useTenant } from '../../contexts/TenantContext';
 import { useViewMode } from '../../contexts/ViewModeContext';
 import { Text } from '../../components/ui/Typography';
 
 export default function LandingPage() {
     const navigate = useNavigate();
-    const { } = useTenant();
     const { viewMode } = useViewMode();
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

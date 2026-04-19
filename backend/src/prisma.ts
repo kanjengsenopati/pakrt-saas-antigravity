@@ -24,7 +24,7 @@ export const prisma = basePrisma.$extends({
         // Models that have the deletedAt field (Soft Delete supported)
         const softDeleteModels = ['Warga', 'AnggotaKeluarga', 'Pengurus', 'SuratPengantar', 'Keuangan', 'PembayaranIuran'];
 
-        let currentOperation = operation;
+        const currentOperation = operation;
         const anyArgs = (args || {}) as any;
         
         // 2. Tenant Isolation Injection

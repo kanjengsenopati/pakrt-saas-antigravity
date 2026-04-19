@@ -22,11 +22,9 @@ function App() {
                     }
                 }
                 
-                // Clear all localStorage except auth
-                const authToken = localStorage.getItem('auth_token');
+                // Clear all localStorage except basic profile for UI stability
                 const authUser = localStorage.getItem('auth_user');
                 localStorage.clear();
-                if (authToken) localStorage.setItem('auth_token', authToken);
                 if (authUser) localStorage.setItem('auth_user', authUser);
 
                 localStorage.setItem('app_ui_version', UI_VERSION);

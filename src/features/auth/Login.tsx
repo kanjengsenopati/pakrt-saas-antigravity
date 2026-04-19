@@ -50,8 +50,8 @@ export default function Login() {
             }
 
             const result = await authService.login(data.contactOrEmail, data.password);
-            if (result.user && result.token) {
-                authLogin(result.token, result.user);
+            if (result.user) {
+                authLogin(result.user);
                 await refreshTenant();
                 
                 const isWarga = result.user.role?.toLowerCase() === 'warga' || 

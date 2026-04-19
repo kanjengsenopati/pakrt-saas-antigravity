@@ -57,7 +57,7 @@ export default function RichTextEditor({ value, onChange, readOnly = false, plac
             .replace(/<u>(.*?)<\/u>/gim, '<u>$1</u>')
             
             // Lists - detect and group
-            .replace(/^\s*[\-\*]\s+(.*)/gim, '<li>$1</li>')
+            .replace(/^\s*[-*]\s+(.*)/gim, '<li>$1</li>')
             .replace(/^\s*\d+\.\s+(.*)/gim, '<li data-list="ordered">$1</li>');
 
         // Wrap list items in appropriate tags

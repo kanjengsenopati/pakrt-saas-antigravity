@@ -1,6 +1,7 @@
 import api from './api';
 import { PembayaranIuran, Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
+import { fileUtils } from '../utils/fileUtils';
 
 export type IuranWithWarga = PembayaranIuran & { warga?: Warga };
 
@@ -82,13 +83,7 @@ export const iuranService = {
             responseType: 'blob'
         });
         
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
         const fileName = `Data_Iuran_${scope}_${new Date().toISOString().split('T')[0]}.xlsx`;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        fileUtils.downloadFile(response.data, fileName);
     }
 };

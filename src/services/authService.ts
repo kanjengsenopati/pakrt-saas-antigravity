@@ -2,11 +2,16 @@ import api from './api';
 import { User } from '../types/database';
 
 export const authService = {
-    async login(contactOrEmail: string, password: string): Promise<{ token: string; user: User }> {
+    async login(contactOrEmail: string, password: string): Promise<{ user: User }> {
         const response = await api.post('/auth/login', {
             contactOrEmail,
             password
         });
+        return response.data; // token is now in header Set-Cookie
+    },
+
+    async getMe(): Promise<{ user: User }> {
+        const response = await api.get('/auth/me');
         return response.data;
     },
 
@@ -23,9 +28,9 @@ export const authService = {
         return response.data;
     },
 
-    logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    async logout() {
+        await api.post('/auth/logout');
+        localStorage.removeItem('auth_user'); // Still keep user JSON for UI till next session
     },
 
     async joinResident(tenantId: string, residentData: any): Promise<any> {

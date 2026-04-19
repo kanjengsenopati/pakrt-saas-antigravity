@@ -3,47 +3,56 @@ import { dateUtils } from '../utils/date';
 import { aktivitasService } from './aktivitasService';
 import { pengaturanService } from './pengaturanService';
 import { wargaService } from './wargaService';
-
-async function getWargaIuranRate(wargaId: string, tenantId: string, scope: string = 'RT'): Promise<number> {
-  try {
-    const warga = await wargaService.getById(wargaId);
-    const settings = await pengaturanService.getAll(tenantId, scope);
-    
-    const config: Record<string, any> = {};
-    settings.forEach((p: any) => { config[p.key] = p.value; });
-
-    const statusKey = `${warga?.status_penduduk || 'Tetap'}-${warga?.status_rumah || 'Dihuni'}`;
-    const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-    const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
-    
-    if (rate === 0) {
-      console.warn(`Warga ${wargaId} has 0 iuran rate. Check settings for ${rateField}`);
-    }
-    return rate;
-  } catch (err) {
-    console.error(`Error calculating iuran rate for warga ${wargaId}:`, err);
-    throw new Error("Gagal menghitung tarif iuran. Pastikan data warga dan pengaturan iuran sudah benar.");
-  }
-}
+import { IuranCalculator } from '../utils/IuranCalculator';
 
 /**
- * Fetch metadata for a specific payment category from the pengaturan jenis_pemasukan config.
- * Returns { tipe, nominal, is_mandatory } or null if not found.
+ * Validates and synchronizes iuran payments with the Keuangan (financial) ledger.
+ * This centralizes the logic for creating/updating/deleting financial records.
  */
-async function getKategoriMetadata(kategori: string, tenantId: string, scope: string = 'RT') {
-  try {
-    const settings = await pengaturanService.getAll(tenantId, scope);
-    const config: Record<string, any> = {};
-    settings.forEach((p: any) => { config[p.key] = p.value; });
+async function syncToKeuangan(tx: any, iuran: any, wargaNama: string, action: 'CREATE' | 'UPDATE' | 'DELETE') {
+  const existingKeuangan = await tx.keuangan.findUnique({
+    where: { pembayaranIuranId: iuran.id }
+  });
 
-    if (!config.jenis_pemasukan) return null;
-    const jenisList: any[] = JSON.parse(config.jenis_pemasukan);
-    const match = jenisList.find((j: any) =>
-      j.nama?.trim().toLowerCase() === kategori?.trim().toLowerCase()
-    );
-    return match ? { tipe: match.tipe || 'BULANAN', nominal: Number(match.nominal) || 0, is_mandatory: !!match.is_mandatory } : null;
-  } catch {
-    return null;
+  if (action === 'DELETE') {
+    if (existingKeuangan) {
+      await tx.keuangan.delete({ where: { id: existingKeuangan.id } });
+    }
+    return;
+  }
+
+  if (iuran.status !== 'VERIFIED') {
+    // If it was VERIFIED but now PENDING/REJECTED, "Rollback" Keuangan
+    if (existingKeuangan) {
+      await tx.keuangan.delete({ where: { id: existingKeuangan.id } });
+    }
+    return;
+  }
+
+  const payload = {
+    tenant_id: iuran.tenant_id,
+    scope: iuran.scope || 'RT',
+    tipe: 'pemasukan',
+    kategori: iuran.kategori === 'Iuran Warga' ? iuran.kategori : 'Iuran Warga',
+    nominal: iuran.nominal,
+    tanggal: iuran.tanggal_bayar,
+    pembayaranIuranId: iuran.id,
+    keterangan: buildKeterangan(
+      wargaNama,
+      iuran.kategori,
+      Array.isArray(iuran.periode_bulan) ? iuran.periode_bulan : [],
+      iuran.periode_tahun,
+      iuran.id
+    )
+  };
+
+  if (existingKeuangan) {
+    await tx.keuangan.update({
+      where: { id: existingKeuangan.id },
+      data: payload
+    });
+  } else {
+    await tx.keuangan.create({ data: payload });
   }
 }
 
@@ -97,38 +106,15 @@ export const pembayaranIuranService = {
 
   async create(data: any) {
     if (data.tanggal_bayar) data.tanggal_bayar = dateUtils.normalize(data.tanggal_bayar);
-    const isBebas = data.metadata?.mode === 'Bebas';
     const metadataMode = data.metadata?.mode;
-    let processedData = { ...data };
+    const processedData = { ...data };
     
     delete processedData.metadata;
 
-    // Determine rate: for INSIDENTIL use kategori's configured nominal, not tiered warga rate
-    const kategoriMeta = await getKategoriMetadata(data.kategori, data.tenant_id, data.scope);
-    const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
-
-    if (isInsidentil && kategoriMeta?.nominal > 0) {
-      // INSIDENTIL: always use the configured event nominal, ignore warga status tiers
-      processedData.nominal = kategoriMeta.nominal;
-    } else if (isBebas && data.nominal > 0) {
-      const rate = await getWargaIuranRate(data.warga_id, data.tenant_id, data.scope);
-      if (rate > 0) {
-        const totalMonthsCovered = data.nominal / rate;
-        const startMonth = data.periode_bulan[0] || 1;
-        const months: number[] = [];
-        for (let i = 0; i < Math.ceil(totalMonthsCovered); i++) {
-          let m = startMonth + i;
-          if (m > 12) break;
-          months.push(m);
-        }
-        if (months.length > 0) processedData.periode_bulan = months;
-      }
-    } else if (!isBebas && !isInsidentil) {
-      const rate = await getWargaIuranRate(data.warga_id, data.tenant_id, data.scope);
-      if (rate > 0 && Array.isArray(processedData.periode_bulan)) {
-        processedData.nominal = rate * processedData.periode_bulan.length;
-      }
-    }
+    // Delegate calculation logic to IuranCalculator
+    const details = await IuranCalculator.calculatePaymentDetails(data);
+    processedData.nominal = details.nominal;
+    processedData.periode_bulan = details.periode_bulan;
 
     try {
         return await prisma.$transaction(async (tx) => {
@@ -182,24 +168,7 @@ export const pembayaranIuranService = {
             if (_autoVerify) {
                 console.log("DEBUG - Creating keuangan entry for:", result.id);
                 try {
-                    await tx.keuangan.create({
-                        data: {
-                            tenant_id: result.tenant_id,
-                            scope: result.scope || 'RT',
-                            tipe: 'pemasukan',
-                            kategori: 'Iuran Warga',
-                            nominal: result.nominal,
-                            tanggal: result.tanggal_bayar,
-                            pembayaranIuranId: result.id,
-                            keterangan: buildKeterangan(
-                                wargaNama,
-                                result.kategori,
-                                Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
-                                result.periode_tahun,
-                                result.id
-                            )
-                        }
-                    });
+                    await syncToKeuangan(tx, result, wargaNama, 'CREATE');
                 } catch (kErr) {
                     console.error("DEBUG - Failed to create Keuangan entry:", kErr);
                     throw kErr;
@@ -255,24 +224,7 @@ export const pembayaranIuranService = {
             });
 
             // Sync to Keuangan ONLY now
-            await tx.keuangan.create({
-                data: {
-                    tenant_id: result.tenant_id,
-                    scope: result.scope || 'RT',
-                    tipe: 'pemasukan',
-                    kategori: 'Iuran Warga',
-                    nominal: result.nominal,
-                    tanggal: result.tanggal_bayar,
-                    pembayaranIuranId: result.id, // CRITICAL FIX: Link to iuran record
-                    keterangan: buildKeterangan(
-                        (iuran?.warga?.nama || (result as any).warga?.nama) || 'Warga',
-                        result.kategori,
-                        result.periode_bulan as number[],
-                        result.periode_tahun,
-                        result.id
-                    )
-                }
-            });
+            await syncToKeuangan(tx, result, iuran?.warga?.nama || 'Warga', 'CREATE');
 
             const wargaNama = iuran?.warga?.nama || 'Warga';
 
@@ -310,7 +262,6 @@ export const pembayaranIuranService = {
   },
 
   async update(id: string, data: any) {
-    const isBebas = data.metadata?.mode === 'Bebas';
     const metadataMode = data.metadata?.mode;
     const processedData = { ...data };
     
@@ -319,30 +270,16 @@ export const pembayaranIuranService = {
     const existingRecord = await this.getById(id);
     if (!existingRecord) throw new Error("Record not found");
 
-    const targetWargaId = processedData.warga_id || existingRecord.warga_id;
-    const targetTenantId = processedData.tenant_id || existingRecord.tenant_id;
-    const targetScope = processedData.scope || existingRecord.scope;
-    const targetPeriodeBulan = processedData.periode_bulan || existingRecord.periode_bulan;
+    // Merge data for calculator
+    const calcData = {
+      ...existingRecord,
+      ...data,
+      metadata: data.metadata || { mode: metadataMode }
+    };
 
-    if (!isBebas && metadataMode === 'Pas') {
-      const rate = await getWargaIuranRate(targetWargaId, targetTenantId, targetScope);
-      if (rate > 0 && Array.isArray(targetPeriodeBulan)) {
-        processedData.nominal = rate * targetPeriodeBulan.length;
-      }
-    } else if (isBebas && processedData.nominal > 0) {
-      const rate = await getWargaIuranRate(targetWargaId, targetTenantId, targetScope);
-      if (rate > 0) {
-        const totalMonthsCovered = processedData.nominal / rate;
-        const startMonth = targetPeriodeBulan[0] || 1;
-        const months: number[] = [];
-        for (let i = 0; i < Math.ceil(totalMonthsCovered); i++) {
-          let m = startMonth + i;
-          if (m > 12) break;
-          months.push(m);
-        }
-        if (months.length > 0) processedData.periode_bulan = months;
-      }
-    }
+    const details = await IuranCalculator.calculatePaymentDetails(calcData);
+    processedData.nominal = details.nominal;
+    processedData.periode_bulan = details.periode_bulan;
 
     if (processedData.warga_id !== undefined) {
        processedData.warga = { connect: { id: processedData.warga_id } };
@@ -363,52 +300,8 @@ export const pembayaranIuranService = {
             include: { warga: true }
         });
 
-        // Sync to Keuangan: Find existing record by relation ID
-        const existingKeuangan = await tx.keuangan.findUnique({
-            where: { pembayaranIuranId: id }
-        });
-
-        if (existingKeuangan) {
-            if (result.status === 'VERIFIED') {
-                await tx.keuangan.update({
-                    where: { id: existingKeuangan.id },
-                    data: {
-                        nominal: result.nominal,
-                        tanggal: result.tanggal_bayar,
-                        keterangan: buildKeterangan(
-                            (result as any).warga?.nama || 'Warga',
-                            result.kategori,
-                            result.periode_bulan as number[],
-                            result.periode_tahun,
-                            result.id
-                        )
-                    }
-                });
-            } else {
-                // If it was VERIFIED but now PENDING/REJECTED, "Rollback" Keuangan by deleting the entry
-                await tx.keuangan.delete({ where: { id: existingKeuangan.id } });
-            }
-        } else if (result.status === 'VERIFIED') {
-            // If it became VERIFIED during update but no Keuangan entry existed
-            await tx.keuangan.create({
-                data: {
-                    tenant_id: result.tenant_id,
-                    scope: result.scope || 'RT',
-                    tipe: 'pemasukan',
-                    kategori: result.kategori,
-                    nominal: result.nominal,
-                    tanggal: result.tanggal_bayar,
-                    pembayaranIuranId: result.id,
-                    keterangan: buildKeterangan(
-                        (result as any).warga?.nama || 'Warga',
-                        result.kategori,
-                        result.periode_bulan as number[],
-                        result.periode_tahun,
-                        result.id
-                    )
-                }
-            });
-        }
+        // Sync to Keuangan using central helper
+        await syncToKeuangan(tx, result, (result as any).warga?.nama || 'Warga', 'UPDATE');
 
         await aktivitasService.create({
             tenant_id: result.tenant_id,
@@ -431,10 +324,7 @@ export const pembayaranIuranService = {
 
         const result = await tx.pembayaranIuran.delete({ where: { id } });
         
-        // Sync to Keuangan: Delete existing record by relation ID
-        await tx.keuangan.deleteMany({
-            where: { pembayaranIuranId: id }
-        });
+        await syncToKeuangan(tx, result, wargaNama, 'DELETE');
 
         await aktivitasService.create({
             tenant_id: result.tenant_id,
@@ -483,9 +373,7 @@ export const pembayaranIuranService = {
     return await prisma.$transaction(async (tx) => {
         const results = [];
         for (const item of items) {
-            const isBebas = item.metadata?.mode === 'Bebas';
-            const metadataMode = item.metadata?.mode;
-            let processedData = { 
+            const processedData = { 
                 ...item, 
                 ...commonData,
                 tanggal_bayar: dateUtils.normalize(commonData.tanggal_bayar)
@@ -493,18 +381,13 @@ export const pembayaranIuranService = {
             
             delete processedData.metadata;
 
-            const kategoriMeta = await getKategoriMetadata(item.kategori, commonData.tenant_id, commonData.scope);
-            const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
-
-            if (isInsidentil && kategoriMeta?.nominal > 0) {
-                // For incidental, if not specified nominal (Mode Pas), use setting
-                if (!processedData.nominal) processedData.nominal = kategoriMeta.nominal;
-            } else if (!isBebas && !isInsidentil) {
-                const rate = await getWargaIuranRate(processedData.warga_id, commonData.tenant_id, commonData.scope);
-                if (rate > 0 && Array.isArray(processedData.periode_bulan)) {
-                    processedData.nominal = rate * processedData.periode_bulan.length;
-                }
-            }
+            // Delegate calculation logic
+            const details = await IuranCalculator.calculatePaymentDetails({
+                ...item,
+                ...commonData
+            });
+            processedData.nominal = details.nominal;
+            processedData.periode_bulan = details.periode_bulan;
 
             const { _autoVerify } = processedData;
             const status = _autoVerify ? 'VERIFIED' : 'PENDING';
@@ -529,24 +412,7 @@ export const pembayaranIuranService = {
             const wargaNama = wargaRecord?.nama || 'Warga';
 
             if (status === 'VERIFIED') {
-                await tx.keuangan.create({
-                    data: {
-                        tenant_id: result.tenant_id,
-                        scope: result.scope || 'RT',
-                        tipe: 'pemasukan',
-                        kategori: 'Iuran Warga',
-                        nominal: result.nominal,
-                        tanggal: result.tanggal_bayar,
-                        pembayaranIuranId: result.id,
-                        keterangan: buildKeterangan(
-                            wargaNama,
-                            result.kategori,
-                            Array.isArray(result.periode_bulan) ? result.periode_bulan : [],
-                            result.periode_tahun,
-                            result.id
-                        )
-                    }
-                });
+                await syncToKeuangan(tx, result, wargaNama, 'CREATE');
             }
 
             await aktivitasService.create({
@@ -589,7 +455,7 @@ export const pembayaranIuranService = {
             const isInsidentil = j.tipe === 'INSIDENTIL';
             const rate = isInsidentil 
                 ? (Number(j.nominal) || 0) 
-                : await getWargaIuranRate(wargaId, tenantId, scope);
+                : await IuranCalculator.getWargaIuranRate(wargaId, tenantId, scope);
             
             const targetKat = j.nama.trim().replace(/\s+/g, ' ').toLowerCase();
             const verified = allPayments.filter(p => p.status === 'VERIFIED' && p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat);
@@ -616,11 +482,11 @@ export const pembayaranIuranService = {
     }
 
     // Default: Existing logic for single category
-    const kategoriMeta = kategori ? await getKategoriMetadata(kategori, tenantId, scope) : null;
+    const kategoriMeta = kategori ? await IuranCalculator.getKategoriMetadata(kategori, tenantId, scope) : null;
     const isInsidentil = kategoriMeta?.tipe === 'INSIDENTIL';
     const rate = isInsidentil
       ? (kategoriMeta?.nominal || 0)
-      : await getWargaIuranRate(wargaId, tenantId, scope);
+      : await IuranCalculator.getWargaIuranRate(wargaId, tenantId, scope);
     
     const targetKat = kategori?.trim().replace(/\s+/g, ' ').toLowerCase();
 

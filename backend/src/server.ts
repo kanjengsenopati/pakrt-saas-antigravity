@@ -28,17 +28,27 @@ import fastifyStatic from '@fastify/static';
 import path from 'path';
 import fastifyJwt from '@fastify/jwt';
 import fastifyRateLimit from '@fastify/rate-limit';
+import fastifyCookie from '@fastify/cookie';
 
 import { authenticate } from './middleware/auth';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    authenticate: any;
+  }
+}
 
 const fastify = Fastify({
   logger: true,
   ignoreTrailingSlash: true
 });
 
+fastify.decorate('authenticate', authenticate);
+
 fastify.register(fastifyCors, {
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  origin: ['https://pakrtsaas.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 });
 
 
@@ -48,8 +58,14 @@ fastify.register(fastifyStatic, {
   prefix: '/uploads/',
 });
 
+fastify.register(fastifyCookie);
+
 fastify.register(fastifyJwt, {
-  secret: process.env.JWT_SECRET || 'supersecret-rt-key-2026'
+  secret: process.env.JWT_SECRET || 'supersecret-rt-key-2026',
+  cookie: {
+    cookieName: 'auth_token',
+    signed: false
+  }
 });
 
 fastify.register(fastifyRateLimit, {
