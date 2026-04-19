@@ -523,9 +523,11 @@ export default function IuranList() {
                                                         </div>
                                                         <div className="text-right">
                                                             <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
-                                                            <Text.Label className={`!font-bold ${h.status === 'VERIFIED' ? '!text-emerald-600' : h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
-                                                                {h.status === 'VERIFIED' ? 'LUNAS' : h.status}
-                                                            </Text.Label>
+                                                            {h.status !== 'VERIFIED' && (
+                                                                <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
+                                                                    {h.status}
+                                                                </Text.Label>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 ))}
@@ -534,7 +536,7 @@ export default function IuranList() {
                                     )}
 
                                     <div className="bg-slate-50/50 rounded-[14px] border border-slate-100 p-4 mb-4">
-                                        <Text.Label className="block mb-3 !text-[9px] opacity-60 !tracking-tight">Status Terbayar ({iuran.periode_tahun})</Text.Label>
+                                        <Text.Label className="block mb-3 !text-[9px] !text-slate-500 !tracking-tight">Status Terbayar ({iuran.periode_tahun})</Text.Label>
                                         <div className="grid grid-cols-6 gap-1.5">
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
                                                 const isPaid = allPaidMonths.has(month);
