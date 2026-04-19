@@ -1493,7 +1493,7 @@ export default function Pengaturan() {
                 <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-6 md:p-8 space-y-8 animate-fade-in">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div className="flex items-center gap-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center items-start gap-4 sm:gap-6 w-full overflow-x-auto no-scrollbar pb-2 sm:pb-0">
                                 <div>
                                     <Text.H1 className="!text-[20px] !font-bold !text-slate-800 !leading-none">Manajemen Akses</Text.H1>
                                     <Text.Caption className="!text-[12px] !text-slate-500 !mt-2 !font-medium !tracking-normal">Pengaturan RBAC & Hak Akses Per Tenant.</Text.Caption>
@@ -1512,7 +1512,7 @@ export default function Pengaturan() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-full md:w-auto shrink-0">
                                 {activeRoleSubTab === 'users' ? (
                                     <HasPermission module="Setup / Pengaturan" action="Buat">
                                         <button 
