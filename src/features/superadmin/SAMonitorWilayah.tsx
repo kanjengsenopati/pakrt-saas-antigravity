@@ -73,34 +73,38 @@ export default function SAMonitorWilayah() {
 
     const DistrictCard = ({ d }: { d: any }) => {
         const isActive = expandedDistrict === d.name;
+        const hasRegistered = d.registered > 0;
+        
         return (
             <button
                 onClick={() => setExpandedDistrict(isActive ? null : d.name)}
-                className={`flex flex-col p-4 rounded-[24px] border transition-all relative group
+                className={`flex flex-col p-4 rounded-[24px] border transition-all relative group text-left
                     ${isActive 
                         ? 'bg-slate-900 border-slate-900 shadow-xl shadow-slate-900/20 scale-105 z-10' 
-                        : 'bg-white border-white hover:border-emerald-500 hover:shadow-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]'}`}
+                        : hasRegistered
+                            ? 'bg-emerald-50/30 border-emerald-200 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10 shadow-[0_8px_30px_rgb(16,185,129,0.06)]'
+                            : 'bg-white border-white hover:border-emerald-500 hover:shadow-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]'}`}
             >
-                <div className="flex items-center justify-between mb-3">
-                    <Text.Label className={`!text-[11px] !font-black !tracking-widest uppercase truncate pr-2 ${isActive ? '!text-emerald-400' : '!text-slate-400'}`}>
+                <div className="flex items-center justify-between mb-3 w-full">
+                    <Text.Label className={`!text-[11px] !font-black !tracking-widest uppercase truncate pr-2 ${isActive ? '!text-emerald-400' : '!text-slate-700'}`}>
                         {d.name}
                     </Text.Label>
-                    {isActive ? <CaretUp size={14} weight="bold" className="text-emerald-400" /> : <CaretDown size={14} weight="bold" className="text-slate-300" />}
+                    {isActive ? <CaretUp size={14} weight="bold" className="text-emerald-400 shrink-0" /> : <CaretDown size={14} weight="bold" className={hasRegistered ? "text-emerald-500 shrink-0" : "text-slate-300 shrink-0"} />}
                 </div>
                 
                 <div className="flex items-baseline gap-1.5 mb-3">
-                    <span className={`text-2xl font-black tracking-tighter ${isActive ? 'text-white' : 'text-slate-900'}`}>{d.registered}</span>
-                    <span className={`text-[11px] font-bold ${isActive ? 'text-slate-500' : 'text-slate-400'}`}>/ {d.total} RT</span>
+                    <span className={`text-2xl font-black tracking-tighter ${isActive ? 'text-white' : hasRegistered ? 'text-emerald-600' : 'text-slate-900'}`}>{d.registered}</span>
+                    <span className={`text-[11px] font-bold ${isActive ? 'text-slate-500' : hasRegistered ? 'text-emerald-600/70' : 'text-slate-400'}`}>/ {d.total} RT</span>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-1.5 ring-4 ring-transparent group-hover:ring-emerald-500/5 transition-all">
+                <div className={`w-full h-2 rounded-full overflow-hidden mb-1.5 ring-4 ring-transparent transition-all ${isActive ? 'bg-slate-800' : hasRegistered ? 'bg-emerald-100 group-hover:ring-emerald-500/5' : 'bg-slate-100 group-hover:ring-emerald-500/5'}`}>
                     <div 
-                        className={`h-full transition-all duration-1000 ${d.percent > 50 ? 'bg-emerald-500' : d.percent > 20 ? 'bg-amber-500' : 'bg-slate-300'}`}
+                        className={`h-full transition-all duration-1000 ${d.percent > 50 ? 'bg-emerald-500' : d.percent > 20 ? 'bg-amber-500' : 'bg-emerald-400'}`}
                         style={{ width: `${Math.min(100, d.percent)}%` }}
                     />
                 </div>
-                <div className={`text-[10px] font-black text-right ${isActive ? 'text-emerald-400' : 'text-slate-600'}`}>
+                <div className={`text-[10px] font-black text-right w-full ${isActive ? 'text-emerald-400' : hasRegistered ? 'text-emerald-600' : 'text-slate-600'}`}>
                     {d.percent.toFixed(1)}% Terdaftar
                 </div>
             </button>
