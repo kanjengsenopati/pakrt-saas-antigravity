@@ -92,8 +92,8 @@ export default function SADashboard() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Platform Dashboard</Text.H1>
-                <Text.Body className="!text-slate-400 !font-medium mt-1.5">Overview platform PakRT SaaS</Text.Body>
+                <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">Platform Dashboard</h1>
+                <p className="text-[14px] text-slate-500 mt-0.5">Overview platform PakRT SaaS</p>
             </div>
 
             {/* Pending Invoice Alert */}
@@ -120,7 +120,7 @@ export default function SADashboard() {
                             <div className={`w-8 h-8 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
                                 <stat.icon size={18} weight="bold" />
                             </div>
-                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{stat.label}</Text.H2>
+                            <span className="text-[14px] font-semibold text-slate-700 truncate leading-none">{stat.label}</span>
                         </div>
                         <div className={stat.type === 'count' ? 'text-center' : 'text-left'}>
                             <Text.Amount className={`${stat.text} !text-3xl !font-black leading-none !tracking-tighter`}>
@@ -136,15 +136,15 @@ export default function SADashboard() {
                 {/* Subscription Breakdown */}
                 <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <div className="flex items-center justify-between mb-6">
-                        <Text.H2>Subscription Status</Text.H2>
+                        <h3 className="text-[16px] font-semibold text-slate-800">Subscription Status</h3>
                         <CreditCard size={20} className="text-slate-300" weight="bold" />
                     </div>
                     <div className="space-y-4">
                         {subBreakdown.map((item) => (
                             <div key={item.label}>
                                 <div className="flex items-center justify-between mb-2">
-                                    <Text.Label className="!text-slate-500 !normal-case !tracking-normal !font-bold">{item.label}</Text.Label>
-                                    <Text.Body className="!text-slate-900 !font-black">{item.value}</Text.Body>
+                                    <span className="text-[13px] font-medium text-slate-600">{item.label}</span>
+                                    <span className="text-[14px] font-bold text-slate-900">{item.value}</span>
                                 </div>
                                 <div className="h-2.5 rounded-full bg-slate-50 overflow-hidden border border-slate-100/50 p-[1px]">
                                     <div
@@ -160,7 +160,7 @@ export default function SADashboard() {
                 {/* Tenant Growth */}
                 <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <div className="flex items-center justify-between mb-6">
-                        <Text.H2>Pertumbuhan Tenant</Text.H2>
+                        <h3 className="text-[16px] font-semibold text-slate-800">Pertumbuhan Tenant</h3>
                         <ChartLineUp size={20} className="text-slate-300" weight="bold" />
                     </div>
                     {growth.length > 0 ? (
@@ -206,7 +206,7 @@ export default function SADashboard() {
                         <div className={`w-10 h-10 rounded-xl ${action.bg} ${action.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                             <action.icon size={20} weight="bold" />
                         </div>
-                        <Text.Body className="!text-slate-700 !font-bold group-hover:!text-slate-900 transition-colors">{action.label}</Text.Body>
+                        <span className="text-[14px] font-semibold text-slate-700 group-hover:text-slate-900 transition-colors">{action.label}</span>
                         <ArrowRight size={18} className="text-slate-300 group-hover:text-slate-900 ml-auto transition-all" />
                     </button>
                 ))}

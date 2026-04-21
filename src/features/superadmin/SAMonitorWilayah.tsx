@@ -181,11 +181,11 @@ export default function SAMonitorWilayah() {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Monitor Wilayah</Text.H1>
-                    <Text.Caption className="!text-slate-400 !mt-1.5 !font-black !tracking-widest uppercase !text-[11px] flex items-center gap-2">
+                    <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">Monitor Wilayah</h1>
+                    <p className="text-[14px] text-slate-500 mt-0.5 flex items-center gap-1.5">
                         <MapTrifold size={14} weight="bold" />
-                        <span>Live Database Sync: Kota Semarang</span>
-                    </Text.Caption>
+                        Live Database Sync: Kota Semarang
+                    </p>
                 </div>
                 <div className="flex items-center gap-6 bg-white p-4 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-slate-100">
                     <div className="flex flex-col items-end">

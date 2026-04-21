@@ -38,11 +38,11 @@ export default function SAAffiliate() {
     return (
         <div className="space-y-8">
             <div>
-                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Program Afiliasi</Text.H1>
-                <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex items-center gap-2">
+                <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">Program Afiliasi</h1>
+                <p className="text-[14px] text-slate-500 mt-0.5 flex items-center gap-1.5">
                     <Trophy size={14} weight="bold" className="text-emerald-500" />
-                    <span>Kelola reward dan referral antar tenant</span>
-                </Text.Caption>
+                    Kelola reward dan referral antar tenant
+                </p>
             </div>
 
             {/* Stats (Refined Summary Cards) */}
@@ -53,7 +53,7 @@ export default function SAAffiliate() {
                             <div className={`w-8 h-8 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
                                 <s.icon size={18} weight="bold" />
                             </div>
-                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{s.label}</Text.H2>
+                            <span className="text-[14px] font-semibold text-slate-700 truncate leading-none">{s.label}</span>
                         </div>
                         <div className={idx === 0 ? 'text-left' : 'text-center'}>
                             <Text.Amount className={`${s.color} !text-3xl !font-black leading-none !tracking-tighter`}>
@@ -71,7 +71,7 @@ export default function SAAffiliate() {
                         <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
                             <Trophy size={18} weight="bold" />
                         </div>
-                        <Text.H2 className="!text-slate-900 !font-black">Top Referrers</Text.H2>
+                        <h3 className="text-[16px] font-semibold text-slate-800">Top Referrers</h3>
                     </div>
 
                     {data?.topReferrers?.length > 0 ? (
@@ -87,8 +87,8 @@ export default function SAAffiliate() {
                                         {i + 1}
                                     </div>
                                     <div className="flex-1">
-                                        <Text.Body className="!font-black !text-slate-900 !text-[15px]">{ref.tenantName}</Text.Body>
-                                        <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[9px]">{ref.tenantId}</Text.Caption>
+                                        <p className="text-[14px] font-semibold text-slate-900">{ref.tenantName}</p>
+                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{ref.tenantId}</span>
                                     </div>
                                     <div className="text-right">
                                         <Text.Body className="!font-black !text-emerald-600 tabular-nums">{ref.count}</Text.Body>
@@ -110,7 +110,7 @@ export default function SAAffiliate() {
                         <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
                             <Gift size={18} weight="bold" />
                         </div>
-                        <Text.H2 className="!text-slate-900 !font-black">Recent Rewards</Text.H2>
+                        <h3 className="text-[16px] font-semibold text-slate-800">Recent Rewards</h3>
                     </div>
 
                     {data?.recentRewards?.length > 0 ? (

@@ -67,11 +67,11 @@ export default function SATenantList() {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Platform Management</Text.H1>
-                    <Text.Caption className="!text-slate-400 !mt-1.5 !font-black !tracking-widest uppercase !text-[11px] flex items-center gap-2">
+                    <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">Platform Management</h1>
+                    <p className="text-[14px] text-slate-500 mt-0.5 flex items-center gap-1.5">
                         <MapPin size={14} weight="bold" />
-                        <span>Inventory & Coverage Monitoring</span>
-                    </Text.Caption>
+                        Inventory &amp; Coverage Monitoring
+                    </p>
                 </div>
             </div>
 
@@ -83,7 +83,7 @@ export default function SATenantList() {
                             <div className={`w-8 h-8 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
                                 <s.icon size={18} weight="bold" />
                             </div>
-                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{s.label}</Text.H2>
+                            <span className="text-[14px] font-semibold text-slate-700 truncate leading-none">{s.label}</span>
                         </div>
                         <div className="text-center">
                             <Text.Amount className={`${s.color} !text-3xl !font-black leading-none !tracking-tighter`}>

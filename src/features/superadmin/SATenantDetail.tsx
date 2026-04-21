@@ -91,34 +91,25 @@ export default function SATenantDetail() {
                     <ArrowLeft size={22} weight="bold" />
                 </button>
                 <div>
-                    <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">{tenant.name}</Text.H1>
-                    <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex flex-wrap items-center gap-2">
-                        <span className="bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">{tenant.id}</span>
+                    <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">{tenant.name}</h1>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                        <span className="text-[11px] font-bold text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">{tenant.id}</span>
                         {tenant.kelurahan && (
-                            <>
-                                <span className="text-slate-300">•</span>
-                                <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/50">
-                                    KEL: {tenant.kelurahan}
-                                </span>
-                            </>
+                            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/50">
+                                KEL: {tenant.kelurahan}
+                            </span>
                         )}
                         {tenant.kecamatan && (
-                            <>
-                                <span className="text-slate-300">•</span>
-                                <span className="text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-100">
-                                    KEC: {tenant.kecamatan}
-                                </span>
-                            </>
+                            <span className="text-[11px] font-medium text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                                KEC: {tenant.kecamatan}
+                            </span>
                         )}
                         {tenant.kota && (
-                            <>
-                                <span className="text-slate-300">•</span>
-                                <span className="text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-100">
-                                    {tenant.kota}
-                                </span>
-                            </>
+                            <span className="text-[11px] font-medium text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                                {tenant.kota}
+                            </span>
                         )}
-                    </Text.Caption>
+                    </div>
                 </div>
             </div>
 
@@ -135,7 +126,7 @@ export default function SATenantDetail() {
                             <div className={`w-8 h-8 rounded-xl ${card.bg} ${card.text} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
                                 <card.icon size={18} weight="bold" />
                             </div>
-                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{card.label}</Text.H2>
+                            <span className="text-[14px] font-semibold text-slate-700 truncate leading-none">{card.label}</span>
                         </div>
                         <div className="text-center">
                             <Text.Amount className={`${card.text} !text-3xl !font-black leading-none !tracking-tighter`}>
@@ -153,20 +144,20 @@ export default function SATenantDetail() {
                         <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
                             <Users size={18} weight="bold" />
                         </div>
-                        <Text.H2 className="!text-slate-900 !font-black">Admin Pengurus</Text.H2>
+                        <h3 className="text-[16px] font-semibold text-slate-800">Admin Pengurus</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-1">
-                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Nama Lengkap</Text.Label>
-                            <Text.Body className="!text-slate-900 !font-black !text-[15px]">{tenant.admin.name}</Text.Body>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Nama Lengkap</span>
+                            <p className="text-[14px] font-semibold text-slate-800 mt-0.5">{tenant.admin.name}</p>
                         </div>
                         <div className="space-y-1">
-                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Email Address</Text.Label>
-                            <Text.Body className="!text-slate-900 !font-black !text-[15px]">{tenant.admin.email}</Text.Body>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Email Address</span>
+                            <p className="text-[14px] font-medium text-slate-600 mt-0.5">{tenant.admin.email}</p>
                         </div>
                         <div className="space-y-1">
-                            <Text.Label className="!text-slate-400 uppercase !text-[9px] !font-black !tracking-widest">Kontak</Text.Label>
-                            <Text.Body className="!text-slate-900 !font-black !text-[15px] font-mono">{tenant.admin.kontak || '-'}</Text.Body>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Kontak</span>
+                            <p className="text-[14px] font-semibold text-slate-800 font-mono mt-0.5">{tenant.admin.kontak || '-'}</p>
                         </div>
                     </div>
                 </div>
@@ -178,27 +169,27 @@ export default function SATenantDetail() {
                     <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
                         <CreditCard size={18} weight="bold" />
                     </div>
-                    <Text.H2 className="!text-slate-900 !font-black">Kelola Subscription</Text.H2>
+                    <h3 className="text-[16px] font-semibold text-slate-800">Kelola Subscription</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="space-y-2">
-                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Subscription Plan</Text.Label>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Subscription Plan</span>
                         <select
                             value={subForm.plan}
                             onChange={(e) => setSubForm({ ...subForm, plan: e.target.value })}
-                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
+                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-[14px] font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
                         >
                             <option value="FREE">FREE PLAN</option>
                             <option value="PREMIUM">PREMIUM PLAN</option>
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Account Status</Text.Label>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Account Status</span>
                         <select
                             value={subForm.status}
                             onChange={(e) => setSubForm({ ...subForm, status: e.target.value })}
-                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-black text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
+                            className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-[14px] font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all cursor-pointer appearance-none"
                         >
                             <option value="TRIAL">TRIAL PERIOD</option>
                             <option value="ACTIVE">ACTIVE SUBS</option>
@@ -207,7 +198,7 @@ export default function SATenantDetail() {
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <Text.Label className="!text-slate-500 !font-bold !text-[11px] mb-1 block">Valid Until</Text.Label>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Valid Until</span>
                         <input
                             type="date"
                             value={subForm.until}

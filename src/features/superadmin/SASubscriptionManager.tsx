@@ -70,11 +70,11 @@ export default function SASubscriptionManager() {
     return (
         <div className="space-y-8">
             <div>
-                <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">Subscription & Invoices</Text.H1>
-                <Text.Caption className="!text-slate-500 !mt-1.5 !font-black !tracking-widest uppercase !text-[10px] flex items-center gap-2">
+                <h1 className="text-[22px] font-bold text-slate-900 tracking-tight">Subscription & Invoices</h1>
+                <p className="text-[14px] text-slate-500 mt-0.5 flex items-center gap-1.5">
                     <Receipt size={14} weight="bold" />
-                    <span>Financial Control Panel</span>
-                </Text.Caption>
+                    Financial Control Panel
+                </p>
             </div>
 
             {/* Summary Cards */}
@@ -85,7 +85,7 @@ export default function SASubscriptionManager() {
                             <div className={`w-8 h-8 rounded-xl ${s.bg} ${s.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
                                 <s.icon size={18} weight="bold" />
                             </div>
-                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{s.label}</Text.H2>
+                            <span className="text-[14px] font-semibold text-slate-700 truncate leading-none">{s.label}</span>
                         </div>
                         <div className={s.isAmount ? 'text-left' : 'text-center'}>
                             <Text.Amount className={`${s.color} !text-2xl !font-black leading-none !tracking-tighter`}>
@@ -152,8 +152,8 @@ export default function SASubscriptionManager() {
                                                 </td>
                                                 <td className="py-4 px-6">
                                                     <div className="flex flex-col">
-                                                        <Text.Body className="!text-slate-900 !font-black font-mono !text-[14px] leading-none">{inv.invoice_number}</Text.Body>
-                                                        <Text.Body className="!text-slate-700 !text-sm !font-bold mt-1.5">{inv.tenant?.name || inv.tenant_id}</Text.Body>
+                                                        <span className="text-[14px] font-semibold text-slate-900 font-mono leading-none">{inv.invoice_number}</span>
+                                                        <span className="text-[14px] font-medium text-slate-600 mt-1.5">{inv.tenant?.name || inv.tenant_id}</span>
                                                         <Text.Caption className="!text-slate-400 block mt-1 uppercase tracking-tighter !font-bold !not-italic">
                                                             {inv.plan} • {inv.duration_months} bulan
                                                         </Text.Caption>
@@ -202,12 +202,12 @@ export default function SASubscriptionManager() {
                                                             <div className="flex-1 space-y-6">
                                                                 <div className="grid grid-cols-2 gap-6">
                                                                     <div className="space-y-1">
-                                                                        <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Metode Pembayaran</Text.Label>
-                                                                        <Text.Body className="!text-slate-900 !font-black uppercase">{inv.payment_method || 'BANK TRANSFER'}</Text.Body>
+                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Metode Pembayaran</span>
+                                                                        <p className="text-[14px] font-semibold text-slate-800 mt-0.5 uppercase">{inv.payment_method || 'BANK TRANSFER'}</p>
                                                                     </div>
                                                                     <div className="space-y-1">
-                                                                        <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Waktu Upload</Text.Label>
-                                                                        <Text.Body className="!text-slate-900 !font-black uppercase">{inv.updated_at ? new Date(inv.updated_at).toLocaleString('id-ID') : '-'}</Text.Body>
+                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Waktu Upload</span>
+                                                                        <p className="text-[14px] font-semibold text-slate-800 mt-0.5">{inv.updated_at ? new Date(inv.updated_at).toLocaleString('id-ID') : '-'}</p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="space-y-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
