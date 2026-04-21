@@ -10,7 +10,7 @@ export const superAdminService = {
   // TENANT MANAGEMENT
   // ──────────────────────────────────────────────────────
 
-  async getAllTenants(page: number = 1, limit: number = 20, search?: string, status?: string) {
+  async getAllTenants(page: number = 1, limit: number = 20, search?: string, status?: string, kecamatan?: string, kelurahan?: string, rwSearch?: string) {
     const where: any = {
       id: { not: 'SYSTEM' } // Exclude internal system tenant
     };
@@ -23,8 +23,37 @@ export const superAdminService = {
       ];
     }
 
+    // Add location filtering
+    let idPrefix = '';
+    
+    if (kelurahan) {
+       const kel = await prisma.wilayah.findFirst({
+           where: { name: { equals: kelurahan, mode: 'insensitive' }, level: 'keldesa' }
+       });
+       if (kel) {
+           idPrefix = kel.id + '.';
+       }
+    } else if (kecamatan) {
+       const kec = await prisma.wilayah.findFirst({
+           where: { name: { equals: kecamatan, mode: 'insensitive' }, level: 'kecamatan' }
+       });
+       if (kec) {
+           idPrefix = kec.id + '.';
+       }
+    }
+    
+    if (idPrefix || rwSearch) {
+       if (idPrefix && rwSearch) {
+           where.id = { startsWith: idPrefix + rwSearch + '.' };
+       } else if (idPrefix) {
+           where.id = { startsWith: idPrefix };
+       } else if (rwSearch) {
+           where.id = { contains: '.' + rwSearch + '.' };
+       }
+    }
+
     const skip = (page - 1) * limit;
-    const [items, total] = await Promise.all([
+    const [rawItems, total] = await Promise.all([
       prisma.tenant.findMany({
         where,
         include: {
@@ -36,6 +65,31 @@ export const superAdminService = {
       }),
       prisma.tenant.count({ where })
     ]);
+
+    // Enrich items with location metadata
+    const items = await Promise.all(rawItems.map(async (t) => {
+      const parts = t.id.split('.');
+      if (parts.length < 6) return { ...t, kecamatan: null, kelurahan: null, rw: null, rt: null };
+
+      const kecCode = parts.slice(0, 3).join('.');
+      const kelCode = parts.slice(0, 4).join('.');
+      const rw = parts[4];
+      const rt = parts[5];
+
+      const [kecObj, kelObj] = await Promise.all([
+        prisma.wilayah.findUnique({ where: { id: kecCode } }),
+        prisma.wilayah.findUnique({ where: { id: kelCode } })
+      ]);
+
+      return {
+        ...t,
+        kecamatan: kecObj ? kecObj.name : null,
+        kelurahan: kelObj ? kelObj.name : null,
+        kota: 'Kota Semarang',
+        rw,
+        rt
+      };
+    }));
 
     return { items, total, page, limit };
   },
@@ -65,8 +119,34 @@ export const superAdminService = {
       prisma.suratPengantar.count({ where: { tenant_id: tenantId } })
     ]);
 
+    // Parse location from ID
+    let kecamatan = null;
+    let kelurahan = null;
+    let rw = null;
+    let rt = null;
+
+    const parts = tenantId.split('.');
+    if (parts.length >= 6) {
+      const kecCode = parts.slice(0, 3).join('.');
+      const kelCode = parts.slice(0, 4).join('.');
+      rw = parts[4];
+      rt = parts[5];
+
+      const [kecObj, kelObj] = await Promise.all([
+        prisma.wilayah.findUnique({ where: { id: kecCode } }),
+        prisma.wilayah.findUnique({ where: { id: kelCode } })
+      ]);
+      kecamatan = kecObj ? kecObj.name : null;
+      kelurahan = kelObj ? kelObj.name : null;
+    }
+
     return {
       ...tenant,
+      kecamatan,
+      kelurahan,
+      kota: 'Kota Semarang',
+      rw,
+      rt,
       admin: adminUser,
       module_stats: { agendaCount, iuranCount, keuanganCount, suratCount }
     };

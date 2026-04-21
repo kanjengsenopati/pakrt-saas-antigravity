@@ -11,12 +11,15 @@ export default async function superAdminRoutes(fastify: FastifyInstance) {
   // ── TENANT MANAGEMENT ──────────────────────────────
 
   fastify.get('/tenants', async (request) => {
-    const { page, limit, search, status } = request.query as any;
+    const { page, limit, search, status, kecamatan, kelurahan, rw } = request.query as any;
     return await superAdminService.getAllTenants(
       Number(page) || 1,
       Number(limit) || 20,
       search,
-      status
+      status,
+      kecamatan,
+      kelurahan,
+      rw
     );
   });
 

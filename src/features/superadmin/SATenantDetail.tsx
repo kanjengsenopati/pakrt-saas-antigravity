@@ -92,9 +92,32 @@ export default function SATenantDetail() {
                 </button>
                 <div>
                     <Text.H1 className="!text-3xl !font-black !tracking-tight !text-slate-900">{tenant.name}</Text.H1>
-                    <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex items-center gap-2">
-                        <span className="bg-slate-100 px-2 py-0.5 rounded-md">{tenant.id}</span>
-                        <span>• Detail Tenant Platform</span>
+                    <Text.Caption className="!text-slate-400 !font-black !tracking-widest uppercase !text-[10px] !mt-1.5 flex flex-wrap items-center gap-2">
+                        <span className="bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">{tenant.id}</span>
+                        {tenant.kelurahan && (
+                            <>
+                                <span className="text-slate-300">•</span>
+                                <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/50">
+                                    KEL: {tenant.kelurahan}
+                                </span>
+                            </>
+                        )}
+                        {tenant.kecamatan && (
+                            <>
+                                <span className="text-slate-300">•</span>
+                                <span className="text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-100">
+                                    KEC: {tenant.kecamatan}
+                                </span>
+                            </>
+                        )}
+                        {tenant.kota && (
+                            <>
+                                <span className="text-slate-300">•</span>
+                                <span className="text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-100">
+                                    {tenant.kota}
+                                </span>
+                            </>
+                        )}
                     </Text.Caption>
                 </div>
             </div>

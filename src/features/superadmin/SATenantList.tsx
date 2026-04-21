@@ -197,11 +197,24 @@ export default function SATenantList() {
                                             <span className="text-[12px] font-black text-slate-300">{(page - 1) * 15 + idx + 1}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <div className="flex flex-col">
-                                                <Text.Body className="!text-slate-900 !font-black !text-[15px]">{t.name}</Text.Body>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-[9px] font-black text-slate-400 font-mono tracking-tighter bg-slate-100 px-1.5 py-0.5 rounded-md">{t.id}</span>
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t.kecamatan || 'WIlAYAH'}</span>
+                                            <div className="flex flex-col gap-1.5">
+                                                <Text.Body className="!text-slate-900 !font-black !text-[15px] leading-tight">{t.name}</Text.Body>
+                                                <div className="flex flex-wrap items-center gap-1.5">
+                                                    <span className="text-[9px] font-black text-slate-500 font-mono tracking-tighter bg-slate-50 px-1.5 py-0.5 rounded-md border border-slate-100">{t.id}</span>
+                                                    {t.kelurahan && (
+                                                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-100/50 flex items-center gap-1 uppercase tracking-widest leading-none">
+                                                            <MapPin size={10} weight="fill" />
+                                                            {t.kelurahan}
+                                                        </span>
+                                                    )}
+                                                    {t.kecamatan && (
+                                                        <span className="text-[9px] font-bold text-slate-400 bg-white px-1.5 py-0.5 rounded-md border border-slate-100 uppercase tracking-widest leading-none shadow-sm">
+                                                            {t.kecamatan}
+                                                        </span>
+                                                    )}
+                                                    {(!t.kelurahan && !t.kecamatan) && (
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">WILAYAH LOKAL</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>
