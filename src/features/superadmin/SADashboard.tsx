@@ -120,7 +120,7 @@ export default function SADashboard() {
                             <div className={`w-8 h-8 rounded-xl ${stat.bg} ${stat.text} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
                                 <stat.icon size={18} weight="bold" />
                             </div>
-                            <Text.Label className="!text-slate-400 !font-black !normal-case !tracking-tight !text-[12.5px] truncate leading-none uppercase">{stat.label}</Text.Label>
+                            <Text.H2 className="!text-slate-800 !font-bold !tracking-tight !text-[16px] truncate leading-none uppercase">{stat.label}</Text.H2>
                         </div>
                         <div className={stat.type === 'count' ? 'text-center' : 'text-left'}>
                             <Text.Amount className={`${stat.text} !text-3xl !font-black leading-none !tracking-tighter`}>

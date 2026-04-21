@@ -86,9 +86,9 @@ export default function SAMonitorWilayah() {
                             : 'bg-white border-white hover:border-emerald-500 hover:shadow-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]'}`}
             >
                 <div className="flex items-center justify-between mb-3 w-full">
-                    <Text.Label className={`!text-[11px] !font-black !tracking-widest uppercase truncate pr-2 ${isActive ? '!text-emerald-400' : '!text-slate-700'}`}>
+                    <Text.H2 className={`!text-[16px] !font-bold !tracking-tight uppercase truncate pr-2 ${isActive ? '!text-emerald-400' : '!text-slate-800'}`}>
                         {d.name}
-                    </Text.Label>
+                    </Text.H2>
                     {isActive ? <CaretUp size={14} weight="bold" className="text-emerald-400 shrink-0" /> : <CaretDown size={14} weight="bold" className={hasRegistered ? "text-emerald-500 shrink-0" : "text-slate-300 shrink-0"} />}
                 </div>
                 
