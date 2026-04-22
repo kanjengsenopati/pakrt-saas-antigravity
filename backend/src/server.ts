@@ -25,6 +25,7 @@ import aduanRoutes from './routes/aduanRoutes';
 import pollingRoutes from './routes/pollingRoutes';
 import superAdminRoutes from './routes/superAdminRoutes';
 import subscriptionRoutes from './routes/subscriptionRoutes';
+import pricePackageRoutes from './routes/pricePackageRoutes';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
@@ -80,6 +81,7 @@ fastify.register(authRoutes, { prefix: '/api/auth' });
 fastify.register(wilayahRoutes, { prefix: '/api/wilayah' });
 fastify.register(wilayahRoutes, { prefix: '/api/location' });
 fastify.register(superAdminRoutes, { prefix: '/api/super-admin' });
+fastify.register(pricePackageRoutes, { prefix: '/api/packages' });
 fastify.post('/api/test-upload', async () => ({ status: 'found' }));
 
 // Protected routes

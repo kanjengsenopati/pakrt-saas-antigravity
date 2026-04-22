@@ -192,13 +192,29 @@ export const superAdminService = {
   // ──────────────────────────────────────────────────────
 
   async createInvoice(tenantId: string, data: {
-    plan: string;
-    duration_months: number;
-    base_amount: number;
+    plan?: string;
+    duration_months?: number;
+    base_amount?: number;
+    pricePackageId?: string;
   }) {
+    let plan = data.plan || 'PREMIUM';
+    let duration_months = data.duration_months || 1;
+    let base_amount = data.base_amount || 0;
+
+    // If pricePackageId is provided, fetch details from DB
+    if (data.pricePackageId) {
+      const pkg = await prisma.pricePackage.findUnique({
+        where: { id: data.pricePackageId }
+      });
+      if (!pkg) throw new Error('Paket harga tidak ditemukan');
+      plan = 'PREMIUM'; // Currently all packages are premium
+      duration_months = pkg.duration_months;
+      base_amount = pkg.price;
+    }
+
     // Generate 3-digit unique code (100-999)
     const uniqueCode = Math.floor(Math.random() * 900) + 100;
-    const totalAmount = data.base_amount + uniqueCode;
+    const totalAmount = base_amount + uniqueCode;
 
     // Generate invoice number: INV-YYYY-MM-{serial}
     const now = new Date();
@@ -225,14 +241,16 @@ export const superAdminService = {
         tenant_id: tenantId,
         invoice_number: invoiceNumber,
         unique_code: uniqueCode,
-        plan: data.plan,
-        duration_months: data.duration_months,
-        base_amount: data.base_amount,
+        plan: plan,
+        pricePackageId: data.pricePackageId,
+        duration_months: duration_months,
+        base_amount: base_amount,
         total_amount: totalAmount,
         expiresAt
       }
     });
   },
+
 
   async uploadPaymentProof(invoiceId: string, proofUrl: string, method: string) {
     return await prisma.subscriptionInvoice.update({

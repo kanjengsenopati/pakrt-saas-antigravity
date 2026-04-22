@@ -3,13 +3,14 @@ import { Outlet, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
     House, Buildings, CreditCard, ChartLineUp, MapTrifold,
-    UsersThree, SignOut, List, X, GearSix
+    UsersThree, SignOut, List, X, GearSix, Package
 } from '@phosphor-icons/react';
 
 const navItems = [
     { path: '/super-admin', label: 'Dashboard', icon: House, end: true },
     { path: '/super-admin/tenants', label: 'Kelola Tenant', icon: Buildings },
     { path: '/super-admin/monitor', label: 'Monitor Wilayah', icon: MapTrifold },
+    { path: '/super-admin/packages', label: 'Paket Harga', icon: Package },
     { path: '/super-admin/subscriptions', label: 'Subscription', icon: CreditCard },
     { path: '/super-admin/affiliates', label: 'Affiliate', icon: UsersThree },
     { path: '/super-admin/analytics', label: 'Analytics', icon: ChartLineUp },

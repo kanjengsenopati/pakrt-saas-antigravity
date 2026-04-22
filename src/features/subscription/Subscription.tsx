@@ -14,6 +14,7 @@ interface Plan {
     base_amount: number;
     description: string;
     badge?: string;
+    features?: string[];
 }
 
 interface Invoice {
@@ -82,6 +83,7 @@ export default function Subscription() {
         setSubmitting(true);
         try {
             const invoice = await subscriptionService.createInvoice({
+                pricePackageId: plan.id,
                 plan: plan.plan,
                 duration_months: plan.duration_months,
                 base_amount: plan.base_amount
@@ -374,6 +376,17 @@ export default function Subscription() {
                                 <p className="text-[11px] text-slate-400 mt-0.5">
                                     ≈ {formatCurrency(perMonth)}/bulan
                                 </p>
+                                
+                                {plan.features && plan.features.length > 0 && (
+                                    <div className="mt-4 space-y-2">
+                                        {plan.features.map((f, i) => (
+                                            <div key={i} className="flex items-center gap-2 text-slate-600">
+                                                <CheckCircle size={14} weight="fill" className="text-emerald-500" />
+                                                <span className="text-[12px]">{f}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                                 <button
                                     onClick={() => handleSelectPlan(plan)}
                                     disabled={submitting || !!activeInvoice}
