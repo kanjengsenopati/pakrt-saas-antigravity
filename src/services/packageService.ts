@@ -1,30 +1,29 @@
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3100/api';
+import api from './api';
 
 export const packageService = {
   async getAll() {
-    const response = await axios.get(`${API_URL}/packages/all`, { withCredentials: true });
+    const response = await api.get('/packages/all');
     return response.data;
   },
 
   async getPublic() {
-    const response = await axios.get(`${API_URL}/packages`);
+    const response = await api.get('/packages');
     return response.data;
   },
 
   async create(data: any) {
-    const response = await axios.post(`${API_URL}/packages`, data, { withCredentials: true });
+    const response = await api.post('/packages', data);
     return response.data;
   },
 
   async update(id: string, data: any) {
-    const response = await axios.put(`${API_URL}/packages/${id}`, data, { withCredentials: true });
+    const response = await api.put(`/packages/${id}`, data);
     return response.data;
   },
 
   async delete(id: string) {
-    const response = await axios.delete(`${API_URL}/packages/${id}`, { withCredentials: true });
+    const response = await api.delete(`/packages/${id}`);
     return response.data;
   }
 };
+
