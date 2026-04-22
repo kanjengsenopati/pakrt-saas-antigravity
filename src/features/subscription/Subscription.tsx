@@ -353,7 +353,6 @@ export default function Subscription() {
             {tab === 'plans' && (
                 <div className="space-y-4">
                     {plans.map((plan) => {
-                        const perMonth = Math.round(plan.base_amount / plan.duration_months);
                         return (
                             <div
                                 key={plan.id}
