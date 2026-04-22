@@ -129,13 +129,22 @@ export default function SAPackageManager() {
   };
 
 
+  const formatThousand = (val: number | string) => {
+    const num = String(val).replace(/\D/g, '');
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, '');
+    setFormData({ ...formData, price: Number(rawValue) });
+  };
+
   return (
     <div className="space-y-8">
-      {/* ... header ... */}
       <div className="flex items-center justify-between">
         <div>
           <Text.H1>Manajemen Paket Harga</Text.H1>
-          <Text.Body className="mt-1 flex items-center gap-1.5 opacity-60">
+          <Text.Body className="mt-1 flex items-center gap-1.5 text-slate-500 font-medium">
             <Package size={16} weight="bold" />
             Kelola paket berlangganan SaaS PakRT
           </Text.Body>
@@ -164,19 +173,19 @@ export default function SAPackageManager() {
               
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <Text.Label className="!text-[10px] mb-1">Paket Berlangganan</Text.Label>
+                  <Text.Label className="!text-[10px] !text-slate-500 mb-1">Paket Berlangganan</Text.Label>
                   <Text.H2>{pkg.name}</Text.H2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => handleOpenModal(pkg)}
-                    className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    className="p-2 rounded-xl bg-slate-50 text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all"
                   >
                     <PencilSimple size={18} weight="bold" />
                   </button>
                   <button 
                     onClick={() => handleDelete(pkg.id)}
-                    className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                    className="p-2 rounded-xl bg-slate-50 text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all"
                   >
                     <Trash size={18} weight="bold" />
                   </button>
@@ -188,17 +197,17 @@ export default function SAPackageManager() {
                   <Text.Amount className="!text-3xl !text-slate-900">
                     Rp {pkg.price.toLocaleString('id-ID')}
                   </Text.Amount>
-                  <Text.Caption className="!italic !text-slate-400">
+                  <Text.Caption className="!italic !text-slate-500">
                     / {pkg.duration} {pkg.duration_unit === 'WEEK' ? 'Minggu' : 'Bulan'}
                   </Text.Caption>
                 </div>
-                <Text.Body className="mt-2 line-clamp-2 min-h-[40px]">
+                <Text.Body className="mt-2 line-clamp-2 min-h-[40px] text-slate-600">
                   {pkg.description || 'Tidak ada deskripsi paket.'}
                 </Text.Body>
               </div>
 
               <div className="space-y-3 mb-6">
-                <Text.Label className="!text-[10px]">Fitur Termasuk</Text.Label>
+                <Text.Label className="!text-[10px] !text-slate-500">Fitur Termasuk</Text.Label>
                 {Array.isArray(pkg.features) && pkg.features.slice(0, 4).map((feature: string, idx: number) => (
                   <div key={idx} className="flex items-center gap-2 text-slate-600">
                     <CheckCircle size={16} weight="fill" className="text-emerald-500" />
@@ -206,14 +215,14 @@ export default function SAPackageManager() {
                   </div>
                 ))}
                 {Array.isArray(pkg.features) && pkg.features.length > 4 && (
-                  <Text.Caption className="!ml-6">+{pkg.features.length - 4} Fitur lainnya</Text.Caption>
+                  <Text.Caption className="!ml-6 !text-slate-500">+{pkg.features.length - 4} Fitur lainnya</Text.Caption>
                 )}
               </div>
 
               <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50">
-                  <Clock size={14} className="text-slate-400" />
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  <Clock size={14} className="text-slate-500" />
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                     {pkg.duration} {pkg.duration_unit === 'WEEK' ? 'Wk' : 'Mo'}
                   </span>
                 </div>
@@ -233,11 +242,11 @@ export default function SAPackageManager() {
             <div className="p-8 border-b border-slate-100 flex items-center justify-between">
               <div>
                 <Text.H2>{editingPackage ? 'Edit Paket' : 'Tambah Paket Baru'}</Text.H2>
-                <Text.Caption>Lengkapi detail paket berlangganan</Text.Caption>
+                <Text.Caption className="!text-slate-500">Lengkapi detail paket berlangganan</Text.Caption>
               </div>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all"
+                className="p-2 rounded-2xl bg-slate-50 text-slate-500 hover:bg-slate-100 transition-all"
               >
                 <XCircle size={24} weight="bold" />
               </button>
@@ -246,7 +255,7 @@ export default function SAPackageManager() {
             <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Text.Label>Nama Paket</Text.Label>
+                  <Text.Label className="!text-slate-500">Nama Paket</Text.Label>
                   <input
                     type="text"
                     required
@@ -257,17 +266,17 @@ export default function SAPackageManager() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Text.Label>Harga (Rp)</Text.Label>
+                  <Text.Label className="!text-slate-500">Harga (Rp)</Text.Label>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-600 transition-colors z-10">
                       <CurrencyCircleDollar size={22} weight="bold" />
                     </div>
                     <input
-                      type="number"
+                      type="text"
                       required
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
+                      value={formatThousand(formData.price)}
+                      onChange={handlePriceChange}
+                      className="w-full pl-14 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
                       placeholder="0"
                     />
                   </div>
@@ -275,26 +284,26 @@ export default function SAPackageManager() {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between mb-1">
-                    <Text.Label>Durasi</Text.Label>
+                    <Text.Label className="!text-slate-500">Durasi</Text.Label>
                     <div className="flex bg-slate-100 p-1 rounded-xl gap-1 scale-90 origin-right">
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, duration_unit: 'WEEK' })}
-                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'WEEK' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}
+                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'WEEK' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}
                       >
                         MINGGUAN
                       </button>
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, duration_unit: 'MONTH' })}
-                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'MONTH' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}
+                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'MONTH' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}
                       >
                         BULANAN
                       </button>
                     </div>
                   </div>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-600 transition-colors z-10">
                       <CalendarBlank size={22} weight="bold" />
                     </div>
                     <input
@@ -303,9 +312,9 @@ export default function SAPackageManager() {
                       min="1"
                       value={formData.duration}
                       onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
-                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
+                      className="w-full pl-14 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-300 uppercase tracking-widest">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-500 uppercase tracking-widest pointer-events-none">
                       {formData.duration_unit === 'WEEK' ? 'Minggu' : 'Bulan'}
                     </div>
                   </div>
@@ -313,7 +322,7 @@ export default function SAPackageManager() {
               </div>
 
               <div className="space-y-2">
-                <Text.Label>Deskripsi</Text.Label>
+                <Text.Label className="!text-slate-500">Deskripsi</Text.Label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -324,7 +333,7 @@ export default function SAPackageManager() {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Text.Label>Fitur Unggulan</Text.Label>
+                  <Text.Label className="!text-slate-500">Fitur Unggulan</Text.Label>
                   <button
                     type="button"
                     onClick={addFeature}
@@ -347,7 +356,7 @@ export default function SAPackageManager() {
                       <button
                         type="button"
                         onClick={() => removeFeature(idx)}
-                        className="p-3 text-slate-400 hover:text-red-600 transition-all"
+                        className="p-3 text-slate-500 hover:text-red-600 transition-all"
                       >
                         <Trash size={18} weight="bold" />
                       </button>
@@ -371,6 +380,7 @@ export default function SAPackageManager() {
                   {editingPackage ? 'Simpan Perubahan' : 'Buat Paket'}
                 </button>
               </div>
+
             </form>
           </div>
         </div>
