@@ -268,15 +268,12 @@ export default function SAPackageManager() {
                 <div className="space-y-2">
                   <Text.Label className="!text-slate-500">Harga (Rp)</Text.Label>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-600 transition-colors z-10">
-                      <CurrencyCircleDollar size={22} weight="bold" />
-                    </div>
                     <input
                       type="text"
                       required
                       value={formatThousand(formData.price)}
                       onChange={handlePriceChange}
-                      className="w-full pl-14 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
+                      className="w-full !pl-6 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
                       placeholder="0"
                     />
                   </div>
@@ -303,8 +300,8 @@ export default function SAPackageManager() {
                     </div>
                   </div>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-600 transition-colors z-10">
-                      <CalendarBlank size={22} weight="bold" />
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-600 transition-colors z-10 pointer-events-none">
+                      <CalendarBlank size={20} weight="bold" />
                     </div>
                     <input
                       type="number"
@@ -312,7 +309,7 @@ export default function SAPackageManager() {
                       min="1"
                       value={formData.duration}
                       onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
-                      className="w-full pl-14 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
+                      className="w-full !pl-14 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-500 uppercase tracking-widest pointer-events-none">
                       {formData.duration_unit === 'WEEK' ? 'Minggu' : 'Bulan'}
