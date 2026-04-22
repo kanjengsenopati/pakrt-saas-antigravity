@@ -10,8 +10,7 @@ import {
   XCircle, 
   CurrencyCircleDollar, 
   CalendarBlank,
-  Clock,
-  DotsThreeVertical
+  Clock
 } from '@phosphor-icons/react';
 
 interface PricePackage {
