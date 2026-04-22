@@ -157,11 +157,18 @@ export const superAdminService = {
     status: string;
     until: string; // ISO date string
   }) {
+    const untilDate = data.until ? new Date(data.until) : null;
+    
+    // Check if date is valid if provided
+    if (untilDate && isNaN(untilDate.getTime())) {
+      throw new Error('Format tanggal tidak valid');
+    }
+
     return await prisma.tenant.update({
       where: { id: tenantId },
       data: {
         subscription_status: data.status,
-        subscription_until: new Date(data.until),
+        subscription_until: untilDate,
         subscription_plan: data.plan
       }
     });
