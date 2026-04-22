@@ -10,7 +10,8 @@ interface Plan {
     id: string;
     name: string;
     plan: string;
-    duration_months: number;
+    duration: number;
+    duration_unit: string;
     base_amount: number;
     description: string;
     badge?: string;
@@ -22,7 +23,8 @@ interface Invoice {
     invoice_number: string;
     unique_code: number;
     plan: string;
-    duration_months: number;
+    duration: number;
+    duration_unit: string;
     base_amount: number;
     total_amount: number;
     status: string;
@@ -85,7 +87,8 @@ export default function Subscription() {
             const invoice = await subscriptionService.createInvoice({
                 pricePackageId: plan.id,
                 plan: plan.plan,
-                duration_months: plan.duration_months,
+                duration: plan.duration,
+                duration_unit: plan.duration_unit,
                 base_amount: plan.base_amount
             });
             setActiveInvoice(invoice);
@@ -371,10 +374,10 @@ export default function Subscription() {
                                 <p className="text-[12px] text-slate-500 mt-0.5">{plan.description}</p>
                                 <div className="mt-3 flex items-end gap-1">
                                     <span className="text-[18px] font-bold text-emerald-600">{formatCurrency(plan.base_amount)}</span>
-                                    <span className="text-[12px] text-slate-400 mb-0.5">/ {plan.duration_months} bulan</span>
+                                    <span className="text-[12px] text-slate-400 mb-0.5">/ {plan.duration} {plan.duration_unit === 'WEEK' ? 'minggu' : 'bulan'}</span>
                                 </div>
                                 <p className="text-[11px] text-slate-400 mt-0.5">
-                                    ≈ {formatCurrency(perMonth)}/bulan
+                                    ≈ {formatCurrency(plan.duration_unit === 'WEEK' ? plan.base_amount / plan.duration : plan.base_amount / plan.duration)}/{plan.duration_unit === 'WEEK' ? 'minggu' : 'bulan'}
                                 </p>
                                 
                                 {plan.features && plan.features.length > 0 && (
@@ -427,7 +430,7 @@ export default function Subscription() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-[12px] text-slate-400 italic">{formatDate(inv.createdAt)}</p>
-                                        <p className="text-[12px] text-slate-500">{inv.plan} • {inv.duration_months} bulan</p>
+                                        <p className="text-[12px] text-slate-500">{inv.plan} • {inv.duration} {inv.duration_unit === 'WEEK' ? 'minggu' : 'bulan'}</p>
                                     </div>
                                     <span className="text-[18px] font-bold text-emerald-600">{formatCurrency(inv.total_amount)}</span>
                                 </div>

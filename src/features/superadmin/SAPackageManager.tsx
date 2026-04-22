@@ -18,7 +18,8 @@ interface PricePackage {
   name: string;
   description: string | null;
   price: number;
-  duration_months: number;
+  duration: number;
+  duration_unit: 'WEEK' | 'MONTH';
   features: any;
   isActive: boolean;
 }
@@ -32,7 +33,8 @@ export default function SAPackageManager() {
     name: '',
     description: '',
     price: 0,
-    duration_months: 1,
+    duration: 1,
+    duration_unit: 'MONTH' as 'WEEK' | 'MONTH',
     features: ['']
   });
 
@@ -59,7 +61,8 @@ export default function SAPackageManager() {
         name: pkg.name,
         description: pkg.description || '',
         price: pkg.price,
-        duration_months: pkg.duration_months,
+        duration: pkg.duration,
+        duration_unit: pkg.duration_unit || 'MONTH',
         features: Array.isArray(pkg.features) ? pkg.features : ['']
       });
     } else {
@@ -68,7 +71,8 @@ export default function SAPackageManager() {
         name: '',
         description: '',
         price: 0,
-        duration_months: 1,
+        duration: 1,
+        duration_unit: 'MONTH',
         features: ['']
       });
     }
@@ -122,8 +126,10 @@ export default function SAPackageManager() {
     setFormData({ ...formData, features: newFeatures });
   };
 
+
   return (
     <div className="space-y-8">
+      {/* ... header ... */}
       <div className="flex items-center justify-between">
         <div>
           <Text.H1>Manajemen Paket Harga</Text.H1>
@@ -181,7 +187,7 @@ export default function SAPackageManager() {
                     Rp {pkg.price.toLocaleString('id-ID')}
                   </Text.Amount>
                   <Text.Caption className="!italic !text-slate-400">
-                    / {pkg.duration_months} Bulan
+                    / {pkg.duration} {pkg.duration_unit === 'WEEK' ? 'Minggu' : 'Bulan'}
                   </Text.Caption>
                 </div>
                 <Text.Body className="mt-2 line-clamp-2 min-h-[40px]">
@@ -206,7 +212,7 @@ export default function SAPackageManager() {
                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50">
                   <Clock size={14} className="text-slate-400" />
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    {pkg.duration_months} Bulan
+                    {pkg.duration} {pkg.duration_unit === 'WEEK' ? 'Wk' : 'Mo'}
                   </span>
                 </div>
                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${pkg.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>
@@ -244,35 +250,62 @@ export default function SAPackageManager() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium"
                     placeholder="Contoh: Premium Bulanan"
                   />
                 </div>
                 <div className="space-y-2">
                   <Text.Label>Harga (Rp)</Text.Label>
-                  <div className="relative">
-                    <CurrencyCircleDollar size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                      <CurrencyCircleDollar size={22} weight="bold" />
+                    </div>
                     <input
                       type="number"
                       required
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium"
+                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
+                      placeholder="0"
                     />
                   </div>
                 </div>
+                
                 <div className="space-y-2">
-                  <Text.Label>Durasi (Bulan)</Text.Label>
-                  <div className="relative">
-                    <CalendarBlank size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <div className="flex items-center justify-between mb-1">
+                    <Text.Label>Durasi</Text.Label>
+                    <div className="flex bg-slate-100 p-1 rounded-xl gap-1 scale-90 origin-right">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, duration_unit: 'WEEK' })}
+                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'WEEK' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}
+                      >
+                        MINGGUAN
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, duration_unit: 'MONTH' })}
+                        className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${formData.duration_unit === 'MONTH' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'}`}
+                      >
+                        BULANAN
+                      </button>
+                    </div>
+                  </div>
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                      <CalendarBlank size={22} weight="bold" />
+                    </div>
                     <input
                       type="number"
                       required
                       min="1"
-                      value={formData.duration_months}
-                      onChange={(e) => setFormData({ ...formData, duration_months: Number(e.target.value) })}
-                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium"
+                      value={formData.duration}
+                      onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
+                      className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-bold text-lg"
                     />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-300 uppercase tracking-widest">
+                      {formData.duration_unit === 'WEEK' ? 'Minggu' : 'Bulan'}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -282,7 +315,7 @@ export default function SAPackageManager() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium min-h-[100px]"
+                  className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 font-medium min-h-[100px]"
                   placeholder="Jelaskan keunggulan paket ini..."
                 />
               </div>
@@ -306,7 +339,7 @@ export default function SAPackageManager() {
                         type="text"
                         value={feature}
                         onChange={(e) => updateFeature(idx, e.target.value)}
-                        className="flex-1 px-5 py-3 rounded-xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 text-sm font-medium"
+                        className="flex-1 px-5 py-3 rounded-xl bg-slate-50 border-none ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-600 transition-all outline-none text-slate-800 text-sm font-medium"
                         placeholder={`Fitur ${idx + 1}`}
                       />
                       <button
@@ -343,3 +376,4 @@ export default function SAPackageManager() {
     </div>
   );
 }
+

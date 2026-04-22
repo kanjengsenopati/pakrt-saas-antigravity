@@ -411,7 +411,8 @@ model SubscriptionInvoice {
   plan            String              // 'PREMIUM'
   pricePackageId  String?
   pricePackage    PricePackage? @relation(fields: [pricePackageId], references: [id])
-  duration_months Int                 // e.g. 1, 3, 6, 12
+  duration        Int      @default(1)
+  duration_unit   String   @default("MONTH")
   base_amount     Float               // Base price before unique code
   total_amount    Float               // base_amount + unique_code
   status          String   @default("PENDING") // 'PENDING' | 'UPLOADED' | 'VERIFIED' | 'REJECTED' | 'EXPIRED'
@@ -435,7 +436,8 @@ model PricePackage {
   name              String
   description       String?
   price             Float
-  duration_months   Int
+  duration          Int      @default(1) // Number of units
+  duration_unit     String   @default("MONTH") // 'WEEK' | 'MONTH'
   features          Json?    // Array of features
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())

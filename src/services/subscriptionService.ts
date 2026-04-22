@@ -11,7 +11,13 @@ export const subscriptionService = {
         return res.data;
     },
 
-    async createInvoice(data: { pricePackageId?: string; plan: string; duration_months: number; base_amount: number }) {
+    async createInvoice(data: { 
+        pricePackageId?: string; 
+        plan: string; 
+        duration: number; 
+        duration_unit: string; 
+        base_amount: number 
+    }) {
         const res = await api.post('/subscription/create-invoice', data);
         return res.data;
     },

@@ -38,7 +38,11 @@ export default async function subscriptionRoutes(fastify: FastifyInstance) {
         id: pkg.id,
         name: pkg.name,
         plan: 'PREMIUM',
-        duration_months: pkg.duration_months,
+        id: pkg.id,
+        name: pkg.name,
+        plan: 'PREMIUM',
+        duration: pkg.duration,
+        duration_unit: pkg.duration_unit,
         base_amount: pkg.price,
         description: pkg.description,
         features: pkg.features
@@ -54,12 +58,13 @@ export default async function subscriptionRoutes(fastify: FastifyInstance) {
   // Create a new invoice (tenant initiates subscription)
   fastify.post('/create-invoice', async (request) => {
     const user = (request as any).user;
-    const { pricePackageId, plan, duration_months, base_amount } = request.body as any;
+    const { pricePackageId, plan, duration, duration_unit, base_amount } = request.body as any;
 
     return await superAdminService.createInvoice(user.tenant_id, {
       pricePackageId,
       plan,
-      duration_months: Number(duration_months),
+      duration: Number(duration),
+      duration_unit,
       base_amount: Number(base_amount)
     });
   });

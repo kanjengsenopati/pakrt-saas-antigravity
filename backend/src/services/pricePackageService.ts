@@ -26,7 +26,8 @@ export const pricePackageService = {
     name: string;
     description?: string;
     price: number;
-    duration_months: number;
+    duration: number;
+    duration_unit: string;
     features: any[];
   }) {
     return prisma.pricePackage.create({
@@ -41,7 +42,8 @@ export const pricePackageService = {
     name: string;
     description: string;
     price: number;
-    duration_months: number;
+    duration: number;
+    duration_unit: string;
     features: any[];
     isActive: boolean;
   }>) {

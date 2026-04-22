@@ -191,14 +191,8 @@ export const superAdminService = {
   // INVOICE / PAYMENT (Manual Transfer Flow)
   // ──────────────────────────────────────────────────────
 
-  async createInvoice(tenantId: string, data: {
-    plan?: string;
-    duration_months?: number;
-    base_amount?: number;
-    pricePackageId?: string;
-  }) {
-    let plan = data.plan || 'PREMIUM';
-    let duration_months = data.duration_months || 1;
+    let duration = data.duration || 1;
+    let duration_unit = data.duration_unit || 'MONTH';
     let base_amount = data.base_amount || 0;
 
     // If pricePackageId is provided, fetch details from DB
@@ -208,7 +202,8 @@ export const superAdminService = {
       });
       if (!pkg) throw new Error('Paket harga tidak ditemukan');
       plan = 'PREMIUM'; // Currently all packages are premium
-      duration_months = pkg.duration_months;
+      duration = pkg.duration;
+      duration_unit = pkg.duration_unit;
       base_amount = pkg.price;
     }
 
@@ -243,7 +238,8 @@ export const superAdminService = {
         unique_code: uniqueCode,
         plan: plan,
         pricePackageId: data.pricePackageId,
-        duration_months: duration_months,
+        duration: duration,
+        duration_unit: duration_unit,
         base_amount: base_amount,
         total_amount: totalAmount,
         expiresAt
@@ -272,7 +268,11 @@ export const superAdminService = {
     if (action === 'VERIFY') {
       // Activate subscription
       const untilDate = new Date();
-      untilDate.setMonth(untilDate.getMonth() + invoice.duration_months);
+      if (invoice.duration_unit === 'WEEK') {
+        untilDate.setDate(untilDate.getDate() + (invoice.duration * 7));
+      } else {
+        untilDate.setMonth(untilDate.getMonth() + invoice.duration);
+      }
 
       await prisma.tenant.update({
         where: { id: invoice.tenant_id },
@@ -399,7 +399,8 @@ export const superAdminService = {
         total_amount: true,
         verified_at: true,
         plan: true,
-        duration_months: true
+        duration: true,
+        duration_unit: true
       },
       orderBy: { verified_at: 'asc' }
     });
