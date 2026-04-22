@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../prisma';
 
 export const pricePackageService = {
   async getAll() {
@@ -47,10 +45,15 @@ export const pricePackageService = {
     features: any[];
     isActive: boolean;
   }>) {
-    return prisma.pricePackage.update({
-      where: { id },
-      data,
-    });
+    try {
+      return await prisma.pricePackage.update({
+        where: { id },
+        data,
+      });
+    } catch (error) {
+      console.error('Prisma Update Error [PricePackage]:', error);
+      throw error;
+    }
   },
 
   async delete(id: string) {

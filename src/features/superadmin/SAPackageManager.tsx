@@ -84,6 +84,8 @@ export default function SAPackageManager() {
     try {
       const payload = {
         ...formData,
+        price: Number(formData.price),
+        duration: Number(formData.duration),
         features: formData.features.filter(f => f.trim() !== '')
       };
 

@@ -26,6 +26,7 @@ export default async function pricePackageRoutes(fastify: FastifyInstance) {
     adminGroup.put('/:id', async (request) => {
       const { id } = request.params as any;
       const data = request.body as any;
+      console.log('UPDATING PACKAGE:', id, data);
       return await pricePackageService.update(id, data);
     });
 
