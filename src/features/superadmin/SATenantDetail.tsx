@@ -57,6 +57,28 @@ export default function SATenantDetail() {
         }
     };
 
+    const handleSuspend = async () => {
+        if (!id) return;
+        const reason = prompt('Alasan suspend:');
+        if (!reason) return;
+        try {
+            await superAdminService.suspendTenant(id, reason);
+            setTenant((prev: any) => ({ ...prev, subscription_status: 'SUSPENDED', suspended_reason: reason }));
+        } catch (e) {
+            alert('Gagal suspend tenant');
+        }
+    };
+
+    const handleUnsuspend = async () => {
+        if (!id) return;
+        try {
+            await superAdminService.unsuspendTenant(id);
+            setTenant((prev: any) => ({ ...prev, subscription_status: 'ACTIVE', suspended_reason: null }));
+        } catch (e) {
+            alert('Gagal unsuspend tenant');
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
