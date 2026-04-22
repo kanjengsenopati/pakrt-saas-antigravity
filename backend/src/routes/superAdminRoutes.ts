@@ -59,10 +59,11 @@ export default async function superAdminRoutes(fastify: FastifyInstance) {
   });
 
   fastify.post('/invoices', async (request) => {
-    const { tenant_id, plan, duration_months, base_amount } = request.body as any;
+    const { tenant_id, plan, duration, duration_unit, base_amount } = request.body as any;
     return await superAdminService.createInvoice(tenant_id, {
       plan,
-      duration_months: Number(duration_months),
+      duration: Number(duration),
+      duration_unit,
       base_amount: Number(base_amount)
     });
   });
