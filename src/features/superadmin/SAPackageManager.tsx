@@ -8,7 +8,6 @@ import {
   Trash, 
   CheckCircle, 
   XCircle, 
-  CurrencyCircleDollar, 
   CalendarBlank,
   Clock
 } from '@phosphor-icons/react';
