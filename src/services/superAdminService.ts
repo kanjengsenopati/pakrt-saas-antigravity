@@ -38,6 +38,11 @@ export const superAdminService = {
         return res.data;
     },
 
+    async resetTenantPassword(id: string, password?: string) {
+        const res = await api.post(`/super-admin/tenants/${id}/reset-password`, { password });
+        return res.data;
+    },
+
     // ── INVOICES ──
     async getInvoices(page = 1, limit = 20, status?: string) {
         const params: any = { page, limit };

@@ -44,38 +44,29 @@ export default function SATenantDetail() {
         }
     };
 
-    const handleSuspend = async () => {
+    const handleResetPassword = async () => {
         if (!id) return;
-        const reason = prompt('Alasan suspend:');
-        if (!reason) return;
+        const newPass = prompt('Masukkan password baru (kosongkan untuk default: pakrt123):');
+        if (newPass === null) return;
+        
         try {
-            await superAdminService.suspendTenant(id, reason);
-            setTenant((prev: any) => ({ ...prev, subscription_status: 'SUSPENDED', suspended_reason: reason }));
+            const result = await superAdminService.resetTenantPassword(id, newPass || undefined);
+            alert(`Password berhasil direset!\nEmail: ${result.email}\nPassword: ${result.password}`);
         } catch (e) {
-            alert('Gagal suspend tenant');
-        }
-    };
-
-    const handleUnsuspend = async () => {
-        if (!id) return;
-        try {
-            await superAdminService.unsuspendTenant(id);
-            setTenant((prev: any) => ({ ...prev, subscription_status: 'ACTIVE', suspended_reason: null }));
-        } catch (e) {
-            alert('Gagal unsuspend tenant');
+            alert('Gagal reset password');
         }
     };
 
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
 
     if (!tenant) {
-        return <div className="text-center text-slate-400 py-12">Tenant tidak ditemukan</div>;
+        return <div className="text-center text-slate-400 py-12 font-bold uppercase tracking-widest text-[11px]">Tenant tidak ditemukan</div>;
     }
 
     const moduleStats = tenant.module_stats || {};
@@ -86,7 +77,7 @@ export default function SATenantDetail() {
             <div className="flex items-center gap-5">
                 <button 
                     onClick={() => navigate('/super-admin/tenants')} 
-                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-900 hover:shadow-md transition-all active:scale-90"
+                    className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-500 hover:text-slate-900 hover:shadow-md transition-all active:scale-90"
                 >
                     <ArrowLeft size={22} weight="bold" />
                 </button>
@@ -148,20 +139,45 @@ export default function SATenantDetail() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-1">
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Nama Lengkap</span>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Nama Lengkap</span>
                             <p className="text-[14px] font-semibold text-slate-800 mt-0.5">{tenant.admin.name}</p>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Email Address</span>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Email Address</span>
                             <p className="text-[14px] font-medium text-slate-600 mt-0.5">{tenant.admin.email}</p>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Kontak</span>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Kontak</span>
                             <p className="text-[14px] font-semibold text-slate-800 font-mono mt-0.5">{tenant.admin.kontak || '-'}</p>
                         </div>
                     </div>
                 </div>
             )}
+
+            {/* Authentication & Access */}
+            <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
+                    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/20">
+                        <Users size={18} weight="bold" />
+                    </div>
+                    <h3 className="text-[16px] font-semibold text-slate-800">Authentication & Access</h3>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-1">
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Login Credential</span>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-sm font-bold text-slate-700">{tenant.admin?.email || 'N/A'}</span>
+                            <span className="text-[10px] text-slate-400 font-medium italic">Used for tenant login</span>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleResetPassword}
+                        className="px-8 py-3.5 rounded-[24px] bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-95"
+                    >
+                        Reset Password Admin
+                    </button>
+                </div>
+            </div>
 
             {/* Subscription Management */}
             <div className="rounded-[24px] bg-white border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
@@ -174,7 +190,7 @@ export default function SATenantDetail() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="space-y-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Subscription Plan</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Subscription Plan</span>
                         <select
                             value={subForm.plan}
                             onChange={(e) => setSubForm({ ...subForm, plan: e.target.value })}
@@ -185,7 +201,7 @@ export default function SATenantDetail() {
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Account Status</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Account Status</span>
                         <select
                             value={subForm.status}
                             onChange={(e) => setSubForm({ ...subForm, status: e.target.value })}
@@ -198,7 +214,7 @@ export default function SATenantDetail() {
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1 block">Valid Until</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-1 block">Valid Until</span>
                         <input
                             type="date"
                             value={subForm.until}
@@ -212,7 +228,7 @@ export default function SATenantDetail() {
                     <button
                         onClick={handleSaveSub}
                         disabled={saving}
-                        className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-black text-white text-sm font-black transition-all shadow-lg shadow-slate-900/10 active:scale-95 disabled:opacity-50"
+                        className="flex items-center gap-2 px-8 py-3.5 rounded-[24px] bg-blue-600 text-white text-sm font-bold transition-all shadow-lg shadow-blue-600/20 hover:bg-blue-700 active:scale-95 disabled:opacity-50"
                     >
                         {saving ? (
                             <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
@@ -224,7 +240,7 @@ export default function SATenantDetail() {
                     {tenant.subscription_status !== 'SUSPENDED' ? (
                         <button
                             onClick={handleSuspend}
-                            className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-red-50 text-red-600 hover:bg-red-100 text-sm font-black transition-all border border-red-100 active:scale-95"
+                            className="flex items-center gap-2 px-8 py-3.5 rounded-[24px] bg-red-50 text-red-600 hover:bg-red-100 text-sm font-bold transition-all border border-red-100 active:scale-95"
                         >
                             <Prohibit size={20} weight="bold" />
                             Suspend Tenant
@@ -232,7 +248,7 @@ export default function SATenantDetail() {
                     ) : (
                         <button
                             onClick={handleUnsuspend}
-                            className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-sm font-black transition-all border border-emerald-100 active:scale-95"
+                            className="flex items-center gap-2 px-8 py-3.5 rounded-[24px] bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-sm font-bold transition-all border border-emerald-100 active:scale-95"
                         >
                             <CheckCircle size={20} weight="bold" />
                             Unsuspend

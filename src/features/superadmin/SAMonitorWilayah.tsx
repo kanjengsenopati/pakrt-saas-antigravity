@@ -132,7 +132,7 @@ export default function SAMonitorWilayah() {
                         </div>
                         <button 
                             onClick={() => setExpandedDistrict(null)}
-                            className="px-6 py-2.5 rounded-2xl bg-slate-900 text-white hover:bg-black transition-all font-black text-[11px] tracking-widest shadow-xl shadow-slate-900/10 active:scale-95"
+                            className="px-6 py-2.5 rounded-[24px] bg-blue-600 text-white hover:bg-blue-700 transition-all font-bold text-[11px] tracking-widest shadow-xl shadow-blue-600/10 active:scale-95"
                         >
                             TUTUP PANEL
                         </button>
@@ -140,10 +140,10 @@ export default function SAMonitorWilayah() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {breakdown.map((b) => (
-                            <div key={b.kelurahan} className="p-5 rounded-[24px] border border-slate-50 bg-slate-50/50 hover:bg-white hover:border-emerald-200 transition-all group shadow-sm hover:shadow-xl">
+                            <div key={b.kelurahan} className="p-5 rounded-[24px] border border-slate-50 bg-slate-50/50 hover:bg-white hover:border-blue-200 transition-all group shadow-sm hover:shadow-xl">
                                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-white">
                                     <Text.Body className="!font-black !text-slate-900 !text-[13px] uppercase tracking-tight">{b.kelurahan}</Text.Body>
-                                    <span className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[9px] font-black shadow-lg shadow-emerald-500/20">{b.rtCount} RT</span>
+                                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[9px] font-black shadow-lg shadow-blue-600/20">{b.rtCount} RT</span>
                                 </div>
                                 
                                 {b.tenants.length > 0 ? (
@@ -151,10 +151,10 @@ export default function SAMonitorWilayah() {
                                         <div className="flex flex-wrap gap-2">
                                             {Array.from(new Set(b.tenants.map(t => t.rw))).sort().map(rw => (
                                                 <div key={rw} className="p-2 rounded-xl bg-white border border-slate-100 shadow-sm flex flex-col min-w-[50px]">
-                                                    <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1.5 border-b border-slate-50 pb-1">RW {rw}</span>
+                                                    <span className="text-[9px] font-black text-slate-500 uppercase leading-none mb-1.5 border-b border-slate-50 pb-1">RW {rw}</span>
                                                     <div className="flex flex-wrap gap-1">
                                                         {b.tenants.filter(t => t.rw === rw).map(t => (
-                                                            <div key={t.id} className="w-5 h-5 rounded-lg bg-emerald-500 flex items-center justify-center text-white shadow-sm ring-2 ring-emerald-500/5" title={`RT ${t.name}`}>
+                                                            <div key={t.id} className="w-5 h-5 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm ring-2 ring-blue-600/5" title={`RT ${t.name}`}>
                                                                 <CheckCircle size={12} weight="fill" />
                                                             </div>
                                                         ))}
@@ -165,8 +165,8 @@ export default function SAMonitorWilayah() {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-4 gap-2 opacity-30">
-                                        <Info size={20} weight="bold" className="text-slate-400" />
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">Belum ada RT terdaftar di Kelurahan ini</span>
+                                        <Info size={20} weight="bold" className="text-slate-500" />
+                                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center">Belum ada RT terdaftar di Kelurahan ini</span>
                                     </div>
                                 )}
                             </div>
@@ -192,14 +192,14 @@ export default function SAMonitorWilayah() {
                         <Text.Amount className="!text-slate-900 !text-2xl !font-black !tracking-tighter leading-none">
                             {stats.reduce((acc, curr) => acc + curr.registered, 0)}
                         </Text.Amount>
-                        <Text.Caption className="!text-slate-400 !font-black !text-[9px] uppercase tracking-widest mt-1.5">RT Terdaftar</Text.Caption>
+                        <Text.Caption className="!text-slate-500 !font-black !text-[9px] uppercase tracking-widest mt-1.5">RT Terdaftar</Text.Caption>
                     </div>
                     <div className="w-px h-10 bg-slate-100" />
                     <div className="flex flex-col items-end">
-                        <Text.Amount className="!text-emerald-600 !text-2xl !font-black !tracking-tighter leading-none">
+                        <Text.Amount className="!text-blue-600 !text-2xl !font-black !tracking-tighter leading-none">
                             { (stats.reduce((acc, curr) => acc + curr.total, 0) > 0) ? ( (stats.reduce((acc, curr) => acc + curr.registered, 0) / stats.reduce((acc, curr) => acc + curr.total, 0)) * 100 ).toFixed(1) : 0}%
                         </Text.Amount>
-                        <Text.Caption className="!text-slate-400 !font-black !text-[9px] uppercase tracking-widest mt-1.5">Cakupan Kota</Text.Caption>
+                        <Text.Caption className="!text-slate-500 !font-black !text-[9px] uppercase tracking-widest mt-1.5">Cakupan Kota</Text.Caption>
                     </div>
                 </div>
             </div>
@@ -208,11 +208,11 @@ export default function SAMonitorWilayah() {
                 <div className="flex flex-col items-center justify-center py-40 gap-6">
                     <div className="relative">
                         <div className="w-16 h-16 border-4 border-slate-100 rounded-full" />
-                        <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin absolute top-0 left-0" />
+                        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0" />
                     </div>
                     <div className="flex flex-col items-center gap-1">
                         <Text.Label className="animate-pulse !text-slate-900 !text-sm !font-black">DATABASE SYNCHRONIZATION</Text.Label>
-                        <Text.Caption className="!text-slate-400 !font-black uppercase tracking-widest !text-[10px]">Agregasi Data Wilayah Real-time...</Text.Caption>
+                        <Text.Caption className="!text-slate-500 !font-black uppercase tracking-widest !text-[10px]">Agregasi Data Wilayah Real-time...</Text.Caption>
                     </div>
                 </div>
             ) : (

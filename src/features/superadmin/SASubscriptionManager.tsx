@@ -115,7 +115,7 @@ export default function SASubscriptionManager() {
             <div className="rounded-[24px] bg-white border border-slate-100 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 {loading ? (
                     <div className="flex items-center justify-center py-32">
-                        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin shadow-lg" />
+                        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin shadow-lg" />
                     </div>
                 ) : (
                     <div className="overflow-x-auto no-scrollbar">
@@ -123,19 +123,19 @@ export default function SASubscriptionManager() {
                             <thead>
                                 <tr className="bg-slate-50/50 border-b border-slate-50">
                                     <th className="py-4 px-6 w-16 text-center">
-                                        <Text.Label className="!text-slate-400 !font-black">#</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">#</Text.Label>
                                     </th>
                                     <th className="text-left py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-black">Invoice & Tenant</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Invoice & Tenant</Text.Label>
                                     </th>
                                     <th className="text-right py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-black">Nominal</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Nominal</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-black">Status</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Status</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6 w-32">
-                                        <Text.Label className="!text-slate-400 !font-black">Aksi</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Aksi</Text.Label>
                                     </th>
                                 </tr>
                             </thead>
@@ -154,7 +154,7 @@ export default function SASubscriptionManager() {
                                                     <div className="flex flex-col">
                                                         <span className="text-[14px] font-semibold text-slate-900 font-mono leading-none">{inv.invoice_number}</span>
                                                         <span className="text-[14px] font-medium text-slate-600 mt-1.5">{inv.tenant?.name || inv.tenant_id}</span>
-                                                        <Text.Caption className="!text-slate-400 block mt-1 uppercase tracking-tighter !font-bold !not-italic">
+                                                        <Text.Caption className="!text-slate-500 block mt-1 uppercase tracking-tighter !font-bold !not-italic">
                                                             {inv.plan} • {inv.duration_months} bulan
                                                         </Text.Caption>
                                                     </div>
@@ -177,16 +177,16 @@ export default function SASubscriptionManager() {
                                                     <div className="flex items-center justify-center gap-2">
                                                         <button
                                                             onClick={() => setExpandedRowId(isExpanded ? null : inv.id)}
-                                                            className={`p-2.5 rounded-xl transition-all shadow-sm active:scale-90 ${isExpanded ? 'bg-slate-900 text-white shadow-slate-900/20' : 'bg-slate-50 text-slate-400 hover:text-slate-900 border border-slate-100'}`}
+                                                            className={`p-2.5 rounded-xl transition-all shadow-sm active:scale-90 ${isExpanded ? 'bg-blue-600 text-white shadow-blue-600/20' : 'bg-slate-50 text-slate-500 hover:text-slate-900 border border-slate-100'}`}
                                                             title="Lihat Detail"
                                                         >
                                                             {isExpanded ? <CaretUp size={18} weight="bold" /> : <Eye size={18} weight="bold" />}
                                                         </button>
                                                         {inv.status === 'UPLOADED' && (
                                                             <button
-                                                                onClick={() => handleVerify(inv.id, 'VERIFY')}
-                                                                className="p-2.5 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition-all shadow-md shadow-emerald-500/20 active:scale-90"
-                                                                title="Verifikasi"
+                                                                 onClick={() => handleVerify(inv.id, 'VERIFY')}
+                                                                 className="p-2.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-md shadow-emerald-600/20 active:scale-90"
+                                                                 title="Verifikasi"
                                                             >
                                                                 <CheckCircle size={18} weight="bold" />
                                                             </button>
@@ -202,16 +202,16 @@ export default function SASubscriptionManager() {
                                                             <div className="flex-1 space-y-6">
                                                                 <div className="grid grid-cols-2 gap-6">
                                                                     <div className="space-y-1">
-                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Metode Pembayaran</span>
+                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Metode Pembayaran</span>
                                                                         <p className="text-[14px] font-semibold text-slate-800 mt-0.5 uppercase">{inv.payment_method || 'BANK TRANSFER'}</p>
                                                                     </div>
                                                                     <div className="space-y-1">
-                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Waktu Upload</span>
+                                                                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Waktu Upload</span>
                                                                         <p className="text-[14px] font-semibold text-slate-800 mt-0.5">{inv.updated_at ? new Date(inv.updated_at).toLocaleString('id-ID') : '-'}</p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="space-y-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                                                    <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase">Catatan Pembayaran</Text.Label>
+                                                                    <Text.Label className="!text-slate-500 !tracking-widest !text-[10px] !font-black uppercase">Catatan Pembayaran</Text.Label>
                                                                     <Text.Body className="!text-slate-600 !italic !text-[13px] !font-medium">
                                                                         {inv.user_notes || "Tidak ada catatan tambahan dari tenant."}
                                                                     </Text.Body>
@@ -220,14 +220,14 @@ export default function SASubscriptionManager() {
                                                                     <div className="flex gap-3">
                                                                         <button
                                                                             onClick={() => handleVerify(inv.id, 'VERIFY')}
-                                                                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500 text-white text-[13px] font-black hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+                                                                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-[24px] bg-emerald-600 text-white text-[13px] font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
                                                                         >
                                                                             <CheckCircle size={18} weight="bold" />
                                                                             VERIFIKASI SEKARANG
                                                                         </button>
                                                                         <button
                                                                             onClick={() => handleVerify(inv.id, 'REJECT')}
-                                                                            className="px-6 py-3 rounded-xl bg-red-50 text-red-600 text-[13px] font-black hover:bg-red-100 transition-all border border-red-100"
+                                                                            className="px-8 py-3 rounded-[24px] bg-red-50 text-red-600 text-[13px] font-bold hover:bg-red-100 transition-all border border-red-100 active:scale-95"
                                                                         >
                                                                             TOLAK
                                                                         </button>
@@ -237,7 +237,7 @@ export default function SASubscriptionManager() {
 
                                                             {/* Proof Image */}
                                                             <div className="w-full md:w-64 space-y-2">
-                                                                <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] !font-black uppercase mb-1 block">Bukti Transfer</Text.Label>
+                                                                <Text.Label className="!text-slate-500 !tracking-widest !text-[10px] !font-black uppercase mb-1 block">Bukti Transfer</Text.Label>
                                                                 {inv.payment_proof ? (
                                                                     <div 
                                                                         className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-slate-200 cursor-zoom-in group shadow-sm"
@@ -267,7 +267,7 @@ export default function SASubscriptionManager() {
                                         <td colSpan={5} className="py-32 text-center">
                                             <div className="flex flex-col items-center gap-4 opacity-20">
                                                 <Receipt size={64} weight="thin" />
-                                                <span className="text-sm font-black uppercase tracking-widest">No transactions found</span>
+                                                <span className="text-sm font-black uppercase tracking-widest text-slate-500">No transactions found</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -285,9 +285,9 @@ export default function SASubscriptionManager() {
                         <button
                             key={p}
                             onClick={() => setPage(p)}
-                            className={`w-11 h-11 rounded-2xl text-[13px] font-black transition-all ${
+                            className={`w-11 h-11 rounded-[24px] text-[13px] font-bold transition-all ${
                                 p === page
-                                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20'
+                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20'
                                     : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50 hover:shadow-md'
                             }`}
                         >

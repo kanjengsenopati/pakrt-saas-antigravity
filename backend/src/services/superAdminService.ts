@@ -160,11 +160,29 @@ export const superAdminService = {
     return await prisma.tenant.update({
       where: { id: tenantId },
       data: {
-        subscription_plan: data.plan,
         subscription_status: data.status,
-        subscription_until: new Date(data.until)
+        subscription_until: new Date(data.until),
+        subscription_plan: data.plan
       }
     });
+  },
+
+  async resetTenantPassword(tenantId: string, newPassword?: string) {
+    const adminUser = await prisma.user.findFirst({
+      where: { tenant_id: tenantId, role: 'admin' }
+    });
+    if (!adminUser) throw new Error('Admin user tidak ditemukan untuk tenant ini');
+    
+    const password = newPassword || 'pakrt123';
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    await prisma.user.update({
+      where: { id: adminUser.id },
+      data: { password: hashedPassword }
+    });
+    
+    return { email: adminUser.email, password };
   },
 
   async suspendTenant(tenantId: string, reason: string) {

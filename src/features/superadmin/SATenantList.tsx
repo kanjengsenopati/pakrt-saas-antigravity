@@ -107,7 +107,7 @@ export default function SATenantList() {
                             className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-slate-100 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all shadow-sm"
                         />
                     </div>
-                    <button type="submit" className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-black text-white text-sm font-black transition-all shadow-lg shadow-slate-900/20 active:scale-95">
+                    <button type="submit" className="px-8 py-3.5 rounded-[24px] bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-95">
                         Cari
                     </button>
                     <select
@@ -166,7 +166,7 @@ export default function SATenantList() {
             <div className="rounded-[24px] bg-white border border-slate-100 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 {loading ? (
                     <div className="flex items-center justify-center py-32">
-                        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin shadow-lg" />
+                        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin shadow-lg" />
                     </div>
                 ) : (
                     <div className="overflow-x-auto no-scrollbar">
@@ -174,19 +174,19 @@ export default function SATenantList() {
                             <thead>
                                 <tr className="border-b border-slate-50 bg-slate-50/30">
                                     <th className="py-4 px-6 w-16">
-                                        <Text.Label className="!text-slate-400 !font-black !text-center block">#</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black !text-center block">#</Text.Label>
                                     </th>
                                     <th className="text-left py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-black">Tenant Information</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Tenant Information</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6 hidden md:table-cell">
-                                        <Text.Label className="!text-slate-400 !font-black">Inventory</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Inventory</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6">
-                                        <Text.Label className="!text-slate-400 !font-black">Plans & status</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Plans & status</Text.Label>
                                     </th>
                                     <th className="text-center py-4 px-6 w-24">
-                                        <Text.Label className="!text-slate-400 !font-black">Actions</Text.Label>
+                                        <Text.Label className="!text-slate-500 !font-black">Actions</Text.Label>
                                     </th>
                                 </tr>
                             </thead>
@@ -208,7 +208,7 @@ export default function SATenantList() {
                                                         </span>
                                                     )}
                                                     {t.kecamatan && (
-                                                        <span className="text-[9px] font-bold text-slate-400 bg-white px-1.5 py-0.5 rounded-md border border-slate-100 uppercase tracking-widest leading-none shadow-sm">
+                                                        <span className="text-[9px] font-bold text-slate-500 bg-white px-1.5 py-0.5 rounded-md border border-slate-100 uppercase tracking-widest leading-none shadow-sm">
                                                             {t.kecamatan}
                                                         </span>
                                                     )}
@@ -221,7 +221,7 @@ export default function SATenantList() {
                                         <td className="py-4 px-6 text-center hidden md:table-cell">
                                             <div className="flex flex-col items-center gap-0.5">
                                                 <Text.Amount className="!text-slate-900 !text-xl !font-black leading-none">{t._count?.wargas || 0}</Text.Amount>
-                                                <Text.Caption className="!text-slate-400 !font-black uppercase !text-[8px] tracking-widest">Warga Terdata</Text.Caption>
+                                                <Text.Caption className="!text-slate-500 !font-black uppercase !text-[8px] tracking-widest">Warga Terdata</Text.Caption>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6 text-center">
@@ -237,7 +237,7 @@ export default function SATenantList() {
                                         <td className="py-4 px-6 text-center">
                                             <button
                                                 onClick={() => navigate(`/super-admin/tenants/${t.id}`)}
-                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900 text-white hover:bg-black transition-all shadow-md shadow-slate-900/10 active:scale-90"
+                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-md shadow-blue-600/10 active:scale-90"
                                             >
                                                 <Eye size={18} weight="bold" />
                                             </button>
@@ -251,7 +251,7 @@ export default function SATenantList() {
                                                 <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center">
                                                     <Buildings size={40} className="text-slate-300" />
                                                 </div>
-                                                <Text.Body className="!font-black !text-slate-400 uppercase tracking-widest">No matching tenants found in {kecamatan || 'Semarang'}</Text.Body>
+                                                <Text.Body className="!font-black !text-slate-500 uppercase tracking-widest">No matching tenants found in {kecamatan || 'Semarang'}</Text.Body>
                                             </div>
                                         </td>
                                     </tr>
@@ -269,9 +269,9 @@ export default function SATenantList() {
                         <button
                             key={p}
                             onClick={() => setPage(p)}
-                            className={`w-11 h-11 rounded-2xl text-[13px] font-black transition-all ${
+                            className={`w-11 h-11 rounded-[24px] text-[13px] font-black transition-all ${
                                 p === page
-                                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20'
+                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20'
                                     : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50 hover:shadow-md'
                             }`}
                         >

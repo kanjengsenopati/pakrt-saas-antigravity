@@ -39,7 +39,7 @@ export default function SADashboard() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -65,8 +65,8 @@ export default function SADashboard() {
             label: 'Total Warga',
             value: overview?.totalWarga || 0,
             icon: Users,
-            bg: 'bg-emerald-50',
-            text: 'text-emerald-600',
+            bg: 'bg-blue-50',
+            text: 'text-blue-600',
             type: 'count'
         },
         {
@@ -81,7 +81,7 @@ export default function SADashboard() {
 
     const subBreakdown = [
         { label: 'Trial', value: overview?.subscriptions?.trial || 0, color: 'bg-sky-500' },
-        { label: 'Active', value: overview?.subscriptions?.active || 0, color: 'bg-emerald-500' },
+        { label: 'Active', value: overview?.subscriptions?.active || 0, color: 'bg-blue-600' },
         { label: 'Premium', value: overview?.subscriptions?.premium || 0, color: 'bg-amber-500' },
         { label: 'Expired', value: overview?.subscriptions?.expired || 0, color: 'bg-red-500' },
     ];
@@ -174,10 +174,10 @@ export default function SADashboard() {
                                             {g.count}
                                         </div>
                                         <div 
-                                            className="w-full rounded-t-xl bg-gradient-to-t from-emerald-600 to-emerald-400 transition-all duration-500 shadow-sm"
+                                            className="w-full rounded-t-xl bg-gradient-to-t from-blue-600 to-blue-400 transition-all duration-500 shadow-sm"
                                             style={{ height: `${Math.max(height, 4)}%` }}
                                         />
-                                        <Text.Caption className="!text-slate-400 !text-[8px] !font-bold !not-italic">{g.month.slice(5)}</Text.Caption>
+                                        <Text.Caption className="!text-slate-500 !text-[8px] !font-bold !not-italic">{g.month.slice(5)}</Text.Caption>
                                     </div>
                                 );
                             })}
@@ -194,20 +194,20 @@ export default function SADashboard() {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Kelola Tenant', icon: Buildings, color: 'text-emerald-500', bg: 'bg-emerald-50', path: '/super-admin/tenants' },
+                    { label: 'Kelola Tenant', icon: Buildings, color: 'text-blue-600', bg: 'bg-blue-50', path: '/super-admin/tenants' },
                     { label: 'Verifikasi Payment', icon: CreditCard, color: 'text-amber-500', bg: 'bg-amber-50', path: '/super-admin/subscriptions' },
                     { label: 'Lihat Analytics', icon: ChartLineUp, color: 'text-violet-500', bg: 'bg-violet-50', path: '/super-admin/analytics' }
                 ].map((action) => (
                     <button
                         key={action.label}
                         onClick={() => navigate(action.path)}
-                        className="flex items-center gap-4 p-5 rounded-[24px] bg-white border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                        className="flex items-center gap-4 p-5 rounded-[24px] bg-white border border-slate-100 hover:border-blue-500 hover:bg-blue-50/30 transition-all group shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                     >
-                        <div className={`w-10 h-10 rounded-xl ${action.bg} ${action.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                        <div className={`w-10 h-10 rounded-xl ${action.bg} ${action.color} flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm`}>
                             <action.icon size={20} weight="bold" />
                         </div>
                         <span className="text-[14px] font-semibold text-slate-700 group-hover:text-slate-900 transition-colors">{action.label}</span>
-                        <ArrowRight size={18} className="text-slate-300 group-hover:text-slate-900 ml-auto transition-all" />
+                        <ArrowRight size={18} className="text-slate-300 group-hover:text-blue-600 ml-auto transition-all" />
                     </button>
                 ))}
             </div>

@@ -47,6 +47,12 @@ export default async function superAdminRoutes(fastify: FastifyInstance) {
     return await superAdminService.unsuspendTenant(id);
   });
 
+  fastify.post('/tenants/:id/reset-password', async (request) => {
+    const { id } = request.params as any;
+    const { password } = request.body as any;
+    return await superAdminService.resetTenantPassword(id, password);
+  });
+
   // ── INVOICE / PAYMENT MANAGEMENT ───────────────────
 
   fastify.get('/invoices', async (request) => {
