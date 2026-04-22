@@ -13,6 +13,7 @@ import {
     Info
 } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 type AduanFormData = Pick<AduanUsulan, 'tipe' | 'judul' | 'deskripsi' | 'is_anonymous' | 'foto_url'>;
 
@@ -60,8 +61,8 @@ export default function AduanForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-xl font-bold text-slate-900 tracking-tight">Kirim Aspirasi Baru</h1>
-                    <p className="text-slate-500 text-xs font-medium mt-1">Scope: <span className="text-brand-600 font-bold">{currentScope}</span></p>
+                    <Text.H1>Kirim Aspirasi Baru</Text.H1>
+                    <Text.Body className="!text-slate-500 !mt-1">Scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 uppercase">{currentScope}</Text.Label></Text.Body>
                 </div>
             </div>
 
@@ -77,8 +78,8 @@ export default function AduanForm() {
                             <ChatTeardropDots weight="fill" className="w-6 h-6" />
                         </div>
                         <div className="text-center">
-                            <p className={`text-sm font-semibold tracking-tight ${selectedTipe === 'Aduan' ? 'text-rose-700' : 'text-slate-600'}`}>Aduan</p>
-                            <p className="text-xs text-slate-400 font-medium">Laporkan masalah</p>
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Aduan' ? '!text-rose-700' : '!text-slate-600'}`}>Aduan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium">Laporkan Masalah</Text.Caption>
                         </div>
                     </button>
 
@@ -91,8 +92,8 @@ export default function AduanForm() {
                             <Lightbulb weight="fill" className="w-6 h-6" />
                         </div>
                         <div className="text-center">
-                            <p className={`text-sm font-semibold tracking-tight ${selectedTipe === 'Usulan' ? 'text-brand-700' : 'text-slate-600'}`}>Usulan</p>
-                            <p className="text-xs text-slate-400 font-medium">Ide & Saran warga</p>
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Usulan' ? '!text-brand-700' : '!text-slate-600'}`}>Usulan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium">Ide & Saran Warga</Text.Caption>
                         </div>
                     </button>
                     <input type="hidden" {...register('tipe', { required: true })} />
@@ -102,24 +103,24 @@ export default function AduanForm() {
                 <div className="bg-white rounded-card border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 tracking-tight mb-2">Judul Aspirasi</label>
+                            <Text.Label className="!text-slate-700 mb-2">Judul Aspirasi</Text.Label>
                             <input
-                                placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu jalan mati di Blok A" : "Contoh: Usul pengadaan taman bermain"}
-                                {...register('judul', { required: 'Judul wajib diisi' })}
+                                placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu Jalan Mati Di Blok A" : "Contoh: Usul Pengadaan Taman Bermain"}
+                                {...register('judul', { required: 'Judul Wajib Diisi' })}
                                 className={`w-full rounded-2xl border-2 p-4 text-sm font-bold text-slate-700 outline-none transition-all placeholder:text-slate-300 ${errors.judul ? 'border-rose-100 bg-rose-50/30' : 'border-slate-50 bg-slate-50/50 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/5'}`}
                             />
-                            {errors.judul && <p className="text-rose-500 text-[10px] font-bold mt-2 uppercase tracking-tight">{errors.judul.message}</p>}
+                            {errors.judul && <Text.Caption className="!text-rose-500 !mt-2 !font-bold !uppercase">{errors.judul.message}</Text.Caption>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 tracking-tight mb-2">Deskripsi Lengkap</label>
+                            <Text.Label className="!text-slate-700 mb-2">Deskripsi Lengkap</Text.Label>
                             <textarea
                                 rows={5}
-                                placeholder="Jelaskan detail aspirasi Anda di sini..."
-                                {...register('deskripsi', { required: 'Deskripsi wajib diisi' })}
+                                placeholder="Jelaskan Detail Aspirasi Anda Di Sini..."
+                                {...register('deskripsi', { required: 'Deskripsi Wajib Diisi' })}
                                 className={`w-full rounded-2xl border-2 p-4 text-sm font-medium text-slate-700 outline-none transition-all placeholder:text-slate-300 leading-relaxed ${errors.deskripsi ? 'border-rose-100 bg-rose-50/30' : 'border-slate-50 bg-slate-50/50 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/5'}`}
                             />
-                            {errors.deskripsi && <p className="text-rose-500 text-xs font-semibold mt-2">{errors.deskripsi.message}</p>}
+                            {errors.deskripsi && <Text.Caption className="!text-rose-500 !mt-2 !font-semibold">{errors.deskripsi.message}</Text.Caption>}
                         </div>
 
                         <div className="pt-2">
@@ -144,8 +145,8 @@ export default function AduanForm() {
                                     {isAnonymous ? <ShieldCheck weight="fill" className="w-5 h-5" /> : <ShieldSlash weight="bold" className="w-5 h-5" />}
                                 </div>
                                 <div className="space-y-0.5">
-                                    <p className={`text-sm font-semibold tracking-tight ${isAnonymous ? 'text-brand-700' : 'text-slate-700'}`}>Sembunyikan Identitas Saya</p>
-                                    <p className="text-xs text-slate-500 font-medium leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</p>
+                                    <Text.Label className={`!text-sm !font-semibold !tracking-tight ${isAnonymous ? '!text-brand-700' : '!text-slate-700'}`}>Sembunyikan Identitas Saya</Text.Label>
+                                    <Text.Caption className="!text-slate-500 !font-medium !leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</Text.Caption>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isAnonymous ? 'bg-brand-500 border-brand-500 text-white' : 'border-slate-300 bg-white'}`}>
@@ -154,9 +155,9 @@ export default function AduanForm() {
                         </div>
                         <div className="mt-4 flex items-start gap-2 px-2 py-3 bg-amber-50/50 rounded-btn border border-amber-100/50">
                             <Info weight="fill" className="text-amber-500 w-4 h-4 mt-0.5 shrink-0" />
-                            <p className="text-caption font-medium leading-relaxed italic">
+                            <Text.Caption className="!font-medium !leading-relaxed !italic">
                                 Catatan: Pengurus RT akan tetap memiliki akses ke identitas Anda untuk keperluan koordinasi dan tindak lanjut laporan.
-                            </p>
+                            </Text.Caption>
                         </div>
                     </div>
 
@@ -166,7 +167,7 @@ export default function AduanForm() {
                             onClick={() => navigate('/aduan')}
                             className="flex-1 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-2xl transition-all border border-transparent"
                         >
-                            Batal
+                            <Text.Label className="!text-slate-500">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
@@ -177,7 +178,7 @@ export default function AduanForm() {
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
-                                    <span>Kirim Sekarang</span>
+                                    <Text.Label className="!text-white">Kirim Sekarang</Text.Label>
                                     <PaperPlaneTilt weight="fill" className="w-5 h-5" />
                                 </>
                             )}

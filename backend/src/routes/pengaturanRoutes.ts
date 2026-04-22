@@ -63,7 +63,11 @@ export default async function pengaturanRoutes(fastify: FastifyInstance) {
       return { success: true };
     } catch (err: any) {
       fastify.log.error(err);
-      return reply.code(400).send({ error: err.message || 'Failed to batch save' });
+      return reply.code(400).send({ 
+        error: 'Failed to batch save', 
+        message: err.message,
+        details: err.code === 'P2002' ? 'Duplicate key violation' : err.stack
+      });
     }
   });
 

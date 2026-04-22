@@ -8,6 +8,7 @@ import { dateUtils } from '../../utils/date';
 import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
+import { Text } from '../../components/ui/Typography';
 
 export default function WargaDetail() {
     const { id } = useParams<{ id: string }>();
@@ -27,8 +28,8 @@ export default function WargaDetail() {
         }
     }, [id]);
 
-    if (isLoading) return <div className="p-8 text-center text-gray-500">Memuat profil...</div>;
-    if (!warga) return <div className="p-8 text-center text-red-500 font-medium">Data Warga tidak ditemukan.</div>;
+    if (isLoading) return <div className="p-8 text-center"><Text.Body className="!text-slate-500">Memuat Profil...</Text.Body></div>;
+    if (!warga) return <div className="p-8 text-center"><Text.Body className="!text-red-500 !font-bold">Data Warga Tidak Ditemukan.</Text.Body></div>;
 
     return (
         <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-12">
@@ -40,7 +41,7 @@ export default function WargaDetail() {
                     >
                         <ArrowLeft weight="bold" className="w-5 h-5" />
                     </button>
-                    <h1 className="text-[14px] sm:text-[16px] font-bold text-gray-900 capitalize tracking-tight">Detail Profil Warga</h1>
+                    <Text.H2 className="!text-[14px] sm:!text-[16px]">Detail Profil Warga</Text.H2>
                 </div>
                 <HasPermission module="Warga" action="Ubah" recordOwnerId={warga.id}>
                     <button
@@ -48,7 +49,7 @@ export default function WargaDetail() {
                         className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-[12px] transition-all shadow-sm active-press"
                     >
                         <PencilSimple weight="bold" />
-                        <span>Edit Profil</span>
+                        <Text.Label className="!text-white">Edit Profil</Text.Label>
                     </button>
                 </HasPermission>
             </div>
@@ -63,28 +64,28 @@ export default function WargaDetail() {
                                 <User weight="duotone" className="w-12 h-12 text-brand-200" />
                             )}
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 leading-tight">{warga.nama}</h2>
-                        <p className="text-gray-500 text-sm mt-1">{warga.nik}</p>
+                        <Text.H1 className="!text-xl leading-tight !uppercase mb-1">{warga.nama}</Text.H1>
+                        <Text.Caption className="!text-gray-500">{warga.nik}</Text.Caption>
                         <div className="mt-4 flex flex-wrap justify-center gap-2">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200">
+                            <Text.Label className="!px-2.5 !py-0.5 rounded-full !bg-brand-100 !text-brand-800 border border-brand-200">
                                 Kepala Keluarga
-                            </span>
+                            </Text.Label>
                             {warga.status_penduduk && (
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${warga.status_penduduk === 'Tetap' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}>
+                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border ${warga.status_penduduk === 'Tetap' ? '!bg-emerald-50 !text-emerald-700 border-emerald-100' : '!bg-amber-50 !text-amber-700 border-amber-100'}`}>
                                     {warga.status_penduduk}
-                                </span>
+                                </Text.Label>
                             )}
                             {warga.status_rumah && (
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${warga.status_rumah === 'Dihuni' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-rose-50 text-rose-700 border-rose-100'}`}>
+                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border ${warga.status_rumah === 'Dihuni' ? '!bg-blue-50 !text-blue-700 border-blue-100' : '!bg-rose-50 !text-rose-700 border-rose-100'}`}>
                                     {warga.status_rumah === 'Dihuni' ? 'Rumah Dihuni' : 'Rumah Kosong'}
-                                </span>
+                                </Text.Label>
                             )}
                         </div>
                     </div>
 
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
                         <div className="flex items-center justify-between border-b border-gray-50 pb-2">
-                            <h3 className="font-semibold text-gray-900">Dokumen Warga</h3>
+                            <Text.H2 className="!font-bold">Dokumen Warga</Text.H2>
                         </div>
                         {warga.url_kk ? (
                             <div className="space-y-4">
@@ -94,23 +95,23 @@ export default function WargaDetail() {
                                             <FileText weight="fill" className="w-6 h-6" />
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-sm font-bold text-gray-900 truncate">Kartu Keluarga (KK)</p>
-                                            <p className="text-[10px] text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full inline-block mt-1">Dokumen Resmi</p>
+                                            <Text.Body className="!font-bold !text-gray-900 truncate">Kartu Keluarga (KK)</Text.Body>
+                                            <Text.Caption className="!bg-gray-200 !px-2 !py-0.5 rounded-full inline-block mt-1">Dokumen Resmi</Text.Caption>
                                         </div>
                                     </div>
                                     <button 
                                         onClick={() => setIsZooming(true)}
-                                        className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white text-[11px] sm:text-xs font-bold rounded-lg transition-all shadow-sm hover:shadow active-press"
+                                        className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-all shadow-sm hover:shadow active-press"
                                     >
                                         <MagnifyingGlassPlus weight="bold" className="w-4 h-4" />
-                                        <span className="hidden sm:inline">Lihat Dokumen</span>
-                                        <span className="sm:hidden">Lihat</span>
+                                        <Text.Label className="!hidden sm:!inline !text-white">Lihat Dokumen</Text.Label>
+                                        <Text.Label className="sm:!hidden !text-white">Lihat</Text.Label>
                                     </button>
                                 </div>
                             </div>
                         ) : (
                             <div className="p-4 border-2 border-dashed border-gray-100 rounded-lg text-center">
-                                <p className="text-xs text-gray-400">Belum ada dokumen KK terunggah</p>
+                                <Text.Caption>Belum ada dokumen KK terunggah</Text.Caption>
                             </div>
                         )}
                     </div>
@@ -119,7 +120,7 @@ export default function WargaDetail() {
                 <div className="md:col-span-2 space-y-6">
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div className="p-4 bg-gray-50/50 border-b border-gray-100">
-                            <h3 className="font-semibold text-gray-900">Informasi Pribadi</h3>
+                            <Text.H2 className="!font-bold">Informasi Pribadi</Text.H2>
                         </div>
                         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
                             <InfoItem icon={IdentificationCard} label="NIK" value={warga.nik} />
@@ -156,17 +157,17 @@ export default function WargaDetail() {
                     >
                         {/* Header */}
                         <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 className="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
+                            <Text.H2 className="!font-bold flex items-center gap-2">
                                 <FileText weight="duotone" className="text-brand-600 w-5 h-5"/> Dokumen Kartu Keluarga
-                            </h3>
+                            </Text.H2>
                             <div className="flex items-center gap-2 sm:gap-4">
                                 <a 
                                     href={getFullUrl(warga.url_kk)} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-[10px] sm:text-xs font-bold text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition-colors border border-brand-100"
+                                    className="hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition-colors border border-brand-100 shadow-sm"
                                 >
-                                    Buka di Tab Baru
+                                    <Text.Label className="!text-brand-600">Buka Di Tab Baru</Text.Label>
                                 </a>
                                 <button
                                     className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 p-1.5 sm:p-2 rounded-full transition-colors"
@@ -202,8 +203,8 @@ function InfoItem({ icon: Icon, label, value, className = "" }: { icon: any, lab
                 <Icon weight="duotone" className="w-5 h-5 text-gray-400" />
             </div>
             <div>
-                <p className="text-xs text-gray-400 font-medium tracking-normal">{label}</p>
-                <p className="text-gray-800 font-medium mt-0.5">{value}</p>
+                <Text.Label className="mb-1">{label}</Text.Label>
+                <Text.Body className="!font-medium">{value}</Text.Body>
             </div>
         </div>
     );

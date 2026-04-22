@@ -1,7 +1,7 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
-import { pushService } from './pushService';
 import { aktivitasService } from './aktivitasService';
+import { NotificationHelper } from '../utils/NotificationHelper';
 
 export const notulensiService = {
   async getAll(tenantId: string, scope?: string) {
@@ -34,17 +34,12 @@ export const notulensiService = {
       }
     }
 
-    // Trigger Push Notification
-    try {
-        await pushService.sendNotificationToScope(notulensi.tenant_id, notulensi.scope, {
-            title: 'Notulensi Baru: ' + notulensi.judul,
-            body: `Hasil pertemuan pada ${dateUtils.toDisplay(notulensi.tanggal)} sudah tersedia.`,
-            icon: '/pwa-192x192.png',
-            data: { url: '/notulensi', id: notulensi.id }
-        });
-    } catch (error) {
-        console.error('Error sending notulensi push notification:', error);
-    }
+    // Trigger Push Notification via Helper
+    await NotificationHelper.notifyScope(notulensi.tenant_id, notulensi.scope, {
+        title: 'Notulensi Baru: ' + notulensi.judul,
+        body: `Hasil pertemuan pada ${dateUtils.toDisplay(notulensi.tanggal)} sudah tersedia.`,
+        data: { url: '/notulensi', id: notulensi.id }
+    });
 
     // Log Activity
     try {

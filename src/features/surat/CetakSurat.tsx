@@ -7,6 +7,7 @@ import { pengaturanService } from '../../services/pengaturanService';
 import { Printer, ArrowLeft } from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { dateUtils } from '../../utils/date';
+import { Text } from '../../components/ui/Typography';
 
 export default function CetakSurat() {
     const { id } = useParams<{ id: string }>();
@@ -41,8 +42,11 @@ export default function CetakSurat() {
 
 
 
-    if (isLoading) return <div className="p-8 text-center text-gray-500 font-sans">Memuat dokumen...</div>;
-    if (!surat || !surat.pemohon) return <div className="p-8 text-center text-red-500 font-sans">Dokumen tidak ditemukan atau data pemohon tidak lengkap.</div>;
+    if (isLoading) return <div className="p-8 text-center flex items-center justify-center min-h-screen"><Text.Body className="!text-slate-500">Memuat Dokumen...</Text.Body></div>;
+    if (!surat || !surat.pemohon) return <div className="p-8 text-center flex flex-col items-center justify-center min-h-screen gap-4">
+        <Text.Body className="!text-rose-500 !font-bold">Dokumen Tidak Ditemukan Atau Data Pemohon Tidak Lengkap.</Text.Body>
+        <button onClick={() => navigate('/surat')} className="px-6 py-2 bg-slate-100 rounded-xl"><Text.Label className="!text-slate-600">Kembali</Text.Label></button>
+    </div>;
 
     const kopLines = config.kop_surat
         ? config.kop_surat.split('\n')
@@ -51,7 +55,7 @@ export default function CetakSurat() {
     const getNomorSuratDisplay = () => {
         if (surat.nomor_surat) return surat.nomor_surat;
 
-        let formatTemplate = config.format_nomor_surat || `[NOMOR]/[SCOPE]/[BULAN_ROMAWI]/[TAHUN]`;
+        const formatTemplate = config.format_nomor_surat || `[NOMOR]/[SCOPE]/[BULAN_ROMAWI]/[TAHUN]`;
         const dateObj = new Date(surat.tanggal);
         const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 
@@ -70,13 +74,13 @@ export default function CetakSurat() {
                     onClick={() => navigate('/surat')}
                     className="flex items-center gap-2 pl-3 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
-                    <ArrowLeft weight="bold" /> Kembali
+                    <ArrowLeft weight="bold" /> <Text.Label className="!text-slate-700">Kembali</Text.Label>
                 </button>
                 <button
                     onClick={() => window.print()}
                     className="flex items-center gap-2 px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium shadow-sm transition-colors"
                 >
-                    <Printer weight="bold" className="w-5 h-5" /> Cetak Surat
+                    <Printer weight="bold" className="w-5 h-5" /> <Text.Label className="!text-white">Cetak Surat</Text.Label>
                 </button>
             </div>
 

@@ -1,6 +1,7 @@
 import { prisma } from '../prisma';
 import { dateUtils } from '../utils/date';
 import { aktivitasService } from './aktivitasService';
+import { NotificationHelper } from '../utils/NotificationHelper';
 
 export const aduanService = {
   async getAll(tenantId: string, scope?: string, status?: string, tipe?: string, wargaId?: string, page: number = 1, limit: number = 20) {
@@ -70,7 +71,7 @@ export const aduanService = {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     const result = await prisma.aduanUsulan.create({ data });
 
-    // Log Activity
+    // Log Activity & Notify Staff (Future: scope notification for important complaints)
     try {
       const warga = await prisma.warga.findUnique({ where: { id: data.warga_id } });
       await aktivitasService.create({
@@ -80,8 +81,14 @@ export const aduanService = {
         details: `**${warga?.nama || 'Warga'}** mengirimkan aduan: ${data.judul}`,
         timestamp: Date.now()
       });
+      
+      // Notify the reporter that it's received
+      await NotificationHelper.notifyWargas([data.warga_id], {
+        title: 'Aduan Diterima',
+        body: `Aduan "${data.judul}" Anda telah diterima dan akan segera ditinjau.`
+      });
     } catch (e) {
-      console.warn("Failed to log activity for aduan creation:", e);
+      console.warn("Failed to log activity/notify for aduan creation:", e);
     }
 
     return result;
@@ -91,7 +98,7 @@ export const aduanService = {
     if (data.tanggal) data.tanggal = dateUtils.normalize(data.tanggal);
     const result = await prisma.aduanUsulan.update({ where: { id }, data });
 
-    // Log Activity if status changed
+    // Log Activity & Notify Reporter if status changed
     if (data.status) {
       try {
         const aduan = await this.getById(id);
@@ -102,8 +109,14 @@ export const aduanService = {
           details: `Status aduan **${aduan?.warga?.nama || 'Warga'}** (${result.judul}) diperbarui menjadi: ${result.status}`,
           timestamp: Date.now()
         });
+
+        // Notify the reporter
+        await NotificationHelper.notifyWargas([result.warga_id], {
+          title: `Update Aduan: ${result.status}`,
+          body: `Status aduan "${result.judul}" Anda kini: ${result.status}`
+        });
       } catch (e) {
-        console.warn("Failed to log activity for aduan update:", e);
+        console.warn("Failed to log activity/notify for aduan update:", e);
       }
     }
 

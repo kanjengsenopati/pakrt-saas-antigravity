@@ -86,18 +86,27 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('recharts')) {
-                            return 'vendor-recharts';
-                        }
+                        // Keep icons separate as they are large and leaf-dependencies
                         if (id.includes('@phosphor-icons')) {
                             return 'vendor-icons';
                         }
-                        // Let others be in the default vendor or entry chunk
+                        // Group all other vendors into one chunk to prevent circular
+                        // initialization errors (e.g. React 19 + Recharts)
+                        return 'vendor';
                     }
-                    if (id.includes('/src/services/')) {
-                        return 'services';
-                    }
+                    // Do NOT split feature/service chunks — they have circular imports
+                    // (e.g. feature-warga -> feature-aduan -> feature-warga via WargaPortal)
+                    // which cause "Cannot access before initialization" at runtime.
                 }
+            }
+        }
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3100',
+                changeOrigin: true,
+                secure: false,
             }
         }
     }

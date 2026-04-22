@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 
 // --- Force Update & Cache Cleanup Logic ---
-const APP_VERSION = '1.5.8';
+const APP_VERSION = '1.6.0';
 const storedVersion = localStorage.getItem('app_version');
 
 if (storedVersion !== APP_VERSION) {
@@ -39,11 +39,9 @@ import { MainRouter } from './components/MainRouter.tsx'
 import axios from 'axios'
 import './index.css'
 
+axios.defaults.withCredentials = true;
+
 axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
 });
 
@@ -55,8 +53,15 @@ axios.interceptors.response.use(
     }
 );
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <MainRouter />
-    </React.StrictMode>,
-)
+// --- Safe Root Initialization ---
+const container = document.getElementById('root');
+if (container) {
+    const root = (window as any)._reactRoot || ReactDOM.createRoot(container);
+    (window as any)._reactRoot = root;
+    root.render(
+        <React.StrictMode>
+            <MainRouter />
+        </React.StrictMode>,
+    );
+}
+// --------------------------------

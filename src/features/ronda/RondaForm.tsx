@@ -7,6 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { JadwalRonda, Warga } from '../../database/db';
 import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
 import { dateUtils } from '../../utils/date';
+import { Text } from '../../components/ui/Typography';
 
 type RondaFormData = Omit<JadwalRonda, 'id' | 'tenant_id'>;
 
@@ -196,10 +197,10 @@ export default function RondaForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <Text.H1>
                         {isEditing ? 'Ubah Jadwal Ronda' : 'Buat Jadwal Ronda Baru'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">Mengatur petugas siskamling lingkungan</p>
+                    </Text.H1>
+                    <Text.Body className="mt-1">Mengatur Petugas Siskamling Lingkungan</Text.Body>
                 </div>
             </div>
 
@@ -218,22 +219,22 @@ export default function RondaForm() {
                     {currentStep === 1 && (
                         <div className="space-y-6 animate-fade-in">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <Text.Label className="mb-1 !text-slate-700">
                                     Nama Regu / Kelompok <span className="text-red-500">*</span>
-                                </label>
+                                </Text.Label>
                                 <input
                                     type="text"
                                     {...register('regu', { required: 'Nama Regu wajib diisi' })}
                                     className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.regu ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
-                                    placeholder="Contoh: Regu A, Kelompok 1, dsb"
+                                    placeholder="Contoh: Regu A, Kelompok 1, Dsb"
                                 />
-                                {errors.regu && <p className="text-red-500 text-xs mt-1">{errors.regu.message}</p>}
+                                {errors.regu && <Text.Caption className="!text-red-500 !mt-1">{errors.regu.message}</Text.Caption>}
                             </div>
 
                             <div className="pt-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-3 border-b pb-2">
-                                    Pilih Warga Petugas Piket ({selectedWargaIds.length} terpilih) <span className="text-red-500">*</span>
-                                </label>
+                                <Text.Label className="mb-3 border-b pb-2 !text-slate-700">
+                                    Pilih Warga Petugas Piket ({selectedWargaIds.length} Terpilih) <span className="text-red-500">*</span>
+                                </Text.Label>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto p-1">
                                     {wargaList.map(warga => {
@@ -266,28 +267,25 @@ export default function RondaForm() {
                                                         <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                                     )}
                                                 </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className={`text-sm font-medium ${isAssigned ? 'text-orange-700' : isSelected ? 'text-brand-900' : 'text-gray-700'
-                                                        }`}>{warga.nama}</p>
+                                                    <Text.Body className={`!font-medium ${isAssigned ? '!text-orange-700' : isSelected ? '!text-brand-900' : '!text-slate-700'} uppercase`}>{warga.nama}</Text.Body>
                                                     {isAssigned && (
-                                                        <span className="inline-block mt-1 text-[10px] font-semibold tracking-normal text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded">
-                                                            Sudah di Regu
-                                                        </span>
+                                                        <Text.Label className="!inline-block mt-1 !text-[10px] !font-black !tracking-widest !text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded uppercase">
+                                                            Sudah Di Regu
+                                                        </Text.Label>
                                                     )}
                                                 </div>
-                                            </div>
                                         );
                                     })}
                                 </div>
                                 {wargaList.length === 0 && (
-                                    <p className="text-sm text-amber-600 bg-amber-50 p-4 rounded-lg">Belum ada data warga di sistem. Silakan tambahkan data warga terlebih dahulu.</p>
+                                    <Text.Body className="!text-amber-600 bg-amber-50 p-4 rounded-lg">Belum Ada Data Warga Di Sistem. Silakan Tambahkan Data Warga Terlebih Dahulu.</Text.Body>
                                 )}
                             </div>
 
                             <div className="pt-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-3 border-b pb-2">
-                                    Pilih Petugas Konsumsi / Snack <span className="text-gray-400 font-normal">(Opsional, {selectedKonsumsiIds.length} terpilih)</span>
-                                </label>
+                                <Text.Label className="mb-3 border-b pb-2 !text-slate-700">
+                                    Pilih Petugas Konsumsi / Snack <Text.Caption component="span" className="!normal-case !font-normal">(Opsional, {selectedKonsumsiIds.length} Terpilih)</Text.Caption>
+                                </Text.Label>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[250px] overflow-y-auto p-1">
                                     {wargaList.map(warga => {
@@ -302,7 +300,7 @@ export default function RondaForm() {
                                                     {isSelected && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                                 </div>
                                                 <div>
-                                                    <p className={`text-sm font-medium ${isSelected ? 'text-amber-900' : 'text-gray-700'}`}>{warga.nama}</p>
+                                                    <Text.Body className={`!font-medium ${isSelected ? '!text-amber-900' : '!text-slate-700'} uppercase`}>{warga.nama}</Text.Body>
                                                 </div>
                                             </div>
                                         );
@@ -316,12 +314,11 @@ export default function RondaForm() {
                                     onClick={handleNextStep}
                                     className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium shadow-sm transition-colors"
                                 >
-                                    Lanjut Pilih Jadwal
+                                    <Text.Label className="!text-white">Lanjut Pilih Jadwal</Text.Label>
                                 </button>
                             </div>
                         </div>
                     )}
-
 
                     {currentStep === 2 && (
                         <div className="space-y-6 animate-fade-in">
@@ -329,20 +326,20 @@ export default function RondaForm() {
                                 <div className="flex gap-6 border-b border-gray-100 pb-4">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input type="radio" checked={mode === 'manual'} onChange={() => { setMode('manual'); setGeneratedDatesList([]); setSelectedDates([]); }} className="text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer" />
-                                        <span className={mode === 'manual' ? 'font-medium text-gray-900' : 'text-gray-600'}>Satu Tanggal (Manual)</span>
+                                        <Text.Body className={`!font-medium ${mode === 'manual' ? '!text-slate-900' : '!text-slate-400'}`}>Satu Tanggal (Manual)</Text.Body>
                                     </label>
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input type="radio" checked={mode === 'rutin'} onChange={() => setMode('rutin')} className="text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer" />
-                                        <span className={mode === 'rutin' ? 'font-medium text-gray-900' : 'text-gray-600'}>Rutin Mingguan (1 Tahun)</span>
+                                        <Text.Body className={`!font-medium ${mode === 'rutin' ? '!text-slate-900' : '!text-slate-400'}`}>Rutin Mingguan (1 Tahun)</Text.Body>
                                     </label>
                                 </div>
                             )}
 
                             {mode === 'manual' ? (
                                 <div className="max-w-md">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <Text.Label className="mb-1 !text-slate-700">
                                         Tanggal Piket Ronda <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <input
                                         type="date"
                                         {...register('tanggal')}
@@ -353,9 +350,9 @@ export default function RondaForm() {
                             ) : (
                                 <div className="space-y-6">
                                     <div className="max-w-md">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <Text.Label className="mb-1 !text-slate-700">
                                             Pilih Hari Rutin <span className="text-red-500">*</span>
-                                        </label>
+                                        </Text.Label>
                                         <select
                                             value={hariRutin}
                                             onChange={e => setHariRutin(Number(e.target.value))}
@@ -369,20 +366,20 @@ export default function RondaForm() {
                                             <option value={5}>Jumat</option>
                                             <option value={6}>Sabtu</option>
                                         </select>
-                                        <p className="text-xs text-gray-500 mt-2">
+                                        <Text.Caption className="!mt-2">
                                             Sistem memberikan daftar tanggal di hari tersebut selama 52 minggu. Centang pada tanggal yang ingin Anda jadwalkan.
-                                        </p>
+                                        </Text.Caption>
                                     </div>
 
                                     {generatedDatesList.length > 0 && (
                                         <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                                             <div className="flex justify-between items-center mb-4">
-                                                <h3 className="font-semibold text-gray-800">Preview & Sesuaikan Tanggal ({selectedDates.length} terpilih)</h3>
+                                                <Text.H2 className="!text-slate-800">Preview & Sesuaikan Tanggal ({selectedDates.length} Terpilih)</Text.H2>
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2">
                                                 {Object.entries(groupDatesByMonth(generatedDatesList)).map(([monthYear, datesArray]) => (
                                                     <div key={monthYear} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                                                        <p className="font-bold text-sm text-brand-700 mb-2 border-b pb-1">{monthYear}</p>
+                                                        <Text.Label className="!text-brand-700 mb-2 border-b pb-1">{monthYear}</Text.Label>
                                                         <div className="flex flex-col gap-2">
                                                             {datesArray.map(date => {
                                                                 const isBooked = bookedDates.has(date);
@@ -402,14 +399,14 @@ export default function RondaForm() {
                                                                         }}
                                                                         className={`flex items-center justify-between p-1 rounded transition-colors group ${isBooked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-gray-50'}`}
                                                                     >
-                                                                        <span className={`text-sm ${isBooked
-                                                                            ? 'text-gray-400 line-through'
+                                                                        <Text.Body className={`${isBooked
+                                                                            ? '!text-slate-400 line-through'
                                                                             : isSelected
-                                                                                ? 'text-gray-900 font-medium'
-                                                                                : 'text-gray-700'
+                                                                                ? '!text-slate-900 !font-bold'
+                                                                                : '!text-slate-700'
                                                                             }`}>
                                                                              {dateUtils.toDisplay(date)}
-                                                                        </span>
+                                                                        </Text.Body>
                                                                         <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isBooked
                                                                             ? 'bg-gray-100 border-gray-200'
                                                                             : isSelected
@@ -452,14 +449,14 @@ export default function RondaForm() {
                                     onClick={() => setCurrentStep(1)}
                                     className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                                 >
-                                    Kembali ke Regu
+                                    <Text.Label className="!text-slate-600">Kembali Ke Regu</Text.Label>
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 font-medium hover-lift active-press shadow-sm hover:shadow-md transition-all"
                                 >
                                     <FloppyDisk weight="bold" />
-                                    <span>{isEditing ? 'Simpan Perubahan' : 'Buat Jadwal'}</span>
+                                    <Text.Label className="!text-white">{isEditing ? 'Simpan Perubahan' : 'Buat Jadwal'}</Text.Label>
                                 </button>
                             </div>
                         </div>

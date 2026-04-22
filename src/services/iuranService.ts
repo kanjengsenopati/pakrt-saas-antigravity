@@ -1,6 +1,7 @@
 import api from './api';
 import { PembayaranIuran, Warga } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
+import { fileUtils } from '../utils/fileUtils';
 
 export type IuranWithWarga = PembayaranIuran & { warga?: Warga };
 
@@ -25,8 +26,8 @@ export const iuranService = {
         }
     },
 
-    async getBillingSummary(wargaId: string, year: number, monthOrKategori: number | string | undefined, scope: ScopeType): Promise<any> {
-        const params: any = { year, scope };
+    async getBillingSummary(tenantId: string, wargaId: string, year: number, monthOrKategori: number | string | undefined, scope: ScopeType): Promise<any> {
+        const params: any = { year, scope, tenant_id: tenantId };
         if (typeof monthOrKategori === 'number') {
             params.month = monthOrKategori;
         } else if (typeof monthOrKategori === 'string') {
@@ -40,6 +41,11 @@ export const iuranService = {
     async create(data: Omit<PembayaranIuran, 'id'>, ..._args: any[]): Promise<string> {
         const response = await api.post('/iuran', data);
         return response.data.id;
+    },
+
+    async createBatch(items: any[], commonData: any): Promise<any> {
+        const response = await api.post('/iuran/batch', { items, ...commonData });
+        return response.data;
     },
 
     async update(id: string, data: Partial<PembayaranIuran>, ..._args: any[]): Promise<number> {
@@ -77,13 +83,7 @@ export const iuranService = {
             responseType: 'blob'
         });
         
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
         const fileName = `Data_Iuran_${scope}_${new Date().toISOString().split('T')[0]}.xlsx`;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        fileUtils.downloadFile(response.data, fileName);
     }
 };

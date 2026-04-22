@@ -30,10 +30,6 @@ const STATUS_COLORS = {
     'Selesai': '#2563eb'
 };
 
-const toTitleCase = (str: string) => {
-    if (!str) return '';
-    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
 
 export default function AduanList() {
     const { currentTenant, currentScope } = useTenant();
@@ -125,7 +121,7 @@ export default function AduanList() {
                             className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                         >
                             <Plus weight="bold" size={18} />
-                            <span>Kirim Aspirasi</span>
+                            <Text.Body component="span" className="!text-inherit !font-bold">Kirim Aspirasi</Text.Body>
                         </button>
                     </HasPermission>
                 )}
@@ -267,7 +263,7 @@ export default function AduanList() {
                         {isLoading ? (
                             <div className="py-24 text-center flex flex-col items-center gap-4">
                                 <CircleNotch weight="bold" className="w-8 h-8 animate-spin text-brand-600" />
-                                <Text.Caption className="font-bold uppercase tracking-widest">Sinkronisasi Data...</Text.Caption>
+                                <Text.Caption className="font-bold tracking-widest">Sinkronisasi Data...</Text.Caption>
                             </div>
                         ) : items.length === 0 ? (
                             <div className="p-24 text-center flex flex-col items-center gap-4">
@@ -288,8 +284,8 @@ export default function AduanList() {
                                             <div className="flex justify-between items-start gap-4">
                                                 <div className="flex gap-4 min-w-0">
                                                     <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
-                                                        <span className="text-[9px] font-bold uppercase leading-none opacity-60">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</span>
-                                                        <span className="text-lg font-bold leading-none mt-0.5">{new Date(item.tanggal).getDate()}</span>
+                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' }).toUpperCase()}</Text.Label>
+                                                        <Text.Amount className="!text-lg !font-bold !leading-none mt-0.5">{new Date(item.tanggal).getDate()}</Text.Amount>
                                                     </div>
                                                     <div className="min-w-0">
                                                         <div className="flex items-center gap-2 mb-1">
@@ -301,7 +297,7 @@ export default function AduanList() {
                                                                 {item.status}
                                                             </Text.Label>
                                                             <Text.Caption>
-                                                                {item.is_anonymous ? 'Anonim' : toTitleCase(item.warga?.nama || 'Warga')}
+                                                                {item.is_anonymous ? 'Anonim' : (item.warga?.nama?.toUpperCase() || 'WARGA')}
                                                             </Text.Caption>
                                                         </div>
                                                         <Text.H2 className="line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
@@ -319,18 +315,17 @@ export default function AduanList() {
                                                 <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                                                     <div className="space-y-4 text-left">
                                                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                                            <Text.Caption className="!text-[10px] !font-bold uppercase tracking-tight text-slate-400 mb-1 block">Detail Permasalahan</Text.Caption>
-                                                            <p className="text-sm text-slate-700 leading-relaxed font-medium">{item.deskripsi}</p>
+                                                            <Text.Caption className="!text-[10px] !font-bold tracking-tight text-slate-400 mb-1 block">Detail Permasalahan</Text.Caption>
+                                                            <Text.Body className="!text-sm !font-medium !text-slate-700 !leading-relaxed">{item.deskripsi}</Text.Body>
                                                         </div>
-
-                                                        {item.tanggapan ? (
+                                                         {item.tanggapan ? (
                                                             <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
                                                                 <Text.Caption className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block">Tanggapan Pengurus</Text.Caption>
-                                                                <p className="text-sm text-blue-800 leading-relaxed font-bold italic">"{item.tanggapan}"</p>
+                                                                <Text.Body className="!text-sm !font-bold italic !text-blue-800 !leading-relaxed">"{item.tanggapan}"</Text.Body>
                                                             </div>
                                                         ) : (
                                                             <div className="bg-rose-50/30 rounded-2xl p-4 border border-rose-100/50 border-dashed">
-                                                                <p className="text-[11px] text-rose-400 font-medium italic">Belum ada tanggapan resmi dari pengurus.</p>
+                                                                <Text.Caption className="!font-medium !italic !text-rose-400">Belum ada tanggapan resmi dari pengurus.</Text.Caption>
                                                             </div>
                                                         )}
 
@@ -339,7 +334,8 @@ export default function AduanList() {
                                                                 onClick={(e) => { e.stopPropagation(); setSelectedItem(item); }}
                                                                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-[11px] font-bold shadow-sm"
                                                             >
-                                                                <Eye weight="bold" className="w-3.5 h-3.5" /> Lihat Panel Kendali
+                                                                <Eye weight="bold" className="w-3.5 h-3.5" />
+                                                                <Text.Body component="span" className="!text-inherit !font-bold !text-[11px]">Lihat Panel Kendali</Text.Body>
                                                             </button>
                                                             {isPengurus && (
                                                                 <HasPermission module="Aduan & Usulan" action="Hapus">

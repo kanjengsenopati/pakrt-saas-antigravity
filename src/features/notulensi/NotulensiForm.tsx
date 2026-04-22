@@ -7,6 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { Notulensi, Warga, Kehadiran } from '../../database/db';
 import { ArrowLeft, FloppyDisk, CheckCircle, XCircle, MinusCircle, UserCircle, ClockCounterClockwise, CircleNotch, CalendarBlank, MapPin, Notebook, UsersThree, Info, Image as ImageIcon } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 type NotulensiFormData = Omit<Notulensi, 'id' | 'tenant_id' | 'scope'>;
 
@@ -216,17 +217,18 @@ export default function NotulensiForm() {
                         <ArrowLeft weight="bold" className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
                     </button>
                     <div>
-                        <div className="flex items-center gap-2 mb-1.5">
-                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
+                        {/* Using standard Text components */}
+                        <div className="flex items-center gap-2 mb-1.5 text-left">
+                            <Text.H1>
                                 {isEditing ? 'Ubah Notulensi' : 'Notulensi Baru'}
-                            </h1>
+                            </Text.H1>
                             <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-[10px] font-bold tracking-tight rounded-md border border-brand-100">
                                 {currentScope}
                             </span>
                         </div>
-                        <p className="text-[11px] font-bold text-slate-400 tracking-tight">
+                        <Text.Caption>
                             {isEditing ? 'Perbarui Data Pertemuan & Absensi Warga' : 'Catat Detail Pertemuan & Kelola Daftar Hadir'}
-                        </p>
+                        </Text.Caption>
                     </div>
                 </div>
             </div>
@@ -238,17 +240,14 @@ export default function NotulensiForm() {
                     <div className="lg:col-span-8 space-y-8">
                         <section className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                             <div className="p-5 border-b border-slate-50 bg-slate-50/50 flex items-center gap-3">
-                                <div className="p-2 bg-brand-600 rounded-lg shadow-lg shadow-brand-100">
-                                    <Notebook weight="fill" className="text-white w-4 h-4" />
-                                </div>
-                                <h3 className="text-sm font-bold text-slate-900 tracking-tight">Informasi Utama</h3>
+                                <Text.Label className="!text-slate-900">Informasi Utama</Text.Label>
                             </div>
 
                             <div className="p-6 space-y-6">
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
+                                    <Text.Label className="mb-2 block px-1">
                                         Judul / Topik Pertemuan <span className="text-rose-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <input
                                         type="text"
                                         {...register('judul', { required: 'Judul pertemuan wajib diisi' })}
@@ -260,9 +259,9 @@ export default function NotulensiForm() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                        <Text.Label className="mb-2 block px-1 flex items-center gap-2">
                                             <CalendarBlank className="text-brand-500" /> Tanggal Pelaksanaan
-                                        </label>
+                                        </Text.Label>
                                         <input
                                             type="date"
                                             {...register('tanggal', { required: 'Tanggal wajib diisi' })}
@@ -272,9 +271,9 @@ export default function NotulensiForm() {
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
+                                            <Text.Label className="mb-2 block px-1">
                                                 Jam Mulai
-                                            </label>
+                                            </Text.Label>
                                             <input
                                                 type="time"
                                                 {...register('jam_mulai')}
@@ -282,9 +281,9 @@ export default function NotulensiForm() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1">
+                                            <Text.Label className="mb-2 block px-1">
                                                 Jam Selesai
-                                            </label>
+                                            </Text.Label>
                                             <input
                                                 type="time"
                                                 {...register('jam_selesai')}
@@ -293,15 +292,15 @@ export default function NotulensiForm() {
                                         </div>
                                     </div>
                                     <div className="relative">
-                                        <label className="block text-sm font-bold text-slate-700 tracking-tight mb-2 px-1 flex items-center gap-2">
+                                        <Text.Label className="mb-2 block px-1 flex items-center gap-2">
                                             <UserCircle className="text-brand-500" /> Tuan Rumah / Host
-                                        </label>
+                                        </Text.Label>
                                         <div className="flex gap-2">
                                             <div
                                                 onClick={() => setShowHostSelector(true)}
                                                 className="w-full rounded-xl p-4 border border-slate-100 bg-slate-50 hover:bg-white hover:border-brand-200 cursor-pointer transition-all flex items-center justify-between group/input shadow-sm"
                                             >
-                                                <span className={`font-normal ${selectedHostId ? 'text-slate-900' : 'text-slate-400'}`}>
+                                                <span className={`font-bold uppercase ${selectedHostId ? 'text-slate-900' : 'text-slate-400'}`}>
                                                     {selectedHostId ? wargaList.find(w => w.id === selectedHostId)?.nama : 'Pilih tuan rumah...'}
                                                 </span>
                                                 <div className="p-1 rounded-md bg-slate-200/50 group-hover/input:bg-brand-100 group-hover/input:text-brand-600 transition-colors">
@@ -313,7 +312,7 @@ export default function NotulensiForm() {
                                         {showHostSelector && (
                                             <div className="absolute z-50 mt-3 w-full bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                                 <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                                                    <span className="text-[11px] font-bold text-slate-400 tracking-tight px-1">Pilih Warga</span>
+                                                    <Text.Label className="!text-slate-400">Pilih Warga</Text.Label>
                                                     <button onClick={() => setShowHostSelector(false)} className="text-slate-400 hover:text-rose-500 p-1 transition-colors">
                                                         <XCircle size={24} weight="fill" />
                                                     </button>
@@ -331,8 +330,8 @@ export default function NotulensiForm() {
                                                                     {w.nama.charAt(0)}
                                                                 </div>
                                                                 <div>
-                                                                    <p className={`text-sm font-bold tracking-tight mb-0.5 ${selectedHostId === w.id ? 'text-brand-700' : 'text-slate-900'}`}>{w.nama}</p>
-                                                                    <p className="text-[10px] font-medium text-slate-400 tracking-tight">{w.alamat}</p>
+                                                                    <Text.Body className={`!text-xs font-bold tracking-tight mb-0.5 uppercase ${selectedHostId === w.id ? 'text-brand-700' : 'text-slate-900'}`}>{w.nama}</Text.Body>
+                                                                    <Text.Caption className="tracking-tight">{w.alamat}</Text.Caption>
                                                                 </div>
                                                             </div>
                                                             {pastHosts.has(w.id) && (
@@ -426,7 +425,7 @@ export default function NotulensiForm() {
                             {/* Bulk Action Bar - Appear when selected */}
                             <div className={`overflow-hidden transition-all duration-300 bg-brand-600 text-white flex flex-col ${selectedWargaIds.size > 0 ? 'h-auto p-4 opacity-100' : 'h-0 opacity-0'}`}>
                                 <div className="flex items-center justify-between mb-3 px-1">
-                                    <span className="text-[10px] font-bold tracking-tight ">{selectedWargaIds.size} Warga Terpilih</span>
+                                    <Text.Caption className="!text-white">{selectedWargaIds.size} Warga Terpilih</Text.Caption>
                                     <button
                                         type="button"
                                         onClick={() => setSelectedWargaIds(new Set())}

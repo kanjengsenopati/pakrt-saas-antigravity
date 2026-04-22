@@ -12,6 +12,7 @@ import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotc
 import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
+import { parseApiError } from '../../utils/errorParser';
 
 type IuranFormData = Omit<PembayaranIuran, 'id' | 'tenant_id'>;
 
@@ -32,7 +33,7 @@ export default function IuranForm() {
 
     const [wargaList, setWargaList] = useState<Warga[]>([]);
     const [defaultNominal, setDefaultNominal] = useState(0);
-    const [selectedMonths, setSelectedMonths] = useState<number[]>([new Date().getMonth() + 1]);
+    const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
     const [tahunOptions, setTahunOptions] = useState<number[]>([new Date().getFullYear()]);
     const [kategoriOptions, setKategoriOptions] = useState<string[]>(['Iuran Warga']);
     const [isUploading, setIsUploading] = useState(false);
@@ -48,6 +49,8 @@ export default function IuranForm() {
     const [pendingAmount, setPendingAmount] = useState(0);
     const [paidMonthsRecord, setPaidMonthsRecord] = useState<number[]>([]);
     const [pendingMonthsRecord, setPendingMonthsRecord] = useState<number[]>([]);
+
+    const isYearFullySettled = (paidMonthsRecord.length + pendingMonthsRecord.length) === 12;
 
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
@@ -113,7 +116,8 @@ export default function IuranForm() {
                 // Fallback / Initial
                 const baseIuran = tieredRates['Tetap-Dihuni'] || tieredRates['Default'];
                 setDefaultNominal(baseIuran);
-                setValue('nominal', baseIuran);
+                // Biarkan nominal 0 sampai bulan dipilih
+                setValue('nominal', 0);
 
                 if (config.jenis_pemasukan) {
                     try {
@@ -154,25 +158,30 @@ export default function IuranForm() {
         }
     }, [currentTenant, currentScope, setValue]);
 
+    // Konsolidasi Kalkulasi Nominal (Mode Pas & Bebas)
     useEffect(() => {
         const shouldCalculate = !isEdit || (isEdit && hasInteracted);
-        if (shouldCalculate && paymentMode === 'Pas' && selectedMonths.length > 0 && defaultNominal > 0) {
-            setValue('nominal', defaultNominal * selectedMonths.length);
-        } else if (shouldCalculate && paymentMode === 'Pas' && selectedMonths.length === 0) {
-            setValue('nominal', 0);
-        }
-    }, [selectedMonths, defaultNominal, setValue, isEdit, paymentMode, hasInteracted]);
+        if (!shouldCalculate) return;
 
+        if (paymentMode === 'Pas') {
+            if (selectedMonths.length > 0 && defaultNominal > 0) {
+                setValue('nominal', defaultNominal * selectedMonths.length);
+            } else {
+                setValue('nominal', 0);
+            }
+        }
+    }, [selectedMonths, defaultNominal, paymentMode, setValue, isEdit, hasInteracted]);
+
+    // Handle Metadata Nominal Update
     useEffect(() => {
         const metadata = (window as any)._citizen_dues_metadata;
         if (Array.isArray(metadata)) {
             const selected = metadata.find((m: any) => m.nama === watchKategori);
             if (selected && selected.nominal > 0) {
                 setDefaultNominal(selected.nominal);
-                setValue('nominal', selected.nominal * selectedMonths.length);
             }
         }
-    }, [watchKategori, selectedMonths.length, setValue]);
+    }, [watchKategori]);
 
     useEffect(() => {
         if (watchWargaId && watchTahun && watchKategori && currentTenant) {
@@ -180,6 +189,7 @@ export default function IuranForm() {
                 setIsLoadingBilling(true);
                 try {
                     const result = await iuranService.getBillingSummary(
+                        currentTenant.id,
                         watchWargaId, 
                         watchTahun, 
                         watchKategori, 
@@ -187,13 +197,15 @@ export default function IuranForm() {
                     );
                     setAlreadyPaid(result.totalPaid);
                     setPendingAmount(result.pendingAmount);
-                    setPaidMonthsRecord(result.paidMonths);
-                    setPendingMonthsRecord(result.pendingMonths);
+                    setPaidMonthsRecord(result.paidMonths || []);
+                    setPendingMonthsRecord(result.pendingMonths || []);
 
-                    // Auto-select removed - default to 0 selected months as per user request
-                    if (!isEdit && !hasInteracted && result.rate > 0) {
-                        setSelectedMonths([]);
-                    }
+                    // Sinkronisasi selectedMonths: Hapus bulan yang ternyata sudah dibayar/pending
+                    setSelectedMonths(prev => {
+                        const paid = result.paidMonths || [];
+                        const pending = result.pendingMonths || [];
+                        return prev.filter(m => !paid.includes(m) && !pending.includes(m));
+                    });
                 } catch (error) {
                     console.error("Failed to fetch billing summary:", error);
                     setAlreadyPaid(0);
@@ -251,13 +263,12 @@ export default function IuranForm() {
         } catch (error: any) {
             console.error("Gagal menyimpan pembayaran iuran:", error);
             // Capture specific errorMessage sent from the backend API if available
-            const backendMsg = error.response?.data?.error;
-            setErrorMessage(backendMsg ? `Gagal menyimpan: ${backendMsg}` : "Terjadi kesalahan koneksi saat menyimpan data transaksi.");
+            setErrorMessage(parseApiError(error, "Terjadi kesalahan koneksi saat menyimpan data transaksi."));
         }
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12">
+        <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12 px-5">
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => navigate('/iuran')}
@@ -274,7 +285,7 @@ export default function IuranForm() {
             {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
                     <Warning className="w-5 h-5 shrink-0 mt-0.5" />
-                    <div className="text-sm font-semibold">{errorMessage}</div>
+                    <Text.Label className="!text-red-600">{errorMessage}</Text.Label>
                 </div>
             )}
 
@@ -295,21 +306,21 @@ export default function IuranForm() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold tracking-normal opacity-60">Status Pembayaran:</span>
-                            <span className="text-sm font-semibold tracking-normal">
-                                {currentStatus === 'VERIFIED' ? 'Sah / Diterima' :
+                            <Text.Label className="opacity-60">Status Pembayaran:</Text.Label>
+                            <Text.Body className="!font-bold">
+                                {currentStatus === 'VERIFIED' ? 'Lunas' :
                                  currentStatus === 'REJECTED' ? 'Ditolak' :
                                  'Menunggu Verifikasi'}
-                            </span>
+                            </Text.Body>
                         </div>
                         {currentStatus === 'REJECTED' && rejectionReason && (
-                            <p className="text-sm font-semibold mt-1">Alasan: {rejectionReason}</p>
+                            <Text.Body className="!font-bold mt-1">Alasan: {rejectionReason}</Text.Body>
                         )}
                         {currentStatus === 'VERIFIED' && (
-                            <p className="text-[11px] opacity-80 mt-0.5 font-medium italic">Data ini sudah diverifikasi oleh Bendahara dan tidak dapat diubah lagi.</p>
+                            <Text.Caption className="!font-medium !italic mt-0.5">Data ini sudah diverifikasi oleh Bendahara dan tidak dapat diubah lagi.</Text.Caption>
                         )}
                         {currentStatus === 'PENDING' && (
-                            <p className="text-[11px] opacity-80 mt-0.5 font-medium">Pembayaran Anda sedang dalam antrian verifikasi Bendahara.</p>
+                            <Text.Caption className="!font-medium mt-0.5">Pembayaran Anda sedang dalam antrian verifikasi Bendahara.</Text.Caption>
                         )}
                     </div>
                 </div>
@@ -321,7 +332,7 @@ export default function IuranForm() {
                     {isLoadingBilling ? (
                         <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-8 text-center animate-pulse">
                             <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <p className="text-sm font-bold text-slate-400 tracking-tight">Memuat Data Tagihan...</p>
+                            <Text.Caption className="!font-bold !text-slate-400">Memuat Data Tagihan...</Text.Caption>
                         </div>
                     ) : watchWargaId && watchKategori ? (
                         <div className="bg-white rounded-[32px] shadow-premium border border-slate-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
@@ -330,7 +341,7 @@ export default function IuranForm() {
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-2 mb-1.5">
                                         <ChartPieSlice weight="fill" className="w-5 h-5 text-brand-200" />
-                                        <span className="font-headline font-black text-white text-[10px] tracking-widest uppercase opacity-90">Ringkasan Kewajiban</span>
+                                        <Text.Label className="!text-white opacity-90">Ringkasan Kewajiban</Text.Label>
                                     </div>
                                     <Text.H1 className="!text-white !text-2xl !tracking-tight">Tahun {watchTahun || new Date().getFullYear()}</Text.H1>
                                 </div>
@@ -339,43 +350,43 @@ export default function IuranForm() {
                             <div className="p-6 space-y-6">
                                 <div className="flex justify-between items-start pb-4 border-b border-slate-50">
                                     <div className="space-y-1">
-                                        <span className="font-headline font-black text-slate-500 text-[10px] tracking-tight uppercase">Total Tagihan 12 Bulan</span>
+                                        <Text.Label className="!text-slate-500">Total Tagihan 12 Bulan</Text.Label>
                                         <div className="flex items-baseline gap-1">
                                             <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <span className="font-headline font-black text-slate-400 text-[9px] uppercase">Tarif</span>
-                                        <p className="text-[10px] font-black text-slate-500 tracking-tight">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</p>
+                                        <Text.Label className="!text-slate-400">Tarif</Text.Label>
+                                        <Text.Body className="!text-[10px] !font-black !text-slate-500">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</Text.Body>
                                     </div>
                                 </div>
 
                                 <div className="pb-4 border-b border-slate-50">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="font-headline font-black text-emerald-600 text-[10px] tracking-tight uppercase">Sudah Dibayar (Sistem)</span>
+                                        <Text.Label className="!text-emerald-600">Sudah Dibayar (Sistem)</Text.Label>
                                         <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
                                     </div>
                                     {pendingAmount > 0 ? (
                                         <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100/50">
                                             <Clock weight="fill" className="w-3 h-3 text-amber-500" />
-                                            <p className="text-[9px] font-black text-amber-700 tracking-tight">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</p>
+                                            <Text.Caption className="!text-[9px] !font-black !text-amber-700">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</Text.Caption>
                                         </div>
                                     ) : (
-                                        <p className="text-[9px] font-bold text-slate-300 italic">Hingga periode saat ini</p>
+                                        <Text.Caption className="!text-[9px] !font-bold !text-slate-300 !italic">Hingga periode saat ini</Text.Caption>
                                     )}
                                 </div>
 
                                 <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
                                     <div className="relative z-10 flex flex-col items-center text-center">
-                                        <span className="font-headline font-black text-brand-600 text-[9px] uppercase tracking-[0.2em] mb-2">Sisa Kewajiban</span>
+                                        <Text.Label className="!text-brand-600 mb-2">Sisa Kewajiban</Text.Label>
                                         <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
                                             {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount)).replace(/,00$/, '')}
                                         </Text.Amount>
                                         <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
-                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">
+                                            <Text.Label className="!text-white !text-[8px]">
                                                 {paymentMode === 'Pas' ? 'Otomatis Mode Pas' : 'Target Pelunasan'}
-                                            </span>
+                                            </Text.Label>
                                         </div>
                                     </div>
                                 </div>
@@ -406,10 +417,10 @@ export default function IuranForm() {
                 </div>
 
                 {/* RIGHT COLUMN: FORM */}
-                <div className="md:col-span-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="md:col-span-8 bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
                     <div className="border-b border-gray-50 p-4 bg-slate-50/10 flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-brand-500" />
-                        <Text.Label className="uppercase !tracking-widest">Input Transaksi Pembayaran</Text.Label>
+                        <Text.Label className="!tracking-widest">Input Transaksi Pembayaran</Text.Label>
                     </div>
 
                     <div className="p-6 md:p-8">
@@ -419,9 +430,9 @@ export default function IuranForm() {
                                 {/* ROW 1: WARGA & KATEGORI */}
                                 {!isWarga && (
                                     <div className="space-y-1">
-                                        <label className="input-label">
+                                        <Text.Label>
                                             Pilih Warga Pembayar <span className="text-red-500">*</span>
-                                        </label>
+                                        </Text.Label>
                                         <select
                                             {...register('warga_id', { 
                                                 required: 'Warga wajib dipilih',
@@ -440,9 +451,9 @@ export default function IuranForm() {
                                 )}
 
                                 <div className={`${isWarga ? 'md:col-span-2' : ''} space-y-1`}>
-                                    <label className="input-label">
+                                    <Text.Label>
                                         Jenis Pembayaran <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <select
                                         {...register('kategori', { required: 'Kategori wajib dipilih' })}
                                         className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
@@ -457,9 +468,9 @@ export default function IuranForm() {
 
                                 {/* ROW 2: PAYMENT MODE */}
                                 <div className="md:col-span-2 space-y-1">
-                                    <label className="input-label">
+                                    <Text.Label>
                                         Mode Pembayaran <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <div className="flex gap-2">
                                         <label className={`flex-1 flex items-center gap-2 p-2 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Pas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                             <input 
@@ -471,8 +482,8 @@ export default function IuranForm() {
                                                 className="w-3.5 h-3.5 text-brand-600 focus:ring-brand-500"
                                             />
                                             <div className="flex-1">
-                                                <p className="font-semibold text-gray-900 text-sm leading-tight">Mode Pas</p>
-                                                <p className="text-xs text-gray-500">Sesuai tarif</p>
+                                                <Text.Body className="!font-bold !text-slate-900 leading-tight">Mode Pas</Text.Body>
+                                                <Text.Caption className="!text-slate-500">Sesuai tarif</Text.Caption>
                                             </div>
                                         </label>
                                         <label className={`flex-1 flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Bebas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
@@ -485,8 +496,8 @@ export default function IuranForm() {
                                                 className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                                             />
                                             <div className="flex-1">
-                                                <p className="font-semibold text-gray-900 text-sm leading-tight">Mode Bebas</p>
-                                                <p className="text-sm text-gray-500">Input manual</p>
+                                                <Text.Body className="!font-bold !text-slate-900 leading-tight">Mode Bebas</Text.Body>
+                                                <Text.Caption className="!text-slate-500">Input manual</Text.Caption>
                                             </div>
                                         </label>
                                     </div>
@@ -494,9 +505,9 @@ export default function IuranForm() {
 
                                 {/* ROW 3: DATE & YEAR */}
                                 <div className="space-y-1">
-                                    <label className="input-label">
+                                    <Text.Label>
                                         Tahun Periode <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <select
                                         {...register('periode_tahun', { required: true, valueAsNumber: true })}
                                         className="w-full rounded-lg shadow-sm p-3 text-main border border-gray-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none"
@@ -508,9 +519,9 @@ export default function IuranForm() {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="input-label">
+                                    <Text.Label>
                                         Tanggal Bayar <span className="text-red-500">*</span>
-                                    </label>
+                                    </Text.Label>
                                     <input
                                         type="date"
                                         {...register('tanggal_bayar', { required: 'Tanggal wajib diisi' })}
@@ -521,102 +532,128 @@ export default function IuranForm() {
                                 {/* ROW 4: MONTHS & NOMINAL */}
                                 <div className="md:col-span-2 space-y-3">
                                     <div>
-                                        <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                                        <Text.Label className="mb-2 block">
                                             Pilih Bulan Pembayaran <span className="text-red-500">*</span>
-                                        </label>
-                                        <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
-                                            {MONTHS.map(m => {
-                                                const isPaid = paidMonthsRecord.includes(m.value);
-                                                const isPending = pendingMonthsRecord.includes(m.value);
-                                                const isSelected = selectedMonths.includes(m.value);
+                                        </Text.Label>
+                                        {isYearFullySettled ? (
+                                            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-4 animate-in zoom-in duration-500 shadow-sm">
+                                                <div className="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shrink-0">
+                                                    <CheckCircle weight="bold" className="w-7 h-7" />
+                                                </div>
+                                                <div className="text-left">
+                                                    <Text.H2 className="!text-emerald-700 !text-sm">Status Pembayaran Sudah Lunas</Text.H2>
+                                                    <Text.Caption className="!text-emerald-600/80 !font-bold">Seluruh periode tahun {watchTahun} telah terbayar/diverifikasi.</Text.Caption>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
+                                                {MONTHS.map(m => {
+                                                    const isPaid = paidMonthsRecord.includes(m.value);
+                                                    const isPending = pendingMonthsRecord.includes(m.value);
+                                                    const isSelected = selectedMonths.includes(m.value);
 
-                                                return (
-                                                    <button
-                                                        key={m.value}
-                                                        type="button"
-                                                        disabled={isPaid || isPending}
-                                                        onClick={() => toggleMonth(m.value)}
-                                                        className={`py-2 px-1 text-sm font-semibold rounded-lg border transition-all relative ${
-                                                            isPaid
-                                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-not-allowed opacity-80'
-                                                                : isPending
-                                                                    ? 'bg-amber-50 border-amber-200 text-amber-700 cursor-not-allowed opacity-80'
-                                                                    : isSelected
-                                                                        ? 'bg-brand-50 border-brand-500 text-brand-700 shadow-sm ring-1 ring-brand-500'
-                                                                        : 'bg-rose-50/40 border-rose-100/50 text-rose-400 hover:bg-rose-50 hover:border-rose-200'
-                                                            }`}
-                                                    >
-                                                        {m.label.substring(0, 3)}
-                                                        {isPaid ? (
-                                                            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5">
-                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
-                                                            </div>
-                                                        ) : isPending ? (
-                                                            <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5">
-                                                                <Clock weight="fill" className="w-2.5 h-2.5" />
-                                                            </div>
-                                                        ) : isSelected && (
-                                                            <div className="absolute -top-1 -right-1 bg-brand-500 text-white rounded-full p-0.5">
-                                                                <CheckCircle weight="fill" className="w-2.5 h-2.5" />
-                                                            </div>
-                                                        )}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                        {selectedMonths.length === 0 && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
+                                                    return (
+                                                        <button
+                                                            key={m.value}
+                                                            type="button"
+                                                            disabled={isPaid || isPending}
+                                                            onClick={() => toggleMonth(m.value)}
+                                                            className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
+                                                                isPaid
+                                                                    ? 'bg-emerald-600 border-emerald-600 text-white cursor-not-allowed'
+                                                                    : isPending
+                                                                        ? 'bg-amber-500 border-amber-500 text-white cursor-not-allowed opacity-90'
+                                                                        : isSelected
+                                                                            ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
+                                                                            : 'bg-red-500 border-red-500 text-white hover:bg-red-600 hover:scale-105 active:scale-95'
+                                                                }`}
+                                                        >
+                                                            {m.label.substring(0, 3)}
+                                                            {isPaid ? (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-emerald-600 rounded-full p-0.5 shadow-sm border border-emerald-100">
+                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            ) : isPending ? (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-amber-500 rounded-full p-0.5 shadow-sm border border-amber-100">
+                                                                    <Clock weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            ) : isSelected && (
+                                                                <div className="absolute -top-2 -right-1 bg-white text-blue-600 rounded-full p-0.5 shadow-sm border border-blue-100 animate-in zoom-in duration-300">
+                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
+                                                                </div>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                        {selectedMonths.length === 0 && !isYearFullySettled && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
                                     </div>
 
-                                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <label className="section-label">
-                                                Nominal Transaksi (Rp)
-                                            </label>
-                                            {paymentMode === 'Pas' && (
-                                                <span className="text-sm font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
-                                            )}
-                                        </div>
-                                        <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-gray-400 z-10">Rp</span>
-                                            <Controller
-                                                name="nominal"
-                                                control={control}
-                                                rules={{ required: 'Nominal wajib diisi', min: { value: 1, message: 'Nominal tidak boleh 0' } }}
-                                                render={({ field }) => (
-                                                    <CurrencyInput
-                                                        {...field}
-                                                        className={`w-full !pl-16 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
-                                                        error={!!errors.nominal}
-                                                        disabled={paymentMode === 'Pas'}
-                                                    />
+                                     {selectedMonths.length > 0 ? (
+                                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="flex justify-between items-center">
+                                                <Text.Label>
+                                                    Nominal Transaksi (Rp)
+                                                </Text.Label>
+                                                {paymentMode === 'Pas' && (
+                                                    <span className="text-sm font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
                                                 )}
-                                            />
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-gray-400 z-10">Rp</span>
+                                                <Controller
+                                                    name="nominal"
+                                                    control={control}
+                                                    rules={{ required: !isYearFullySettled && 'Nominal wajib diisi', min: { value: 1, message: 'Nominal tidak boleh 0' } }}
+                                                    render={({ field }) => (
+                                                        <CurrencyInput
+                                                            {...field}
+                                                            className={`w-full !pl-16 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
+                                                            error={!!errors.nominal}
+                                                            disabled={paymentMode === 'Pas'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex justify-between items-end">
+                                                <p className="text-sm text-gray-400 italic font-medium">
+                                                    {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
+                                                </p>
+                                                {errors.nominal && <p className="text-red-500 text-sm font-semibold">{errors.nominal.message}</p>}
+                                            </div>
                                         </div>
-                                        <div className="flex justify-between items-end">
-                                            <p className="text-sm text-gray-400 italic font-medium">
-                                                {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
-                                            </p>
-                                            {errors.nominal && <p className="text-red-500 text-sm font-semibold">{errors.nominal.message}</p>}
-                                        </div>
-                                    </div>
+                                    ) : (
+                                        !isYearFullySettled && (
+                                            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center group">
+                                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                                                    <CalendarBlank weight="fill" className="text-slate-300 w-5 h-5" />
+                                                </div>
+                                                <p className="text-[11px] font-black text-slate-400 tracking-widest">Pilih Bulan Pembayaran</p>
+                                                <p className="text-[10px] text-slate-400/60 mt-1 font-medium italic">Nominal otomatis muncul setelah periode dipilih</p>
+                                            </div>
+                                        )
+                                    )}
                                 </div>
 
                                 {/* ROW 5: BUKTI */}
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-400 mb-2">
-                                        Lampiran Bukti (Opsional)
-                                    </label>
-                                    <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                        <FileUpload
-                                            onUploadSuccess={(url) => setValue('url_bukti', url)}
-                                            existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
-                                            onRemove={() => setValue('url_bukti', '')}
-                                            label=""
-                                            helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
-                                            onLoadingChange={setIsUploading}
-                                        />
+                                 {!isYearFullySettled && (
+                                    <div className="md:col-span-2">
+                                        <Text.Label className="!text-slate-400 mb-2 block">
+                                            Lampiran Bukti (Opsional)
+                                        </Text.Label>
+                                        <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
+                                            <FileUpload
+                                                onUploadSuccess={(url) => setValue('url_bukti', url)}
+                                                existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
+                                                onRemove={() => setValue('url_bukti', '')}
+                                                label=""
+                                                helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
+                                                onLoadingChange={setIsUploading}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
 
                             <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
@@ -631,11 +668,11 @@ export default function IuranForm() {
                                     </button>
                                     <button
                                         type="submit"
-                                        disabled={isUploading || currentStatus === 'VERIFIED'}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={isUploading || currentStatus === 'VERIFIED' || isYearFullySettled}
+                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' || isYearFullySettled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
-                                        <span>{isEdit ? 'Simpan' : 'Bayar'}</span>
+                                        <Text.Label className="!text-white">{isEdit ? 'Simpan' : 'Bayar'}</Text.Label>
                                     </button>
                                 </div>
                             </div>

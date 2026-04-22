@@ -4,6 +4,7 @@ import { anggotaKeluargaService } from '../../services/anggotaKeluargaService';
 import { useForm } from 'react-hook-form';
 import { Plus, PencilSimple, Trash, FloppyDisk, Users } from '@phosphor-icons/react';
 import { dateUtils } from '../../utils/date';
+import { Text } from '../../components/ui/Typography';
 
 interface Props {
     wargaId: string;
@@ -105,7 +106,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <div className="w-1.5 h-6 bg-brand-500 rounded-full"></div>
-                    <h3 className="text-sm font-bold text-slate-800 tracking-tight">Anggota Keluarga / Tanggungan</h3>
+                    <Text.H2 className="!text-sm">Anggota Keluarga / Tanggungan</Text.H2>
                 </div>
                 {!isFormOpen && (
                     <button
@@ -113,7 +114,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-brand-200 text-brand-700 hover:bg-brand-50 rounded-md text-xs font-bold transition-all shadow-sm active:scale-95"
                     >
                         <Plus weight="bold" />
-                        <span>TAMBAH DATA</span>
+                        <Text.Label className="!text-brand-700">Tambah Data</Text.Label>
                     </button>
                 )}
             </div>
@@ -124,7 +125,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div className="grid grid-cols-2 lg:grid-cols-10 gap-x-6 gap-y-4">
                             <div className="col-span-2 lg:col-span-3">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">NIK <span className="text-red-500">*</span></label>
+                                <Text.Label className="mb-1">NIK <span className="text-red-500">*</span></Text.Label>
                                 <input
                                     type="text"
                                     {...register('nik', { required: 'Wajib diisi', pattern: /^[0-9]{16}$/ })}
@@ -132,8 +133,8 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                     placeholder="16 Digit NIK"
                                 />
                             </div>
-                            <div className="col-span-2 lg:col-span-7">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Nama Lengkap <span className="text-red-500">*</span></label>
+                            <div className="col-span-2 lg:col-span-10">
+                                <Text.Label className="mb-1">Nama Lengkap <span className="text-red-500">*</span></Text.Label>
                                 <input
                                     type="text"
                                     {...register('nama', { required: 'Wajib diisi' })}
@@ -143,7 +144,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-5">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Status Hubungan <span className="text-red-500">*</span></label>
+                                <Text.Label className="mb-1">Status Hubungan <span className="text-red-500">*</span></Text.Label>
                                 <select
                                     {...register('hubungan', { required: true })}
                                     className="w-full rounded-lg shadow-sm p-3 border border-slate-200 focus:border-brand-500 bg-slate-50 focus:bg-white text-sm outline-none transition-all"
@@ -159,7 +160,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 </select>
                             </div>
                             <div className="col-span-2 lg:col-span-5">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Tempat Lahir</label>
+                                <Text.Label className="mb-1">Tempat Lahir</Text.Label>
                                 <input
                                     type="text"
                                     {...register('tempat_lahir')}
@@ -169,7 +170,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-5">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Tanggal Lahir</label>
+                                <Text.Label className="mb-1">Tanggal Lahir</Text.Label>
                                 <input
                                     type="date"
                                     {...register('tanggal_lahir')}
@@ -177,7 +178,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 />
                             </div>
                             <div className="col-span-2 lg:col-span-5">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Pendidikan</label>
+                                <Text.Label className="mb-1">Pendidikan</Text.Label>
                                 <select
                                     {...register('pendidikan')}
                                     className="w-full rounded-lg shadow-sm p-3 border border-slate-200 focus:border-brand-500 bg-slate-50 focus:bg-white text-sm outline-none transition-all"
@@ -194,7 +195,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-10">
-                                <label className="block text-[10px] font-bold text-slate-400 mb-1">Pekerjaan</label>
+                                <Text.Label className="mb-1">Pekerjaan</Text.Label>
                                 <input
                                     type="text"
                                     {...register('pekerjaan')}
@@ -207,16 +208,16 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             <button
                                 type="button"
                                 onClick={closeForm}
-                                className="px-5 py-2 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-all"
+                                className="px-5 py-2 hover:bg-slate-50 text-slate-600 rounded-lg transition-all"
                             >
-                                Batal
+                                <Text.Label className="!text-inherit">Batal</Text.Label>
                             </button>
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-6 py-2 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-xs font-bold transition-all shadow-md shadow-brand-600/20"
+                                className="flex items-center gap-2 px-6 py-2 bg-brand-600 text-white hover:bg-brand-700 rounded-lg transition-all shadow-md shadow-brand-600/20"
                             >
                                 <FloppyDisk weight="bold" />
-                                <span>Simpan Data</span>
+                                <Text.Label className="!text-white">Simpan Data</Text.Label>
                             </button>
                         </div>
                     </form>
@@ -230,42 +231,44 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                     ) : anggotaList.length === 0 ? (
                         <div className="p-8 text-center text-slate-400 text-xs font-medium flex flex-col items-center gap-2">
                             <Users size={32} weight="duotone" className="opacity-20" />
-                            <p>Belum ada tanggungan keluarga yang tercatat.</p>
+                            <Text.Body>Belum ada tanggungan keluarga yang tercatat.</Text.Body>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 tracking-normal">
+                                <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr>
-                                        <th className="p-4 w-12 text-center">No</th>
-                                        <th className="p-4">Identitas & Hubungan</th>
-                                        <th className="p-4">Tempat, Tgl Lahir</th>
-                                        <th className="p-4">Pendidikan & Pekerjaan</th>
-                                        <th className="p-4 text-right">Aksi</th>
+                                        <th className="p-4 w-12 text-center"><Text.Label>No</Text.Label></th>
+                                        <th className="p-4"><Text.Label>Identitas & Hubungan</Text.Label></th>
+                                        <th className="p-4"><Text.Label>Tempat, Tgl Lahir</Text.Label></th>
+                                        <th className="p-4"><Text.Label>Pendidikan & Pekerjaan</Text.Label></th>
+                                        <th className="p-4 text-right"><Text.Label>Aksi</Text.Label></th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
                                     {anggotaList.map((anggota, index) => (
                                         <tr key={anggota.id} className="hover:bg-brand-50/20 transition-colors group">
-                                            <td className="p-4 text-center text-slate-400 font-bold text-xs">{index + 1}</td>
+                                            <td className="p-4 text-center">
+                                                <Text.Caption className="!font-bold !text-xs">{(index + 1).toString().padStart(2, '0')}</Text.Caption>
+                                            </td>
                                             <td className="p-4">
-                                                <p className="font-bold text-slate-900">{anggota.nama}</p>
+                                                <Text.Body className="!font-bold !text-slate-900 uppercase">{anggota.nama}</Text.Body>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-mono">{anggota.nik}</span>
-                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${anggota.hubungan === 'Istri' || anggota.hubungan === 'Suami' ? 'bg-rose-50 text-rose-600' :
-                                                            anggota.hubungan === 'Anak' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600'
+                                                    <Text.Caption component="span" className="!text-[10px] bg-slate-100 !text-slate-500 px-1.5 py-0.5 rounded font-mono">{anggota.nik}</Text.Caption>
+                                                    <Text.Label className={`!px-2 !py-0.5 rounded-full ${anggota.hubungan === 'Istri' || anggota.hubungan === 'Suami' ? '!bg-rose-50 !text-rose-600' :
+                                                            anggota.hubungan === 'Anak' ? '!bg-blue-50 !text-blue-600' : '!bg-slate-100 !text-slate-600'
                                                         }`}>
                                                         {anggota.hubungan}
-                                                    </span>
+                                                    </Text.Label>
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <p className="text-xs font-medium text-slate-700">{anggota.tempat_lahir || '-'}</p>
-                                                <p className="text-[10px] text-slate-400 mt-0.5">{dateUtils.toDisplay(anggota.tanggal_lahir)}</p>
+                                                <Text.Body className="!text-xs !font-medium !text-slate-700">{anggota.tempat_lahir || '-'}</Text.Body>
+                                                <Text.Caption className="mt-0.5">{dateUtils.toDisplay(anggota.tanggal_lahir)}</Text.Caption>
                                             </td>
                                             <td className="p-4">
-                                                <p className="text-xs font-bold text-slate-700">{anggota.pendidikan || '-'}</p>
-                                                <p className="text-xs text-slate-400 mt-0.5">{anggota.pekerjaan || '-'}</p>
+                                                <Text.Body className="!text-xs !font-bold !text-slate-700">{anggota.pendidikan || '-'}</Text.Body>
+                                                <Text.Caption className="!text-xs mt-0.5">{anggota.pekerjaan || '-'}</Text.Caption>
                                             </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

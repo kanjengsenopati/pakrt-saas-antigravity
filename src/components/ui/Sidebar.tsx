@@ -20,7 +20,8 @@ import {
     CaretRight,
     DotsThree,
     UserCircle,
-    ChatDots
+    ChatDots,
+    CrownSimple
 } from '@phosphor-icons/react';
 
 interface MenuItem {
@@ -74,6 +75,7 @@ const MENU_GROUPS: MenuGroup[] = [
     {
         label: 'Administrasi',
         items: [
+            { path: '/subscription', label: 'Berlangganan', icon: CrownSimple },
             { path: '/pengaturan', label: 'Pengaturan', icon: Gear, permission: { module: 'Setup / Pengaturan', action: 'Lihat' } },
         ]
     }

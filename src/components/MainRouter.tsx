@@ -36,337 +36,383 @@ import WargaPortal from '../features/warga/WargaPortal';
 import AduanList from '../features/aduan/AduanList';
 import AduanForm from '../features/aduan/AduanForm';
 import PollingForm from '../features/aduan/PollingForm';
+import { DeviceSimulator } from './common/DeviceSimulator';
+import { Outlet } from 'react-router-dom';
+import { SuperAdminLayout } from '../layouts/SuperAdminLayout';
+import SADashboard from '../features/superadmin/SADashboard';
+import SATenantList from '../features/superadmin/SATenantList';
+import SATenantDetail from '../features/superadmin/SATenantDetail';
+import SASubscriptionManager from '../features/superadmin/SASubscriptionManager';
+import SAAffiliate from '../features/superadmin/SAAffiliate';
+import SAAnalytics from '../features/superadmin/SAAnalytics';
+import SAMonitorWilayah from '../features/superadmin/SAMonitorWilayah';
+import SAPackageManager from '../features/superadmin/SAPackageManager';
+import Subscription from '../features/subscription/Subscription';
 
 const router = createBrowserRouter([
     {
-        path: '/',
-        element: <App />,
-    },
-    {
-        path: '/setup',
-        element: <SetupPage />
-    },
-    {
-        path: '/join/:tenantId',
-        element: <JoinRT />
-    },
-    {
-        path: '/register',
-        element: <RegisterWizard />
-    },
-    {
-        path: '/login',
-        element: <Login />
-    },
-    {
-        path: '/surat/cetak/:id',
-        element: <CetakSurat />
-    },
-    {
-        path: '/verify/:id',
-        element: <VerifySurat />
-    },
-    {
-        path: '/dashboard',
-        element: (
-            <ProtectedRoute>
-                <Dashboard />
-            </ProtectedRoute>
-        )
-    },
-    {
-        element: (
-            <ProtectedRoute>
-                <AppLayout />
-            </ProtectedRoute>
-        ),
+        element: <DeviceSimulator><Outlet /></DeviceSimulator>,
         children: [
             {
-                path: 'warga',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Lihat' }}>
-                        <WargaList />
-                    </ProtectedRoute>
-                )
+                path: '/',
+                element: <App />,
             },
             {
-                path: 'warga/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Buat' }}>
-                        <WargaForm />
-                    </ProtectedRoute>
-                )
+                path: '/setup',
+                element: <SetupPage />
             },
             {
-                path: 'warga/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Lihat' }}>
-                        <WargaDetail />
-                    </ProtectedRoute>
-                )
+                path: '/join/:tenantId',
+                element: <JoinRT />
             },
             {
-                path: 'warga/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Ubah' }}>
-                        <WargaForm />
-                    </ProtectedRoute>
-                )
+                path: '/register',
+                element: <RegisterWizard />
             },
             {
-                path: 'pengurus',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Lihat' }}>
-                        <PengurusList />
-                    </ProtectedRoute>
-                )
+                path: '/login',
+                element: <Login />
             },
             {
-                path: 'pengurus/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Buat' }}>
-                        <PengurusForm />
-                    </ProtectedRoute>
-                )
+                path: '/surat/cetak/:id',
+                element: <CetakSurat />
             },
             {
-                path: 'pengurus/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Ubah' }}>
-                        <PengurusForm />
-                    </ProtectedRoute>
-                )
+                path: '/verify/:id',
+                element: <VerifySurat />
             },
             {
-                path: 'notulensi',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Lihat' }}>
-                        <NotulensiList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'notulensi/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Buat' }}>
-                        <NotulensiForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'notulensi/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Ubah' }}>
-                        <NotulensiForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aset',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Lihat' }}>
-                        <AsetList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aset/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Buat' }}>
-                        <AsetForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aset/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Ubah' }}>
-                        <AsetForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'surat',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Surat / Cetak', action: 'Lihat' }}>
-                        <SuratList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'surat/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Surat / Cetak', action: 'Buat' }}>
-                        <SuratForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'ronda',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Lihat' }}>
-                        <RondaList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'ronda/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Buat' }}>
-                        <RondaForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'ronda/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Ubah' }}>
-                        <RondaForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'agenda',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Lihat' }}>
-                        <AgendaList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'agenda/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Buat' }}>
-                        <AgendaForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'agenda/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Ubah' }}>
-                        <AgendaForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'keuangan',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Lihat' }}>
-                        <KeuanganList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'keuangan/baru',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Buat' }}>
-                        <KeuanganForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'keuangan/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Ubah' }}>
-                        <KeuanganForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'iuran',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Lihat' }}>
-                        <IuranList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'iuran/baru',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Buat' }}>
-                        <IuranForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'iuran/edit/:id',
+                path: '/dashboard',
                 element: (
                     <ProtectedRoute>
-                        <IuranForm />
+                        <Dashboard />
                     </ProtectedRoute>
                 )
             },
             {
-                path: 'pengaturan',
                 element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Setup / Pengaturan', action: 'Lihat' }}>
-                        <Pengaturan />
+                    <ProtectedRoute>
+                        <AppLayout />
+                    </ProtectedRoute>
+                ),
+                children: [
+                    {
+                        path: 'warga',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Lihat' }}>
+                                <WargaList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'warga/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Buat' }}>
+                                <WargaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'warga/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Lihat' }}>
+                                <WargaDetail />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'warga/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Warga', action: 'Ubah' }}>
+                                <WargaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'pengurus',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Lihat' }}>
+                                <PengurusList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'pengurus/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Buat' }}>
+                                <PengurusForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'pengurus/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Pengurus', action: 'Ubah' }}>
+                                <PengurusForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'notulensi',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Lihat' }}>
+                                <NotulensiList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'notulensi/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Buat' }}>
+                                <NotulensiForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'notulensi/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Notulensi', action: 'Ubah' }}>
+                                <NotulensiForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aset',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Lihat' }}>
+                                <AsetList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aset/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Buat' }}>
+                                <AsetForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aset/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aset', action: 'Ubah' }}>
+                                <AsetForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'surat',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Surat / Cetak', action: 'Lihat' }}>
+                                <SuratList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'surat/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Surat / Cetak', action: 'Buat' }}>
+                                <SuratForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'ronda',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Lihat' }}>
+                                <RondaList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'ronda/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Buat' }}>
+                                <RondaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'ronda/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Jadwal Ronda', action: 'Ubah' }}>
+                                <RondaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'agenda',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Lihat' }}>
+                                <AgendaList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'agenda/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Buat' }}>
+                                <AgendaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'agenda/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Agenda', action: 'Ubah' }}>
+                                <AgendaForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'keuangan',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Lihat' }}>
+                                <KeuanganList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'keuangan/baru',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Buat' }}>
+                                <KeuanganForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'keuangan/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Ubah' }}>
+                                <KeuanganForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'iuran',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Lihat' }}>
+                                <IuranList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'iuran/baru',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Buat' }}>
+                                <IuranForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'iuran/edit/:id',
+                        element: (
+                            <ProtectedRoute>
+                                <IuranForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'pengaturan',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Setup / Pengaturan', action: 'Lihat' }}>
+                                <Pengaturan />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
+                    },
+                    {
+                        path: 'aduan',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Lihat' }}>
+                                <AduanList />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aduan/new',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Buat' }}>
+                                <AduanForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aduan/edit/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
+                                <AduanForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'aduan/polling/new/:id',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
+                                <PollingForm />
+                            </ProtectedRoute>
+                        )
+                    }
+                ]
+            },
+            {
+                path: 'subscription',
+                element: (
+                    <ProtectedRoute>
+                        <Subscription />
                     </ProtectedRoute>
                 )
             },
             {
-                path: 'profile',
-                element: <Profile />
-            },
-            {
-                path: 'aduan',
+                path: 'warga-portal',
                 element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Lihat' }}>
-                        <AduanList />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aduan/new',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Buat' }}>
-                        <AduanForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aduan/edit/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
-                        <AduanForm />
-                    </ProtectedRoute>
-                )
-            },
-            {
-                path: 'aduan/polling/new/:id',
-                element: (
-                    <ProtectedRoute requiredPermission={{ module: 'Aduan & Usulan', action: 'Ubah' }}>
-                        <PollingForm />
+                    <ProtectedRoute>
+                        <WargaPortal />
                     </ProtectedRoute>
                 )
             }
         ]
     },
     {
-        path: 'warga-portal',
+        path: '/super-admin',
         element: (
-            <ProtectedRoute>
-                <WargaPortal />
+            <ProtectedRoute requiredRole="super_admin">
+                <SuperAdminLayout />
             </ProtectedRoute>
-        )
+        ),
+        children: [
+            { index: true, element: <SADashboard /> },
+            { path: 'tenants', element: <SATenantList /> },
+            { path: 'tenants/:id', element: <SATenantDetail /> },
+            { path: 'subscriptions', element: <SASubscriptionManager /> },
+            { path: 'packages', element: <SAPackageManager /> },
+            { path: 'monitor', element: <SAMonitorWilayah /> },
+            { path: 'affiliates', element: <SAAffiliate /> },
+            { path: 'analytics', element: <SAAnalytics /> }
+        ]
     }
 ]);
 
 import { FontProvider } from '../contexts/FontContext';
 import { SyncProvider } from '../contexts/SyncContext';
+import { ViewModeProvider } from '../contexts/ViewModeContext';
 
 export function MainRouter() {
     return (
-        <SyncProvider>
-            <FontProvider>
-                <AuthProvider>
-                    <TenantProvider>
-                        <RouterProvider router={router} />
-                    </TenantProvider>
-                </AuthProvider>
-            </FontProvider>
-        </SyncProvider>
+        <ViewModeProvider>
+            <SyncProvider>
+                <FontProvider>
+                    <AuthProvider>
+                        <TenantProvider>
+                            <RouterProvider router={router} />
+                        </TenantProvider>
+                    </AuthProvider>
+                </FontProvider>
+            </SyncProvider>
+        </ViewModeProvider>
     );
 }
 

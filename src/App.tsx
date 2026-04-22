@@ -8,7 +8,7 @@ function App() {
 
     // Global UI Cache Buster & Error Safeguard
     useEffect(() => {
-        const UI_VERSION = 'v1.6.7';
+        const UI_VERSION = 'v1.7.1';
         const storedVersion = localStorage.getItem('app_ui_version');
 
         const forceCleanup = async () => {
@@ -22,11 +22,9 @@ function App() {
                     }
                 }
                 
-                // Clear all localStorage except auth
-                const authToken = localStorage.getItem('auth_token');
+                // Clear all localStorage except basic profile for UI stability
                 const authUser = localStorage.getItem('auth_user');
                 localStorage.clear();
-                if (authToken) localStorage.setItem('auth_token', authToken);
                 if (authUser) localStorage.setItem('auth_user', authUser);
 
                 localStorage.setItem('app_ui_version', UI_VERSION);
@@ -42,6 +40,15 @@ function App() {
         }
 
         const handleGlobalError = (event: ErrorEvent) => {
+            // Log full error for diagnostic in production
+            console.error("Global Catch:", {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error
+            });
+
             if (event.message?.includes("'Activity'") || event.message?.includes("undefined (setting 'Activity')")) {
                 console.warn("Caught and suppressed Recharts/React19 Activity instability error.");
                 event.preventDefault();

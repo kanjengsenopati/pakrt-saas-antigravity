@@ -5,19 +5,12 @@ const API_URL = import.meta.env.VITE_API_URL || '/api';
 const api = axios.create({
     baseURL: API_URL,
     timeout: 15000,
+    withCredentials: true, // Crucial for HttpOnly cookies
 });
 
 
-// Request Interceptor: Auth only
+// Request Interceptor: Metadata only (no token in headers)
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-    // Inject Authorization Header
-    if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('auth_token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-    }
-    
     return config;
 }, (error) => {
     return Promise.reject(error);

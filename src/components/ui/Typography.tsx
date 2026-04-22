@@ -11,84 +11,208 @@ interface TypographyProps {
   className?: string;
   id?: string;
   title?: string;
+  style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler;
+  component?: React.ElementType;
+  as?: React.ElementType;
 }
 
 export const Text = {
-  H1: ({ children, className, id, title }: TypographyProps) => (
-    <h1 
-      id={id}
-      title={title}
-      className={cn(
-        "font-headline text-[22px] font-bold tracking-tighter text-slate-900 leading-tight",
-        className
-      )}
-    >
-      {children}
-    </h1>
-  ),
+  H1: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'h1') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline text-[22px] font-bold tracking-tighter text-slate-900 leading-tight",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 
-  H2: ({ children, className, id, title }: TypographyProps) => (
-    <h2 
-      id={id}
-      title={title}
-      className={cn(
-        "font-headline text-base font-semibold tracking-tight text-slate-800 leading-snug",
-        className
-      )}
-    >
-      {children}
-    </h2>
-  ),
+  H2: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'h2') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline text-base font-semibold tracking-tight text-slate-800 leading-snug",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 
-  Amount: ({ children, className, id, title }: TypographyProps) => (
-    <span 
-      id={id}
-      title={title}
-      className={cn(
-        "font-headline text-lg font-bold tabular-nums tracking-tight text-slate-900",
-        className
-      )}
-    >
-      {children}
-    </span>
-  ),
+  H3: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'h3') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline text-[15px] font-bold tracking-tight text-slate-800 leading-snug",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 
-  Label: ({ children, className, id, title }: TypographyProps) => (
-    <span 
-      id={id}
-      title={title}
-      className={cn(
-        "font-label text-[11px] font-black uppercase tracking-wider text-slate-400",
-        className
-      )}
-    >
-      {children}
-    </span>
-  ),
+  H4: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'h4') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline text-[13px] font-bold tracking-tight text-slate-700 leading-snug",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 
-  Body: ({ children, className, id, title }: TypographyProps) => (
-    <p 
-      id={id}
-      title={title}
-      className={cn(
-        "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
-        className
-      )}
-    >
-      {children}
-    </p>
-  ),
+  Amount: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'span') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline text-lg font-bold tabular-nums tracking-tight text-slate-900",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 
-  Caption: ({ children, className, id, title }: TypographyProps) => (
-    <span 
-      id={id}
-      title={title}
-      className={cn(
-        "font-body text-[11px] font-medium text-slate-400 leading-normal tracking-tight",
-        className
-      )}
-    >
-      {children}
-    </span>
-  ),
+  Label: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'span') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-label text-[11px] font-black tracking-wider text-slate-400",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
+
+  Body: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'p') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
+
+  Caption: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const Component = (C || as || 'span') as any;
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-body text-[11px] font-medium text-slate-400 leading-normal tracking-tight",
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
+
+  Display: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const { viewMode } = useViewMode();
+    const Component = (C || as || 'h1') as any;
+    const sizeClasses = {
+      mobile: 'text-[32px] md:text-[40px]',
+      tablet: 'text-[48px] md:text-[56px]',
+      desktop: 'text-[64px] md:text-[72px]'
+    };
+
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-headline font-extrabold tracking-tighter text-slate-900 leading-[0.95]",
+          sizeClasses[viewMode as keyof typeof sizeClasses],
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
+
+  Subtitle: ({ children, className, id, title, style, onClick, component: C, as }: TypographyProps) => {
+    const { viewMode } = useViewMode();
+    const Component = (C || as || 'p') as any;
+    const sizeClasses = {
+      mobile: 'text-base md:text-lg',
+      tablet: 'text-lg md:text-xl',
+      desktop: 'text-xl md:text-2xl'
+    };
+
+    return (
+      <Component 
+        id={id}
+        title={title}
+        style={style}
+        onClick={onClick}
+        className={cn(
+          "font-body font-medium text-slate-500 leading-relaxed",
+          sizeClasses[viewMode as keyof typeof sizeClasses],
+          className
+        )}
+      >
+        {children}
+      </Component>
+    );
+  },
 };
+
+import { useViewMode } from '../../contexts/ViewModeContext';

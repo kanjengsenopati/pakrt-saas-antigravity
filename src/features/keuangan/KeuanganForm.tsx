@@ -8,6 +8,7 @@ import { Keuangan } from '../../database/db';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
 import { ArrowLeft, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { Text } from '../../components/ui/Typography';
 
 type KeuanganFormData = Omit<Keuangan, 'id' | 'tenant_id' | 'scope'>;
 
@@ -58,14 +59,17 @@ export default function KeuanganForm() {
                         if (parsed.length > 0) {
                             setPemasukanCategories(parsed.map((p: any) => p.nama));
                         }
-                    } catch { }
+                    } catch (err) { console.warn('Pemasukan parse error:', err); }
+
                 } else if (config.kategori_pemasukan) {
                     // Legacy fallback
-                    try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch { }
+                    try { setPemasukanCategories(JSON.parse(config.kategori_pemasukan)); } catch (err) { console.warn('Legacy pemasukan parse error:', err); }
+
                 }
 
                 if (config.kategori_pengeluaran) {
-                    try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch { }
+                    try { setPengeluaranCategories(JSON.parse(config.kategori_pengeluaran)); } catch (err) { console.warn('Pengeluaran parse error:', err); }
+
                 }
             });
 
@@ -124,7 +128,7 @@ export default function KeuanganForm() {
         return (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <CircleNotch className="w-10 h-10 text-brand-600 animate-spin" />
-                <p className="text-gray-500 font-medium">Memuat data transaksi...</p>
+                <Text.Caption className="!font-medium">Memuat data transaksi...</Text.Caption>
             </div>
         );
     }
@@ -139,13 +143,13 @@ export default function KeuanganForm() {
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <Text.H1>
                         {isEdit ? 'Ubah Transaksi Kas' : 'Catat Transaksi Kas'}
-                    </h1>
-                    <p className="text-gray-500 mt-1">
+                    </Text.H1>
+                    <Text.Body className="mt-1">
                         {isEdit ? 'Perbarui rincian transaksi' : 'Pembukuan penerimaan atau pengeluaran kas'}{' '}
-                        <span className="font-semibold text-brand-600">{currentScope}</span>
-                    </p>
+                        <Text.Body component="span" className="!font-semibold !text-brand-600">{currentScope}</Text.Body>
+                    </Text.Body>
                 </div>
             </div>
 
@@ -154,37 +158,37 @@ export default function KeuanganForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <Text.Label className="mb-2 block">
                                 Jenis Transaksi <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <div className="flex gap-4">
                                 <label className={`flex-1 flex justify-center items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${tipeWatch === 'pemasukan' ? 'border-brand-500 bg-brand-50 text-brand-700 font-semibold' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                                     <input type="radio" value="pemasukan" {...register('tipe')} className="sr-only" />
-                                    <span>Kas Masuk</span>
+                                    <Text.Body className="!font-semibold !text-inherit">Kas Masuk</Text.Body>
                                 </label>
                                 <label className={`flex-1 flex justify-center items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${tipeWatch === 'pengeluaran' ? 'border-red-500 bg-red-50 text-red-700 font-semibold' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                                     <input type="radio" value="pengeluaran" {...register('tipe')} className="sr-only" />
-                                    <span>Kas Keluar</span>
+                                    <Text.Body className="!font-semibold !text-inherit">Kas Keluar</Text.Body>
                                 </label>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 block">
                                 Tanggal Transaksi <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <input
                                 type="date"
                                 {...register('tanggal', { required: 'Tanggal wajib diisi' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.tanggal ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                             />
-                            {errors.tanggal && <p className="text-red-500 text-sm mt-1">{errors.tanggal.message}</p>}
+                            {errors.tanggal && <Text.Caption className="!text-red-500 !mt-1">{errors.tanggal.message}</Text.Caption>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 block">
                                 Kategori <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <select
                                 {...register('kategori', { required: 'Kategori wajib dipilih' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
@@ -194,14 +198,14 @@ export default function KeuanganForm() {
                                     <option key={cat} value={cat}>{cat}</option>
                                 ))}
                             </select>
-                            {errors.kategori && <p className="text-red-500 text-sm mt-1">{errors.kategori.message}</p>}
-                            <p className="text-sm text-gray-400 mt-1">Kategori dapat diatur di menu Pengaturan.</p>
+                            {errors.kategori && <Text.Caption className="!text-red-500 !mt-1">{errors.kategori.message}</Text.Caption>}
+                            <Text.Caption className="!text-slate-400 !mt-1">Kategori dapat diatur di menu Pengaturan.</Text.Caption>
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 block">
                                 Nominal Transaksi (Rp) <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium z-10">Rp</span>
                                 <Controller
@@ -217,20 +221,20 @@ export default function KeuanganForm() {
                                     )}
                                 />
                             </div>
-                            {errors.nominal && <p className="text-red-500 text-sm mt-1">{errors.nominal.message}</p>}
+                            {errors.nominal && <Text.Caption className="!text-red-500 !mt-1">{errors.nominal.message}</Text.Caption>}
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Text.Label className="mb-1 block">
                                 Keterangan / Uraian Singkat <span className="text-red-500">*</span>
-                            </label>
+                            </Text.Label>
                             <textarea
                                 rows={2}
                                 {...register('keterangan', { required: 'Keterangan wajib diisi' })}
                                 className={`w-full rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-brand-500 outline-none transition-colors ${errors.keterangan ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white'}`}
                                 placeholder="Contoh: Pembelian lampu pos ronda..."
                             />
-                            {errors.keterangan && <p className="text-red-500 text-sm mt-1">{errors.keterangan.message}</p>}
+                            {errors.keterangan && <Text.Caption className="!text-red-500 !mt-1">{errors.keterangan.message}</Text.Caption>}
                         </div>
 
                         <div className="md:col-span-2">
@@ -265,7 +269,7 @@ export default function KeuanganForm() {
                             ) : (
                                 <FloppyDisk weight="bold" />
                             )}
-                            <span>{isUploading ? 'Mengunggah...' : (isEdit ? 'Perbarui Transaksi' : 'Simpan Transaksi Kas')}</span>
+                            <Text.Label className="!text-white">{isUploading ? 'Mengunggah...' : (isEdit ? 'Perbarui Transaksi' : 'Simpan Transaksi Kas')}</Text.Label>
                         </button>
                     </div>
                 </form>

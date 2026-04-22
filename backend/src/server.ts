@@ -23,22 +23,35 @@ import pushRoutes from './routes/pushRoutes';
 import statsRoutes from './routes/statsRoutes';
 import aduanRoutes from './routes/aduanRoutes';
 import pollingRoutes from './routes/pollingRoutes';
+import superAdminRoutes from './routes/superAdminRoutes';
+import subscriptionRoutes from './routes/subscriptionRoutes';
+import pricePackageRoutes from './routes/pricePackageRoutes';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
 import fastifyJwt from '@fastify/jwt';
 import fastifyRateLimit from '@fastify/rate-limit';
+import fastifyCookie from '@fastify/cookie';
 
 import { authenticate } from './middleware/auth';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    authenticate: any;
+  }
+}
 
 const fastify = Fastify({
   logger: true,
   ignoreTrailingSlash: true
 });
 
+fastify.decorate('authenticate', authenticate);
+
 fastify.register(fastifyCors, {
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  origin: ['https://pakrtsaas.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 });
 
 
@@ -48,8 +61,14 @@ fastify.register(fastifyStatic, {
   prefix: '/uploads/',
 });
 
+fastify.register(fastifyCookie);
+
 fastify.register(fastifyJwt, {
-  secret: process.env.JWT_SECRET || 'supersecret-rt-key-2026'
+  secret: process.env.JWT_SECRET || 'supersecret-rt-key-2026',
+  cookie: {
+    cookieName: 'auth_token',
+    signed: false
+  }
 });
 
 fastify.register(fastifyRateLimit, {
@@ -61,6 +80,8 @@ fastify.register(fastifyRateLimit, {
 fastify.register(authRoutes, { prefix: '/api/auth' });
 fastify.register(wilayahRoutes, { prefix: '/api/wilayah' });
 fastify.register(wilayahRoutes, { prefix: '/api/location' });
+fastify.register(superAdminRoutes, { prefix: '/api/super-admin' });
+fastify.register(pricePackageRoutes, { prefix: '/api/packages' });
 fastify.post('/api/test-upload', async () => ({ status: 'found' }));
 
 // Protected routes
@@ -100,6 +121,7 @@ fastify.register(async (protectedRoutes) => {
   protectedRoutes.register(statsRoutes, { prefix: '/stats' });
   protectedRoutes.register(aduanRoutes, { prefix: '/aduan' });
   protectedRoutes.register(pollingRoutes, { prefix: '/polling' });
+  protectedRoutes.register(subscriptionRoutes, { prefix: '/subscription' });
   protectedRoutes.register(uploadRoutes);
 }, { prefix: '/api' });
 

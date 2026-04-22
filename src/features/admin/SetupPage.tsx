@@ -5,6 +5,13 @@ import { pengurusService } from '../../services/pengurusService';
 import { Database, CheckCircle, Warning, Info, MapPin, Users, ShieldCheck, ArrowLeft } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { Aset } from '../../database/db';
+import { asetService } from '../../services/asetService';
+import { keuanganService } from '../../services/keuanganService';
+import { agendaService } from '../../services/agendaService';
+import { rondaService } from '../../services/rondaService';
+import { suratService } from '../../services/suratService';
+import { iuranService } from '../../services/iuranService';
+import { notulensiService } from '../../services/notulensiService';
 
 const SEED_DATA = [
     { id: '33', parent_id: null, name: 'Jawa Tengah', level: 'provinsi' },
@@ -115,7 +122,6 @@ export default function SetupPage() {
             }
 
             // Seed Aset
-            const { asetService } = await import('../../services/asetService');
             const existingAsets = await asetService.getAll(tenantId, currentScope);
             const asets: Array<Omit<Aset, 'id'>> = [
                 { nama_barang: 'Tenda Sarnafil 3x3', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
@@ -127,19 +133,14 @@ export default function SetupPage() {
                 { nama_barang: 'Timbangan Bayi Digital', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
                 { nama_barang: 'Alat Ukur Tinggi Badan', jumlah: 2, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
                 { nama_barang: 'Tiket Antrian', jumlah: 1, kondisi: 'baik' as const, status_pinjam: 'tersedia' as const, tenant_id: tenantId, scope: currentScope },
-            ].map(a => ({ 
-                ...a, 
-                status_pinjam: a.status_pinjam as 'tersedia' | 'dipinjam',
-                kondisi: a.kondisi as 'baik' | 'rusak_ringan' | 'rusak_berat'
-            }));
+            ];
             for (const aset of asets) {
                 if (!existingAsets.find(a => a.nama_barang === aset.nama_barang)) {
-                    await asetService.create(aset);
+                    await asetService.create(aset as any);
                 }
             }
 
             // Seed Keuangan
-            const { keuanganService } = await import('../../services/keuanganService');
             const keuanganData = await keuanganService.getAll(tenantId, currentScope);
             const existingTrx = keuanganData.items || [];
             if (existingTrx.length < 2) {
@@ -164,7 +165,6 @@ export default function SetupPage() {
             }
 
             // Seed Agenda
-            const { agendaService } = await import('../../services/agendaService');
             const existingAgendas = await agendaService.getAll(tenantId, currentScope);
             if (existingAgendas.length < 2) {
                 const nextWeek = new Date();
@@ -187,7 +187,6 @@ export default function SetupPage() {
             }
 
             // Seed Jadwal Ronda
-            const { rondaService } = await import('../../services/rondaService');
             const existingRonda = await rondaService.getAll(tenantId, currentScope);
             if (existingRonda.length === 0 && siswanto && eko) {
                 const nextWeek = new Date();
@@ -204,7 +203,6 @@ export default function SetupPage() {
             }
 
             // Seed Surat Pengantar
-            const { suratService } = await import('../../services/suratService');
             const existingSurat = await suratService.getAll(tenantId, currentScope);
             if (existingSurat.length === 0 && eko) {
                 await suratService.create({
@@ -219,7 +217,6 @@ export default function SetupPage() {
             }
 
             // Seed Iuran
-            const { iuranService } = await import('../../services/iuranService');
             const iuranData = await iuranService.getAll(tenantId);
             const existingIuran = iuranData.items || [];
             if (existingIuran.length === 0 && siswanto) {
@@ -237,7 +234,6 @@ export default function SetupPage() {
             }
 
             // Seed Notulensi
-            const { notulensiService } = await import('../../services/notulensiService');
             const existingNotulensi = await notulensiService.getAll(tenantId, currentScope);
             if (existingNotulensi.length === 0 && siswanto) {
                 await notulensiService.create({

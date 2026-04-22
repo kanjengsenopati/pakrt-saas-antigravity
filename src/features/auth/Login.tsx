@@ -13,6 +13,7 @@ import {
 } from '@phosphor-icons/react';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
+import { parseApiError } from '../../utils/errorParser';
 import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
 
 type LoginFormData = {
@@ -50,17 +51,22 @@ export default function Login() {
             }
 
             const result = await authService.login(data.contactOrEmail, data.password);
-            if (result.user && result.token) {
-                authLogin(result.token, result.user);
+            if (result.user) {
+                authLogin(result.user);
                 await refreshTenant();
                 
-                const isWarga = result.user.role?.toLowerCase() === 'warga' || 
-                                result.user.role_entity?.name?.toLowerCase() === 'warga';
-                
-                if (isWarga) {
-                    navigate('/warga-portal');
+                // Route based on role
+                if (result.user.role === 'super_admin') {
+                    navigate('/super-admin');
                 } else {
-                    navigate('/dashboard');
+                    const isWarga = result.user.role?.toLowerCase() === 'warga' || 
+                                    result.user.role_entity?.name?.toLowerCase() === 'warga';
+                    
+                    if (isWarga) {
+                        navigate('/warga-portal');
+                    } else {
+                        navigate('/dashboard');
+                    }
                 }
             } else {
                 setLoginError("Kredensial tidak valid. Silakan coba lagi.");
@@ -73,8 +79,8 @@ export default function Login() {
                 message = "Akun tidak ditemukan. Silakan periksa kembali email atau nomor WhatsApp Anda.";
             } else if (error.response.status === 401) {
                 message = "Password yang Anda masukkan salah. Silakan coba lagi.";
-            } else if (error.response.data?.error) {
-                message = error.response.data.error;
+            } else {
+                message = parseApiError(error, message);
             }
             setLoginError(message);
         } finally {

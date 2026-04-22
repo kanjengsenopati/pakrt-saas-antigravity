@@ -60,9 +60,17 @@ export default async function authRoutes(fastify: FastifyInstance) {
             scope: user.scope 
         }, { expiresIn: '1d' });
 
-        // Return a session token and user data
+        // Set HttpOnly Cookie
+        reply.setCookie('auth_token', token, {
+            path: '/',
+            httpOnly: true,
+            secure: true, // Only for HTTPS (Vercel)
+            sameSite: 'none', // Required for cross-site cookie
+            maxAge: 86400 // 1 day
+        });
+
+        // Return user data (token is now in cookie)
         return {
-            token,
             user: {
                 id: user.id,
                 email: user.email,
@@ -73,9 +81,29 @@ export default async function authRoutes(fastify: FastifyInstance) {
                 scope: user.scope,
                 kontak: user.kontak,
                 permissions: user.permissions,
-                role_entity: user.role_entity
+                role_entity: user.role_entity,
+                is_super_admin: user.role === 'super_admin'
             }
         };
+    });
+
+    // Add /me endpoint to verify session and get user data
+    fastify.get('/me', {
+        preHandler: [fastify.authenticate]
+    }, async (request) => {
+        const user = (request as any).user;
+        return { user };
+    });
+
+    // Logout endpoint to clear cookie
+    fastify.post('/logout', async (request, reply) => {
+        reply.clearCookie('auth_token', {
+            path: '/',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        });
+        return { message: 'Logged out successfully' };
     });
 
     // Check tenant existence

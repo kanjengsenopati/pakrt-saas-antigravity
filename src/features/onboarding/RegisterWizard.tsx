@@ -7,6 +7,7 @@ import { locationService } from '../../services/locationService';
 import { authService } from '../../services/authService';
 import { Eye, EyeSlash, CheckCircle, ArrowLeft, ArrowRight, UserFocus, MapPin } from '@phosphor-icons/react';
 import { PWAInstallBanner } from '../../components/pwa/PWAInstallBanner';
+import { parseApiError } from '../../utils/errorParser';
 
 type WizardFormData = {
     provinsi: string;
@@ -181,7 +182,7 @@ export default function RegisterWizard() {
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            alert(error.response?.data?.error || 'Gagal registrasi pengelola. Pastikan data lengkap.');
+            alert(parseApiError(error, 'Gagal registrasi pengelola. Pastikan data lengkap.'));
         }
     };
 
