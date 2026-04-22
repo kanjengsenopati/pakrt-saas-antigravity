@@ -191,6 +191,14 @@ export const superAdminService = {
   // INVOICE / PAYMENT (Manual Transfer Flow)
   // ──────────────────────────────────────────────────────
 
+  async createInvoice(tenantId: string, data: {
+    plan?: string;
+    duration?: number;
+    duration_unit?: string;
+    base_amount?: number;
+    pricePackageId?: string;
+  }) {
+    let plan = data.plan || 'PREMIUM';
     let duration = data.duration || 1;
     let duration_unit = data.duration_unit || 'MONTH';
     let base_amount = data.base_amount || 0;
