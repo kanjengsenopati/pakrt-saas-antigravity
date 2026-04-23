@@ -134,8 +134,8 @@ export default function WargaPortal() {
                         <Text.Body className="!text-[0.8125rem] !text-brand-100/90 !font-medium mb-1">
                             {getGreeting()}, Warga!
                         </Text.Body>
-                        <Text.H1 className="!text-2xl !text-white !leading-tight line-clamp-1 max-w-[13.75rem] !uppercase">
-                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama}
+                        <Text.H1 className="!text-2xl !text-white !leading-tight line-clamp-1 max-w-[13.75rem]">
+                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                         </Text.H1>
                     </div>
                     <div className="flex items-center gap-2">
@@ -163,10 +163,10 @@ export default function WargaPortal() {
                 </div>
 
                 {/* Card Status (Floating) - Tagihan Iuran */}
-                <div className="bg-white rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
+                <div className="bg-white rounded-[24px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
                     <Text.Label className="mb-2">Status Tagihan Iuran Anda</Text.Label>
                     <div className="flex justify-between items-center">
-                        <Text.Amount className="!text-[1.5rem] !leading-none">
+                        <Text.Amount className="!text-[#1A1A1A] !text-[28px] !leading-none">
                             {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
                         </Text.Amount>
                         <button 
@@ -219,7 +219,7 @@ export default function WargaPortal() {
                         <Text.Label onClick={() => navigate('/ronda')} className="!text-brand-600 cursor-pointer !normal-case tracking-normal">Lihat Jadwal</Text.Label>
                     </div>
                     
-                    <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[1.25rem] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
+                    <div onClick={() => navigate('/ronda')} className="bg-[#1e293b] rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-lg border border-slate-800 cursor-pointer active:scale-[0.98] transition-transform">
                         <Flashlight weight="fill" className="absolute -right-4 -bottom-4 text-[5rem] text-slate-700/50 -rotate-12" />
                         
                         <div className="bg-slate-700/80 rounded-2xl w-14 h-14 flex flex-col items-center justify-center text-white border border-slate-600 shadow-inner z-10 shrink-0">
@@ -281,7 +281,7 @@ export default function WargaPortal() {
                                 <div 
                                     key={agenda.id} 
                                     onClick={() => navigate('/agenda')}
-                                    className="bg-brand-600 p-5 rounded-[1.25rem] text-white relative overflow-hidden group shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                                    className="bg-brand-600 p-5 rounded-[24px] text-white relative overflow-hidden group shadow-md active:scale-[0.98] transition-all cursor-pointer"
                                 >
                                     <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
                                     <div className="relative z-10">

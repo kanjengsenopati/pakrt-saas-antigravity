@@ -149,7 +149,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="flex items-baseline gap-2 mb-6">
-                            <Text.Amount className="!text-on-surface !text-4xl tracking-tight">{formatRupiah(stats.saldo)}</Text.Amount>
+                            <Text.Amount className="!text-[#1A1A1A] !text-[28px] tracking-tight">{formatRupiah(stats.saldo)}</Text.Amount>
                         </div>
                         
                         <button onClick={() => navigate('/keuangan')} className="w-full bg-primary py-4 rounded-2xl text-white font-headline font-bold text-[1rem] shadow-[0_12px_24px_-6px_rgba(0,80,212,0.3)] hover:shadow-[0_12px_32px_-6px_rgba(0,80,212,0.4)] transition-all active:scale-[0.98]">
@@ -187,7 +187,7 @@ export default function Dashboard() {
                     <section>
                         <div className="grid grid-cols-3 gap-3">
                             {/* Stats 1: Surat */}
-                            <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                            <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-[24px] p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
                                     <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Surat</Text.Body>
                                     <Text.Caption className="line-clamp-1">{stats.pendingSurat} Baru</Text.Caption>
@@ -195,15 +195,12 @@ export default function Dashboard() {
                             </div>
 
                             {/* Stats 2: Aduan */}
-                            <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
-                                <div>
-                                    <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Aduan</Text.Body>
-                                    <Text.Caption className="!text-error">Aktif</Text.Caption>
-                                </div>
+                            <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-[24px] p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                                    <Text.Caption className="!text-[#F59E0B] !font-bold">Aktif</Text.Caption>
                             </div>
 
                             {/* Stats 3: Agenda */}
-                            <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
+                            <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-[24px] p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
                                     <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Agenda</Text.Body>
                                     <Text.Caption className="line-clamp-1">{stats.agenda} Event</Text.Caption>
