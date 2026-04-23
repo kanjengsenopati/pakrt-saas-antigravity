@@ -372,7 +372,7 @@ export default function IuranForm() {
                                             <Text.Caption className="!text-[9px] !font-black !text-amber-700">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</Text.Caption>
                                         </div>
                                     ) : (
-                                        <Text.Caption className="!text-[9px] !font-bold !text-slate-300 !italic">Hingga periode saat ini</Text.Caption>
+                                        <Text.Caption className="!text-[9px] !font-bold !text-slate-500 !italic">Hingga periode saat ini</Text.Caption>
                                     )}
                                 </div>
 
@@ -510,7 +510,7 @@ export default function IuranForm() {
                                     </Text.Label>
                                     <select
                                         {...register('periode_tahun', { required: true, valueAsNumber: true })}
-                                        className="w-full rounded-lg shadow-sm p-3 text-main border border-gray-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none"
+                                        className="w-full rounded-xl shadow-sm pl-4 pr-4 py-2.5 text-sm font-medium text-gray-900 border border-gray-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none transition-all"
                                     >
                                         {tahunOptions.map(tahun => (
                                             <option key={tahun} value={tahun}>{tahun}</option>
@@ -560,12 +560,12 @@ export default function IuranForm() {
                                                             onClick={() => toggleMonth(m.value)}
                                                             className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
                                                                 isPaid
-                                                                    ? 'bg-emerald-600 border-emerald-600 text-white cursor-not-allowed'
+                                                                    ? 'bg-emerald-50 border-emerald-100 text-emerald-600 cursor-not-allowed'
                                                                     : isPending
-                                                                        ? 'bg-amber-500 border-amber-500 text-white cursor-not-allowed opacity-90'
+                                                                        ? 'bg-amber-50 border-amber-100 text-amber-600 cursor-not-allowed opacity-90'
                                                                         : isSelected
                                                                             ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
-                                                                            : 'bg-red-500 border-red-500 text-white hover:bg-red-600 hover:scale-105 active:scale-95'
+                                                                            : 'bg-slate-100 border-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-700 hover:scale-105 active:scale-95'
                                                                 }`}
                                                         >
                                                             {m.label.substring(0, 3)}

@@ -434,7 +434,7 @@ export default function KeuanganList() {
                             placeholder="Cari transaksi..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-5 pr-4 py-3 bg-slate-50 border-none rounded-[16px] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
+                            className="w-full pl-5 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-medium"
                         />
                     </div>
                     
@@ -545,12 +545,12 @@ export default function KeuanganList() {
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-slate-50/50 border-b border-slate-100">
                             <tr>
-                                <th className="p-4"><Text.Label className="!text-slate-400">Tanggal</Text.Label></th>
-                                <th className="p-4"><Text.Label className="!text-slate-400">Kategori & Keterangan</Text.Label></th>
-                                <th className="p-4 text-right"><Text.Label className="!text-slate-400">Masuk</Text.Label></th>
-                                <th className="p-4 text-right"><Text.Label className="!text-slate-400">Keluar</Text.Label></th>
-                                <th className="p-4 text-center"><Text.Label className="!text-slate-400">Bukti</Text.Label></th>
-                                <th className="p-4 text-center"><Text.Label className="!text-slate-400">Aksi</Text.Label></th>
+                                <th className="p-4"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Tanggal</Text.Label></th>
+                                <th className="p-4"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Kategori & Keterangan</Text.Label></th>
+                                <th className="p-4 text-right"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Masuk</Text.Label></th>
+                                <th className="p-4 text-right"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Keluar</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Bukti</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Aksi</Text.Label></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -585,7 +585,7 @@ export default function KeuanganList() {
                                             <Text.Caption className="italic mt-0.5">ID: {formatFormalId(trx.tanggal, trx.id)}</Text.Caption>
                                         </td>
                                         <td className="p-4">
-                                            <Text.Label className={`block mb-1.5 !tracking-normal ${trx.tipe === 'pemasukan' ? '!text-brand-600' : '!text-red-500'}`}>
+                                            <Text.Label className={`block mb-1.5 !tracking-normal !font-bold ${trx.tipe === 'pemasukan' ? '!text-emerald-600' : '!text-rose-600'}`}>
                                                 {toTitleCase(trx.kategori)}
                                             </Text.Label>
                                             {(() => {
@@ -617,7 +617,7 @@ export default function KeuanganList() {
                                         </td>
                                         <td className="p-4 text-right whitespace-nowrap">
                                             {trx.tipe === 'pengeluaran' ? (
-                                                <Text.Amount className="!text-red-500 font-bold">{formatRupiah(trx.nominal)}</Text.Amount>
+                                                <Text.Amount className="!text-rose-600 font-bold">{formatRupiah(trx.nominal)}</Text.Amount>
                                             ) : (
                                                 <Text.Amount className="!text-slate-200">Rp 0</Text.Amount>
                                             )}

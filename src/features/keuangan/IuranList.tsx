@@ -189,7 +189,7 @@ export default function IuranList() {
                                 placeholder="Cari nama warga atau NIK..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm font-medium text-gray-900"
+                                className="w-full pl-4 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm font-medium text-gray-900"
                             />
                         </div>
                     )}
@@ -247,12 +247,12 @@ export default function IuranList() {
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-slate-50/50 border-b border-slate-100">
                             <tr>
-                                <th className="p-4 text-left"><Text.Label>Tanggal Bayar & Kategori</Text.Label></th>
-                                <th className="p-4 text-left"><Text.Label>Warga Pembayar</Text.Label></th>
-                                <th className="p-4 text-left"><Text.Label>Periode Terbayar</Text.Label></th>
-                                <th className="p-4 text-right"><Text.Label>Nominal (Rp)</Text.Label></th>
-                                <th className="p-4 text-center"><Text.Label>Status</Text.Label></th>
-                                <th className="p-4 text-center"><Text.Label>Aksi</Text.Label></th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Tanggal Bayar & Kategori</Text.Label></th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Warga Pembayar</Text.Label></th>
+                                <th className="p-4 text-left"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Periode Terbayar</Text.Label></th>
+                                <th className="p-4 text-right"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Nominal (Rp)</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Status</Text.Label></th>
+                                <th className="p-4 text-center"><Text.Label className="!text-slate-700 !text-[12px] !font-semibold">Aksi</Text.Label></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -296,8 +296,8 @@ export default function IuranList() {
                                             <div className="flex flex-wrap gap-1.5 max-w-[200px]">
                                                 {iuran.periode_bulan.map(b => (
                                                     <Text.Label key={b} className={`!px-2 !py-0.5 rounded-full !text-[10px] shadow-sm border ${
-                                                    iuran.status === 'VERIFIED' ? '!bg-emerald-600 !text-white border-emerald-700' :
-                                                        iuran.status === 'PENDING' ? '!bg-amber-400 !text-slate-900 border-amber-300' :
+                                                    iuran.status === 'VERIFIED' ? '!bg-emerald-50 !text-emerald-600 border-emerald-100' :
+                                                        iuran.status === 'PENDING' ? '!bg-amber-50 !text-amber-600 border-amber-100' :
                                                         '!bg-rose-50 border-rose-200 !text-rose-600'
                                                     }`}>
                                                         {getMonthName(b).substring(0, 3).toUpperCase()} {iuran.periode_tahun}
@@ -313,7 +313,7 @@ export default function IuranList() {
                                         <td className="p-4">
                                             <div className="flex flex-col items-center gap-1">
                                                 {iuran.status === 'VERIFIED' ? (
-                                                    <Text.Label className="!px-3 !py-1.5 rounded-full !bg-emerald-600 !text-white flex items-center gap-1.5 shadow-premium">
+                                                    <Text.Label className="!px-3 !py-1.5 rounded-full !bg-emerald-50 !text-emerald-600 border border-emerald-100 flex items-center gap-1.5 shadow-sm !font-bold">
                                                         <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                         Lunas
                                                     </Text.Label>
@@ -518,8 +518,8 @@ export default function IuranList() {
                                                 {history.map((h) => (
                                                     <div key={h.id} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
                                                         <div>
-                                                            <Text.Body className="!font-bold !text-slate-700 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
-                                                            <Text.Caption className="!text-slate-400">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
+                                                            <Text.Body className="!font-medium !text-slate-700 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
+                                                            <Text.Caption className="!text-slate-500 !font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
                                                         </div>
                                                         <div className="text-right">
                                                             <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
