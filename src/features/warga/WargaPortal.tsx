@@ -24,6 +24,7 @@ import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 export default function WargaPortal() {
     const { user, logout, isLoading: authLoading } = useAuth();
@@ -135,7 +136,7 @@ export default function WargaPortal() {
                             {getGreeting()}, Warga!
                         </Text.Body>
                         <Text.H1 className="!text-2xl !text-white !leading-tight line-clamp-1 max-w-[13.75rem]">
-                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {warga.nama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            {warga.jenis_kelamin === 'L' ? 'Bpk.' : (warga.jenis_kelamin === 'P' ? 'Ibu' : '')} {toTitleCase(warga.nama)}
                         </Text.H1>
                     </div>
                     <div className="flex items-center gap-2">
