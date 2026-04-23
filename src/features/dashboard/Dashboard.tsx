@@ -143,7 +143,7 @@ export default function Dashboard() {
                 <div className="px-6 -mt-16 relative z-10 max-w-4xl mx-auto">
                     <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white dark:border-white/10">
                         <div className="flex justify-between items-center mb-1">
-                            <Text.Label className="!text-on-surface-variant !text-[0.8rem]">Total Kas RT</Text.Label>
+                            <Text.Label className="!text-[0.8rem]">Total Kas RT</Text.Label>
                             <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
                                 <Wallet weight="fill" className="text-on-surface-variant text-xl" />
                             </div>
@@ -162,7 +162,7 @@ export default function Dashboard() {
                                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSubscriptionExpired ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-primary'}`}>
                                     <ShieldCheck weight="bold" className="text-lg" />
                                 </div>
-                                <Text.Body className="!text-[12px] !font-bold !text-on-surface-variant">Informasi Berlangganan Aplikasi PakRT</Text.Body>
+                                <Text.Body className="!text-[12px] !font-bold">Informasi Berlangganan Aplikasi PakRT</Text.Body>
                             </div>
                             <div className="grid grid-cols-2 gap-4 items-center">
                                 <div className="flex items-center">
@@ -190,7 +190,7 @@ export default function Dashboard() {
                             <div onClick={() => navigate('/surat')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
                                     <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Surat</Text.Body>
-                                    <Text.Caption className="!text-on-surface-variant !text-[9px] !font-bold uppercase tracking-tight line-clamp-1">{stats.pendingSurat} Baru</Text.Caption>
+                                    <Text.Caption className="line-clamp-1">{stats.pendingSurat} Baru</Text.Caption>
                                 </div>
                             </div>
 
@@ -198,7 +198,7 @@ export default function Dashboard() {
                             <div onClick={() => navigate('/aduan')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
                                     <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Aduan</Text.Body>
-                                    <Text.Caption className="!text-[9px] !font-bold !text-error uppercase tracking-tight">Aktif</Text.Caption>
+                                    <Text.Caption className="!text-error">Aktif</Text.Caption>
                                 </div>
                             </div>
 
@@ -206,7 +206,7 @@ export default function Dashboard() {
                             <div onClick={() => navigate('/agenda')} className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_8px_24px_-4px_rgba(0,80,212,0.08)] flex flex-col cursor-pointer hover:scale-[1.02] transition-transform active:scale-[0.98]">
                                 <div>
                                     <Text.Body className="!text-[13px] !font-bold !text-on-surface !leading-tight">Agenda</Text.Body>
-                                    <Text.Caption className="!text-[9px] !font-medium !text-on-surface-variant uppercase tracking-tight line-clamp-1">{stats.agenda} Event</Text.Caption>
+                                    <Text.Caption className="line-clamp-1">{stats.agenda} Event</Text.Caption>
                                 </div>
                             </div>
                         </div>
