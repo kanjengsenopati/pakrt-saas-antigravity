@@ -117,7 +117,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-label text-[11px] font-bold tracking-[2px] text-slate-400 uppercase",
+          "font-label text-[11px] font-bold tracking-[0.8px] text-slate-600 uppercase",
           className
         )}
       >
@@ -135,7 +135,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
+          "font-body text-[14px] font-medium text-slate-700 leading-relaxed",
           className
         )}
       >
@@ -153,7 +153,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[12px] font-normal italic text-slate-400 leading-normal tracking-tight",
+          "font-body text-[12px] font-medium italic text-slate-500 leading-normal tracking-tight",
           className
         )}
       >

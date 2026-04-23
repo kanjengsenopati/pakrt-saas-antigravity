@@ -254,13 +254,13 @@ export default function PengurusList() {
                          activeTab === 'riwayat' ? 'Riwayat Pejabat' : 'Aturan & Regulasi'}
                     </Text.H1>
                     <div className="flex items-center gap-2 text-slate-500 text-[13px] sm:text-[14px]">
-                        <Text.Caption className="!flex items-baseline gap-1.5 opacity-70">
-                            <Briefcase size={14} className="self-center" /> {currentScope}
+                        <Text.Caption className="!flex items-baseline gap-1.5 !not-italic !text-slate-500 !font-medium">
+                            <Briefcase size={13} className="self-center text-slate-400" /> {currentScope}
                         </Text.Caption>
                         {activeTab === 'riwayat' && (
                             <>
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                <Text.Caption className="opacity-70">Arsip Historis</Text.Caption>
+                                <Text.Caption className="!not-italic !text-slate-500 !font-medium">Arsip Historis</Text.Caption>
                             </>
                         )}
                     </div>
@@ -288,51 +288,51 @@ export default function PengurusList() {
             {/* PREMIUM STATS WIDGETS - STABLE FLEX LAYOUT */}
             <div className="flex flex-col sm:flex-row gap-4 -mt-2">
                 <div className="flex-1 bg-white p-5 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
-                    <Text.Label className="mb-1.5 !flex items-center gap-2">
-                        <Briefcase className="text-slate-400 w-4 h-4" />
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-300" />
+                    <Text.Label className="mb-2 !flex items-center gap-1.5 !text-slate-500">
+                        <Briefcase className="w-3.5 h-3.5" />
                         Total Struktur
                     </Text.Label>
-                    <div className="flex items-baseline gap-1">
-                        <Text.Amount className="!text-2xl !text-slate-900">{totalPositions}</Text.Amount>
-                        <Text.Label className="!text-slate-400 !normal-case">Posisi</Text.Label>
+                    <div className="flex items-baseline gap-1.5">
+                        <Text.Amount className="!text-[28px] !leading-none !text-slate-900">{totalPositions}</Text.Amount>
+                        <Text.Label className="!text-slate-400 !normal-case !text-[11px]">Posisi</Text.Label>
                     </div>
                 </div>
 
                 <div className="flex-1 bg-brand-50 p-5 rounded-[24px] border border-brand-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <Text.Label className="mb-1.5 !flex items-center gap-2 !text-brand-700">
-                        <Users className="text-brand-500 w-4 h-4" />
+                    <Text.Label className="mb-2 !flex items-center gap-1.5 !text-brand-600">
+                        <Users className="w-3.5 h-3.5" />
                         Pejabat Aktif
                     </Text.Label>
-                    <div className="flex items-baseline gap-1">
-                        <Text.Amount className="!text-2xl !text-brand-600">{activePengurus}</Text.Amount>
-                        <Text.Label className="!text-brand-400 !normal-case">Orang</Text.Label>
+                    <div className="flex items-baseline gap-1.5">
+                        <Text.Amount className="!text-[28px] !leading-none !text-brand-600">{activePengurus}</Text.Amount>
+                        <Text.Label className="!text-brand-400 !normal-case !text-[11px]">Orang</Text.Label>
                     </div>
                 </div>
             </div>
 
-            {/* SEGMENTED TAB NAVIGATION - FULL WIDTH ON MOBILE */}
-            <div>
-                <div className="bg-gray-100 p-1.5 rounded-[24px] flex items-center w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
+            {/* SEGMENTED TAB NAVIGATION - STICKY, FULL WIDTH ON MOBILE */}
+            <div className="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-md -mx-5 px-5 py-3">
+                <div className="bg-white/60 backdrop-blur-sm p-1.5 rounded-[24px] flex items-center w-full md:w-fit border border-slate-200/60 shadow-sm overflow-x-auto no-scrollbar">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-2.5 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <Users size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Struktur</Text.Label>
+                        <Users size={16} strokeWidth={2.5} /> <span className="text-[12px] font-bold tracking-tight">Struktur</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-2.5 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <History size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Riwayat</Text.Label>
+                        <History size={16} strokeWidth={2.5} /> <span className="text-[12px] font-bold tracking-tight">Riwayat</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-2.5 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        <BookOpen size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">AD / ART</Text.Label>
+                        <BookOpen size={16} strokeWidth={2.5} /> <span className="text-[12px] font-bold tracking-tight">AD / ART</span>
                     </button>
                 </div>
             </div>
@@ -546,7 +546,7 @@ export default function PengurusList() {
                     </div>
                 </div>
             ) : activeTab === 'riwayat' ? (
-                <div className="space-y-6">
+                <div className="space-y-6 pt-2">
                     {isLoading ? (
                         <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-8 text-center"><Text.Body className="!text-gray-500">Memuat Data...</Text.Body></div>
                     ) : Object.keys(groupedRiwayat).length === 0 ? (
@@ -576,7 +576,9 @@ export default function PengurusList() {
                                                 </span>
                                             )}
                                         </Text.H2>
-                                        <Text.Label className="!text-gray-500 !normal-case">{members.length} Jabatan</Text.Label>
+                                        <span className="px-2.5 py-1 bg-slate-100 rounded-full">
+                                            <Text.Label className="!text-slate-600 !normal-case !text-[11px]">{members.length} Jabatan</Text.Label>
+                                        </span>
                                     </div>
                                     <div className="p-2 sm:p-4 space-y-3">
                                         {members.map((p: any) => (
@@ -617,8 +619,9 @@ export default function PengurusList() {
                     )}
                 </div>
             ) : (
-                <div className="space-y-6 animate-fade-in">
-                    <div className="sticky top-16 z-30 bg-white/80 backdrop-blur-md pb-4 pt-2 -mx-5 px-5">
+                <div className="space-y-6 animate-fade-in pt-2">
+                    {/* AD/ART STICKY SUB-HEADER — offset below app header (top-16=64px) + tab bar (~60px) = top-[124px] */}
+                    <div className="sticky top-[60px] z-30 bg-white/95 backdrop-blur-md pb-4 pt-3 -mx-5 px-5 border-b border-slate-100 shadow-sm">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-brand-600">
