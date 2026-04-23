@@ -287,9 +287,9 @@ export default function PengurusList() {
                 </HasPermission>
             </div>
 
-            {/* PREMIUM STATS WIDGETS */}
-            <div className="grid grid-cols-2 gap-4 px-3 sm:px-0 -mt-2">
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+            {/* PREMIUM STATS WIDGETS - STABLE FLEX LAYOUT */}
+            <div className="flex flex-col sm:flex-row gap-4 px-3 sm:px-0 -mt-2">
+                <div className="flex-1 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
                     <Text.Label className="mb-1.5 !flex items-center gap-2">
                         <Briefcase weight="duotone" className="text-slate-400 w-4 h-4" />
@@ -301,7 +301,7 @@ export default function PengurusList() {
                     </div>
                 </div>
 
-                <div className="bg-brand-50 p-5 rounded-2xl border border-brand-100 shadow-sm relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
+                <div className="flex-1 bg-brand-50 p-5 rounded-2xl border border-brand-100 shadow-sm relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <Text.Label className="mb-1.5 !flex items-center gap-2 !text-brand-700">
@@ -315,26 +315,26 @@ export default function PengurusList() {
                 </div>
             </div>
 
-            {/* SEGMENTED TAB NAVIGATION - NATIVE MOBILE FEEL */}
+            {/* SEGMENTED TAB NAVIGATION - FULL WIDTH ON MOBILE */}
             <div className="px-3 sm:px-0">
-                <div className="bg-gray-100 p-1 rounded-[14px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
+                <div className="bg-gray-100 p-1.5 rounded-[16px] flex items-center w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Struktur Aktif</Text.Label>
+                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Struktur</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Riwayat</Text.Label>
+                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Riwayat</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">AD / ART</Text.Label>
+                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">AD / ART</Text.Label>
                     </button>
                 </div>
             </div>
@@ -617,58 +617,57 @@ export default function PengurusList() {
                     )}
                 </div>
             ) : (
-                <div className="space-y-6 animate-fade-in">
-                    {/* Full Width Category Navigation */}                    {/* CATEGORY NAV: PILL STYLE WITH SCROLL MASK */}
-                    <div className="sticky top-[73px] z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 sm:static sm:bg-transparent sm:border-none">
-                        <div className="p-3 sm:px-0 sm:py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                            <Text.H2 className="!font-medium !text-slate-800 !text-[15px] !flex !items-center !gap-2 !px-1">
-                                <BookOpen weight="fill" className="text-brand-600" />
-                                Kategori Aturan
-                            </Text.H2>
-                            <div className="flex items-center gap-2 w-full sm:w-auto px-1">
+                    <div className="sticky top-[10px] z-30 bg-slate-50/90 backdrop-blur-md pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-brand-600">
+                                    <BookOpen weight="fill" size={18} />
+                                </div>
+                                <Text.Body className="!font-bold !text-slate-800">Daftar Regulasi</Text.Body>
+                            </div>
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <button 
                                     onClick={() => setShowVersionHistory(!showVersionHistory)}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all border shrink-0 ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all border shadow-sm ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                                 >
-                                    <ListDashes weight="bold" size={14} />
-                                    <Text.Label className="!text-inherit">{adArtData.archives?.length || 0} Arsip</Text.Label>
+                                    <ClockCounterClockwise weight="bold" size={16} />
+                                    <Text.Label className="!text-inherit !normal-case">{adArtData.archives?.length || 0} Arsip</Text.Label>
                                 </button>
                                 <HasPermission module="Data Pengurus" action="Ubah">
                                     <button 
                                         onClick={() => setIsAddingCategory(true)}
-                                        className={`flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-medium hover:bg-black transition-all shadow-sm shrink-0 ${isAddingCategory ? 'opacity-50' : ''}`}
+                                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-[12px] font-bold hover:bg-black transition-all shadow-md active:scale-95"
                                     >
-                                        <PlusCircle weight="fill" size={14} />
-                                        <Text.Label className="!text-white">Kategori Baru</Text.Label>
+                                        <PlusCircle weight="fill" size={16} />
+                                        <Text.Label className="!text-white !normal-case">Baru</Text.Label>
                                     </button>
                                 </HasPermission>
                             </div>
                         </div>
                         
-                        <div className="relative group overflow-hidden px-1">
-                            <div className="overflow-x-auto no-scrollbar snap-x px-2">
-                                <div className="flex items-center gap-3 min-w-max pb-4 pt-2">
-                                    {Object.keys(adArtData.active?.categories || {}).map((cat) => (
-                                        <div key={cat} className="group/tab relative flex items-center snap-center">
-                                            <button
-                                                onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                                className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all border shadow-sm active:scale-95 ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-brand-500/30' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
+                        <div className="overflow-x-auto no-scrollbar snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
+                            <div className="flex items-center gap-2.5 min-w-max">
+                                {Object.keys(adArtData.active?.categories || {}).map((cat) => (
+                                    <div key={cat} className="group/tab relative flex items-center snap-center">
+                                        <button
+                                            onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
+                                            className={`px-6 py-3 rounded-2xl text-[13px] font-bold transition-all border shadow-sm active:scale-95 ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-brand-500/30' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
+                                        >
+                                            {cat}
+                                        </button>
+                                        <HasPermission module="Data Pengurus" action="Ubah">
+                                            <button 
+                                                onClick={() => deleteCategory(cat)}
+                                                className="absolute -top-1.5 -right-1.5 p-1.5 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-xl z-10"
                                             >
-                                                {cat}
+                                                <X size={12} weight="bold" />
                                             </button>
-                                            <HasPermission module="Data Pengurus" action="Ubah">
-                                                <button 
-                                                    onClick={() => deleteCategory(cat)}
-                                                    className="absolute -top-1 -right-1 p-1.5 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-lg z-10"
-                                                >
-                                                    <X size={12} weight="bold" />
-                                                </button>
-                                            </HasPermission>
-                                        </div>
-                                    ))}
-                                </div>
+                                        </HasPermission>
+                                    </div>
+                                ))}
                             </div>
                         </div>
+                    </div>
 
                         {isAddingCategory && (
                             <div className="p-4 mx-3 mb-4 bg-brand-50/50 rounded-2xl border border-brand-100 flex items-center gap-3 animate-slide-down">
