@@ -314,26 +314,26 @@ export default function PengurusList() {
                 </div>
             </div>
 
-            {/* PILL-STYLE TAB NAVIGATION */}
+            {/* SEGMENTED TAB NAVIGATION */}
             <div className="px-3 sm:px-0">
-                <div className="bg-slate-100/50 p-1 rounded-xl flex items-center gap-1 w-full md:w-fit border border-slate-100 shadow-sm overflow-hidden">
+                <div className="bg-gray-100 p-1 rounded-[8px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-hidden">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <UserList weight="bold" /> <Text.Label className="!text-inherit">Struktur Aktif</Text.Label>
+                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">Struktur Aktif</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <ClockCounterClockwise weight="bold" /> <Text.Label className="!text-inherit">Riwayat</Text.Label>
+                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">Riwayat</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <BookOpen weight="bold" /> <Text.Label className="!text-inherit">AD / ART</Text.Label>
+                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">AD / ART</Text.Label>
                     </button>
                 </div>
             </div>
@@ -406,7 +406,7 @@ export default function PengurusList() {
                                         <tr key={pengurus.id} className="hover:bg-gray-50/50 transition-colors group">
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
-                                                    <Text.H2 className="!text-brand-700 !text-sm">{pengurus.jabatan}</Text.H2>
+                                                    <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{pengurus.jabatan}</Text.Body>
                                                     {!jabatanSettings.includes(pengurus.jabatan) && pengurus.status === 'aktif' && (
                                                         <span className="group relative">
                                                             <WarningCircle size={14} className="text-amber-500 animate-pulse" weight="fill" />
@@ -418,12 +418,12 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <Text.Body className="!text-slate-800 !font-bold">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-red-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
-                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 !mt-0.5 tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
+                                                <Text.Body className="!text-gray-600 !text-[13px] !font-medium">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-red-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
+                                                {pengurus.warga?.kontak && <Text.Caption className="!text-gray-400 !text-[12px] !font-normal !mt-0.5 tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex items-center gap-2 text-[14px]">
-                                                    <Text.Body component="span" className="!font-medium !text-slate-600">{pengurus.periode}</Text.Body>
+                                                <div className="flex items-center gap-2 text-[12px]">
+                                                    <Text.Body component="span" className="!font-normal !text-gray-400">Periode {pengurus.periode}</Text.Body>
                                                     {!periodeSettings.includes(pengurus.periode) && (
                                                         <span className="group relative">
                                                             <WarningCircle size={14} className="text-amber-500" weight="fill" />
@@ -484,37 +484,39 @@ export default function PengurusList() {
                         ) : (
                             filteredPengurus.map((pengurus: any) => (
                                 <div key={pengurus.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
-                                    <div className="p-4">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-2xl bg-slate-50 text-brand-600 flex items-center justify-center border border-slate-100 shadow-inner group-hover:scale-110 transition-transform">
-                                                    <Briefcase weight="duotone" className="w-6 h-6" />
+                                    <div className="p-5 relative">
+                                        <div className="absolute top-4 right-4 z-10">
+                                            <Text.Label className={`!px-2.5 !py-1 rounded-lg border !flex items-center gap-1.5 shadow-sm ${pengurus.status === 'tidak aktif' ? '!bg-red-50 !text-red-600 border-red-100' : '!bg-emerald-50 !text-emerald-600 border-emerald-100'}`}>
+                                                {pengurus.status === 'tidak aktif' ? 'Tidak Aktif' : 'Aktif'}
+                                            </Text.Label>
+                                        </div>
+                                        <div className="flex flex-col mb-4">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center border border-gray-100 shadow-inner">
+                                                    <Briefcase weight="duotone" className="w-5 h-5" />
                                                 </div>
-                                                <div>
-                                                    <Text.H2 className="!text-slate-900 !text-[15px] !tracking-tight !leading-tight">{pengurus.jabatan}</Text.H2>
-                                                    <div className="flex items-center gap-1.5 mt-1">
-                                                        <Text.Label className="!text-slate-400 !normal-case">Periode {pengurus.periode}</Text.Label>
-                                                    </div>
+                                                <div className="pr-16">
+                                                    <Text.Body className="!text-gray-900 !text-[14px] !font-semibold !tracking-tight !leading-tight">{pengurus.jabatan}</Text.Body>
+                                                    <Text.Caption className="!text-gray-400 !text-[12px] !font-normal !mt-1">Periode {pengurus.periode}</Text.Caption>
                                                 </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <Text.Label className={`!px-2.5 !py-1 rounded-lg border !flex items-center gap-1.5 shadow-sm ${pengurus.status === 'tidak aktif' ? '!bg-red-50 !text-red-600 border-red-100' : '!bg-emerald-50 !text-emerald-600 border-emerald-100'}`}>
-                                                    {pengurus.status === 'tidak aktif' ? 'Tidak Aktif' : 'Aktif'}
-                                                </Text.Label>
                                             </div>
                                         </div>
 
-                                        <div className="mt-4 p-3 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-white text-brand-600 flex items-center justify-center font-medium overflow-hidden border border-slate-200 shrink-0 shadow-sm">
+                                         <div className="mt-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold overflow-hidden border shrink-0 shadow-sm
+                                                ${pengurus.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                                                  pengurus.id.charCodeAt(0) % 3 === 1 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                                                  'bg-orange-50 text-orange-700 border-orange-100'}
+                                            `}>
                                                 {pengurus.warga?.avatar ? (
                                                     <img src={getFullUrl(pengurus.warga.avatar)} alt={pengurus.warga.nama} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <Text.Body component="span" className="!text-sm">{pengurus.warga?.nama?.charAt(0) || '?'}</Text.Body>
+                                                    <Text.Body component="span" className="!text-xs !font-bold !text-inherit">{pengurus.warga?.nama?.charAt(0) || '?'}</Text.Body>
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <Text.Body className="!font-bold !text-slate-900 !text-[13px] truncate">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-rose-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
-                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 truncate tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
+                                                <Text.Body className="!font-medium !text-gray-600 !text-[13px] truncate">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-rose-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
+                                                {pengurus.warga?.kontak && <Text.Caption className="!text-gray-400 !font-normal !text-[12px] truncate tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
                                             </div>
                                         </div>
 
@@ -589,7 +591,7 @@ export default function PengurusList() {
                                                     <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-2">
-                                                                <Text.H2 className="!text-gray-700 !text-sm">{p.jabatan}</Text.H2>
+                                                                <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{p.jabatan}</Text.Body>
                                                                 {!jabatanSettings.includes(p.jabatan) && (
                                                                     <span className="group relative">
                                                                         <WarningCircle size={13} className="text-amber-500/70" weight="fill" />
@@ -602,12 +604,16 @@ export default function PengurusList() {
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs font-medium shrink-0">
-                                                                    <Text.Body component="span" className="!text-xs">{p.warga?.nama?.charAt(0) || '?'}</Text.Body>
+                                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 border shadow-sm
+                                                                    ${p.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                                                                      p.id.charCodeAt(0) % 3 === 1 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                                                                      'bg-orange-50 text-orange-700 border-orange-100'}
+                                                                `}>
+                                                                    <Text.Body component="span" className="!text-[10px] !font-bold !text-inherit">{p.warga?.nama?.charAt(0) || '?'}</Text.Body>
                                                                 </div>
                                                                 <div>
-                                                                    <Text.Body className="!text-gray-900 !font-bold !text-sm">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
-                                                                    <Text.Caption className="!text-gray-500 tracking-[1px]">{p.warga?.kontak || '-'}</Text.Caption>
+                                                                    <Text.Body className="!text-gray-600 !font-medium !text-[13px]">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
+                                                                    <Text.Caption className="!text-gray-400 !text-[12px] tracking-[1px]">{p.warga?.kontak || '-'}</Text.Caption>
                                                                 </div>
                                                             </div>
                                                         </td>
