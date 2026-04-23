@@ -315,24 +315,24 @@ export default function PengurusList() {
                 </div>
             </div>
 
-            {/* SEGMENTED TAB NAVIGATION */}
+            {/* SEGMENTED TAB NAVIGATION - NATIVE MOBILE FEEL */}
             <div className="px-3 sm:px-0">
-                <div className="bg-gray-100 p-1 rounded-[12px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
+                <div className="bg-gray-100 p-1 rounded-[14px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Struktur Aktif</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Riwayat</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-7 py-2.5 text-[13px] font-bold rounded-[11px] transition-all flex items-center justify-center gap-2 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">AD / ART</Text.Label>
                     </button>
@@ -578,64 +578,39 @@ export default function PengurusList() {
                                         </Text.H2>
                                         <Text.Label className="!text-gray-500 !normal-case">{members.length} Jabatan</Text.Label>
                                     </div>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-left border-collapse">
-                                            <thead>
-                                                <tr className="border-b border-gray-100 bg-white">
-                                                    <th className="px-6 py-3"><Text.Label className="!text-gray-500">Nama Jabatan</Text.Label></th>
-                                                    <th className="px-6 py-3"><Text.Label className="!text-gray-500">Pejabat</Text.Label></th>
-                                                    <th className="px-6 py-3 text-right"><Text.Label className="!text-gray-500">Aksi</Text.Label></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-50">
-                                                {members.map((p: any) => (
-                                                    <tr key={p.id} className="hover:bg-gray-50/50 transition-colors group">
-                                                        <td className="px-6 py-4">
-                                                            <div className="flex items-center gap-2">
-                                                                <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{p.jabatan}</Text.Body>
-                                                                {!jabatanSettings.includes(p.jabatan) && (
-                                                                    <span className="group relative">
-                                                                        <WarningCircle size={13} className="text-amber-500/70" weight="fill" />
-                                                                        <span className="absolute left-6 top-1/2 -translate-y-1/2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-left font-normal">
-                                                                            Jabatan ini sudah dihapus dari Pengaturan.
-                                                                        </span>
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 border shadow-sm
-                                                                    ${p.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
-                                                                      p.id.charCodeAt(0) % 3 === 1 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
-                                                                      'bg-orange-50 text-orange-700 border-orange-100'}
-                                                                `}>
-                                                                    <Text.Body component="span" className="!text-[10px] !font-bold !text-inherit">{p.warga?.nama?.charAt(0) || '?'}</Text.Body>
-                                                                </div>
-                                                                <div>
-                                                                    <Text.Body className="!text-gray-600 !font-medium !text-[13px]">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
-                                                                    <Text.Caption className="!text-gray-400 !text-[12px] tracking-[1px]">{p.warga?.kontak || '-'}</Text.Caption>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 text-right">
-                                                            <div className="flex justify-end gap-1">
-                                                                <button
-                                                                    onClick={() => navigate(`/pengurus/edit/${p.id}`)}
-                                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Edit">
-                                                                    <PencilSimple className="w-4 h-4" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDelete(p.id, p.jabatan)}
-                                                                    className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Hapus">
-                                                                    <Trash className="w-4 h-4" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <div className="p-2 sm:p-4 space-y-3">
+                                        {members.map((p: any) => (
+                                            <div key={p.id} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between group hover:shadow-md transition-all">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold shrink-0 border shadow-sm
+                                                        ${p.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                                                          p.id.charCodeAt(0) % 3 === 1 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                                                          'bg-orange-50 text-orange-700 border-orange-100'}
+                                                    `}>
+                                                        <Text.Body component="span" className="!text-sm !font-bold !text-inherit">{p.warga?.nama?.charAt(0) || '?'}</Text.Body>
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-0.5">
+                                                            <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{p.jabatan}</Text.Body>
+                                                            {!jabatanSettings.includes(p.jabatan) && (
+                                                                <WarningCircle size={13} className="text-amber-500/70" weight="fill" />
+                                                            )}
+                                                        </div>
+                                                        <Text.Body className="!text-gray-600 !font-medium !text-[13px]">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
+                                                        <Text.Caption className="!text-gray-400 !text-[12px] tracking-[1px]">{p.warga?.kontak || '-'}</Text.Caption>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <HasPermission module="Data Pengurus" action="Ubah">
+                                                        <button
+                                                            onClick={() => navigate(`/pengurus/edit/${p.id}`)}
+                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors" title="Edit">
+                                                            <PencilSimple className="w-5 h-5" />
+                                                        </button>
+                                                    </HasPermission>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ))
@@ -670,23 +645,23 @@ export default function PengurusList() {
                             </div>
                         </div>
                         
-                        <div className="relative group overflow-hidden">
-                            <div className="overflow-x-auto hide-scrollbar snap-x px-3 sm:px-0">
-                                <div className="flex items-center gap-2 min-w-max pb-3 pt-1">
+                        <div className="relative group overflow-hidden px-1">
+                            <div className="overflow-x-auto no-scrollbar snap-x px-2">
+                                <div className="flex items-center gap-3 min-w-max pb-4 pt-2">
                                     {Object.keys(adArtData.active?.categories || {}).map((cat) => (
                                         <div key={cat} className="group/tab relative flex items-center snap-center">
                                             <button
                                                 onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                                className={`px-5 py-2 rounded-full transition-all border ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-lg shadow-brand-500/20' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
+                                                className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all border shadow-sm active:scale-95 ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-brand-500/30' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
                                             >
-                                                <Text.Body component="span" className="!font-bold !text-inherit">{cat}</Text.Body>
+                                                {cat}
                                             </button>
                                             <HasPermission module="Data Pengurus" action="Ubah">
                                                 <button 
                                                     onClick={() => deleteCategory(cat)}
-                                                    className="absolute -top-1 -right-1 p-1 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-md z-10"
+                                                    className="absolute -top-1 -right-1 p-1.5 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-lg z-10"
                                                 >
-                                                    <X size={10} weight="bold" />
+                                                    <X size={12} weight="bold" />
                                                 </button>
                                             </HasPermission>
                                         </div>
