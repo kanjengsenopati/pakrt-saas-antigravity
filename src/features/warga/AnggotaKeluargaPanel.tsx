@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Plus, PencilSimple, Trash, FloppyDisk, Users } from '@phosphor-icons/react';
 import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 interface Props {
     wargaId: string;
@@ -252,9 +253,9 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                                 <Text.Caption className="!font-bold !text-xs">{(index + 1).toString().padStart(2, '0')}</Text.Caption>
                                             </td>
                                             <td className="p-4">
-                                                <Text.Body className="!font-bold !text-slate-900 uppercase">{anggota.nama}</Text.Body>
+                                                <Text.Body className="!font-bold !text-slate-900">{toTitleCase(anggota.nama)}</Text.Body>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <Text.Caption component="span" className="!text-[10px] bg-slate-100 !text-slate-500 px-1.5 py-0.5 rounded font-mono">{anggota.nik}</Text.Caption>
+                                                    <Text.Caption component="span" className="!text-[10px] bg-slate-100 !text-slate-500 px-1.5 py-0.5 rounded font-mono !font-normal tracking-[1px]">{anggota.nik}</Text.Caption>
                                                     <Text.Label className={`!px-2 !py-0.5 rounded-full ${anggota.hubungan === 'Istri' || anggota.hubungan === 'Suami' ? '!bg-rose-50 !text-rose-600' :
                                                             anggota.hubungan === 'Anak' ? '!bg-blue-50 !text-blue-600' : '!bg-slate-100 !text-slate-600'
                                                         }`}>

@@ -9,6 +9,7 @@ import AnggotaKeluargaPanel from './AnggotaKeluargaPanel';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 export default function WargaDetail() {
     const { id } = useParams<{ id: string }>();
@@ -64,8 +65,8 @@ export default function WargaDetail() {
                                 <User weight="duotone" className="w-12 h-12 text-brand-200" />
                             )}
                         </div>
-                        <Text.H1 className="!text-xl leading-tight !uppercase mb-1">{warga.nama}</Text.H1>
-                        <Text.Caption className="!text-gray-500">{warga.nik}</Text.Caption>
+                        <Text.H1 className="!text-xl leading-tight mb-1">{toTitleCase(warga.nama)}</Text.H1>
+                        <Text.Caption className="!text-gray-500 !font-normal tracking-[1px]">{warga.nik}</Text.Caption>
                         <div className="mt-4 flex flex-wrap justify-center gap-2">
                             <Text.Label className="!px-2.5 !py-0.5 rounded-full !bg-brand-100 !text-brand-800 border border-brand-200">
                                 Kepala Keluarga
@@ -123,8 +124,8 @@ export default function WargaDetail() {
                             <Text.H2 className="!font-bold">Informasi Pribadi</Text.H2>
                         </div>
                         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
-                            <InfoItem icon={IdentificationCard} label="NIK" value={warga.nik} />
-                            <InfoItem icon={Phone} label="Kontak / WhatsApp" value={warga.kontak || '-'} />
+                             <InfoItem icon={IdentificationCard} label="NIK" value={warga.nik} valueClassName="!font-normal tracking-[1px]" />
+                            <InfoItem icon={Phone} label="Kontak / WhatsApp" value={warga.kontak || '-'} valueClassName="tracking-[1px]" />
                             <InfoItem icon={GenderIntersex} label="Jenis Kelamin" value={warga.jenis_kelamin || '-'} />
                             <InfoItem icon={HandsPraying} label="Agama" value={warga.agama || '-'} />
                             <InfoItem
@@ -196,7 +197,7 @@ export default function WargaDetail() {
     );
 }
 
-function InfoItem({ icon: Icon, label, value, className = "" }: { icon: any, label: string, value: string, className?: string }) {
+function InfoItem({ icon: Icon, label, value, className = "", valueClassName = "" }: { icon: any, label: string, value: string, className?: string, valueClassName?: string }) {
     return (
         <div className={`flex gap-3 ${className}`}>
             <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -204,7 +205,7 @@ function InfoItem({ icon: Icon, label, value, className = "" }: { icon: any, lab
             </div>
             <div>
                 <Text.Label className="mb-1">{label}</Text.Label>
-                <Text.Body className="!font-medium">{value}</Text.Body>
+                <Text.Body className={`!font-medium ${valueClassName}`}>{value}</Text.Body>
             </div>
         </div>
     );

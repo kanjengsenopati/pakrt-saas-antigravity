@@ -9,6 +9,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -160,9 +161,9 @@ export default function WargaList() {
                             {/* MOBILE FAB */}
                             <button
                                 onClick={() => navigate('/warga/new')}
-                                className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                                className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-[0px_4px_10px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-90 transition-transform active-press"
                             >
-                                <Plus weight="bold" size={24} />
+                                <Plus weight="bold" size={24} className="relative left-[0.5px]" />
                             </button>
                         </HasPermission>
 
@@ -367,9 +368,9 @@ export default function WargaList() {
                                             </td>
                                             <td className="p-3 text-center"></td>
                                             <td className="p-3">
-                                                <Text.H2 className="!text-[14px] leading-tight uppercase">{warga.nama}</Text.H2>
+                                                <Text.H2 className="!text-[14px] leading-tight">{toTitleCase(warga.nama)}</Text.H2>
                                                 <div className="mt-1 flex items-center gap-1.5">
-                                                    <Text.Label className="!text-[9px] text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none">{warga.nik}</Text.Label>
+                                                    <Text.Label className="!text-[9px] text-brand-600 bg-brand-50/50 px-1.5 py-0.5 rounded border border-brand-100/50 leading-none !font-normal tracking-[1px]">{warga.nik}</Text.Label>
                                                     <Text.Label className="!text-[9px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100/50 leading-none">Menunggu Verifikasi</Text.Label>
                                                 </div>
                                             </td>
@@ -420,9 +421,9 @@ export default function WargaList() {
                                                 {expandedWargaId === warga.id ? <CaretDown weight="bold" size={12} /> : <CaretRight weight="bold" size={12} />}
                                             </td>
                                             <td className="p-3">
-                                                <Text.H2 className="!text-[14px] leading-tight uppercase">{warga.nama}</Text.H2>
+                                                <Text.H2 className="!text-[14px] leading-tight">{toTitleCase(warga.nama)}</Text.H2>
                                                 <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden">
-                                                    <Text.Label className="!text-[10px] text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 leading-none">{warga.nik}</Text.Label>
+                                                    <Text.Label className="!text-[10px] text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 leading-none !font-normal tracking-[1px]">{warga.nik}</Text.Label>
                                                     <Text.Label className={`!text-[10px] px-2 py-0.5 rounded-full border leading-none ${warga.status_penduduk === 'Kontrak' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
                                                         {warga.status_penduduk || 'Tetap'}
                                                     </Text.Label>
@@ -501,9 +502,9 @@ export default function WargaList() {
                                                 <Users weight="duotone" className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <Text.H2 className="text-[15px] leading-tight uppercase">{warga.nama}</Text.H2>
+                                                <Text.H2 className="text-[15px] leading-tight">{toTitleCase(warga.nama)}</Text.H2>
                                                  <div className="flex items-center gap-1.5 mt-1">
-                                                     <Text.Caption className="font-mono !text-brand-600 !font-bold">{warga.nik}</Text.Caption>
+                                                     <Text.Caption className="font-mono !text-brand-600 !font-normal tracking-[1px]">{warga.nik}</Text.Caption>
                                                      <div className="w-1 h-1 rounded-full bg-slate-200" />
                                                      <Text.Caption className="!font-medium">{warga.jenis_kelamin || '-'}</Text.Caption>
                                                  </div>

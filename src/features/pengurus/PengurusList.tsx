@@ -27,6 +27,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import RichTextEditor from '../../components/ui/RichTextEditor';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 export default function PengurusList() {
     const { currentTenant, currentScope } = useTenant();
@@ -130,7 +131,7 @@ export default function PengurusList() {
         const versionName = window.prompt("Berikan nama untuk versi perubahan ini (contoh: Amandemen 2026):", "Pembaruan AD/ART");
         if (versionName === null) return; // User cancelled
 
-        const chairman = pengurusList.find(p => p.jabatan?.toLowerCase().includes('ketua') && p.jabatan?.toLowerCase().includes(currentScope.toLowerCase()))?.warga?.nama || "Tidak Diketahui";
+        const chairman = toTitleCase(pengurusList.find(p => p.jabatan?.toLowerCase().includes('ketua') && p.jabatan?.toLowerCase().includes(currentScope.toLowerCase()))?.warga?.nama || "Tidak Diketahui");
         
         setIsSavingAdArt(true);
         try {
@@ -417,8 +418,8 @@ export default function PengurusList() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <Text.Body className="!text-slate-800 uppercase !font-bold">{pengurus.warga?.nama || <Text.Body component="span" className="!text-red-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
-                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 !mt-0.5">{pengurus.warga.kontak}</Text.Caption>}
+                                                <Text.Body className="!text-slate-800 !font-bold">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-red-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
+                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 !mt-0.5 tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2 text-[14px]">
@@ -512,8 +513,8 @@ export default function PengurusList() {
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <Text.Body className="!font-bold !text-slate-900 !text-[13px] truncate uppercase">{pengurus.warga?.nama || <Text.Body component="span" className="!text-rose-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
-                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 truncate">{pengurus.warga.kontak}</Text.Caption>}
+                                                <Text.Body className="!font-bold !text-slate-900 !text-[13px] truncate">{toTitleCase(pengurus.warga?.nama || '') || <Text.Body component="span" className="!text-rose-500 italic">Data warga tidak ditemukan</Text.Body>}</Text.Body>
+                                                {pengurus.warga?.kontak && <Text.Caption className="!text-slate-500 truncate tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
                                             </div>
                                         </div>
 
@@ -605,8 +606,8 @@ export default function PengurusList() {
                                                                     <Text.Body component="span" className="!text-xs">{p.warga?.nama?.charAt(0) || '?'}</Text.Body>
                                                                 </div>
                                                                 <div>
-                                                                    <Text.Body className="!text-gray-900 !font-bold uppercase !text-sm">{p.warga?.nama || 'N/A'}</Text.Body>
-                                                                    <Text.Caption className="!text-gray-500">{p.warga?.kontak || '-'}</Text.Caption>
+                                                                    <Text.Body className="!text-gray-900 !font-bold !text-sm">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
+                                                                    <Text.Caption className="!text-gray-500 tracking-[1px]">{p.warga?.kontak || '-'}</Text.Caption>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -726,7 +727,7 @@ export default function PengurusList() {
                                                     </Text.Caption>
                                                     <Text.Caption className="!flex items-center gap-2">
                                                         <User weight="fill" className="text-slate-400" />
-                                                        Ketua: <Text.Body component="span" className="!font-bold !text-slate-700 !text-inherit uppercase">{archive.chairman}</Text.Body>
+                                                        Ketua: <Text.Body component="span" className="!font-bold !text-slate-700 !text-inherit">{toTitleCase(archive.chairman)}</Text.Body>
                                                     </Text.Caption>
                                                 </div>
                                                 <button 
