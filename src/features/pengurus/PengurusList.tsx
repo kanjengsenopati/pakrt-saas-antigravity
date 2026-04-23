@@ -4,24 +4,22 @@ import { useTenant } from '../../contexts/TenantContext';
 import { pengurusService, PengurusWithWarga } from '../../services/pengurusService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { 
-    Funnel, 
-    PencilSimple, 
-    Trash, 
-    UserList, 
-    ListDashes, 
-    SquaresFour, 
-    WarningCircle, 
+    Filter, 
+    Pencil, 
+    Trash2, 
     Users, 
+    List, 
+    LayoutGrid, 
+    AlertCircle, 
     Briefcase,
     BookOpen,
-    FloppyDisk,
+    Save,
     Plus,
     PlusCircle,
     X,
-    User,
-    MagnifyingGlass,
-    ClockCounterClockwise
-} from '@phosphor-icons/react';
+    Search,
+    History
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
@@ -247,9 +245,9 @@ export default function PengurusList() {
     const activePengurus = pengurusList.filter(p => p.status === 'aktif' || !p.status).length;
 
     return (
-        <div className="space-y-4 sm:space-y-8 animate-fade-in max-w-7xl mx-auto px-1 sm:px-0">
+        <div className="space-y-4 sm:space-y-8 animate-fade-in max-w-7xl mx-auto px-5">
             {/* COMPACT MOBILE-FIRST HEADER */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-3 sm:px-0">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="space-y-1">
                     <Text.H1>
                         {activeTab === 'aktif' ? 'Struktur Pengurus' : 
@@ -271,28 +269,28 @@ export default function PengurusList() {
                 <HasPermission module="Data Pengurus" action="Buat">
                     <button
                         onClick={() => navigate('/pengurus/new')}
-                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                        className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-[24px] font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                     >
-                        <Plus weight="bold" size={18} />
+                        <Plus size={18} strokeWidth={2} />
                         <Text.Body component="span" className="!text-white !font-bold">Tambah Jabatan</Text.Body>
                     </button>
                     
                     {/* MOBILE FAB */}
                     <button
                         onClick={() => navigate('/pengurus/new')}
-                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-[24px] shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
                     >
-                        <Plus weight="bold" size={24} />
+                        <Plus size={24} strokeWidth={2.5} />
                     </button>
                 </HasPermission>
             </div>
 
             {/* PREMIUM STATS WIDGETS - STABLE FLEX LAYOUT */}
-            <div className="flex flex-col sm:flex-row gap-4 px-3 sm:px-0 -mt-2">
-                <div className="flex-1 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+            <div className="flex flex-col sm:flex-row gap-4 -mt-2">
+                <div className="flex-1 bg-white p-5 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
                     <Text.Label className="mb-1.5 !flex items-center gap-2">
-                        <Briefcase weight="duotone" className="text-slate-400 w-4 h-4" />
+                        <Briefcase className="text-slate-400 w-4 h-4" />
                         Total Struktur
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
@@ -301,11 +299,11 @@ export default function PengurusList() {
                     </div>
                 </div>
 
-                <div className="flex-1 bg-brand-50 p-5 rounded-2xl border border-brand-100 shadow-sm relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
+                <div className="flex-1 bg-brand-50 p-5 rounded-[24px] border border-brand-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                     <Text.Label className="mb-1.5 !flex items-center gap-2 !text-brand-700">
-                        <Users weight="duotone" className="text-brand-500 w-4 h-4" />
+                        <Users className="text-brand-500 w-4 h-4" />
                         Pejabat Aktif
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
@@ -316,25 +314,25 @@ export default function PengurusList() {
             </div>
 
             {/* SEGMENTED TAB NAVIGATION - FULL WIDTH ON MOBILE */}
-            <div className="px-3 sm:px-0">
-                <div className="bg-gray-100 p-1.5 rounded-[16px] flex items-center w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
+            <div>
+                <div className="bg-gray-100 p-1.5 rounded-[24px] flex items-center w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Struktur</Text.Label>
+                        <Users size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Struktur</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Riwayat</Text.Label>
+                        <History size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">Riwayat</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[12px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-8 py-3 text-[13px] font-bold rounded-[20px] transition-all flex items-center justify-center gap-2.5 active:scale-95 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">AD / ART</Text.Label>
+                        <BookOpen size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-tight !font-bold">AD / ART</Text.Label>
                     </button>
                 </div>
             </div>
@@ -343,7 +341,7 @@ export default function PengurusList() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 bg-gray-50/50">
                         <div className="relative flex-1 group">
-                            <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={18} />
                             <input
                                 type="text"
                                 placeholder="Cari Jabatan Atau Nama Pengurus..."
@@ -358,17 +356,17 @@ export default function PengurusList() {
                                     onClick={() => setViewMode('list')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                 >
-                                    <ListDashes weight="bold" size={18} />
+                                    <List size={18} />
                                 </button>
                                 <button
                                     onClick={() => setViewMode('grid')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'}`}
                                 >
-                                    <SquaresFour weight="bold" size={18} />
+                                    <LayoutGrid size={18} />
                                 </button>
                             </div>
                             <button className="flex-none flex justify-center items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm active-press">
-                                <Funnel weight="bold" className="text-brand-600" />
+                                <Filter className="text-brand-600" size={18} />
                                 <Text.Body component="span" className="!font-bold">Filter</Text.Body>
                             </button>
                         </div>
@@ -396,7 +394,7 @@ export default function PengurusList() {
                                         <td colSpan={5} className="p-8 text-center text-gray-500">
                                             <div className="flex flex-col items-center justify-center space-y-3">
                                                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                                                    <UserList className="w-6 h-6 text-gray-400" />
+                                                    <Users className="w-6 h-6 text-gray-400" />
                                                 </div>
                                                 <Text.Body>Belum Ada Struktur Kepengurusan Aktif.</Text.Body>
                                             </div>
@@ -410,7 +408,7 @@ export default function PengurusList() {
                                                     <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{pengurus.jabatan}</Text.Body>
                                                     {!jabatanSettings.includes(pengurus.jabatan) && pengurus.status === 'aktif' && (
                                                         <span className="group relative">
-                                                            <WarningCircle size={14} className="text-amber-500 animate-pulse" weight="fill" />
+                                                            <AlertCircle size={14} className="text-amber-500 animate-pulse" />
                                                             <span className="absolute left-6 top-1/2 -translate-y-1/2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                                                 Jabatan ini belum terdaftar di Pengaturan Sistem.
                                                             </span>
@@ -427,7 +425,7 @@ export default function PengurusList() {
                                                     <Text.Body component="span" className="!font-normal !text-gray-400">Periode {pengurus.periode}</Text.Body>
                                                     {!periodeSettings.includes(pengurus.periode) && (
                                                         <span className="group relative">
-                                                            <WarningCircle size={14} className="text-amber-500" weight="fill" />
+                                                            <AlertCircle size={14} className="text-amber-500" />
                                                             <span className="absolute left-6 top-1/2 -translate-y-1/2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-left">
                                                                 Periode ini belum terdaftar di Pengaturan Sistem.
                                                             </span>
@@ -446,14 +444,14 @@ export default function PengurusList() {
                                                         <button
                                                             onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)}
                                                             className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Edit">
-                                                            <PencilSimple weight="duotone" className="w-5 h-5" />
+                                                            <Pencil className="w-5 h-5" />
                                                         </button>
                                                     </HasPermission>
                                                     <HasPermission module="Data Pengurus" action="Hapus">
                                                         <button
                                                             onClick={() => handleDelete(pengurus.id, pengurus.jabatan)}
                                                             className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Hapus">
-                                                            <Trash weight="duotone" className="w-5 h-5" />
+                                                            <Trash2 className="w-5 h-5" />
                                                         </button>
                                                     </HasPermission>
                                                 </div>
@@ -475,7 +473,7 @@ export default function PengurusList() {
                         ) : filteredPengurus.length === 0 ? (
                             <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center flex flex-col items-center gap-4">
                                 <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
-                                    <UserList weight="duotone" className="w-8 h-8" />
+                                    <Users className="w-8 h-8" />
                                 </div>
                                 <div>
                                     <Text.H2 className="!text-sm !text-slate-900">Data Tidak Ditemukan</Text.H2>
@@ -484,26 +482,47 @@ export default function PengurusList() {
                             </div>
                         ) : (
                             filteredPengurus.map((pengurus: any) => (
-                                <div key={pengurus.id} className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md">
+                                <div key={pengurus.id} className="bg-white border border-slate-100 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col transition-all duration-300 hover:shadow-md group">
                                     <div className="p-5 relative">
-                                        <div className="absolute top-4 right-4 z-10">
+                                        {/* TOP-RIGHT ACTION CLUSTER */}
+                                        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
                                             <Text.Label className={`!px-2.5 !py-1 rounded-lg border !flex items-center gap-1.5 shadow-sm ${pengurus.status === 'tidak aktif' ? '!bg-red-50 !text-red-600 border-red-100' : '!bg-emerald-50 !text-emerald-600 border-emerald-100'}`}>
                                                 {pengurus.status === 'tidak aktif' ? 'Tidak Aktif' : 'Aktif'}
                                             </Text.Label>
+                                            
+                                            <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm p-1 rounded-xl border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <HasPermission module="Data Pengurus" action="Ubah">
+                                                    <button
+                                                        onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)}
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                    >
+                                                        <Pencil size={16} />
+                                                    </button>
+                                                </HasPermission>
+                                                <HasPermission module="Data Pengurus" action="Hapus">
+                                                    <button
+                                                        onClick={() => handleDelete(pengurus.id, pengurus.jabatan)}
+                                                        className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </HasPermission>
+                                            </div>
                                         </div>
+
                                         <div className="flex flex-col mb-4">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center border border-gray-100 shadow-inner">
-                                                    <Briefcase weight="duotone" className="w-5 h-5" />
+                                                    <Briefcase className="w-5 h-5" />
                                                 </div>
-                                                <div className="pr-16">
+                                                <div className="pr-24">
                                                     <Text.Body className="!text-gray-900 !text-[14px] !font-semibold !tracking-tight !leading-tight">{pengurus.jabatan}</Text.Body>
                                                     <Text.Caption className="!text-gray-400 !text-[12px] !font-normal !mt-1">Periode {pengurus.periode}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
 
-                                         <div className="mt-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                         <div className="mt-4 p-4 bg-gray-50/50 rounded-[20px] border border-gray-100 flex items-center gap-3">
                                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold overflow-hidden border shrink-0 shadow-sm
                                                 ${pengurus.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
                                                   pengurus.id.charCodeAt(0) % 3 === 1 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
@@ -520,25 +539,6 @@ export default function PengurusList() {
                                                 {pengurus.warga?.kontak && <Text.Caption className="!text-gray-400 !font-normal !text-[12px] truncate tracking-[1px]">{pengurus.warga.kontak}</Text.Caption>}
                                             </div>
                                         </div>
-
-                                        <div className="flex justify-end items-center pt-4 mt-4 border-t border-slate-50 gap-2">
-                                            <HasPermission module="Data Pengurus" action="Ubah">
-                                                <button
-                                                    onClick={() => navigate(`/pengurus/edit/${pengurus.id}`)}
-                                                    className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all shadow-sm border border-blue-100/50"
-                                                >
-                                                    <PencilSimple weight="bold" size={18} />
-                                                </button>
-                                            </HasPermission>
-                                            <HasPermission module="Data Pengurus" action="Hapus">
-                                                <button
-                                                    onClick={() => handleDelete(pengurus.id, pengurus.jabatan)}
-                                                    className="p-2.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all shadow-sm border border-rose-100/50"
-                                                >
-                                                    <Trash weight="bold" size={18} />
-                                                </button>
-                                            </HasPermission>
-                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -548,12 +548,12 @@ export default function PengurusList() {
             ) : activeTab === 'riwayat' ? (
                 <div className="space-y-6">
                     {isLoading ? (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center"><Text.Body className="!text-gray-500">Memuat Data...</Text.Body></div>
+                        <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-8 text-center"><Text.Body className="!text-gray-500">Memuat Data...</Text.Body></div>
                     ) : Object.keys(groupedRiwayat).length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500">
+                        <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-8 text-center text-gray-500">
                             <div className="flex flex-col items-center justify-center space-y-3">
                                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                                    <ListDashes className="w-6 h-6 text-gray-400" />
+                                    <List className="w-6 h-6 text-gray-400" />
                                 </div>
                                 <Text.Body>Belum Ada Riwayat Kepengurusan.</Text.Body>
                             </div>
@@ -562,14 +562,14 @@ export default function PengurusList() {
                         Object.entries(groupedRiwayat)
                             .sort(([a], [b]) => b.localeCompare(a)) // Sort by period descending
                             .map(([periode, members]: [string, any]) => (
-                                <div key={periode} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div key={periode} className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
                                     <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
                                         <Text.H2 className="!text-gray-900 !flex !items-center !gap-2">
                                             <div className="w-2 h-6 bg-brand-500 rounded-full" />
                                             Periode {periode}
                                             {!periodeSettings.includes(periode) && periode !== 'Tanpa Periode' && (
                                                 <span className="group relative">
-                                                    <WarningCircle size={14} className="text-amber-500" weight="fill" />
+                                                    <AlertCircle size={14} className="text-amber-500" />
                                                     <span className="absolute left-6 top-1/2 -translate-y-1/2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-left font-normal">
                                                         Periode ini belum terdaftar di Pengaturan Sistem.
                                                     </span>
@@ -580,7 +580,7 @@ export default function PengurusList() {
                                     </div>
                                     <div className="p-2 sm:p-4 space-y-3">
                                         {members.map((p: any) => (
-                                            <div key={p.id} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between group hover:shadow-md transition-all">
+                                            <div key={p.id} className="bg-white border border-gray-100 rounded-[20px] p-4 flex items-center justify-between group hover:shadow-md transition-all">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold shrink-0 border shadow-sm
                                                         ${p.id.charCodeAt(0) % 3 === 0 ? 'bg-blue-50 text-blue-700 border-blue-100' : 
@@ -593,7 +593,7 @@ export default function PengurusList() {
                                                         <div className="flex items-center gap-2 mb-0.5">
                                                             <Text.Body className="!text-gray-900 !text-[14px] !font-semibold">{p.jabatan}</Text.Body>
                                                             {!jabatanSettings.includes(p.jabatan) && (
-                                                                <WarningCircle size={13} className="text-amber-500/70" weight="fill" />
+                                                                <AlertCircle size={13} className="text-amber-500/70" />
                                                             )}
                                                         </div>
                                                         <Text.Body className="!text-gray-600 !font-medium !text-[13px]">{toTitleCase(p.warga?.nama || 'N/A')}</Text.Body>
@@ -605,7 +605,7 @@ export default function PengurusList() {
                                                         <button
                                                             onClick={() => navigate(`/pengurus/edit/${p.id}`)}
                                                             className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors" title="Edit">
-                                                            <PencilSimple className="w-5 h-5" />
+                                                            <Pencil className="w-5 h-5" />
                                                         </button>
                                                     </HasPermission>
                                                 </div>
@@ -617,11 +617,12 @@ export default function PengurusList() {
                     )}
                 </div>
             ) : (
-                    <div className="sticky top-[10px] z-30 bg-slate-50/90 backdrop-blur-md pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+                <div className="space-y-6 animate-fade-in">
+                    <div className="sticky top-16 z-30 bg-white/80 backdrop-blur-md pb-4 pt-2 -mx-5 px-5">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-brand-600">
-                                    <BookOpen weight="fill" size={18} />
+                                    <BookOpen size={18} />
                                 </div>
                                 <Text.Body className="!font-bold !text-slate-800">Daftar Regulasi</Text.Body>
                             </div>
@@ -630,7 +631,7 @@ export default function PengurusList() {
                                     onClick={() => setShowVersionHistory(!showVersionHistory)}
                                     className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all border shadow-sm ${showVersionHistory ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                                 >
-                                    <ClockCounterClockwise weight="bold" size={16} />
+                                    <History size={16} />
                                     <Text.Label className="!text-inherit !normal-case">{adArtData.archives?.length || 0} Arsip</Text.Label>
                                 </button>
                                 <HasPermission module="Data Pengurus" action="Ubah">
@@ -638,20 +639,20 @@ export default function PengurusList() {
                                         onClick={() => setIsAddingCategory(true)}
                                         className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-[12px] font-bold hover:bg-black transition-all shadow-md active:scale-95"
                                     >
-                                        <PlusCircle weight="fill" size={16} />
+                                        <PlusCircle size={16} />
                                         <Text.Label className="!text-white !normal-case">Baru</Text.Label>
                                     </button>
                                 </HasPermission>
                             </div>
                         </div>
                         
-                        <div className="overflow-x-auto no-scrollbar snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <div className="overflow-x-auto no-scrollbar snap-x -mx-5 px-5">
                             <div className="flex items-center gap-2.5 min-w-max">
                                 {Object.keys(adArtData.active?.categories || {}).map((cat) => (
                                     <div key={cat} className="group/tab relative flex items-center snap-center">
                                         <button
                                             onClick={() => { setActiveCategory(cat); setShowVersionHistory(false); }}
-                                            className={`px-6 py-3 rounded-2xl text-[13px] font-bold transition-all border shadow-sm active:scale-95 ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-brand-500/30' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
+                                            className={`px-6 py-3 rounded-[24px] text-[13px] font-bold transition-all border shadow-sm active:scale-95 ${activeCategory === cat && !showVersionHistory ? 'bg-brand-600 text-white border-brand-600 shadow-brand-500/30' : 'bg-white border-slate-200 text-slate-600 hover:border-brand-300'}`}
                                         >
                                             {cat}
                                         </button>
@@ -660,7 +661,7 @@ export default function PengurusList() {
                                                 onClick={() => deleteCategory(cat)}
                                                 className="absolute -top-1.5 -right-1.5 p-1.5 bg-white border border-slate-200 rounded-full text-rose-500 opacity-0 group-hover/tab:opacity-100 hover:bg-rose-50 transition-all shadow-xl z-10"
                                             >
-                                                <X size={12} weight="bold" />
+                                                <X size={12} />
                                             </button>
                                         </HasPermission>
                                     </div>
@@ -684,8 +685,6 @@ export default function PengurusList() {
                                 <button onClick={() => setIsAddingCategory(false)} className="px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-xl"><Text.Label className="!text-slate-600 !normal-case !tracking-normal">Batal</Text.Label></button>
                             </div>
                         )}
-                    </div>
-
                     <div className="w-full">
                         {showVersionHistory ? (
                             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in">
@@ -695,7 +694,7 @@ export default function PengurusList() {
                                 </div>
                                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {adArtData.archives?.map((archive: any) => (
-                                        <div key={archive.id} className="group bg-slate-50 rounded-2xl p-5 border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all relative">
+                                        <div key={archive.id} className="group bg-slate-50 rounded-[24px] p-5 border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all relative">
                                             <div className="flex flex-col h-full">
                                                 <div className="mb-4">
                                                     <Text.Label className="!px-2 !py-1 !bg-amber-100 !text-amber-700 rounded-lg mb-2 !inline-block">Archived Version</Text.Label>
@@ -703,11 +702,11 @@ export default function PengurusList() {
                                                 </div>
                                                 <div className="space-y-2 mb-6">
                                                     <Text.Caption className="!flex items-center gap-2">
-                                                        <FloppyDisk weight="fill" className="text-slate-400" />
+                                                        <Save className="text-slate-400 w-4 h-4" />
                                                         {new Date(archive.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                                                     </Text.Caption>
                                                     <Text.Caption className="!flex items-center gap-2">
-                                                        <User weight="fill" className="text-slate-400" />
+                                                        <Users className="text-slate-400 w-4 h-4" />
                                                         Ketua: <Text.Body component="span" className="!font-bold !text-slate-700 !text-inherit">{toTitleCase(archive.chairman)}</Text.Body>
                                                     </Text.Caption>
                                                 </div>
@@ -737,7 +736,7 @@ export default function PengurusList() {
                                             <Text.H1 className="!leading-tight">{activeCategory}</Text.H1>
                                             {adArtData.active.metadata && (
                                                 <div className="flex flex-wrap items-center gap-3 mt-4 text-[11px] text-slate-500 font-medium tracking-wider">
-                                                    <Text.Caption className="!flex items-center gap-1.5"><ListDashes className="text-slate-400" /> Versi {adArtData.active.metadata.version}</Text.Caption>
+                                                    <Text.Caption className="!flex items-center gap-1.5"><List className="text-slate-400" size={14} /> Versi {adArtData.active.metadata.version}</Text.Caption>
                                                     <span className="w-1 h-1 rounded-full bg-slate-300 hidden sm:block" />
                                                     <Text.Caption className="!flex items-center gap-1.5"><PlusCircle className="text-slate-400" /> {new Date(adArtData.active.metadata.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</Text.Caption>
                                                 </div>
@@ -749,7 +748,7 @@ export default function PengurusList() {
                                                 disabled={isSavingAdArt}
                                                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-[24px] font-medium text-xs tracking-widest transition-all shadow-xl shadow-brand-500/40 active:scale-95 mb-1"
                                             >
-                                                <FloppyDisk weight="bold" size={20} />
+                                                <Save size={20} />
                                                 <Text.Label component="span" className="!text-white !normal-case !tracking-normal">{isSavingAdArt ? 'Menyimpan...' : 'Terbitkan Amandemen'}</Text.Label>
                                             </button>
                                         </HasPermission>

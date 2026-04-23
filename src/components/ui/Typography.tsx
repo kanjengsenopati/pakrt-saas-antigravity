@@ -27,7 +27,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-[22px] font-bold tracking-tight text-[#1A1A1A] leading-tight",
+          "font-headline text-[22px] font-bold tracking-tight text-slate-900 leading-tight",
           className
         )}
       >
@@ -45,7 +45,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-base font-semibold tracking-tight text-[#1A1A1A] leading-snug",
+          "font-headline text-base font-semibold tracking-tight text-slate-800 leading-snug",
           className
         )}
       >
@@ -99,7 +99,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-lg font-bold tabular-nums tracking-tight text-[#1A1A1A]",
+          "font-headline text-[18px] font-bold tabular-nums tracking-tight text-emerald-600",
           className
         )}
       >
@@ -117,7 +117,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-label text-[11px] font-bold tracking-[0.5px] text-[#6B7280] uppercase",
+          "font-label text-[11px] font-bold tracking-[2px] text-slate-400 uppercase",
           className
         )}
       >
@@ -135,7 +135,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[14px] font-medium text-[#6B7280] leading-relaxed",
+          "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
           className
         )}
       >
@@ -153,7 +153,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[12px] font-medium italic text-[#6B7280] leading-normal tracking-tight",
+          "font-body text-[12px] font-normal italic text-slate-400 leading-normal tracking-tight",
           className
         )}
       >
