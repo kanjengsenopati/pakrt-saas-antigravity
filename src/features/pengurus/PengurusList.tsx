@@ -288,7 +288,7 @@ export default function PengurusList() {
             </div>
 
             {/* PREMIUM STATS WIDGETS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-3 sm:px-0 -mt-2">
+            <div className="grid grid-cols-2 gap-4 px-3 sm:px-0 -mt-2">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-400" />
                     <Text.Label className="mb-1.5 !flex items-center gap-2">
@@ -301,39 +301,40 @@ export default function PengurusList() {
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                <div className="bg-brand-50 p-5 rounded-2xl border border-brand-100 shadow-sm relative overflow-hidden group hover:bg-brand-100/50 transition-all duration-300">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <Text.Label className="mb-1.5 !flex items-center gap-2">
-                        <Users weight="duotone" className="text-brand-400 w-4 h-4" />
+                    <Text.Label className="mb-1.5 !flex items-center gap-2 !text-brand-700">
+                        <Users weight="duotone" className="text-brand-500 w-4 h-4" />
                         Pejabat Aktif
                     </Text.Label>
                     <div className="flex items-baseline gap-1">
-                        <Text.Amount className="!text-2xl !text-white">{activePengurus}</Text.Amount>
-                        <Text.Label className="!text-slate-500 !normal-case">Orang</Text.Label>
+                        <Text.Amount className="!text-2xl !text-brand-600">{activePengurus}</Text.Amount>
+                        <Text.Label className="!text-brand-400 !normal-case">Orang</Text.Label>
                     </div>
                 </div>
             </div>
 
             {/* SEGMENTED TAB NAVIGATION */}
             <div className="px-3 sm:px-0">
-                <div className="bg-gray-100 p-1 rounded-[8px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-hidden">
+                <div className="bg-gray-100 p-1 rounded-[12px] flex items-center gap-1 w-full md:w-fit border border-gray-200/50 shadow-sm overflow-x-auto no-scrollbar">
                     <button
                         onClick={() => setActiveTab('aktif')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'aktif' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">Struktur Aktif</Text.Label>
+                        <UserList weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Struktur Aktif</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('riwayat')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'riwayat' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">Riwayat</Text.Label>
+                        <ClockCounterClockwise weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">Riwayat</Text.Label>
                     </button>
                     <button
                         onClick={() => setActiveTab('ad-art')}
-                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-medium rounded-[6px] transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`flex-1 md:flex-none whitespace-nowrap px-4 md:px-6 py-2.5 text-xs font-semibold rounded-[8px] transition-all flex items-center justify-center gap-2 ${activeTab === 'ad-art' ? 'bg-white text-brand-600 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                     >
-                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal">AD / ART</Text.Label>
+                        <BookOpen weight="bold" size={18} /> <Text.Label className="!text-inherit !normal-case !tracking-normal !font-bold">AD / ART</Text.Label>
                     </button>
                 </div>
             </div>
