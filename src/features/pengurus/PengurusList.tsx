@@ -53,6 +53,12 @@ export default function PengurusList() {
     });
     const [showVersionHistory, setShowVersionHistory] = useState(false);
     const [isSavingAdArt, setIsSavingAdArt] = useState(false);
+    
+    // Sandbox-safe Modal States
+    const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean, title: string, message: string, onConfirm: () => void } | null>(null);
+    const [promptModal, setPromptModal] = useState<{ isOpen: boolean, title: string, placeholder: string, value: string, onConfirm: (val: string) => void } | null>(null);
+    const [promptInput, setPromptInput] = useState('');
+    const [alertModal, setAlertModal] = useState<{ isOpen: boolean, title: string, message: string } | null>(null);
 
     const loadData = async () => {
         if (!currentTenant) return;
@@ -114,68 +120,89 @@ export default function PengurusList() {
     }, [currentTenant, currentScope]);
 
     const handleDelete = async (id: string, namaJabatan: string) => {
-        if (window.confirm(`Hapus data jabatan ${namaJabatan}?`)) {
-            await pengurusService.delete(id);
-            loadData();
-        }
+        setConfirmModal({
+            isOpen: true,
+            title: "Hapus Jabatan",
+            message: `Apakah Anda yakin ingin menghapus data jabatan ${namaJabatan}?`,
+            onConfirm: async () => {
+                await pengurusService.delete(id);
+                loadData();
+                setConfirmModal(null);
+            }
+        });
     };
 
     const saveAdArt = async () => {
         if (!currentTenant) return;
         
-        const versionName = window.prompt("Berikan nama untuk versi perubahan ini (contoh: Amandemen 2026):", "Pembaruan AD/ART");
-        if (versionName === null) return; // User cancelled
+        setPromptInput("Pembaruan AD/ART");
+        setPromptModal({
+            isOpen: true,
+            title: "Simpan Versi AD/ART",
+            placeholder: "contoh: Amandemen 2026",
+            value: "Pembaruan AD/ART",
+            onConfirm: async (versionName) => {
+                setPromptModal(null);
+                if (!versionName) return;
 
-        const chairman = toTitleCase(pengurusList.find(p => p.jabatan?.toLowerCase().includes('ketua') && p.jabatan?.toLowerCase().includes(currentScope.toLowerCase()))?.warga?.nama || "Tidak Diketahui");
-        
-        setIsSavingAdArt(true);
-        try {
-            const newArchive = {
-                id: crypto.randomUUID(),
-                name: adArtData.active.metadata?.version || "Versi Sebelumnya",
-                date: adArtData.active.metadata?.date || new Date().toISOString(),
-                chairman: adArtData.active.metadata?.chairman || chairman,
-                content: { ...adArtData.active.categories }
-            };
+                const chairman = toTitleCase(pengurusList.find(p => p.jabatan?.toLowerCase().includes('ketua') && p.jabatan?.toLowerCase().includes(currentScope.toLowerCase()))?.warga?.nama || "Tidak Diketahui");
+                
+                setIsSavingAdArt(true);
+                try {
+                    const newArchive = {
+                        id: crypto.randomUUID(),
+                        name: adArtData.active.metadata?.version || "Versi Sebelumnya",
+                        date: adArtData.active.metadata?.date || new Date().toISOString(),
+                        chairman: adArtData.active.metadata?.chairman || chairman,
+                        content: adArtData.active.content
+                    };
 
-            const updatedData = {
-                active: {
-                    categories: adArtData.active.categories,
-                    metadata: {
-                        version: versionName,
-                        date: new Date().toISOString(),
-                        chairman: chairman
-                    }
-                },
-                archives: [newArchive, ...(adArtData.archives || [])]
-            };
+                    const updatedData = {
+                        active: {
+                            content: adArtData.active.content,
+                            metadata: {
+                                version: versionName,
+                                date: new Date().toISOString(),
+                                chairman: chairman
+                            }
+                        },
+                        archives: [newArchive, ...(adArtData.archives || [])]
+                    };
 
-            await pengaturanService.save(currentTenant.id, currentScope, 'ad_art', updatedData);
-            setAdArtData(updatedData);
-            alert("AD/ART Berhasil Diperbarui & Diarsipkan.");
-        } catch (error) {
-            console.error("Failed to save AD/ART:", error);
-            alert("Gagal menyimpan AD/ART");
-        } finally {
-            setIsSavingAdArt(false);
-        }
+                    await pengaturanService.save(currentTenant.id, currentScope, 'ad_art', updatedData);
+                    setAdArtData(updatedData);
+                    setAlertModal({ isOpen: true, title: "Berhasil", message: "AD/ART Berhasil Diperbarui & Diarsipkan." });
+                } catch (error) {
+                    console.error("Failed to save AD/ART:", error);
+                    setAlertModal({ isOpen: true, title: "Gagal", message: "Gagal menyimpan AD/ART" });
+                } finally {
+                    setIsSavingAdArt(false);
+                }
+            }
+        });
     };
 
     const restoreArchive = (archive: any) => {
-        if (window.confirm(`Pulihkan versi "${archive.name}"? Perubahan saat ini akan hilang jika belum disimpan.`)) {
-            setAdArtData((prev: any) => ({
-                ...prev,
-                active: {
-                    content: archive.content,
-                    metadata: {
-                        version: `Pemulihan: ${archive.name}`,
-                        date: new Date().toISOString(),
-                        chairman: archive.chairman
+        setConfirmModal({
+            isOpen: true,
+            title: "Pulihkan Versi",
+            message: `Apakah Anda yakin ingin memulihkan versi "${archive.name}"? Perubahan saat ini akan hilang jika belum disimpan.`,
+            onConfirm: () => {
+                setAdArtData((prev: any) => ({
+                    ...prev,
+                    active: {
+                        content: archive.content,
+                        metadata: {
+                            version: `Pemulihan: ${archive.name}`,
+                            date: new Date().toISOString(),
+                            chairman: archive.chairman
+                        }
                     }
-                }
-            }));
-            setShowVersionHistory(false);
-        }
+                }));
+                setShowVersionHistory(false);
+                setConfirmModal(null);
+            }
+        });
     };
 
     const filteredPengurus = pengurusList.filter(p => {
@@ -693,6 +720,53 @@ export default function PengurusList() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            
+            {/* INLINE MODALS FOR SANDBOX ENV */}
+            {confirmModal && confirmModal.isOpen && (
+                <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-slide-up border border-slate-100">
+                        <Text.H2 className="!text-slate-900 mb-2">{confirmModal.title}</Text.H2>
+                        <Text.Body className="mb-6">{confirmModal.message}</Text.Body>
+                        <div className="flex gap-3 justify-end">
+                            <button onClick={() => setConfirmModal(null)} className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all active:scale-95"><Text.Label className="!text-inherit !normal-case !tracking-normal">Batal</Text.Label></button>
+                            <button onClick={confirmModal.onConfirm} className="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition-all active:scale-95"><Text.Label className="!text-white !normal-case !tracking-normal">Ya, Lanjutkan</Text.Label></button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {promptModal && promptModal.isOpen && (
+                <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-slide-up border border-slate-100">
+                        <Text.H2 className="!text-slate-900 mb-2">{promptModal.title}</Text.H2>
+                        <input 
+                            autoFocus
+                            type="text"
+                            placeholder={promptModal.placeholder}
+                            value={promptInput}
+                            onChange={(e) => setPromptInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && promptModal.onConfirm(promptInput)}
+                            className="w-full mt-4 mb-6 text-sm bg-slate-50 rounded-xl py-3 px-4 border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all outline-none"
+                        />
+                        <div className="flex gap-3 justify-end">
+                            <button onClick={() => setPromptModal(null)} className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-all active:scale-95"><Text.Label className="!text-inherit !normal-case !tracking-normal">Batal</Text.Label></button>
+                            <button onClick={() => promptModal.onConfirm(promptInput)} className="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition-all active:scale-95"><Text.Label className="!text-white !normal-case !tracking-normal">Simpan</Text.Label></button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {alertModal && alertModal.isOpen && (
+                <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-slide-up border border-slate-100">
+                        <Text.H2 className="!text-slate-900 mb-2">{alertModal.title}</Text.H2>
+                        <Text.Body className="mb-6">{alertModal.message}</Text.Body>
+                        <div className="flex justify-end">
+                            <button onClick={() => setAlertModal(null)} className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition-all active:scale-95"><Text.Label className="!text-white !normal-case !tracking-normal">Tutup</Text.Label></button>
+                        </div>
                     </div>
                 </div>
             )}
