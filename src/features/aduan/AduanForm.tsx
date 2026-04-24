@@ -20,7 +20,7 @@ type AduanFormData = Pick<AduanUsulan, 'tipe' | 'judul' | 'deskripsi' | 'is_anon
 
 export default function AduanForm() {
     const navigate = useNavigate();
-    const { currentTenant, currentScope } = useTenant();
+    const { currentTenant, currentScope, currentUser } = useTenant();
     const [isUploading, setIsUploading] = useState(false);
     const [fotoUrl, setFotoUrl] = useState<string | undefined>();
 
@@ -49,17 +49,22 @@ export default function AduanForm() {
     const onSubmit = async (data: AduanFormData) => {
         if (!currentTenant) return;
 
+        const payload = {
+            ...data,
+            foto_url: fotoUrl,
+            tenant_id: currentTenant.id,
+            warga_id: currentUser?.warga_id,
+            scope: currentScope
+        };
+
+        console.log("Sending aspirasi payload:", payload);
+
         try {
-            await aduanService.create({
-                ...data,
-                foto_url: fotoUrl,
-                tenant_id: currentTenant.id,
-                scope: currentScope
-            });
+            await aduanService.create(payload);
             navigate('/aduan');
         } catch (error) {
             console.error("Gagal mengirim aspirasi:", error);
-            showAlert("Terjadi kesalahan saat mengirim aspirasi Anda.", "Gagal Mengirim", "error");
+            showAlert("Terjadi kesalahan saat mengirim aspirasi Anda (Error 403). Pastikan Anda memiliki hak akses.", "Gagal Mengirim", "error");
         }
     };
 

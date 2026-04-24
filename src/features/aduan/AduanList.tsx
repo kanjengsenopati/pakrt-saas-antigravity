@@ -137,23 +137,21 @@ export default function AduanList() {
                     <Text.H1>Informasi Aduan & Usulan</Text.H1>
                     <Text.Body className="mt-1">Media aspirasi dan pelaporan masalah lingkungan</Text.Body>
                 </div>
-                {(!authUser?.role?.toLowerCase().includes('warga')) && (
-                    <HasPermission module="Aduan & Usulan" action="Buat">
-                        <button
-                            onClick={() => navigate('/aduan/new')}
-                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
-                        >
-                            <Plus weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-inherit !font-bold">Kirim Aspirasi</Text.Body>
-                        </button>
-                    </HasPermission>
-                )}
-                <button
-                    onClick={() => navigate('/aduan/new')}
-                    className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
-                >
-                    <Plus weight="bold" size={24} />
-                </button>
+                <HasPermission module="Aduan & Usulan" action="Buat">
+                    <button
+                        onClick={() => navigate('/aduan/new')}
+                        className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                    >
+                        <Plus weight="bold" size={18} />
+                        <Text.Body component="span" className="!text-inherit !font-bold">Kirim Aspirasi</Text.Body>
+                    </button>
+                    <button
+                        onClick={() => navigate('/aduan/new')}
+                        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
+                    </button>
+                </HasPermission>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
