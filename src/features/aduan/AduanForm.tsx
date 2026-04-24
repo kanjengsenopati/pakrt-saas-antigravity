@@ -80,7 +80,7 @@ export default function AduanForm() {
                 </button>
                 <div>
                     <Text.H1>Kirim Aspirasi Baru</Text.H1>
-                    <Text.Body className="!text-slate-500 !mt-1">Scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 uppercase">{currentScope}</Text.Label></Text.Body>
+                    <Text.Body className="!text-slate-500 !mt-1">Scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 !tracking-tight">{currentScope}</Text.Label></Text.Body>
                 </div>
             </div>
 
@@ -118,20 +118,20 @@ export default function AduanForm() {
                 </div>
 
                 {/* Form Fields */}
-                <div className="bg-white rounded-card border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
+                <div className="bg-white rounded-[24px] border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2">Judul Aspirasi</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight">Judul Aspirasi</Text.Label>
                             <input
                                 placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu Jalan Mati Di Blok A" : "Contoh: Usul Pengadaan Taman Bermain"}
                                 {...register('judul', { required: 'Judul Wajib Diisi' })}
                                 className={`w-full rounded-2xl border-2 p-4 text-sm font-bold text-slate-700 outline-none transition-all placeholder:text-slate-300 ${errors.judul ? 'border-rose-100 bg-rose-50/30' : 'border-slate-50 bg-slate-50/50 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/5'}`}
                             />
-                            {errors.judul && <Text.Caption className="!text-rose-500 !mt-2 !font-bold !uppercase">{errors.judul.message}</Text.Caption>}
+                            {errors.judul && <Text.Caption className="!text-rose-500 !mt-2 !font-bold !tracking-tight">{errors.judul.message}</Text.Caption>}
                         </div>
 
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2">Deskripsi Lengkap</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight">Deskripsi Lengkap</Text.Label>
                             <textarea
                                 rows={5}
                                 placeholder="Jelaskan Detail Aspirasi Anda Di Sini..."
@@ -190,7 +190,7 @@ export default function AduanForm() {
                         <button
                             type="submit"
                             disabled={isSubmitting || isUploading}
-                            className="flex-[2] py-4 bg-slate-900 text-white rounded-btn flex items-center justify-center gap-3 text-sm font-bold shadow-premium transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-[2] py-4 bg-[#2563EB] text-white rounded-xl flex items-center justify-center gap-3 text-sm font-bold shadow-xl shadow-blue-100 transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

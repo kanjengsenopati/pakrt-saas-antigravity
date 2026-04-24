@@ -157,16 +157,16 @@ export default function AduanList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
                         <ChartBar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
                         Aspirasi
                     </Text.Label>
                     <Text.Amount className="!text-3xl lg:!text-4xl text-slate-900 leading-none">{stats?.total || 0}</Text.Amount>
                 </div>
 
-                <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/50">
-                        <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
+                <div className="bg-[#2563EB] p-4 rounded-[24px] border-none shadow-xl relative overflow-hidden group hover:bg-blue-700 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/80 !tracking-tight">
+                        <CheckCircle weight="fill" className="text-white/40 w-3.5 h-3.5" />
                         Selesai
                     </Text.Label>
                     <Text.Amount className="!text-3xl lg:!text-4xl text-white leading-none">{stats?.completed || 0}</Text.Amount>
@@ -174,7 +174,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
                         <Clock weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                         Menunggu
                     </Text.Label>
@@ -183,7 +183,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
                         <ArrowRight weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                         Proses
                     </Text.Label>
@@ -305,7 +305,7 @@ export default function AduanList() {
                                             <div className="flex justify-between items-start gap-4">
                                                 <div className="flex gap-4 min-w-0">
                                                     <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
-                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' }).toUpperCase()}</Text.Label>
+                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60 !tracking-tight">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Label>
                                                         <Text.Amount className="!text-lg !font-bold !leading-none mt-0.5">{new Date(item.tanggal).getDate()}</Text.Amount>
                                                     </div>
                                                     <div className="min-w-0">
@@ -317,8 +317,8 @@ export default function AduanList() {
                                                             }`}>
                                                                 {item.status}
                                                             </Text.Label>
-                                                            <Text.Caption>
-                                                                {item.is_anonymous ? 'Anonim' : (item.warga?.nama?.toUpperCase() || 'WARGA')}
+                                                            <Text.Caption className="!tracking-tight !font-semibold">
+                                                                {item.is_anonymous ? 'Anonim' : (item.warga?.nama || 'Warga')}
                                                             </Text.Caption>
                                                         </div>
                                                         <Text.H2 className="line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
