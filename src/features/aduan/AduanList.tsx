@@ -305,12 +305,12 @@ export default function AduanList() {
                                             <div className="flex justify-between items-start gap-4">
                                                 <div className="flex gap-4 min-w-0">
                                                     <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
-                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60 !tracking-tight">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Label>
+                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60 !tracking-tight !normal-case">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Label>
                                                         <Text.Amount className="!text-lg !font-bold !leading-none mt-0.5">{new Date(item.tanggal).getDate()}</Text.Amount>
                                                     </div>
                                                     <div className="min-w-0">
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <Text.Label className={`px-2 py-0.5 rounded-md !text-white ${
+                                                            <Text.Label className={`px-2 py-0.5 rounded-md !text-white !normal-case !tracking-tight ${
                                                                 item.status === 'Menunggu' ? 'bg-amber-600' :
                                                                 item.status === 'Proses' ? 'bg-blue-600' :
                                                                 'bg-emerald-600'
@@ -336,12 +336,12 @@ export default function AduanList() {
                                                 <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                                                     <div className="space-y-4 text-left">
                                                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                                            <Text.Caption className="!text-[10px] !font-bold tracking-tight text-slate-400 mb-1 block">Detail Permasalahan</Text.Caption>
+                                                            <Text.Label className="!text-[10px] !font-bold tracking-tight text-slate-400 mb-1 block !normal-case">Detail Permasalahan</Text.Label>
                                                             <Text.Body className="!text-sm !font-medium !text-slate-700 !leading-relaxed">{item.deskripsi}</Text.Body>
                                                         </div>
                                                          {item.tanggapan ? (
                                                             <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
-                                                                <Text.Caption className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block">Tanggapan Pengurus</Text.Caption>
+                                                                <Text.Label className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block !normal-case">Tanggapan Pengurus</Text.Label>
                                                                 <Text.Body className="!text-sm !font-bold italic !text-blue-800 !leading-relaxed">"{item.tanggapan}"</Text.Body>
                                                             </div>
                                                         ) : (
@@ -397,12 +397,12 @@ export default function AduanList() {
                         </div>
                         <div className="p-8 space-y-8 max-h-[75vh] overflow-y-auto no-scrollbar">
                             <div className="space-y-2">
-                                <Text.Label className="!text-[9px]">Judul Aspirasi</Text.Label>
+                                <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Judul Aspirasi</Text.Label>
                                 <Text.H2 className="!text-lg leading-tight">{selectedItem.judul}</Text.H2>
                             </div>
                             
                             <div className="space-y-2">
-                                <Text.Label className="!text-[9px]">Uraian Lengkap</Text.Label>
+                                <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Uraian Lengkap</Text.Label>
                                 <div className="bg-slate-50/50 border border-slate-100 p-5 rounded-[16px]">
                                     <Text.Body className="!text-slate-700 italic leading-relaxed">{selectedItem.deskripsi}</Text.Body>
                                 </div>
@@ -410,7 +410,7 @@ export default function AduanList() {
 
                             {selectedItem.foto_url && (
                                 <div className="space-y-3">
-                                    <Text.Label className="!text-[9px]">Lampiran Foto</Text.Label>
+                                    <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Lampiran Foto</Text.Label>
                                     <div className="p-1 bg-slate-50 border border-slate-100 rounded-[20px] shadow-inner overflow-hidden">
                                         <img src={selectedItem.foto_url} alt="Lampiran" className="w-full rounded-[18px] shadow-premium" />
                                     </div>
@@ -419,8 +419,8 @@ export default function AduanList() {
 
                             <div className="pt-8 border-t border-slate-100 space-y-6">
                                 <div className="flex items-center justify-between">
-                                    <Text.Label className="!text-slate-900">Tanggapan Pengurus</Text.Label>
-                                    <Text.Label className={`px-2.5 py-1 rounded-full border ${
+                                    <Text.Label className="!text-slate-900 !normal-case !tracking-tight">Tanggapan Pengurus</Text.Label>
+                                    <Text.Label className={`px-2.5 py-1 rounded-full border !normal-case !tracking-tight ${
                                         selectedItem.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                         selectedItem.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                                         'bg-brand-50 text-brand-600 border-brand-100'

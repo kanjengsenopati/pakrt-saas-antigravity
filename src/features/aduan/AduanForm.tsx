@@ -163,7 +163,7 @@ export default function AduanForm() {
                                     {isAnonymous ? <ShieldCheck weight="fill" className="w-5 h-5" /> : <ShieldSlash weight="bold" className="w-5 h-5" />}
                                 </div>
                                 <div className="space-y-0.5">
-                                    <Text.Label className={`!text-sm !font-semibold !tracking-tight ${isAnonymous ? '!text-brand-700' : '!text-slate-700'}`}>Sembunyikan Identitas Saya</Text.Label>
+                                    <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${isAnonymous ? '!text-brand-700' : '!text-slate-700'}`}>Sembunyikan Identitas Saya</Text.Label>
                                     <Text.Caption className="!text-slate-500 !font-medium !leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</Text.Caption>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@ export default function AduanForm() {
                             onClick={() => navigate('/aduan')}
                             className="flex-1 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-2xl transition-all border border-transparent"
                         >
-                            <Text.Label className="!text-slate-500">Batal</Text.Label>
+                            <Text.Label className="!text-slate-500 !normal-case !tracking-tight">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
@@ -196,7 +196,7 @@ export default function AduanForm() {
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
-                                    <Text.Label className="!text-white">Kirim Sekarang</Text.Label>
+                                    <Text.Label className="!text-white !normal-case !tracking-tight">Kirim Sekarang</Text.Label>
                                     <PaperPlaneTilt weight="fill" className="w-5 h-5" />
                                 </>
                             )}

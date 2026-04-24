@@ -50,7 +50,7 @@ export default function WargaDetail() {
                         className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-[12px] transition-all shadow-sm active-press"
                     >
                         <PencilSimple weight="bold" />
-                        <Text.Label className="!text-white">Edit Profil</Text.Label>
+                        <Text.Label className="!text-white !normal-case !tracking-tight">Edit Profil</Text.Label>
                     </button>
                 </HasPermission>
             </div>
@@ -68,16 +68,16 @@ export default function WargaDetail() {
                         <Text.H1 className="!text-xl leading-tight mb-1">{toTitleCase(warga.nama)}</Text.H1>
                         <Text.Caption className="!text-gray-500 !font-normal tracking-[1px]">{warga.nik}</Text.Caption>
                         <div className="mt-4 flex flex-wrap justify-center gap-2">
-                            <Text.Label className="!px-2.5 !py-0.5 rounded-full !bg-brand-100 !text-brand-800 border border-brand-200">
+                            <Text.Label className="!px-2.5 !py-0.5 rounded-full !bg-brand-100 !text-brand-800 border border-brand-200 !normal-case !tracking-tight">
                                 Kepala Keluarga
                             </Text.Label>
                             {warga.status_penduduk && (
-                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border ${warga.status_penduduk === 'Tetap' ? '!bg-emerald-50 !text-emerald-700 border-emerald-100' : '!bg-amber-50 !text-amber-700 border-amber-100'}`}>
+                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border !normal-case !tracking-tight ${warga.status_penduduk === 'Tetap' ? '!bg-emerald-50 !text-emerald-700 border-emerald-100' : '!bg-amber-50 !text-amber-700 border-amber-100'}`}>
                                     {warga.status_penduduk}
                                 </Text.Label>
                             )}
                             {warga.status_rumah && (
-                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border ${warga.status_rumah === 'Dihuni' ? '!bg-blue-50 !text-blue-700 border-blue-100' : '!bg-rose-50 !text-rose-700 border-rose-100'}`}>
+                                <Text.Label className={`!px-2.5 !py-0.5 rounded-full border !normal-case !tracking-tight ${warga.status_rumah === 'Dihuni' ? '!bg-blue-50 !text-blue-700 border-blue-100' : '!bg-rose-50 !text-rose-700 border-rose-100'}`}>
                                     {warga.status_rumah === 'Dihuni' ? 'Rumah Dihuni' : 'Rumah Kosong'}
                                 </Text.Label>
                             )}
@@ -105,8 +105,8 @@ export default function WargaDetail() {
                                         className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-all shadow-sm hover:shadow active-press"
                                     >
                                         <MagnifyingGlassPlus weight="bold" className="w-4 h-4" />
-                                        <Text.Label className="!hidden sm:!inline !text-white">Lihat Dokumen</Text.Label>
-                                        <Text.Label className="sm:!hidden !text-white">Lihat</Text.Label>
+                                        <Text.Label className="!hidden sm:!inline !text-white !normal-case !tracking-tight">Lihat Dokumen</Text.Label>
+                                        <Text.Label className="sm:!hidden !text-white !normal-case !tracking-tight">Lihat</Text.Label>
                                     </button>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@ export default function WargaDetail() {
                                     rel="noopener noreferrer"
                                     className="hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition-colors border border-brand-100 shadow-sm"
                                 >
-                                    <Text.Label className="!text-brand-600">Buka Di Tab Baru</Text.Label>
+                                    <Text.Label className="!text-brand-600 !normal-case !tracking-tight">Buka Di Tab Baru</Text.Label>
                                 </a>
                                 <button
                                     className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 p-1.5 sm:p-2 rounded-full transition-colors"
@@ -204,7 +204,7 @@ function InfoItem({ icon: Icon, label, value, className = "", valueClassName = "
                 <Icon weight="duotone" className="w-5 h-5 text-gray-400" />
             </div>
             <div>
-                <Text.Label className="mb-1">{label}</Text.Label>
+                <Text.Label className="mb-1 !text-slate-600 !normal-case !tracking-tight">{label}</Text.Label>
                 <Text.Body className={`!font-medium ${valueClassName}`}>{value}</Text.Body>
             </div>
         </div>

@@ -115,7 +115,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-brand-200 text-brand-700 hover:bg-brand-50 rounded-md text-xs font-bold transition-all shadow-sm active:scale-95"
                     >
                         <Plus weight="bold" />
-                        <Text.Label className="!text-brand-700">Tambah Data</Text.Label>
+                        <Text.Label className="!text-brand-700 !normal-case !tracking-tight">Tambah Data</Text.Label>
                     </button>
                 )}
             </div>
@@ -126,7 +126,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div className="grid grid-cols-2 lg:grid-cols-10 gap-x-6 gap-y-4">
                             <div className="col-span-2 lg:col-span-3">
-                                <Text.Label className="mb-1">NIK <span className="text-red-500">*</span></Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">NIK <span className="text-red-500">*</span></Text.Label>
                                 <input
                                     type="text"
                                     {...register('nik', { required: 'Wajib diisi', pattern: /^[0-9]{16}$/ })}
@@ -135,7 +135,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 />
                             </div>
                             <div className="col-span-2 lg:col-span-10">
-                                <Text.Label className="mb-1">Nama Lengkap <span className="text-red-500">*</span></Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Nama Lengkap <span className="text-red-500">*</span></Text.Label>
                                 <input
                                     type="text"
                                     {...register('nama', { required: 'Wajib diisi' })}
@@ -145,7 +145,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-5">
-                                <Text.Label className="mb-1">Status Hubungan <span className="text-red-500">*</span></Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Status Hubungan <span className="text-red-500">*</span></Text.Label>
                                 <select
                                     {...register('hubungan', { required: true })}
                                     className="w-full rounded-lg shadow-sm p-3 border border-slate-200 focus:border-brand-500 bg-slate-50 focus:bg-white text-sm outline-none transition-all"
@@ -161,7 +161,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 </select>
                             </div>
                             <div className="col-span-2 lg:col-span-5">
-                                <Text.Label className="mb-1">Tempat Lahir</Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Tempat Lahir</Text.Label>
                                 <input
                                     type="text"
                                     {...register('tempat_lahir')}
@@ -171,7 +171,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-5">
-                                <Text.Label className="mb-1">Tanggal Lahir</Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Tanggal Lahir</Text.Label>
                                 <input
                                     type="date"
                                     {...register('tanggal_lahir')}
@@ -179,7 +179,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 />
                             </div>
                             <div className="col-span-2 lg:col-span-5">
-                                <Text.Label className="mb-1">Pendidikan</Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Pendidikan</Text.Label>
                                 <select
                                     {...register('pendidikan')}
                                     className="w-full rounded-lg shadow-sm p-3 border border-slate-200 focus:border-brand-500 bg-slate-50 focus:bg-white text-sm outline-none transition-all"
@@ -196,7 +196,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             </div>
 
                             <div className="col-span-2 lg:col-span-10">
-                                <Text.Label className="mb-1">Pekerjaan</Text.Label>
+                                <Text.Label className="mb-1 !normal-case !tracking-tight !text-slate-600">Pekerjaan</Text.Label>
                                 <input
                                     type="text"
                                     {...register('pekerjaan')}
@@ -211,14 +211,14 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                 onClick={closeForm}
                                 className="px-5 py-2 hover:bg-slate-50 text-slate-600 rounded-lg transition-all"
                             >
-                                <Text.Label className="!text-inherit">Batal</Text.Label>
+                                <Text.Label className="!text-inherit !normal-case !tracking-tight">Batal</Text.Label>
                             </button>
                             <button
                                 type="submit"
                                 className="flex items-center gap-2 px-6 py-2 bg-brand-600 text-white hover:bg-brand-700 rounded-lg transition-all shadow-md shadow-brand-600/20"
                             >
                                 <FloppyDisk weight="bold" />
-                                <Text.Label className="!text-white">Simpan Data</Text.Label>
+                                <Text.Label className="!text-white !normal-case !tracking-tight">Simpan Data</Text.Label>
                             </button>
                         </div>
                     </form>
@@ -239,11 +239,11 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                             <table className="w-full text-left">
                                 <thead className="bg-slate-50 border-b border-slate-100">
                                     <tr>
-                                        <th className="p-4 w-12 text-center"><Text.Label>No</Text.Label></th>
-                                        <th className="p-4"><Text.Label>Identitas & Hubungan</Text.Label></th>
-                                        <th className="p-4"><Text.Label>Tempat, Tgl Lahir</Text.Label></th>
-                                        <th className="p-4"><Text.Label>Pendidikan & Pekerjaan</Text.Label></th>
-                                        <th className="p-4 text-right"><Text.Label>Aksi</Text.Label></th>
+                                        <th className="p-4 w-12 text-center"><Text.Label className="!normal-case !tracking-tight !text-slate-500">No</Text.Label></th>
+                                        <th className="p-4"><Text.Label className="!normal-case !tracking-tight !text-slate-500">Identitas & Hubungan</Text.Label></th>
+                                        <th className="p-4"><Text.Label className="!normal-case !tracking-tight !text-slate-500">Tempat, Tgl Lahir</Text.Label></th>
+                                        <th className="p-4"><Text.Label className="!normal-case !tracking-tight !text-slate-500">Pendidikan & Pekerjaan</Text.Label></th>
+                                        <th className="p-4 text-right"><Text.Label className="!normal-case !tracking-tight !text-slate-500">Aksi</Text.Label></th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50">
@@ -256,7 +256,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                                                 <Text.Body className="!font-bold !text-slate-900">{toTitleCase(anggota.nama)}</Text.Body>
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <Text.Caption component="span" className="!text-[10px] bg-slate-100 !text-slate-500 px-1.5 py-0.5 rounded font-mono !font-normal tracking-[1px]">{anggota.nik}</Text.Caption>
-                                                    <Text.Label className={`!px-2 !py-0.5 rounded-full ${anggota.hubungan === 'Istri' || anggota.hubungan === 'Suami' ? '!bg-rose-50 !text-rose-600' :
+                                                    <Text.Label className={`!px-2 !py-0.5 rounded-full !normal-case !tracking-tight ${anggota.hubungan === 'Istri' || anggota.hubungan === 'Suami' ? '!bg-rose-50 !text-rose-600' :
                                                             anggota.hubungan === 'Anak' ? '!bg-blue-50 !text-blue-600' : '!bg-slate-100 !text-slate-600'
                                                         }`}>
                                                         {anggota.hubungan}
