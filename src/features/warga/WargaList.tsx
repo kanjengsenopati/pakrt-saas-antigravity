@@ -139,7 +139,7 @@ export default function WargaList() {
 
 
     return (
-        <div className="space-y-4 sm:space-y-6 animate-fade-in">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in overflow-x-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <Text.H1>{user?.role?.toLowerCase() === 'warga' ? 'Profil Warga' : 'Data Warga'}</Text.H1>
@@ -597,7 +597,7 @@ export default function WargaList() {
                                     </div>
                                 </div>
                                 {expandedWargaId === warga.id && (activeTab !== 'Pending') && (
-                                    <div className="bg-slate-50/50 p-4 border-t border-slate-100 animate-slide-down">
+                                    <div className="bg-slate-50/50 p-4 border-t border-slate-100 animate-slide-down min-w-0 overflow-hidden">
                                         <AnggotaKeluargaPanel wargaId={warga.id} tenantId={currentTenant?.id || ''} initialData={warga.anggota} />
                                     </div>
                                 )}

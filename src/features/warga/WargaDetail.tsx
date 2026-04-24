@@ -33,7 +33,7 @@ export default function WargaDetail() {
     if (!warga) return <div className="p-8 text-center"><Text.Body className="!text-red-500 !font-bold">Data Warga Tidak Ditemukan.</Text.Body></div>;
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-12">
+        <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-12 overflow-x-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <button
@@ -140,7 +140,7 @@ export default function WargaDetail() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-8 min-w-0 overflow-hidden">
                         <AnggotaKeluargaPanel wargaId={warga.id} tenantId={warga.tenant_id} initialData={warga.anggota} />
                     </div>
                 </div>
