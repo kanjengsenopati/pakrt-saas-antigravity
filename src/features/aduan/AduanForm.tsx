@@ -14,6 +14,7 @@ import {
 } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
+import { Modal } from '../../components/ui/Modal';
 
 type AduanFormData = Pick<AduanUsulan, 'tipe' | 'judul' | 'deskripsi' | 'is_anonymous' | 'foto_url'>;
 
@@ -23,8 +24,12 @@ export default function AduanForm() {
     const [isUploading, setIsUploading] = useState(false);
     const [fotoUrl, setFotoUrl] = useState<string | undefined>();
 
-    const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, type: 'info' | 'success' | 'error' }>({
+        title: 'Pemberitahuan',
+        message: '',
+        type: 'info'
+    });
 
     const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<AduanFormData>({
         defaultValues: {
@@ -36,9 +41,9 @@ export default function AduanForm() {
     const selectedTipe = watch('tipe');
     const isAnonymous = watch('is_anonymous');
 
-    const showAlert = (message: string) => {
-        setAlertMessage(message);
-        setIsAlertModalOpen(true);
+    const showAlert = (message: string, title = "Pemberitahuan", type: 'info' | 'success' | 'error' = 'info') => {
+        setAlertConfig({ title, message, type });
+        setIsAlertOpen(true);
     };
 
     const onSubmit = async (data: AduanFormData) => {
@@ -54,7 +59,7 @@ export default function AduanForm() {
             navigate('/aduan');
         } catch (error) {
             console.error("Gagal mengirim aspirasi:", error);
-            showAlert("Terjadi kesalahan saat mengirim aspirasi Anda.");
+            showAlert("Terjadi kesalahan saat mengirim aspirasi Anda.", "Gagal Mengirim", "error");
         }
     };
 
@@ -195,28 +200,14 @@ export default function AduanForm() {
                 </div>
             </form>
 
-            {/* Custom Alert Modal */}
-            {isAlertModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden flex flex-col animate-slide-up">
-                        <div className="p-6 text-center">
-                            <div className="w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Info weight="fill" className="w-8 h-8" />
-                            </div>
-                            <Text.H2 className="!text-[18px] mb-2">Pemberitahuan</Text.H2>
-                            <Text.Body className="!text-slate-600">{alertMessage}</Text.Body>
-                        </div>
-                        <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-center">
-                            <button
-                                onClick={() => setIsAlertModalOpen(false)}
-                                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all w-full"
-                            >
-                                Tutup
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title={alertConfig.title}
+                type={alertConfig.type}
+            >
+                {alertConfig.message}
+            </Modal>
         </div>
     );
 }

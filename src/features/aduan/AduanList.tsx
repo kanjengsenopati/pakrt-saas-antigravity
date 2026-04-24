@@ -23,6 +23,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from '../../components/ui/Modal';
 
 const STATUS_COLORS = {
     'Menunggu': '#f59e0b',
@@ -46,8 +47,24 @@ export default function AduanList() {
     const [tanggapanText, setTanggapanText] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
     const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, type: 'info' | 'success' | 'error' | 'warning' }>({
+        title: 'Pemberitahuan',
+        message: '',
+        type: 'info'
+    });
+    const [confirmConfig, setConfirmConfig] = useState<{ isOpen: boolean, message: string, onConfirm: () => void } | null>(null);
 
     const isPengurus = authUser?.role?.toLowerCase() !== 'warga';
+
+    const showAlert = (message: string, title = "Pemberitahuan", type: 'info' | 'success' | 'error' | 'warning' = 'info') => {
+        setAlertConfig({ title, message, type });
+        setIsAlertOpen(true);
+    };
+
+    const showConfirm = (message: string, onConfirm: () => void) => {
+        setConfirmConfig({ isOpen: true, message, onConfirm });
+    };
 
     const loadData = async () => {
         if (!currentTenant) return;
@@ -81,18 +98,24 @@ export default function AduanList() {
             setSelectedItem(null);
             setTanggapanText('');
             loadData();
+            showAlert("Berhasil memperbarui status aspirasi.", "Berhasil", "success");
         } catch (error) {
-            alert("Gagal memperbarui status.");
+            showAlert("Gagal memperbarui status.", "Gagal", "error");
         } finally {
             setIsUpdating(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Hapus data ini?")) {
-            await aduanService.delete(id);
-            loadData();
-        }
+        showConfirm("Hapus data ini?", async () => {
+            try {
+                await aduanService.delete(id);
+                loadData();
+                setConfirmConfig(null);
+            } catch (error) {
+                showAlert("Gagal menghapus data.", "Gagal", "error");
+            }
+        });
     };
 
     const barData = stats?.byType?.map((t: any) => ({
@@ -448,6 +471,42 @@ export default function AduanList() {
                         </div>
                     </div>
                 </div>
+            )}
+            {/* Custom Modals */}
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title={alertConfig.title}
+                type={alertConfig.type}
+            >
+                {alertConfig.message}
+            </Modal>
+
+            {confirmConfig?.isOpen && (
+                <Modal 
+                    isOpen={true}
+                    onClose={() => setConfirmConfig(null)}
+                    title="Konfirmasi"
+                    type="warning"
+                    footer={
+                        <div className="flex gap-2 w-full">
+                            <button
+                                onClick={() => setConfirmConfig(null)}
+                                className="flex-1 px-4 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 font-bold rounded-xl transition-all"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={confirmConfig.onConfirm}
+                                className="flex-1 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-100"
+                            >
+                                Hapus
+                            </button>
+                        </div>
+                    }
+                >
+                    {confirmConfig.message}
+                </Modal>
             )}
         </div>
     );
