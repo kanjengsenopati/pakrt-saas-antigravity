@@ -141,10 +141,9 @@ export default function AduanForm() {
                             {errors.deskripsi && <Text.Caption className="!text-rose-500 !mt-2 !font-semibold">{errors.deskripsi.message}</Text.Caption>}
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-2 !normal-case !tracking-tight">
                              <FileUpload 
                                 label="Foto Pendukung (Opsional)"
-                                className="!normal-case !tracking-tight"
                                 helperText="Sertakan bukti foto untuk mempercepat proses penanganan."
                                 onUploadSuccess={(url) => setFotoUrl(url)}
                                 onRemove={() => setFotoUrl(undefined)}

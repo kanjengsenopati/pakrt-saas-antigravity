@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { notulensiService } from '../../services/notulensiService';
 import { Agenda, Notulensi } from '../../database/db';
-import { Plus, PencilSimple, Trash, Users, CheckCircle, FileText, X, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, MagnifyingGlass, Calendar, Image as ImageIcon } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Users, CheckCircle, FileText, X, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, Calendar, Image as ImageIcon } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
