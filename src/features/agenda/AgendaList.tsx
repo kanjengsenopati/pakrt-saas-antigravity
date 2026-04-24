@@ -57,7 +57,7 @@ const ReportPanel = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-4">
                     <div>
-                        <Text.Label className="mb-2 block">Catatan Laporan</Text.Label>
+                        <Text.Label className="mb-2 block !text-slate-600 !tracking-tight !normal-case">Catatan Laporan</Text.Label>
                         <textarea
                             value={laporanText}
                             onChange={(e) => setLaporanText(e.target.value)}
@@ -108,12 +108,12 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
         <div className="space-y-8">
         <div className="flex flex-col gap-5">
                 <div className="bg-white p-6 rounded-[24px] border border-slate-100 flex flex-col items-center justify-center shadow-premium group hover:border-brand-200 transition-all">
-                    <Text.Label className="mb-2 block text-slate-400">Anggaran Kegiatan</Text.Label>
+                    <Text.Label className="mb-2 block !text-slate-600 !tracking-tight !normal-case">Anggaran Kegiatan</Text.Label>
                     <Text.Amount className="text-xl text-slate-900">{formatRupiah(agenda.nominal_biaya || 0)}</Text.Amount>
                     <Text.Caption className="mt-1 font-medium italic text-slate-500">{agenda.sumber_dana || '-'}</Text.Caption>
                 </div>
                 <div className="bg-white p-6 rounded-[24px] border border-slate-100 flex flex-col items-center justify-center shadow-premium group hover:border-brand-200 transition-all">
-                    <Text.Label className="mb-2 block text-slate-400">Jenis Aktivitas</Text.Label>
+                    <Text.Label className="mb-2 block !text-slate-600 !tracking-tight !normal-case">Jenis Aktivitas</Text.Label>
                     <Text.H2 className="!text-brand-600 !font-bold">{agenda.jenis_kegiatan || '-'}</Text.H2>
                     <Text.Caption className="mt-1 font-medium italic text-slate-500">{agenda.perlu_rapat ? 'Ada Notulensi' : 'Tanpa Rapat'}</Text.Caption>
                 </div>
@@ -121,7 +121,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
                     <div className="bg-white p-6 rounded-[24px] border border-brand-100 flex flex-col items-center justify-center shadow-premium group hover:bg-brand-50/30 transition-all">
                         <div className="flex items-center gap-1 mb-2">
                              <House weight="fill" className="w-3.5 h-3.5 text-brand-500" />
-                             <Text.Label className="!text-brand-500 !tracking-normal">Tuan Rumah</Text.Label>
+                             <Text.Label className="!text-brand-500 !tracking-tight !normal-case">Tuan Rumah</Text.Label>
                         </div>
                         <Text.H2 className="!text-sm !font-bold text-slate-900 truncate max-w-full px-2 uppercase" title={agenda.tuan_rumah}>{agenda.tuan_rumah}</Text.H2>
                         <div className="flex items-center gap-1 mt-1">
@@ -137,7 +137,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
             <div className="bg-white p-8 rounded-[20px] border border-slate-100 shadow-premium">
                 <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
                     <Users weight="duotone" className="w-6 h-6 text-brand-500" />
-                    <Text.Label className="!text-slate-900 !tracking-normal">Cakupan Peserta</Text.Label>
+                    <Text.Label className="!text-slate-600 !tracking-tight !normal-case">Cakupan Peserta</Text.Label>
                 </div>
 
                 {agenda.is_semua_warga ? (
@@ -177,7 +177,7 @@ const DetailContent = ({ agenda, currentScope, formatRupiah }: { agenda: Agenda,
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-5 border-b border-white/10 pb-4">
                             <CheckCircle weight="duotone" className="w-6 h-6 text-brand-200" />
-                            <Text.Label className="!text-white !tracking-normal">Laporan Pelaksanaan</Text.Label>
+                            <Text.Label className="!text-white !tracking-tight !normal-case">Laporan Pelaksanaan</Text.Label>
                         </div>
                         <Text.Body className="!text-brand-50 !font-medium italic leading-relaxed">"{agenda.laporan_kegiatan}"</Text.Body>
                     </div>
