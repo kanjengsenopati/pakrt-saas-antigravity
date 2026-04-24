@@ -394,7 +394,7 @@ export default function AgendaList() {
                             </div>
                             <div className="h-[250px] w-full min-h-[250px]">
                                 {statusData.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%" debounce={50}>
+                                    <ResponsiveContainer width="100%" height="100%" debounce={50} minWidth={1} minHeight={1}>
                                         <PieChart>
                                             <Pie
                                                 data={statusData}
@@ -431,7 +431,7 @@ export default function AgendaList() {
                             </div>
                             <div className="h-[250px] w-full min-h-[250px]">
                                 {fundingData.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%" debounce={50}>
+                                    <ResponsiveContainer width="100%" height="100%" debounce={50} minWidth={1} minHeight={1}>
                                         <BarChart data={fundingData}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                             <XAxis 

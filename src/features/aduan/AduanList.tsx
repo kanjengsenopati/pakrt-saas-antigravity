@@ -194,7 +194,7 @@ export default function AduanList() {
                             <Text.Label className="!text-slate-900 !tracking-normal">Komposisi Tipe</Text.Label>
                         </div>
                         <div className="h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                 <BarChart data={barData}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} />
@@ -212,7 +212,7 @@ export default function AduanList() {
                             <Text.Label className="!text-slate-900 !tracking-normal">Status Penyelesaian</Text.Label>
                         </div>
                         <div className="h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                 <PieChart>
                                     <Pie
                                         data={pieData}
