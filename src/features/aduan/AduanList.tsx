@@ -157,7 +157,7 @@ export default function AduanList() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <ChartBar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
                         Aspirasi
                     </Text.Label>
@@ -165,7 +165,7 @@ export default function AduanList() {
                 </div>
 
                 <div className="bg-[#2563EB] p-4 rounded-[24px] border-none shadow-xl relative overflow-hidden group hover:bg-blue-700 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/80 !tracking-tight">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/80 !tracking-tight !normal-case">
                         <CheckCircle weight="fill" className="text-white/40 w-3.5 h-3.5" />
                         Selesai
                     </Text.Label>
@@ -174,7 +174,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <Clock weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                         Menunggu
                     </Text.Label>
@@ -183,7 +183,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <ArrowRight weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                         Proses
                     </Text.Label>

@@ -95,9 +95,9 @@ export default function AduanForm() {
                         <div className={`p-3 rounded-xl transition-colors ${selectedTipe === 'Aduan' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-400 group-hover:text-rose-500'}`}>
                             <ChatTeardropDots weight="fill" className="w-6 h-6" />
                         </div>
-                        <div className="text-center">
-                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Aduan' ? '!text-rose-700' : '!text-slate-600'}`}>Aduan</Text.Label>
-                            <Text.Caption className="!text-slate-400 !font-medium">Laporkan Masalah</Text.Caption>
+                        <div className="text-center flex flex-col items-center">
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${selectedTipe === 'Aduan' ? '!text-rose-700' : '!text-slate-600'}`}>Aduan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium !mt-0.5">Laporkan Masalah</Text.Caption>
                         </div>
                     </button>
 
@@ -109,9 +109,9 @@ export default function AduanForm() {
                         <div className={`p-3 rounded-xl transition-colors ${selectedTipe === 'Usulan' ? 'bg-brand-500 text-white' : 'bg-slate-50 text-slate-400 group-hover:text-brand-50'}`}>
                             <Lightbulb weight="fill" className="w-6 h-6" />
                         </div>
-                        <div className="text-center">
-                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Usulan' ? '!text-brand-700' : '!text-slate-600'}`}>Usulan</Text.Label>
-                            <Text.Caption className="!text-slate-400 !font-medium">Ide & Saran Warga</Text.Caption>
+                        <div className="text-center flex flex-col items-center">
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${selectedTipe === 'Usulan' ? '!text-brand-700' : '!text-slate-600'}`}>Usulan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium !mt-0.5">Ide & Saran Warga</Text.Caption>
                         </div>
                     </button>
                     <input type="hidden" {...register('tipe', { required: true })} />
