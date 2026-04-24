@@ -157,7 +157,7 @@ export default function AgendaForm() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <Text.Label className="mb-1.5 block">
+                                    <Text.Label className="mb-1.5 block !tracking-tight !normal-case">
                                         Jenis Kegiatan <span className="text-red-500">*</span>
                                     </Text.Label>
                                     <select
@@ -188,11 +188,11 @@ export default function AgendaForm() {
                                 <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-4 animate-in slide-in-from-top-2 duration-300 text-left">
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="w-1 h-4 bg-brand-500 rounded-full"></div>
-                                        <Text.Label className="!text-slate-800">Detail Rapat</Text.Label>
+                                        <Text.Label className="!text-slate-800 !tracking-tight !normal-case">Detail Rapat</Text.Label>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="relative">
-                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
+                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2 !tracking-tight !normal-case">
                                                 <UserCircle className="text-brand-500 w-3.5 h-3.5" /> Tuan Rumah (Host)
                                             </Text.Label>
                                             <div className="flex gap-2">
@@ -212,7 +212,7 @@ export default function AgendaForm() {
                                             {showHostSelector && (
                                                 <div className="absolute z-50 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                                     <div className="p-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                                                        <Text.Label className="!text-slate-400">Pilih Warga</Text.Label>
+                                                        <Text.Label className="!text-slate-400 !tracking-tight !normal-case">Pilih Warga</Text.Label>
                                                         <button onClick={() => setShowHostSelector(false)} className="text-slate-400 hover:text-rose-500 transition-colors">
                                                             <XCircle size={20} weight="fill" />
                                                         </button>
@@ -247,7 +247,7 @@ export default function AgendaForm() {
                                         </div>
 
                                         <div>
-                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
+                                            <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2 !tracking-tight !normal-case">
                                                 <MapPin className="text-brand-500 w-3.5 h-3.5" /> Atau Host Lainnya
                                             </Text.Label>
                                             <input
@@ -267,7 +267,7 @@ export default function AgendaForm() {
 
                                     {/* Lokasi Rapat */}
                                     <div className="pt-2">
-                                        <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2">
+                                        <Text.Label className="mb-1.5 px-0.5 flex items-center gap-2 !tracking-tight !normal-case">
                                             <MapPin className="text-brand-500 w-3.5 h-3.5" /> Lokasi Spesifik / Alamat
                                         </Text.Label>
                                         <input
@@ -282,7 +282,7 @@ export default function AgendaForm() {
 
                             {watch('jenis_kegiatan') && (
                                 <div className="animate-in fade-in slide-in-from-top-2">
-                                    <Text.Label className="mb-1 block">
+                                    <Text.Label className="mb-1 block !tracking-tight !normal-case">
                                         Keterangan Terkait {watch('jenis_kegiatan')} <span className="text-red-500">*</span>
                                     </Text.Label>
                                     <textarea
@@ -297,7 +297,7 @@ export default function AgendaForm() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <Text.Label className="mb-1 block">
+                                    <Text.Label className="mb-1 block !tracking-tight !normal-case">
                                         Tanggal Pelaksanaan <span className="text-red-500">*</span>
                                     </Text.Label>
                                     <input
@@ -309,7 +309,7 @@ export default function AgendaForm() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Text.Label className="mb-1 block">
+                                        <Text.Label className="mb-1 block !tracking-tight !normal-case">
                                             Jam Mulai
                                         </Text.Label>
                                         <input
@@ -319,7 +319,7 @@ export default function AgendaForm() {
                                         />
                                     </div>
                                     <div>
-                                        <Text.Label className="mb-1 block">
+                                        <Text.Label className="mb-1 block !tracking-tight !normal-case">
                                             Jam Selesai
                                         </Text.Label>
                                         <input
@@ -419,11 +419,11 @@ export default function AgendaForm() {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-2 mb-4 border-b border-gray-50 pb-2">
                             <Users weight="duotone" className="w-5 h-5 text-brand-600" />
-                            <Text.Label className="!text-gray-900">Peserta Terlibat</Text.Label>
+                            <Text.Label className="!text-gray-900 !tracking-tight !normal-case">Peserta Terlibat</Text.Label>
                         </div>
 
                         <div className="mb-4 p-3 bg-brand-50/50 rounded-xl border border-brand-100 flex items-center justify-between">
-                            <Text.Label className="!text-brand-900">Semua Warga</Text.Label>
+                            <Text.Label className="!text-brand-900 !tracking-tight !normal-case">Semua Warga</Text.Label>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input 
                                     type="checkbox" 

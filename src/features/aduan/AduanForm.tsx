@@ -121,7 +121,7 @@ export default function AduanForm() {
                 <div className="bg-white rounded-[24px] border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight">Judul Aspirasi</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight !normal-case">Judul Aspirasi</Text.Label>
                             <input
                                 placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu Jalan Mati Di Blok A" : "Contoh: Usul Pengadaan Taman Bermain"}
                                 {...register('judul', { required: 'Judul Wajib Diisi' })}
@@ -131,7 +131,7 @@ export default function AduanForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight">Deskripsi Lengkap</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight !normal-case">Deskripsi Lengkap</Text.Label>
                             <textarea
                                 rows={5}
                                 placeholder="Jelaskan Detail Aspirasi Anda Di Sini..."
@@ -144,6 +144,7 @@ export default function AduanForm() {
                         <div className="pt-2">
                              <FileUpload 
                                 label="Foto Pendukung (Opsional)"
+                                className="!normal-case !tracking-tight"
                                 helperText="Sertakan bukti foto untuk mempercepat proses penanganan."
                                 onUploadSuccess={(url) => setFotoUrl(url)}
                                 onRemove={() => setFotoUrl(undefined)}
