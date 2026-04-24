@@ -6,7 +6,7 @@ import { pengurusService } from '../../services/pengurusService';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { Pengurus, Warga } from '../../database/db';
-import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { Text } from '../../components/ui/Typography';
 import { parseApiError } from '../../utils/errorParser';
 
@@ -127,7 +127,7 @@ export default function PengurusForm() {
                     onClick={() => navigate('/pengurus')}
                     className="p-2 hover:bg-white bg-transparent text-gray-500 hover:text-gray-900 rounded-lg transition-colors border border-transparent hover:border-gray-200"
                 >
-                    <ArrowLeft weight="bold" className="w-5 h-5" />
+                    <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div>
                     <Text.H1>
@@ -139,7 +139,7 @@ export default function PengurusForm() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-6 md:p-8">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6">
 
@@ -179,7 +179,7 @@ export default function PengurusForm() {
                             {jabatanOptions.length === 0 && (
                                 <div className="mt-2 p-4 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs flex flex-col gap-3 shadow-sm">
                                     <div className="flex items-center gap-2">
-                                        <div className="p-1 bg-brand-600 rounded text-white"><FloppyDisk size={12} weight="bold" /></div>
+                                        <div className="p-1 bg-brand-600 rounded text-white"><Save size={12} /></div>
                                         <p className="font-bold tracking-normal text-[10px]">Data Jabatan Belum Diatur</p>
                                     </div>
                                     <p className="text-gray-600 leading-relaxed">System mendeteksi belum ada daftar jabatan dan periode yang diatur untuk <span className="font-bold">{currentScope}</span> ini.</p>
@@ -261,7 +261,7 @@ export default function PengurusForm() {
                             type="submit"
                             className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 font-medium hover-lift active-press shadow-sm hover:shadow-md transition-all"
                         >
-                            <FloppyDisk weight="bold" />
+                            <Save size={18} />
                             <Text.Label className="!text-white">Simpan Jabatan</Text.Label>
                         </button>
                     </div>

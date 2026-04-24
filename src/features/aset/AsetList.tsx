@@ -10,6 +10,7 @@ import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { toTitleCase } from '../../utils/text';
 
 export default function AsetList() {
     const { currentTenant, currentScope } = useTenant();
@@ -128,9 +129,9 @@ export default function AsetList() {
                     {/* MOBILE FAB */}
                     <button
                         onClick={() => navigate('/aset/new')}
-                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                        className="sm:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-[0px_4px_10px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-90 transition-transform active-press"
                     >
-                        <Plus weight="bold" size={24} />
+                        <Plus weight="bold" size={24} className="relative left-[0.5px]" />
                     </button>
                 </HasPermission>
             </div>
@@ -201,12 +202,12 @@ export default function AsetList() {
                                                     )}
                                                 </div>
                                                  <div>
-                                                    <Text.Body className="font-bold leading-tight mb-1">{aset.nama_barang}</Text.Body>
+                                                    <Text.Body className="!font-semibold leading-tight mb-1">{aset.nama_barang}</Text.Body>
                                                     <div className="flex items-center gap-2">
                                                         <Text.Label className={`!px-2.5 !py-1 rounded-full border border-slate-100 !text-slate-700
-                                                            ${aset.kondisi === 'baik' ? '!bg-emerald-50 !text-emerald-700 !border-emerald-100' :
-                                                                aset.kondisi === 'rusak_ringan' ? '!bg-amber-50 !text-amber-700 !border-amber-100' :
-                                                                aset.kondisi === 'rusak_berat' ? '!bg-rose-50 !text-rose-700 !border-rose-100' :
+                                                            ${aset.kondisi === 'baik' ? '!bg-emerald-50 !text-emerald-600 !border-emerald-100' :
+                                                                aset.kondisi === 'rusak_ringan' ? '!bg-amber-50 !text-amber-600 !border-amber-100' :
+                                                                aset.kondisi === 'rusak_berat' ? '!bg-rose-50 !text-rose-600 !border-rose-100' :
                                                                 '!bg-slate-50'}
                                                         `}>
                                                             {aset.kondisi === 'baik' ? 'Baik' :
@@ -228,19 +229,19 @@ export default function AsetList() {
                                         </td>
                                         <td className="p-4 align-top">
                                             {aset.status_pinjam === 'dipinjam' ? (
-                                                <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 w-fit">
+                                                <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 w-fit">
                                                     <div className="flex items-center gap-1.5 mb-1">
-                                                    <Handshake className="text-amber-600 w-4 h-4" />
-                                                    <Text.Label className="!text-amber-800">Dipinjam Oleh</Text.Label>
+                                                    <Handshake className="text-orange-600 w-4 h-4" />
+                                                    <Text.Label className="!text-orange-600">Dipinjam Oleh</Text.Label>
                                                 </div>
-                                                <Text.Body className="truncate max-w-[150px] uppercase font-bold">{aset.peminjam?.nama || ('Warga ID: ' + aset.peminjam_id)}</Text.Body>
+                                                <Text.Body className="truncate max-w-[150px] font-bold">{toTitleCase(aset.peminjam?.nama || ('Warga ID: ' + aset.peminjam_id))}</Text.Body>
                                                 <Text.Caption className="block mt-1">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</Text.Caption>
                                             </div>
                                             ) : (
                                                 <div className="bg-emerald-50 border border-emerald-100 rounded-lg py-1.5 px-3 w-fit">
                                                     <div className="flex items-center gap-1.5">
                                                     <Package className="text-emerald-600 w-4 h-4" />
-                                                    <Text.Label className="!text-emerald-800">Tersedia</Text.Label>
+                                                    <Text.Label className="!text-emerald-600">Tersedia</Text.Label>
                                                 </div>
                                             </div>
                                             )}
@@ -261,7 +262,7 @@ export default function AsetList() {
                                                             <button
                                                                 onClick={() => handleReturn(aset)}
                                                                 className="flex items-center gap-1 bg-amber-100 text-amber-800 hover:bg-amber-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
-                                                                <ArrowUUpLeft weight="bold" /> <Text.Label className="!text-amber-800">Kembalikan</Text.Label>
+                                                                <ArrowUUpLeft weight="bold" /> <Text.Label className="!text-orange-600">Kembalikan</Text.Label>
                                                             </button>
                                                         </HasPermission>
                                                     )}
@@ -270,15 +271,15 @@ export default function AsetList() {
                                                     <HasPermission module="Aset" action="Ubah">
                                                         <button
                                                             onClick={() => navigate(`/aset/edit/${aset.id}`)}
-                                                            className="p-2 text-primary hover:bg-primary/5 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Edit">
-                                                            <PencilSimple weight="duotone" className="w-4 h-4" />
+                                                            className="p-2.5 text-brand-600 hover:bg-brand-50 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Edit">
+                                                            <PencilSimple weight="bold" className="w-4 h-4" />
                                                         </button>
                                                     </HasPermission>
                                                     <HasPermission module="Aset" action="Hapus">
                                                         <button
                                                             onClick={() => handleDelete(aset.id, aset.nama_barang)}
-                                                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Hapus">
-                                                            <Trash weight="duotone" className="w-4 h-4" />
+                                                            className="p-2.5 text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-slate-100 shadow-sm active:scale-90" title="Hapus">
+                                                            <Trash weight="bold" className="w-4 h-4" />
                                                         </button>
                                                     </HasPermission>
                                                 </div>
@@ -349,40 +350,40 @@ export default function AsetList() {
 
                                     {/* Status & Quick Action */}
                                     <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3 mb-4">
-                                        {aset.status_pinjam === 'dipinjam' ? (
-                                            <div className="flex justify-between items-center gap-4">
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-1.5 text-amber-600 font-bold text-[10px] tracking-tight mb-1">
-                                                        <Handshake weight="fill" className="w-3.5 h-3.5" /> <Text.Label className="!text-amber-600">Sedang Dipinjam</Text.Label>
+                                            {aset.status_pinjam === 'dipinjam' ? (
+                                                <div className="flex justify-between items-center gap-4">
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-1.5 text-orange-600 font-bold text-[10px] tracking-tight mb-1">
+                                                            <Handshake weight="fill" className="w-3.5 h-3.5" /> <Text.Label className="!text-orange-600">Sedang Dipinjam</Text.Label>
+                                                        </div>
+                                                        <Text.Body className="!text-xs !font-bold !text-slate-900 truncate">{toTitleCase(aset.peminjam?.nama || (aset.peminjam_id ? 'Warga ID: ' + aset.peminjam_id : 'Unknown'))}</Text.Body>
+                                                        <Text.Caption className="!text-[9px] !text-slate-400 !font-medium mt-0.5 !italic block">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</Text.Caption>
                                                     </div>
-                                                    <Text.Body className="!text-xs !font-bold !text-slate-900 truncate uppercase">{aset.peminjam?.nama || (aset.peminjam_id ? 'Warga ID: ' + aset.peminjam_id : 'Unknown')}</Text.Body>
-                                                    <Text.Caption className="!text-[9px] !text-slate-400 !font-medium mt-0.5 !italic block">{aset.tanggal_pinjam ? dateUtils.toDisplay(aset.tanggal_pinjam) : ''}</Text.Caption>
+                                                    <HasPermission module="Aset" action="Ubah">
+                                                        <button
+                                                            onClick={() => handleReturn(aset)}
+                                                            className="flex items-center justify-center gap-1.5 bg-white text-orange-600 border border-orange-200 hover:bg-orange-50 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 shrink-0"
+                                                        >
+                                                            <ArrowUUpLeft weight="bold" /> <Text.Label className="!text-orange-600">Kembali</Text.Label>
+                                                        </button>
+                                                    </HasPermission>
                                                 </div>
-                                                <HasPermission module="Aset" action="Ubah">
-                                                    <button
-                                                        onClick={() => handleReturn(aset)}
-                                                        className="flex items-center justify-center gap-1.5 bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 shrink-0"
-                                                    >
-                                                        <ArrowUUpLeft weight="bold" /> <Text.Label className="!text-amber-600">Kembali</Text.Label>
-                                                    </button>
-                                                </HasPermission>
-                                            </div>
-                                        ) : (
-                                            <div className="flex justify-between items-center gap-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                                    <Text.Label className="!text-emerald-600">Tersedia Untuk Pinjam</Text.Label>
+                                            ) : (
+                                                <div className="flex justify-between items-center gap-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                        <Text.Label className="!text-emerald-600">Tersedia Untuk Pinjam</Text.Label>
+                                                    </div>
+                                                    <HasPermission module="Aset" action="Ubah">
+                                                        <button
+                                                            onClick={() => handleBorrowClick(aset)}
+                                                            className="flex items-center justify-center gap-1.5 bg-brand-600 text-white shadow-md hover:bg-brand-700 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shrink-0"
+                                                        >
+                                                            <Handshake weight="bold" /> <Text.Label className="!text-white">Pinjamkan</Text.Label>
+                                                        </button>
+                                                    </HasPermission>
                                                 </div>
-                                                <HasPermission module="Aset" action="Ubah">
-                                                    <button
-                                                        onClick={() => handleBorrowClick(aset)}
-                                                        className="flex items-center justify-center gap-1.5 bg-brand-600 text-white shadow-md hover:bg-brand-700 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shrink-0"
-                                                    >
-                                                        <Handshake weight="bold" /> <Text.Label className="!text-white">Pinjamkan</Text.Label>
-                                                    </button>
-                                                </HasPermission>
-                                            </div>
-                                        )}
+                                            )}
                                     </div>
 
                                     <div className="flex justify-between items-center pt-3 border-t border-slate-50">
@@ -455,7 +456,7 @@ export default function AsetList() {
                                 >
                                     <option value="" disabled>-- Pilih Nama Warga Peminjam --</option>
                                     {wargaList.map(w => (
-                                        <option key={w.id} value={w.id}>{w.nama.toUpperCase()} {w.alamat ? `- ${w.alamat}` : ''}</option>
+                                        <option key={w.id} value={w.id}>{toTitleCase(w.nama)} {w.alamat ? `- ${w.alamat}` : ''}</option>
                                     ))}
                                 </select>
                             </div>

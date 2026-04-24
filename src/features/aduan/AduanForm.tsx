@@ -14,14 +14,22 @@ import {
 } from '@phosphor-icons/react';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
+import { Modal } from '../../components/ui/Modal';
 
 type AduanFormData = Pick<AduanUsulan, 'tipe' | 'judul' | 'deskripsi' | 'is_anonymous' | 'foto_url'>;
 
 export default function AduanForm() {
     const navigate = useNavigate();
-    const { currentTenant, currentScope } = useTenant();
+    const { currentTenant, currentScope, currentUser } = useTenant();
     const [isUploading, setIsUploading] = useState(false);
     const [fotoUrl, setFotoUrl] = useState<string | undefined>();
+
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, type: 'info' | 'success' | 'error' }>({
+        title: 'Pemberitahuan',
+        message: '',
+        type: 'info'
+    });
 
     const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<AduanFormData>({
         defaultValues: {
@@ -33,20 +41,30 @@ export default function AduanForm() {
     const selectedTipe = watch('tipe');
     const isAnonymous = watch('is_anonymous');
 
+    const showAlert = (message: string, title = "Pemberitahuan", type: 'info' | 'success' | 'error' = 'info') => {
+        setAlertConfig({ title, message, type });
+        setIsAlertOpen(true);
+    };
+
     const onSubmit = async (data: AduanFormData) => {
         if (!currentTenant) return;
 
+        const payload = {
+            ...data,
+            foto_url: fotoUrl,
+            tenant_id: currentTenant.id,
+            warga_id: currentUser?.warga_id,
+            scope: currentScope
+        };
+
+        console.log("Sending aspirasi payload:", payload);
+
         try {
-            await aduanService.create({
-                ...data,
-                foto_url: fotoUrl,
-                tenant_id: currentTenant.id,
-                scope: currentScope
-            });
+            await aduanService.create(payload);
             navigate('/aduan');
         } catch (error) {
             console.error("Gagal mengirim aspirasi:", error);
-            alert("Terjadi kesalahan saat mengirim aspirasi Anda.");
+            showAlert("Terjadi kesalahan saat mengirim aspirasi Anda (Error 403). Pastikan Anda memiliki hak akses.", "Gagal Mengirim", "error");
         }
     };
 
@@ -62,7 +80,7 @@ export default function AduanForm() {
                 </button>
                 <div>
                     <Text.H1>Kirim Aspirasi Baru</Text.H1>
-                    <Text.Body className="!text-slate-500 !mt-1">Scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 uppercase">{currentScope}</Text.Label></Text.Body>
+                    <Text.Body className="!text-slate-500 !mt-1">Scope: <Text.Label component="span" className="!inline-flex !font-bold !text-brand-600 bg-brand-50 !px-2 !py-0.5 rounded-lg border border-brand-100 !tracking-tight">{currentScope}</Text.Label></Text.Body>
                 </div>
             </div>
 
@@ -77,9 +95,9 @@ export default function AduanForm() {
                         <div className={`p-3 rounded-xl transition-colors ${selectedTipe === 'Aduan' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-400 group-hover:text-rose-500'}`}>
                             <ChatTeardropDots weight="fill" className="w-6 h-6" />
                         </div>
-                        <div className="text-center">
-                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Aduan' ? '!text-rose-700' : '!text-slate-600'}`}>Aduan</Text.Label>
-                            <Text.Caption className="!text-slate-400 !font-medium">Laporkan Masalah</Text.Caption>
+                        <div className="text-center flex flex-col items-center">
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${selectedTipe === 'Aduan' ? '!text-rose-700' : '!text-slate-600'}`}>Aduan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium !mt-0.5">Laporkan Masalah</Text.Caption>
                         </div>
                     </button>
 
@@ -91,29 +109,29 @@ export default function AduanForm() {
                         <div className={`p-3 rounded-xl transition-colors ${selectedTipe === 'Usulan' ? 'bg-brand-500 text-white' : 'bg-slate-50 text-slate-400 group-hover:text-brand-50'}`}>
                             <Lightbulb weight="fill" className="w-6 h-6" />
                         </div>
-                        <div className="text-center">
-                            <Text.Label className={`!text-sm !font-semibold !tracking-tight ${selectedTipe === 'Usulan' ? '!text-brand-700' : '!text-slate-600'}`}>Usulan</Text.Label>
-                            <Text.Caption className="!text-slate-400 !font-medium">Ide & Saran Warga</Text.Caption>
+                        <div className="text-center flex flex-col items-center">
+                            <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${selectedTipe === 'Usulan' ? '!text-brand-700' : '!text-slate-600'}`}>Usulan</Text.Label>
+                            <Text.Caption className="!text-slate-400 !font-medium !mt-0.5">Ide & Saran Warga</Text.Caption>
                         </div>
                     </button>
                     <input type="hidden" {...register('tipe', { required: true })} />
                 </div>
 
                 {/* Form Fields */}
-                <div className="bg-white rounded-card border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
+                <div className="bg-white rounded-[24px] border border-slate-100 shadow-premium p-6 md:p-8 space-y-6">
                     <div className="space-y-4">
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2">Judul Aspirasi</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight !normal-case">Judul Aspirasi</Text.Label>
                             <input
                                 placeholder={selectedTipe === 'Aduan' ? "Contoh: Lampu Jalan Mati Di Blok A" : "Contoh: Usul Pengadaan Taman Bermain"}
                                 {...register('judul', { required: 'Judul Wajib Diisi' })}
                                 className={`w-full rounded-2xl border-2 p-4 text-sm font-bold text-slate-700 outline-none transition-all placeholder:text-slate-300 ${errors.judul ? 'border-rose-100 bg-rose-50/30' : 'border-slate-50 bg-slate-50/50 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/5'}`}
                             />
-                            {errors.judul && <Text.Caption className="!text-rose-500 !mt-2 !font-bold !uppercase">{errors.judul.message}</Text.Caption>}
+                            {errors.judul && <Text.Caption className="!text-rose-500 !mt-2 !font-bold !tracking-tight">{errors.judul.message}</Text.Caption>}
                         </div>
 
                         <div>
-                            <Text.Label className="!text-slate-700 mb-2">Deskripsi Lengkap</Text.Label>
+                            <Text.Label className="!text-slate-700 mb-2 !tracking-tight !normal-case">Deskripsi Lengkap</Text.Label>
                             <textarea
                                 rows={5}
                                 placeholder="Jelaskan Detail Aspirasi Anda Di Sini..."
@@ -123,7 +141,7 @@ export default function AduanForm() {
                             {errors.deskripsi && <Text.Caption className="!text-rose-500 !mt-2 !font-semibold">{errors.deskripsi.message}</Text.Caption>}
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-2 !normal-case !tracking-tight">
                              <FileUpload 
                                 label="Foto Pendukung (Opsional)"
                                 helperText="Sertakan bukti foto untuk mempercepat proses penanganan."
@@ -145,7 +163,7 @@ export default function AduanForm() {
                                     {isAnonymous ? <ShieldCheck weight="fill" className="w-5 h-5" /> : <ShieldSlash weight="bold" className="w-5 h-5" />}
                                 </div>
                                 <div className="space-y-0.5">
-                                    <Text.Label className={`!text-sm !font-semibold !tracking-tight ${isAnonymous ? '!text-brand-700' : '!text-slate-700'}`}>Sembunyikan Identitas Saya</Text.Label>
+                                    <Text.Label className={`!text-sm !font-semibold !tracking-tight !normal-case ${isAnonymous ? '!text-brand-700' : '!text-slate-700'}`}>Sembunyikan Identitas Saya</Text.Label>
                                     <Text.Caption className="!text-slate-500 !font-medium !leading-tight">Nama Anda tidak akan terlihat oleh warga lain.</Text.Caption>
                                 </div>
                             </div>
@@ -167,18 +185,18 @@ export default function AduanForm() {
                             onClick={() => navigate('/aduan')}
                             className="flex-1 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-2xl transition-all border border-transparent"
                         >
-                            <Text.Label className="!text-slate-500">Batal</Text.Label>
+                            <Text.Label className="!text-slate-500 !normal-case !tracking-tight">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting || isUploading}
-                            className="flex-[2] py-4 bg-slate-900 text-white rounded-btn flex items-center justify-center gap-3 text-sm font-bold shadow-premium transition-all hover:bg-slate-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-[2] py-4 bg-[#2563EB] text-white rounded-xl flex items-center justify-center gap-3 text-sm font-bold shadow-xl shadow-blue-100 transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
-                                    <Text.Label className="!text-white">Kirim Sekarang</Text.Label>
+                                    <Text.Label className="!text-white !normal-case !tracking-tight">Kirim Sekarang</Text.Label>
                                     <PaperPlaneTilt weight="fill" className="w-5 h-5" />
                                 </>
                             )}
@@ -186,6 +204,15 @@ export default function AduanForm() {
                     </div>
                 </div>
             </form>
+
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title={alertConfig.title}
+                type={alertConfig.type}
+            >
+                {alertConfig.message}
+            </Modal>
         </div>
     );
 }

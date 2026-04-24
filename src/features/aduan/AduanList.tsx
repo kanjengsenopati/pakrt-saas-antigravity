@@ -23,6 +23,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from '../../components/ui/Modal';
 
 const STATUS_COLORS = {
     'Menunggu': '#f59e0b',
@@ -46,8 +47,24 @@ export default function AduanList() {
     const [tanggapanText, setTanggapanText] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
     const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, type: 'info' | 'success' | 'error' | 'warning' }>({
+        title: 'Pemberitahuan',
+        message: '',
+        type: 'info'
+    });
+    const [confirmConfig, setConfirmConfig] = useState<{ isOpen: boolean, message: string, onConfirm: () => void } | null>(null);
 
     const isPengurus = authUser?.role?.toLowerCase() !== 'warga';
+
+    const showAlert = (message: string, title = "Pemberitahuan", type: 'info' | 'success' | 'error' | 'warning' = 'info') => {
+        setAlertConfig({ title, message, type });
+        setIsAlertOpen(true);
+    };
+
+    const showConfirm = (message: string, onConfirm: () => void) => {
+        setConfirmConfig({ isOpen: true, message, onConfirm });
+    };
 
     const loadData = async () => {
         if (!currentTenant) return;
@@ -81,18 +98,24 @@ export default function AduanList() {
             setSelectedItem(null);
             setTanggapanText('');
             loadData();
+            showAlert("Berhasil memperbarui status aspirasi.", "Berhasil", "success");
         } catch (error) {
-            alert("Gagal memperbarui status.");
+            showAlert("Gagal memperbarui status.", "Gagal", "error");
         } finally {
             setIsUpdating(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Hapus data ini?")) {
-            await aduanService.delete(id);
-            loadData();
-        }
+        showConfirm("Hapus data ini?", async () => {
+            try {
+                await aduanService.delete(id);
+                loadData();
+                setConfirmConfig(null);
+            } catch (error) {
+                showAlert("Gagal menghapus data.", "Gagal", "error");
+            }
+        });
     };
 
     const barData = stats?.byType?.map((t: any) => ({
@@ -114,38 +137,36 @@ export default function AduanList() {
                     <Text.H1>Informasi Aduan & Usulan</Text.H1>
                     <Text.Body className="mt-1">Media aspirasi dan pelaporan masalah lingkungan</Text.Body>
                 </div>
-                {(!authUser?.role?.toLowerCase().includes('warga')) && (
-                    <HasPermission module="Aduan & Usulan" action="Buat">
-                        <button
-                            onClick={() => navigate('/aduan/new')}
-                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
-                        >
-                            <Plus weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-inherit !font-bold">Kirim Aspirasi</Text.Body>
-                        </button>
-                    </HasPermission>
-                )}
-                <button
-                    onClick={() => navigate('/aduan/new')}
-                    className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
-                >
-                    <Plus weight="bold" size={24} />
-                </button>
+                <HasPermission module="Aduan & Usulan" action="Buat">
+                    <button
+                        onClick={() => navigate('/aduan/new')}
+                        className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                    >
+                        <Plus weight="bold" size={18} />
+                        <Text.Body component="span" className="!text-inherit !font-bold">Kirim Aspirasi</Text.Body>
+                    </button>
+                    <button
+                        onClick={() => navigate('/aduan/new')}
+                        className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                    >
+                        <Plus weight="bold" size={24} />
+                    </button>
+                </HasPermission>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-2">
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-slate-300" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <ChartBar weight="bold" className="text-slate-400 w-3.5 h-3.5" />
                         Aspirasi
                     </Text.Label>
                     <Text.Amount className="!text-3xl lg:!text-4xl text-slate-900 leading-none">{stats?.total || 0}</Text.Amount>
                 </div>
 
-                <div className="bg-slate-900 p-4 rounded-[24px] border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300 flex flex-col items-center justify-center text-center">
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/50">
-                        <CheckCircle weight="fill" className="text-brand-500 w-3.5 h-3.5" />
+                <div className="bg-[#2563EB] p-4 rounded-[24px] border-none shadow-xl relative overflow-hidden group hover:bg-blue-700 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 text-white/80 !tracking-tight !normal-case">
+                        <CheckCircle weight="fill" className="text-white/40 w-3.5 h-3.5" />
                         Selesai
                     </Text.Label>
                     <Text.Amount className="!text-3xl lg:!text-4xl text-white leading-none">{stats?.completed || 0}</Text.Amount>
@@ -153,7 +174,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <Clock weight="bold" className="text-amber-500 w-3.5 h-3.5" />
                         Menunggu
                     </Text.Label>
@@ -162,7 +183,7 @@ export default function AduanList() {
 
                 <div className="bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-                    <Text.Label className="mb-1 flex items-center justify-center gap-2">
+                    <Text.Label className="mb-1 flex items-center justify-center gap-2 !tracking-tight !normal-case">
                         <ArrowRight weight="bold" className="text-blue-500 w-3.5 h-3.5" />
                         Proses
                     </Text.Label>
@@ -194,7 +215,7 @@ export default function AduanList() {
                             <Text.Label className="!text-slate-900 !tracking-normal">Komposisi Tipe</Text.Label>
                         </div>
                         <div className="h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                 <BarChart data={barData}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} />
@@ -212,7 +233,7 @@ export default function AduanList() {
                             <Text.Label className="!text-slate-900 !tracking-normal">Status Penyelesaian</Text.Label>
                         </div>
                         <div className="h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                 <PieChart>
                                     <Pie
                                         data={pieData}
@@ -284,20 +305,20 @@ export default function AduanList() {
                                             <div className="flex justify-between items-start gap-4">
                                                 <div className="flex gap-4 min-w-0">
                                                     <div className={`w-12 h-12 rounded-[16px] shrink-0 flex flex-col items-center justify-center border shadow-sm ${item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' : item.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100/50' : 'bg-amber-50 text-amber-600 border-amber-100/50'}`}>
-                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' }).toUpperCase()}</Text.Label>
+                                                        <Text.Label className="!text-[9px] !font-bold !leading-none opacity-60 !tracking-tight !normal-case">{new Date(item.tanggal).toLocaleDateString('id-ID', { month: 'short' })}</Text.Label>
                                                         <Text.Amount className="!text-lg !font-bold !leading-none mt-0.5">{new Date(item.tanggal).getDate()}</Text.Amount>
                                                     </div>
                                                     <div className="min-w-0">
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <Text.Label className={`px-2 py-0.5 rounded-md !text-white ${
+                                                            <Text.Label className={`px-2 py-0.5 rounded-md !text-white !normal-case !tracking-tight ${
                                                                 item.status === 'Menunggu' ? 'bg-amber-600' :
                                                                 item.status === 'Proses' ? 'bg-blue-600' :
                                                                 'bg-emerald-600'
                                                             }`}>
                                                                 {item.status}
                                                             </Text.Label>
-                                                            <Text.Caption>
-                                                                {item.is_anonymous ? 'Anonim' : (item.warga?.nama?.toUpperCase() || 'WARGA')}
+                                                            <Text.Caption className="!tracking-tight !font-semibold">
+                                                                {item.is_anonymous ? 'Anonim' : (item.warga?.nama || 'Warga')}
                                                             </Text.Caption>
                                                         </div>
                                                         <Text.H2 className="line-clamp-1 !text-slate-900 !leading-snug">{item.judul}</Text.H2>
@@ -315,12 +336,12 @@ export default function AduanList() {
                                                 <div className="mt-4 pt-4 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                                                     <div className="space-y-4 text-left">
                                                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                                            <Text.Caption className="!text-[10px] !font-bold tracking-tight text-slate-400 mb-1 block">Detail Permasalahan</Text.Caption>
+                                                            <Text.Label className="!text-[10px] !font-bold tracking-tight text-slate-400 mb-1 block !normal-case">Detail Permasalahan</Text.Label>
                                                             <Text.Body className="!text-sm !font-medium !text-slate-700 !leading-relaxed">{item.deskripsi}</Text.Body>
                                                         </div>
                                                          {item.tanggapan ? (
                                                             <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
-                                                                <Text.Caption className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block">Tanggapan Pengurus</Text.Caption>
+                                                                <Text.Label className="!text-[10px] !font-bold tracking-tight text-blue-600 mb-1 block !normal-case">Tanggapan Pengurus</Text.Label>
                                                                 <Text.Body className="!text-sm !font-bold italic !text-blue-800 !leading-relaxed">"{item.tanggapan}"</Text.Body>
                                                             </div>
                                                         ) : (
@@ -376,12 +397,12 @@ export default function AduanList() {
                         </div>
                         <div className="p-8 space-y-8 max-h-[75vh] overflow-y-auto no-scrollbar">
                             <div className="space-y-2">
-                                <Text.Label className="!text-[9px]">Judul Aspirasi</Text.Label>
+                                <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Judul Aspirasi</Text.Label>
                                 <Text.H2 className="!text-lg leading-tight">{selectedItem.judul}</Text.H2>
                             </div>
                             
                             <div className="space-y-2">
-                                <Text.Label className="!text-[9px]">Uraian Lengkap</Text.Label>
+                                <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Uraian Lengkap</Text.Label>
                                 <div className="bg-slate-50/50 border border-slate-100 p-5 rounded-[16px]">
                                     <Text.Body className="!text-slate-700 italic leading-relaxed">{selectedItem.deskripsi}</Text.Body>
                                 </div>
@@ -389,7 +410,7 @@ export default function AduanList() {
 
                             {selectedItem.foto_url && (
                                 <div className="space-y-3">
-                                    <Text.Label className="!text-[9px]">Lampiran Foto</Text.Label>
+                                    <Text.Label className="!text-[9px] !normal-case !tracking-tight !text-slate-400">Lampiran Foto</Text.Label>
                                     <div className="p-1 bg-slate-50 border border-slate-100 rounded-[20px] shadow-inner overflow-hidden">
                                         <img src={selectedItem.foto_url} alt="Lampiran" className="w-full rounded-[18px] shadow-premium" />
                                     </div>
@@ -398,8 +419,8 @@ export default function AduanList() {
 
                             <div className="pt-8 border-t border-slate-100 space-y-6">
                                 <div className="flex items-center justify-between">
-                                    <Text.Label className="!text-slate-900">Tanggapan Pengurus</Text.Label>
-                                    <Text.Label className={`px-2.5 py-1 rounded-full border ${
+                                    <Text.Label className="!text-slate-900 !normal-case !tracking-tight">Tanggapan Pengurus</Text.Label>
+                                    <Text.Label className={`px-2.5 py-1 rounded-full border !normal-case !tracking-tight ${
                                         selectedItem.status === 'Menunggu' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                         selectedItem.status === 'Proses' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                                         'bg-brand-50 text-brand-600 border-brand-100'
@@ -448,6 +469,42 @@ export default function AduanList() {
                         </div>
                     </div>
                 </div>
+            )}
+            {/* Custom Modals */}
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title={alertConfig.title}
+                type={alertConfig.type}
+            >
+                {alertConfig.message}
+            </Modal>
+
+            {confirmConfig?.isOpen && (
+                <Modal 
+                    isOpen={true}
+                    onClose={() => setConfirmConfig(null)}
+                    title="Konfirmasi"
+                    type="warning"
+                    footer={
+                        <div className="flex gap-2 w-full">
+                            <button
+                                onClick={() => setConfirmConfig(null)}
+                                className="flex-1 px-4 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 font-bold rounded-xl transition-all"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={confirmConfig.onConfirm}
+                                className="flex-1 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-100"
+                            >
+                                Hapus
+                            </button>
+                        </div>
+                    }
+                >
+                    {confirmConfig.message}
+                </Modal>
             )}
         </div>
     );

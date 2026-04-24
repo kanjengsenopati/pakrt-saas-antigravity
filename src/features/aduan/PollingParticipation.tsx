@@ -8,6 +8,7 @@ import {
     CircleNotch
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
+import { Modal } from '../../components/ui/Modal';
 
 interface Props {
     pollingId: string;
@@ -20,6 +21,13 @@ export default function PollingParticipation({ pollingId, onVoteSuccess }: Props
     const [selectedOpsi, setSelectedOpsi] = useState<string | null>(null);
     const [isVoting, setIsVoting] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+
+    const showAlert = (message: string) => {
+        setAlertMessage(message);
+        setIsAlertOpen(true);
+    };
 
     const loadPolling = async () => {
         setIsLoading(true);
@@ -50,7 +58,7 @@ export default function PollingParticipation({ pollingId, onVoteSuccess }: Props
             loadPolling();
             if (onVoteSuccess) onVoteSuccess();
         } catch (error: any) {
-            alert(error.message || "Gagal mengirimkan pilihan.");
+            showAlert(error.message || "Gagal mengirimkan pilihan.");
         } finally {
             setIsVoting(false);
         }
@@ -143,6 +151,15 @@ export default function PollingParticipation({ pollingId, onVoteSuccess }: Props
                     <Text.Caption>Total {totalVotes} warga berpartisipasi</Text.Caption>
                 </div>
             </div>
+
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title="Gagal"
+                type="error"
+            >
+                {alertMessage}
+            </Modal>
         </div>
     );
 }

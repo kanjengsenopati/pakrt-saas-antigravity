@@ -30,8 +30,11 @@ export function BottomNav() {
                     >
                         <Icon 
                             weight={isActive ? "fill" : "regular"} 
-                            className="text-[1.7rem]" 
+                            className="text-[1.5rem]" 
                         />
+                        <span className={`text-[10px] font-bold mt-1 tracking-tight transition-colors ${isActive ? 'text-brand-600' : 'text-slate-500'}`}>
+                            {item.label}
+                        </span>
                         {isActive && (
                             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-600 rounded-full animate-in fade-in zoom-in duration-300" />
                         )}

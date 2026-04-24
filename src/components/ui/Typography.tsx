@@ -27,7 +27,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-[22px] font-bold tracking-tighter text-slate-900 leading-tight",
+          "font-headline text-[22px] font-bold tracking-tight text-slate-900 leading-tight",
           className
         )}
       >
@@ -63,7 +63,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-[15px] font-bold tracking-tight text-slate-800 leading-snug",
+          "font-headline text-[15px] font-bold tracking-tight text-[#1A1A1A] leading-snug",
           className
         )}
       >
@@ -81,7 +81,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-[13px] font-bold tracking-tight text-slate-700 leading-snug",
+          "font-headline text-[13px] font-bold tracking-tight text-[#1A1A1A] leading-snug",
           className
         )}
       >
@@ -99,7 +99,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-headline text-lg font-bold tabular-nums tracking-tight text-slate-900",
+          "font-headline text-[18px] font-bold tabular-nums tracking-tight text-emerald-600",
           className
         )}
       >
@@ -117,7 +117,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-label text-[11px] font-black tracking-wider text-slate-400",
+          "font-label text-[11px] font-bold tracking-[0.8px] text-slate-600 uppercase",
           className
         )}
       >
@@ -135,7 +135,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[14px] font-medium text-slate-600 leading-relaxed",
+          "font-body text-[14px] font-medium text-slate-700 leading-relaxed",
           className
         )}
       >
@@ -153,7 +153,7 @@ export const Text = {
         style={style}
         onClick={onClick}
         className={cn(
-          "font-body text-[11px] font-medium text-slate-400 leading-normal tracking-tight",
+          "font-body text-[12px] font-medium italic text-slate-500 leading-normal tracking-tight",
           className
         )}
       >

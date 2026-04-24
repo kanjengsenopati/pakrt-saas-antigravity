@@ -148,7 +148,7 @@ export default function WargaForm() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <Text.Label className="block mb-1">
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">
                                 Nomor Induk Kependudukan (NIK) <Text.Body component="span" className="!text-red-500">*</Text.Body>
                             </Text.Label>
                             <input
@@ -164,7 +164,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">
                                 Nama Lengkap <Text.Body component="span" className="!text-red-500">*</Text.Body>
                             </Text.Label>
                             <input
@@ -177,7 +177,7 @@ export default function WargaForm() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <Text.Label className="block mb-1">
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">
                                 Nomor Telepon / WhatsApp
                             </Text.Label>
                             <input
@@ -189,7 +189,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Tempat Lahir</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Tempat Lahir</Text.Label>
                             <input
                                 type="text"
                                 {...register('tempat_lahir')}
@@ -199,7 +199,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Tanggal Lahir</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Tanggal Lahir</Text.Label>
                             <input
                                 type="date"
                                 {...register('tanggal_lahir')}
@@ -208,7 +208,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Jenis Kelamin</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Jenis Kelamin</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Laki-laki" {...register('jenis_kelamin')} className="text-brand-600 focus:ring-brand-500" />
@@ -222,7 +222,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Status Domisili</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Status Domisili</Text.Label>
                             <select
                                 {...register('status_domisili')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -234,7 +234,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Agama</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Agama</Text.Label>
                             <select
                                 {...register('agama')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -247,7 +247,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Pendidikan Terakhir</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Pendidikan Terakhir</Text.Label>
                             <select
                                 {...register('pendidikan')}
                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -264,7 +264,7 @@ export default function WargaForm() {
                         </div>
 
                         <div>
-                            <Text.Label className="block mb-1">Pekerjaan</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Pekerjaan</Text.Label>
                             <input
                                 type="text"
                                 {...register('pekerjaan')}
@@ -275,7 +275,7 @@ export default function WargaForm() {
 
 
                         <div>
-                            <Text.Label className="block mb-1">Status Penduduk</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Status Penduduk</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Tetap" {...register('status_penduduk')} className="text-brand-600 focus:ring-brand-500" />
@@ -311,7 +311,7 @@ export default function WargaForm() {
 
                                     {watch('pj_tipe') === 'Warga' ? (
                                         <div className="md:col-span-2">
-                                            <Text.Label className="block mb-1">Pilih Warga</Text.Label>
+                                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Pilih Warga</Text.Label>
                                             <select
                                                 {...register('pj_warga_id')}
                                                 className="w-full rounded-lg shadow-sm p-3 border border-gray-300 focus:border-brand-500 bg-white focus:ring-2 focus:ring-brand-500 outline-none transition-colors"
@@ -326,7 +326,7 @@ export default function WargaForm() {
                                     ) : (
                                         <>
                                             <div>
-                                                <Text.Label className="block mb-1">Nama Penanggung Jawab</Text.Label>
+                                                <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Nama Penanggung Jawab</Text.Label>
                                                 <input
                                                     type="text"
                                                     {...register('pj_nama')}
@@ -335,7 +335,7 @@ export default function WargaForm() {
                                                 />
                                             </div>
                                             <div>
-                                                <Text.Label className="block mb-1">No. Kontak / WA</Text.Label>
+                                                <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">No. Kontak / WA</Text.Label>
                                                 <input
                                                     type="text"
                                                     {...register('pj_kontak')}
@@ -350,7 +350,7 @@ export default function WargaForm() {
                         )}
 
                         <div>
-                            <Text.Label className="block mb-1">Status Rumah</Text.Label>
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Status Rumah</Text.Label>
                             <div className="flex gap-4 p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" value="Dihuni" {...register('status_rumah')} className="text-brand-600 focus:ring-brand-500" />
@@ -365,7 +365,7 @@ export default function WargaForm() {
 
                         {watch('status_domisili') === 'Pindah' && (
                             <div className="md:col-span-2 animate-fade-in">
-                                <Text.Label className="block mb-1">Alamat Pindah</Text.Label>
+                                <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Alamat Pindah</Text.Label>
                                 <textarea
                                     rows={2}
                                     {...register('alamat_pindah')}
@@ -378,7 +378,7 @@ export default function WargaForm() {
                         {watch('status_domisili') === 'Meninggal Dunia' && (
                             <>
                                 <div className="animate-fade-in">
-                                    <Text.Label className="block mb-1">Tanggal Meninggal</Text.Label>
+                                    <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Tanggal Meninggal</Text.Label>
                                     <input
                                         type="date"
                                         {...register('tanggal_meninggal')}
@@ -386,7 +386,7 @@ export default function WargaForm() {
                                     />
                                 </div>
                                 <div className="animate-fade-in">
-                                    <Text.Label className="block mb-1">Lokasi Makam</Text.Label>
+                                    <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">Lokasi Makam</Text.Label>
                                     <input
                                         type="text"
                                         {...register('lokasi_makam')}
@@ -408,7 +408,7 @@ export default function WargaForm() {
                         </div>
 
                         <div className="md:col-span-2">
-                            <Text.Label className="block mb-1">
+                            <Text.Label className="block mb-1 !normal-case !tracking-tight !text-slate-600">
                                 Alamat Lengkap <Text.Body component="span" className="!text-red-500">*</Text.Body>
                             </Text.Label>
                             <textarea
@@ -427,7 +427,7 @@ export default function WargaForm() {
                             onClick={() => navigate('/warga')}
                             className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                         >
-                            <Text.Label className="!text-inherit">Batal</Text.Label>
+                            <Text.Label className="!text-inherit !normal-case !tracking-tight">Batal</Text.Label>
                         </button>
                         <button
                             type="submit"
@@ -437,12 +437,12 @@ export default function WargaForm() {
                             {isSubmitting ? (
                                 <>
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    <Text.Label className="!text-white">Menyimpan...</Text.Label>
+                                    <Text.Label className="!text-white !normal-case !tracking-tight">Menyimpan...</Text.Label>
                                 </>
                             ) : (
                                 <>
                                     <FloppyDisk weight="bold" />
-                                    <Text.Label className="!text-white">Simpan Data</Text.Label>
+                                    <Text.Label className="!text-white !normal-case !tracking-tight">Simpan Data</Text.Label>
                                 </>
                             )}
                         </button>

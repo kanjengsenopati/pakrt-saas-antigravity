@@ -10,6 +10,7 @@ import {
     CalendarBlank
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
+import { Modal } from '../../components/ui/Modal';
 
 export default function PollingForm() {
     const { id } = useParams();
@@ -20,6 +21,13 @@ export default function PollingForm() {
     const [opsi, setOpsi] = useState<string[]>(['Setuju', 'Tidak Setuju']);
     const [tanggalSelesai, setTanggalSelesai] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+
+    const showAlert = (message: string) => {
+        setAlertMessage(message);
+        setIsAlertOpen(true);
+    };
 
     useEffect(() => {
         if (id) {
@@ -48,7 +56,7 @@ export default function PollingForm() {
             });
             navigate('/aduan');
         } catch (error) {
-            alert("Gagal membuat polling.");
+            showAlert("Gagal membuat polling.");
         } finally {
             setIsSubmitting(false);
         }
@@ -169,6 +177,15 @@ export default function PollingForm() {
                     </button>
                 </div>
             </form>
+
+            <Modal 
+                isOpen={isAlertOpen}
+                onClose={() => setIsAlertOpen(false)}
+                title="Gagal"
+                type="error"
+            >
+                {alertMessage}
+            </Modal>
         </div>
     );
 }

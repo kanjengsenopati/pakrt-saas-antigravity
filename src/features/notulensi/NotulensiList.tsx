@@ -207,11 +207,11 @@ export default function NotulensiList() {
 
             {/* STATS WIDGETS */}
             <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
+                <div className="bg-white p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group transition-all duration-300">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[10px] font-black text-slate-400 tracking-[0.05em] mb-1.5 flex items-center gap-2">
+                    <p className="text-[11px] font-bold tracking-tight text-slate-400 mb-1.5 flex items-center gap-2">
                         <Notebook weight="duotone" className="text-brand-500 w-4 h-4" />
-                        Total Arsip Notulensi
+                        Total
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{totalNotulensi}</span>
@@ -219,29 +219,28 @@ export default function NotulensiList() {
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
-                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[10px] font-black text-slate-400 tracking-[0.05em] mb-1.5 flex items-center gap-2">
-                        <CalendarBlank weight="duotone" className="text-brand-400 w-4 h-4" />
-                        Pertemuan Bulan Ini
+                <div className="bg-brand-600 p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
+                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                    <p className="text-[11px] font-bold tracking-tight text-brand-100 mb-1.5 flex items-center gap-2">
+                        <CalendarBlank weight="duotone" className="text-brand-100 w-4 h-4" />
+                        Bulan Ini
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-white tracking-tight tabular-nums">{thisMonthNotulensi}</span>
-                        <span className="text-[11px] font-bold text-slate-500">Pertemuan</span>
+                        <span className="text-[11px] font-bold text-brand-200">Pertemuan</span>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 flex flex-col lg:flex-row justify-between gap-4 bg-gray-50/50">
+            <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden border border-transparent">
+                <div className="p-4 flex flex-col lg:flex-row justify-between gap-4 bg-white">
                     <div className="relative flex-1 max-w-md group">
-                        <MagnifyingGlassPlus weight="bold" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Cari Judul, Tanggal, atau Tuan Rumah..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
+                            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
                         />
                     </div>
 

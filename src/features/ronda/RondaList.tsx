@@ -171,7 +171,7 @@ export default function RondaList() {
                             onClick={() => setActiveTab('jadwal')}
                             className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 md:py-2 text-[11px] md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${activeTab === 'jadwal' ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                            Log Jadwal
+                            Jadwal
                         </button>
                     </div>
 
@@ -236,7 +236,7 @@ export default function RondaList() {
 
                                                 <div className="space-y-4">
                                                     <div>
-                                                        <Text.Label className="mb-2.5 flex items-center gap-1.5">
+                                                        <Text.Label className="mb-2.5 flex items-center gap-1.5 !normal-case !tracking-tight">
                                                             <div className="w-1 h-3 bg-brand-500 rounded-full" />
                                                             Petugas Utama
                                                         </Text.Label>
@@ -254,7 +254,7 @@ export default function RondaList() {
 
                                                     {group.konsumsi.size > 0 && (
                                                         <div>
-                                                            <Text.Label className="!text-amber-500 mb-2.5 flex items-center gap-1.5">
+                                                            <Text.Label className="!text-amber-500 mb-2.5 flex items-center gap-1.5 !normal-case !tracking-tight">
                                                                 <div className="w-1 h-3 bg-amber-500 rounded-full" />
                                                                 Konsumsi
                                                             </Text.Label>
@@ -272,8 +272,8 @@ export default function RondaList() {
 
                                             <div className="p-5 bg-slate-50/30 flex-1">
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <Text.Label>Status & Jadwal</Text.Label>
-                                                    <Text.Label className="!text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full !normal-case">{group.dates.length} Titik</Text.Label>
+                                                    <Text.Label className="!normal-case !tracking-tight">Status & Jadwal</Text.Label>
+                                                    <Text.Label className="!text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full !normal-case !tracking-tight">{group.dates.length} Titik</Text.Label>
                                                 </div>
                                                 <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
                                                     {group.dates.sort((a: any, b: any) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()).map((d: any) => {
@@ -297,7 +297,7 @@ export default function RondaList() {
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         {d.kehadiranCount > 0 && (
-                                                                            <Text.Label className="!text-[9px] !text-brand-600 !font-bold bg-brand-50 px-1.5 py-0.5 rounded-lg tracking-wider">
+                                                                            <Text.Label className="!text-[10px] !text-brand-600 !font-bold bg-brand-50 px-1.5 py-0.5 rounded-lg !normal-case !tracking-tight">
                                                                                 {d.kehadiranCount} Check
                                                                             </Text.Label>
                                                                         )}
@@ -306,7 +306,7 @@ export default function RondaList() {
                                                                 </div>
                                                                 {isActive && (
                                                                     <div className="ml-3 pl-4 border-l-2 border-amber-200 py-2 animate-fade-in">
-                                                                        <Text.Label className="!text-[9px] !text-amber-500 !font-bold tracking-widest mb-1.5">Detail Konsumsi:</Text.Label>
+                                                                        <Text.Label className="!text-[10px] !text-amber-500 !font-bold !normal-case !tracking-tight mb-1.5">Detail Konsumsi:</Text.Label>
                                                                         <div className="flex flex-wrap gap-1.5">
                                                                             {d.petugas_konsumsi.length > 0 ? (
                                                                                 d.petugas_konsumsi.map((p: any) => (
@@ -362,9 +362,9 @@ export default function RondaList() {
                                                 )}
                                             </div>
                                         </th>
-                                        <th className="p-3 w-[30%] text-left"><Text.Label>Petugas Piket</Text.Label></th>
-                                        <th className="p-3 w-[20%] text-left"><Text.Label>Bawa Konsumsi</Text.Label></th>
-                                        <th className="p-3 text-right px-6"><Text.Label>Aksi</Text.Label></th>
+                                        <th className="p-3 w-[30%] text-left"><Text.Label className="!normal-case !tracking-tight">Petugas Piket</Text.Label></th>
+                                        <th className="p-3 w-[20%] text-left"><Text.Label className="!normal-case !tracking-tight">Bawa Konsumsi</Text.Label></th>
+                                        <th className="p-3 text-right px-6"><Text.Label className="!normal-case !tracking-tight">Aksi</Text.Label></th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
@@ -485,7 +485,7 @@ export default function RondaList() {
                                                     </div>
                                                 </div>
                                                 {ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 && (
-                                                    <Text.Label className="px-2 py-0.5 rounded-lg !text-[10px] !font-bold bg-brand-50 !text-brand-600 border border-brand-100 tracking-widest shadow-sm uppercase">
+                                                    <Text.Label className="px-2 py-0.5 rounded-lg !text-[10px] !font-bold bg-brand-50 !text-brand-600 border border-brand-100 shadow-sm !normal-case !tracking-tight">
                                                         Selesai
                                                     </Text.Label>
                                                 )}
@@ -493,7 +493,7 @@ export default function RondaList() {
 
                                             <div className="space-y-4">
                                                 <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                                    <Text.Label className="mb-2 leading-none">Petugas Piket</Text.Label>
+                                                    <Text.Label className="mb-2 leading-none !normal-case !tracking-tight">Petugas Piket</Text.Label>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_warga?.map((w: any) => (
                                                             <span key={w.id} className="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-slate-100 text-slate-700 text-[11px] font-bold shadow-sm uppercase">
@@ -504,7 +504,7 @@ export default function RondaList() {
                                                 </div>
 
                                                 <div className="bg-amber-50/30 rounded-xl border border-amber-100 p-3">
-                                                    <Text.Label className="!text-amber-500 mb-2 leading-none">Bawa Konsumsi</Text.Label>
+                                                    <Text.Label className="!text-amber-500 mb-2 leading-none !normal-case !tracking-tight">Bawa Konsumsi</Text.Label>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {ronda.anggota_konsumsi && ronda.anggota_konsumsi.length > 0 ? (
                                                             ronda.anggota_konsumsi.map((w: any) => (
@@ -526,7 +526,7 @@ export default function RondaList() {
                                                         className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold tracking-tighter shadow-sm active:scale-95 border ${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? 'text-brand-600 bg-brand-50 border-brand-100' : 'text-slate-600 bg-white border-slate-200'}`}
                                                     >
                                                         <CheckCircle weight={ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? "fill" : "bold"} className="w-4 h-4" />
-                                                        <Text.Label className={`${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? '!text-brand-600' : '!text-slate-600'} !text-[11px]`}>Kehadiran</Text.Label>
+                                                        <Text.Label className={`${ronda.kehadiran_warga && ronda.kehadiran_warga.length > 0 ? '!text-brand-600' : '!text-slate-600'} !text-[11px] !normal-case !tracking-tight`}>Kehadiran</Text.Label>
                                                     </button>
                                                 </HasPermission>
                                                 <div className="flex gap-2">
@@ -620,14 +620,14 @@ export default function RondaList() {
                                 onClick={() => setIsAttendanceModalOpen(false)}
                                 className="px-4 py-2 text-gray-700 font-medium hover:bg-gray-200 bg-gray-100 rounded-lg transition-colors border border-transparent hover:border-gray-300"
                             >
-                                <Text.Label className="!text-slate-600">Batal</Text.Label>
+                                <Text.Label className="!text-slate-600 !normal-case !tracking-tight">Batal</Text.Label>
                             </button>
                             <button
                                 onClick={handleSaveAttendance}
                                 className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg flex items-center gap-2 transition-all shadow-sm hover:shadow-md active-press"
                             >
                                 <CheckCircle weight="bold" />
-                                <Text.Label className="!text-white">Simpan Kehadiran</Text.Label>
+                                <Text.Label className="!text-white !normal-case !tracking-tight">Simpan Kehadiran</Text.Label>
                             </button>
                         </div>
                     </div>
