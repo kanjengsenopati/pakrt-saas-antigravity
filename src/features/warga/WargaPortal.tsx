@@ -190,25 +190,25 @@ export default function WargaPortal() {
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <EnvelopeSimple weight="regular" className="text-[1.8rem] text-blue-600" />
                             </div>
-                            <Text.Label className="text-center leading-[1.2]">SURAT</Text.Label>
+                            <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Surat</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aduan/new')}>
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <Megaphone weight="regular" className="text-[1.8rem] text-rose-500" />
                             </div>
-                            <Text.Label className="text-center leading-[1.2]">ADUAN</Text.Label>
+                            <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Aduan</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran')}>
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <CurrencyCircleDollar weight="regular" className="text-[1.8rem] text-emerald-600" />
                             </div>
-                            <Text.Label className="text-center leading-[1.2]">IURAN</Text.Label>
+                            <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Iuran</Text.Label>
                         </div>
                         <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/agenda')}>
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <CalendarCheck weight="regular" className="text-[1.8rem] text-purple-600" />
                             </div>
-                            <Text.Label className="text-center leading-[1.2]">AGENDA</Text.Label>
+                            <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Agenda</Text.Label>
                         </div>
                     </div>
                 </div>
@@ -241,10 +241,10 @@ export default function WargaPortal() {
                     <Text.Label className="!text-slate-800 mb-4">Pintasan Lainnya</Text.Label>
                     <div className="grid grid-cols-4 gap-3">
                         {[
-                            { label: 'WARGA', icon: Users, path: '/warga', color: 'text-amber-600' },
-                            { label: 'ASET', icon: Package, path: '/aset', color: 'text-cyan-600' },
-                            { label: 'PENGURUS', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' }, color: 'text-slate-600' },
-                            { label: 'LOGOUT', icon: SignOut, isLogout: true, color: 'text-red-500' },
+                            { label: 'Warga', icon: Users, path: '/warga', color: 'text-amber-600' },
+                            { label: 'Aset', icon: Package, path: '/aset', color: 'text-cyan-600' },
+                            { label: 'Pengurus', icon: FileText, path: '/pengurus', extra: { tab: 'ad-art' }, color: 'text-slate-600' },
+                            { label: 'Logout', icon: SignOut, isLogout: true, color: 'text-red-500' },
                         ].map((item, idx) => (
                             <div 
                                 key={idx} 
@@ -262,7 +262,7 @@ export default function WargaPortal() {
                                 <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <item.icon weight="regular" className={`text-[1.8rem] ${item.color}`} />
                                 </div>
-                                <Text.Label className="text-center truncate w-full px-1 group-active:scale-95 transition-transform leading-[1.2]">
+                                <Text.Label className="text-center truncate w-full px-1 group-active:scale-95 transition-transform leading-[1.2] !normal-case !tracking-tight !text-slate-700">
                                     {item.label}
                                 </Text.Label>
                             </div>

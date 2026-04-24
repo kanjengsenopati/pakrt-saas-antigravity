@@ -216,61 +216,61 @@ export default function Dashboard() {
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <HandCoins weight="regular" className="text-[1.8rem] text-orange-500" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">IURAN</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Iuran</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/keuangan')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <Money weight="regular" className="text-[1.8rem] text-emerald-600" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">KAS RT</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Kas RT</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aset')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <Package weight="regular" className="text-[1.8rem] text-blue-600" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">ASET</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Aset</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/pengaturan')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <GearSix weight="regular" className="text-[1.8rem] text-slate-600" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">SETTING</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Setting</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/pengurus')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <IdentificationCard weight="regular" className="text-[1.8rem] text-purple-600" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">PENGURUS</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Pengurus</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/ronda')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <ShieldCheck weight="regular" className="text-[1.8rem] text-red-500" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">RONDA</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Ronda</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/notulensi')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <Notebook weight="regular" className="text-[1.8rem] text-sky-500" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">NOTULEN</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Notulen</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/aduan')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <Megaphone weight="regular" className="text-[1.8rem] text-rose-500" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">ADUAN</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Aduan</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/agenda')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <CalendarCheck weight="regular" className="text-[1.8rem] text-indigo-500" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">AGENDA</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Agenda</Text.Label>
                             </div>
                             <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/warga')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <Users weight="regular" className="text-[1.8rem] text-slate-700" />
                                 </div>
-                                <Text.Label className="text-center leading-[1.2]">WARGA</Text.Label>
+                                <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Warga</Text.Label>
                             </div>
                         </div>
                     </section>
