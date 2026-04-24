@@ -209,9 +209,9 @@ export default function NotulensiList() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden group transition-all duration-300">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-2">
+                    <p className="text-[11px] font-bold tracking-tight text-slate-400 mb-1.5 flex items-center gap-2">
                         <Notebook weight="duotone" className="text-brand-500 w-4 h-4" />
-                        Total Notulensi
+                        Total
                     </p>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-black text-slate-900 tracking-tight tabular-nums">{totalNotulensi}</span>
@@ -221,7 +221,7 @@ export default function NotulensiList() {
 
                 <div className="bg-brand-600 p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-brand-100 mb-1.5 flex items-center gap-2">
+                    <p className="text-[11px] font-bold tracking-tight text-brand-100 mb-1.5 flex items-center gap-2">
                         <CalendarBlank weight="duotone" className="text-brand-100 w-4 h-4" />
                         Bulan Ini
                     </p>
