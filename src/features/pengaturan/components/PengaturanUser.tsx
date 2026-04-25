@@ -279,7 +279,7 @@ export default function PengaturanUser() {
                     </div>
                     <div className="flex gap-2">
                         {activeRoleSubTab === 'users' ? (
-                            <HasPermission module="Setup / Pengaturan" action="Buat">
+                            <HasPermission module="Manajemen User / Role" action="Buat">
                                 <button 
                                     onClick={() => { setShowAddUserForm(v => !v); setExpandedUserId(null); }}
                                     className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold shadow-lg transition-all text-[14px] ${showAddUserForm ? 'bg-slate-800 text-white' : 'bg-brand-600 text-white hover:scale-105 active:scale-95'}`}>
@@ -288,7 +288,7 @@ export default function PengaturanUser() {
                                 </button>
                             </HasPermission>
                         ) : (
-                            <HasPermission module="Setup / Pengaturan" action="Buat">
+                            <HasPermission module="Manajemen User / Role" action="Buat">
                                 <button 
                                     onClick={() => setShowAddRoleForm(v => !v)}
                                     className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200 shadow-none' : 'bg-brand-600 text-white hover:scale-105 active:scale-95'}`}>
@@ -427,19 +427,19 @@ export default function PengaturanUser() {
                                     </div>
 
                                     <div className="flex items-center gap-2 ml-auto">
-                                        <HasPermission module="Setup / Pengaturan" action="Ubah">
+                                        <HasPermission module="Manajemen User / Role" action="Ubah">
                                             <button onClick={() => handleResetPassword(user)} className="p-2.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all" title="Reset Password">
                                                 <Key weight="bold" className="w-[18px] h-[18px]" />
                                             </button>
                                         </HasPermission>
-                                        <HasPermission module="Setup / Pengaturan" action="Ubah">
+                                        <HasPermission module="Manajemen User / Role" action="Ubah">
                                             <button onClick={() => handleEditPermissions(user)}
                                                 className={`flex items-center gap-2 px-4 py-2 text-[12px] font-bold rounded-xl transition-all border ${expandedUserId === user.id ? 'bg-brand-600 text-white border-brand-600' : 'text-slate-400 bg-slate-50 hover:bg-slate-100 border-slate-200/50'}`}>
                                                 {expandedUserId === user.id ? <CaretUp weight="bold" /> : <ShieldCheck weight="bold" />}
                                                 <span className="hidden sm:inline">{expandedUserId === user.id ? 'Tutup' : 'Akses'}</span>
                                             </button>
                                         </HasPermission>
-                                        <HasPermission module="Setup / Pengaturan" action="Hapus">
+                                        <HasPermission module="Manajemen User / Role" action="Hapus">
                                             <button onClick={() => handleDeleteUser(user.id, user.name)}
                                                 className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Hapus">
                                                 <Trash weight="bold" className="w-[18px] h-[18px]" />
@@ -576,7 +576,7 @@ export default function PengaturanUser() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 ml-auto">
-                                            <HasPermission module="Setup / Pengaturan" action="Ubah">
+                                            <HasPermission module="Manajemen User / Role" action="Ubah">
                                                 <button onClick={() => handleEditRolePermissions(role)}
                                                     className={`flex items-center gap-2 px-4 py-2 text-[12px] font-bold rounded-xl transition-all border ${expandedRoleId === role.id ? 'bg-slate-900 text-white border-slate-900' : 'text-slate-600 bg-slate-50 hover:bg-slate-100 border-slate-200/50'}`}>
                                                     {expandedRoleId === role.id ? <CaretUp weight="bold" /> : <Palette weight="bold" />}
@@ -584,7 +584,7 @@ export default function PengaturanUser() {
                                                 </button>
                                             </HasPermission>
                                             {role.name !== 'Admin' && (
-                                                <HasPermission module="Setup / Pengaturan" action="Hapus">
+                                                <HasPermission module="Manajemen User / Role" action="Hapus">
                                                     <button onClick={() => handleDeleteRole(role.id, role.name)}
                                                         className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Hapus">
                                                         <Trash weight="bold" className="w-[18px] h-[18px]" />

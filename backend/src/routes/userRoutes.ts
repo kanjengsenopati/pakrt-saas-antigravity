@@ -15,19 +15,22 @@ export default async function userRoutes(fastify: FastifyInstance) {
         const userSession = (request as any).user;
         
         // Allow if user is an admin OR if they are requesting their own profile
-        const isAdmin = userSession.role?.toLowerCase() === 'admin';
+        const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
         const isSelf = userSession.id === id;
 
         if (!isAdmin && !isSelf) {
-            // If not self, must have management permission
-            try {
-                // Manual check for permission since we removed it from preHandler for this specific route
-                // Alternatively, we could define a more flexible requirePermission
-                const hasPerm = await (request as any).hasPermission?.('Manajemen User / Role', 'Lihat');
-                if (!hasPerm) {
-                    return reply.code(403).send({ error: 'Forbidden' });
-                }
-            } catch (authError) {
+            // Manual check for permission
+            const userPerms = (userSession.permissions as any) || {};
+            const rolePerms = (userSession.role_entity?.permissions as any) || {};
+            
+            const check = (perms: any) => {
+                const data = perms['Manajemen User / Role'];
+                if (!data) return false;
+                if (Array.isArray(data)) return data.includes('Lihat') || data.includes('manage');
+                return data.actions?.includes('Lihat') || data.actions?.includes('manage');
+            };
+
+            if (!check(userPerms) && !check(rolePerms)) {
                 return reply.code(403).send({ error: 'Forbidden' });
             }
         }
@@ -91,6 +94,22 @@ export default async function userRoutes(fastify: FastifyInstance) {
             const existing = await userService.getById(id);
             if (!existing || existing.tenant_id !== userSession.tenant_id) {
                 return reply.code(404).send({ error: 'User not found or unauthorized' });
+            }
+
+            // Allow if admin or management permission
+            const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+            if (!isAdmin) {
+                const userPerms = (userSession.permissions as any) || {};
+                const rolePerms = (userSession.role_entity?.permissions as any) || {};
+                const check = (perms: any) => {
+                    const data = perms['Manajemen User / Role'];
+                    if (!data) return false;
+                    if (Array.isArray(data)) return data.includes('Ubah') || data.includes('manage');
+                    return data.actions?.includes('Ubah') || data.actions?.includes('manage');
+                };
+                if (!check(userPerms) && !check(rolePerms)) {
+                    return reply.code(403).send({ error: 'Forbidden' });
+                }
             }
 
             const data = request.body as any;

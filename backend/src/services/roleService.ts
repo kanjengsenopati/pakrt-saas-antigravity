@@ -52,6 +52,11 @@ export const SYSTEM_ROLES = [
     {
         name: 'Sekretaris',
         permissions: {
+            "Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Pengurus": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Agenda": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Surat / Cetak": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Notulensi": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
             "Log Aktivitas": { actions: ["Lihat"], scope: "all" },
             "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
             "Dashboard": { actions: ["Lihat"], scope: "all" }
@@ -60,6 +65,9 @@ export const SYSTEM_ROLES = [
     {
         name: 'Bendahara',
         permissions: {
+            "Buku Kas / Transaksi": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Iuran Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
+            "Agenda": { actions: ["Lihat"], scope: "all" },
             "Setup / Pengaturan": { actions: ["Lihat"], scope: "all" },
             "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "all" },
             "Dashboard": { actions: ["Lihat"], scope: "all" }
@@ -68,7 +76,10 @@ export const SYSTEM_ROLES = [
     {
         name: 'Warga',
         permissions: {
+            "Warga": { actions: ["Lihat"], scope: "all" },
             "Pengurus": { actions: ["Lihat"], scope: "all" },
+            "Agenda": { actions: ["Lihat"], scope: "all" },
+            "Jadwal Ronda": { actions: ["Lihat"], scope: "all" },
             "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
             "Dashboard": { actions: ["Lihat"], scope: "all" }
         }

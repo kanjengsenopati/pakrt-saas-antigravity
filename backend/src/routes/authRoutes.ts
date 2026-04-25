@@ -60,12 +60,14 @@ export default async function authRoutes(fastify: FastifyInstance) {
             scope: user.scope 
         }, { expiresIn: '1d' });
 
+        const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL_URL;
+
         // Set HttpOnly Cookie
         reply.setCookie('auth_token', token, {
             path: '/',
             httpOnly: true,
-            secure: true, // Only for HTTPS (Vercel)
-            sameSite: 'none', // Required for cross-site cookie
+            secure: isProd, // Only true on production (Vercel)
+            sameSite: isProd ? 'none' : 'lax', // 'none' requires secure: true
             maxAge: 86400 // 1 day
         });
 
@@ -97,11 +99,12 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
     // Logout endpoint to clear cookie
     fastify.post('/logout', async (request, reply) => {
+        const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL_URL;
         reply.clearCookie('auth_token', {
             path: '/',
             httpOnly: true,
-            secure: true,
-            sameSite: 'none'
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax'
         });
         return { message: 'Logged out successfully' };
     });
