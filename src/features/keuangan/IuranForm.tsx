@@ -493,7 +493,7 @@ export default function IuranForm() {
                 )}
 
                 {/* BOTTOM ACTION BAR (Sticky on Mobile) */}
-                <div className="fixed bottom-0 left-0 right-0 p-5 bg-white/80 backdrop-blur-md border-t border-slate-100 z-50 md:relative md:bg-transparent md:border-none md:p-0">
+                <div className="fixed bottom-[76px] left-0 right-0 p-5 bg-white/90 backdrop-blur-xl border-t border-slate-100 z-40 md:relative md:bottom-auto md:bg-transparent md:border-none md:p-0 shadow-[0_-8px_20px_-4px_rgba(0,0,0,0.02)]">
                     <div className="max-w-3xl mx-auto flex gap-3">
                         {isWarga ? (
                             <>
