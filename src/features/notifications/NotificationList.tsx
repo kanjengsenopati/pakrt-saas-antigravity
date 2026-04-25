@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { Text } from '../../components/ui/Typography';
 import { ArrowLeft, Bell, Info, CheckCircle, Warning } from '@phosphor-icons/react';

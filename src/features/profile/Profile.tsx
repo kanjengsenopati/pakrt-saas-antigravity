@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { userService } from '../../services/userService';
-import { User as UserIcon, Envelope, Phone, Lock, FloppyDisk, ShieldCheck, SignOut, Eye, EyeSlash } from '@phosphor-icons/react';
+import { User as UserIcon, Envelope, Phone, Lock, FloppyDisk, ShieldCheck, SignOut, Eye, EyeSlash, PencilSimple, Key } from '@phosphor-icons/react';
 
 export default function Profile() {
     const { user, logout, updateUser } = useAuth();
@@ -37,6 +37,7 @@ export default function Profile() {
 
     const handleProfileSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user) return;
         
         try {
             setIsLoading(true);
@@ -69,6 +70,7 @@ export default function Profile() {
 
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user) return;
         
         if (passwordData.password !== passwordData.confirmPassword) {
             alert('Password konfirmasi tidak cocok!');
