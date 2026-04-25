@@ -11,7 +11,7 @@ import { wargaService } from '../../services/wargaService';
 import { User } from '../../database/db';
 import { Warga } from '../../types/database';
 import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretUp, Key, Trash, Printer } from '@phosphor-icons/react';
+import { FloppyDisk, Money, FileText, CheckCircle, ShieldCheck, Palette, X, Plus, User as UserIcon, Eraser, QrCode, CaretUp, Key, Trash, Printer, Eye, EyeSlash } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getFullUrl } from '../../utils/url';
@@ -107,6 +107,7 @@ export default function Pengaturan() {
     const [selectedWargaId, setSelectedWargaId] = useState('');
     const [newUserForm, setNewUserForm] = useState({ name: '', email: '', role_id: '', password: '', scope: currentScope as string });
     const [newRoleForm, setNewRoleForm] = useState({ name: '' });
+    const [resetPasswordModal, setResetPasswordModal] = useState<{ isOpen: boolean; user: User | null; newPassword: string; showPassword: boolean }>({ isOpen: false, user: null, newPassword: '', showPassword: false });
 
     // Keuangan Categories State
     const [pemasukanCategories, setPemasukanCategories] = useState<string[]>([]);
@@ -620,12 +621,15 @@ export default function Pengaturan() {
     };
 
     const handleResetPassword = async (user: User) => {
-        const newPassword = window.prompt(`Masukkan password baru untuk ${user.name}:`, 'password123');
-        if (!newPassword) return;
+        setResetPasswordModal({ isOpen: true, user, newPassword: '', showPassword: false });
+    };
 
+    const submitResetPassword = async () => {
+        if (!resetPasswordModal.user || !resetPasswordModal.newPassword) return;
         try {
-            await userService.update(user.id, { password: newPassword });
-            alert(`Password untuk ${user.name} berhasil diperbarui.`);
+            await userService.update(resetPasswordModal.user.id, { password: resetPasswordModal.newPassword });
+            alert(`Password untuk ${resetPasswordModal.user.name} berhasil diperbarui.`);
+            setResetPasswordModal({ isOpen: false, user: null, newPassword: '', showPassword: false });
         } catch (error) {
             console.error("Failed to reset password:", error);
             alert("Gagal mereset password. Silakan coba lagi.");
@@ -1725,43 +1729,66 @@ export default function Pengaturan() {
                                                                     <button onClick={() => savePermissions()} className="px-3.5 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan</button>
                                                                 </div>
                                                             </div>
-                                                            <div className="overflow-x-auto no-scrollbar">
-                                                                <table className="w-full text-left min-w-[500px]">
-                                                                    <thead>
-                                                                        <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                            <th className="py-3 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
-                                                                            {CRUD_ACTIONS.map(action => (
-                                                                                <th key={action.id} className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
-                                                                            ))}
-                                                                            <th className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scope</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody className="divide-y divide-slate-50">
-                                                                        {APP_MODULES.map((module) => (
-                                                                            <tr key={module.id} className="hover:bg-slate-50/30 transition-colors">
-                                                                                <td className="py-3 px-4 pl-5 sticky left-0 bg-white z-10 border-r border-slate-50 shadow-[4px_0_8px_rgba(0,0,0,0.02)]">
-                                                                                    <Text.Body className="!text-[11px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
-                                                                                </td>
-                                                                                {CRUD_ACTIONS.map(action => {
-                                                                                    const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
-                                                                                    return (
-                                                                                        <td key={action.id} className="p-2 text-center">
-                                                                                            <button onClick={() => togglePermission(module.id, action.id)} className={`w-7 h-7 rounded-lg border flex items-center justify-center mx-auto transition-all ${isChecked ? 'bg-brand-600 border-brand-600 text-white' : 'bg-white border-slate-200 text-transparent'}`}>
-                                                                                                <CheckCircle weight="bold" className="w-4 h-4" />
-                                                                                            </button>
-                                                                                        </td>
-                                                                                    );
-                                                                                })}
-                                                                                <td className="p-2 text-center">
-                                                                                    <button onClick={() => toggleScope(module.id)} className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${userPermissions[module.id]?.scope === 'personal' ? 'bg-amber-100 text-amber-600 border-amber-200 shadow-sm shadow-amber-100' : 'bg-brand-50 text-brand-600 border-brand-100 shadow-sm shadow-brand-100'}`}>
-                                                                                        {userPermissions[module.id]?.scope === 'personal' ? 'Self' : 'All'}
-                                                                                    </button>
-                                                                                </td>
-                                                                            </tr>
-                                                                        ))}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                                            <div className="hidden md:block overflow-x-auto no-scrollbar">
+                                                                  <table className="w-full text-left min-w-[500px]">
+                                                                      <thead>
+                                                                          <tr className="bg-slate-50/50 border-b border-slate-100">
+                                                                              <th className="py-3 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
+                                                                              {CRUD_ACTIONS.map(action => (
+                                                                                  <th key={action.id} className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
+                                                                              ))}
+                                                                              <th className="p-3 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scope</th>
+                                                                          </tr>
+                                                                      </thead>
+                                                                      <tbody className="divide-y divide-slate-50">
+                                                                          {APP_MODULES.map((module) => (
+                                                                              <tr key={module.id} className="hover:bg-slate-50/30 transition-colors">
+                                                                                  <td className="py-3 px-4 pl-5 sticky left-0 bg-white z-10 border-r border-slate-50 shadow-[4px_0_8px_rgba(0,0,0,0.02)]">
+                                                                                      <Text.Body className="!text-[11px] !font-bold !text-slate-700 uppercase">{module.label}</Text.Body>
+                                                                                  </td>
+                                                                                  {CRUD_ACTIONS.map(action => {
+                                                                                      const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
+                                                                                      return (
+                                                                                          <td key={action.id} className="p-2 text-center">
+                                                                                              <button onClick={() => togglePermission(module.id, action.id)} className={`w-7 h-7 rounded-lg border flex items-center justify-center mx-auto transition-all ${isChecked ? 'bg-brand-600 border-brand-600 text-white' : 'bg-white border-slate-200 text-transparent'}`}>
+                                                                                                  <CheckCircle weight="bold" className="w-4 h-4" />
+                                                                                              </button>
+                                                                                          </td>
+                                                                                      );
+                                                                                  })}
+                                                                                  <td className="p-2 text-center">
+                                                                                      <button onClick={() => toggleScope(module.id)} className="w-full py-1 text-[10px] font-bold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                                                                                          {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                                      </button>
+                                                                                  </td>
+                                                                              </tr>
+                                                                          ))}
+                                                                      </tbody>
+                                                                  </table>
+                                                              </div>
+                                                              <div className="md:hidden divide-y divide-slate-100 border-t border-slate-100">
+                                                                  {APP_MODULES.map((module) => (
+                                                                      <div key={module.id} className="p-4 bg-white">
+                                                                          <div className="flex items-center justify-between mb-3">
+                                                                              <Text.Body className="!text-[12px] !font-bold !text-slate-800 uppercase">{module.label}</Text.Body>
+                                                                              <button onClick={() => toggleScope(module.id)} className={`px-2 py-1 text-[10px] font-bold rounded-lg ${userPermissions[module.id]?.scope === 'personal' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}`}>
+                                                                                  Scope: {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                              </button>
+                                                                          </div>
+                                                                          <div className="flex flex-wrap gap-2">
+                                                                              {CRUD_ACTIONS.map(action => {
+                                                                                  const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
+                                                                                  return (
+                                                                                      <button key={action.id} onClick={() => togglePermission(module.id, action.id)}
+                                                                                          className={`px-3 py-1.5 text-[11px] font-bold rounded-full border transition-all flex items-center gap-1.5 ${isChecked ? 'bg-brand-50 border-brand-200 text-brand-700' : 'bg-white border-slate-200 text-slate-400'}`}>
+                                                                                          {action.label}
+                                                                                      </button>
+                                                                                  );
+                                                                              })}
+                                                                          </div>
+                                                                      </div>
+                                                                  ))}
+                                                              </div>
                                                         </div>
                                                     </div>
                                                 </div>

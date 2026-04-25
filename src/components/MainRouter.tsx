@@ -33,6 +33,7 @@ import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
 import JoinRT from '../features/auth/JoinRT';
 import WargaPortal from '../features/warga/WargaPortal';
+import NotificationList from '../features/notifications/NotificationList';
 import AduanList from '../features/aduan/AduanList';
 import AduanForm from '../features/aduan/AduanForm';
 import PollingForm from '../features/aduan/PollingForm';
@@ -319,6 +320,10 @@ const router = createBrowserRouter([
                                 <Pengaturan />
                             </ProtectedRoute>
                         )
+                    },
+                    {
+                        path: 'notifications',
+                        element: <NotificationList />
                     },
                     {
                         path: 'profile',
