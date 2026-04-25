@@ -157,6 +157,42 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
     });
 
+    fastify.put('/:id/permissions', async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const userSession = (request as any).user;
+            
+            const existing = await userService.getById(id);
+            if (!existing || existing.tenant_id !== userSession.tenant_id) {
+                return reply.code(404).send({ error: 'User not found or unauthorized' });
+            }
+
+            // Allow if admin or management permission
+            const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+            if (!isAdmin) {
+                const userPerms = (userSession.permissions as any) || {};
+                const rolePerms = (userSession.role_entity?.permissions as any) || {};
+                const check = (perms: any) => {
+                    const data = perms['Manajemen User / Role'];
+                    if (!data) return false;
+                    if (Array.isArray(data)) return data.includes('Ubah') || data.includes('manage');
+                    return data.actions?.includes('Ubah') || data.actions?.includes('manage');
+                };
+                if (!check(userPerms) && !check(rolePerms)) {
+                    return reply.code(403).send({ error: 'Forbidden' });
+                }
+            }
+
+            const { permissions } = request.body as { permissions: any };
+
+            const updatedUser = await userService.updatePermissions(id, permissions);
+            return updatedUser;
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Failed to update user permissions', details: error.message });
+        }
+    });
+
     fastify.delete('/:id', async (request, reply) => {
         const userSession = (request as any).user;
         const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';

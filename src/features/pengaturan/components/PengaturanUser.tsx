@@ -632,6 +632,7 @@ export default function PengaturanUser() {
                                                         <button onClick={() => setExpandedRoleId(null)} className="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-[11px] font-bold transition-all active-press">Batal</button>
                                                         <button onClick={() => savePermissions(undefined, role)} className="px-4 py-2 bg-brand-600 text-white hover:bg-brand-700 rounded-xl text-[11px] font-bold transition-all shadow-md shadow-brand-100 active-press">Simpan</button>
                                                     </div>
+                                                </div>
                                                 <div className="hidden md:block overflow-x-auto no-scrollbar">
                                                     <table className="w-full text-left min-w-[500px]">
                                                         <thead>
