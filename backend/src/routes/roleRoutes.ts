@@ -57,6 +57,17 @@ export default async function roleRoutes(fastify: FastifyInstance) {
         }
     });
 
+    fastify.post('/sync', { preHandler: [requirePermission('Manajemen User / Role', 'Ubah')] }, async (request, reply) => {
+        try {
+            const user = (request as any).user;
+            const results = await roleService.syncDefaultRoles(user.tenant_id);
+            return { message: 'Roles synchronized successfully', count: results.length };
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Failed to synchronize roles', details: error.message });
+        }
+    });
+
     fastify.delete('/:id', { preHandler: [requirePermission('Manajemen User / Role', 'Hapus')] }, async (request, reply) => {
         try {
             const { id } = request.params as { id: string };

@@ -113,6 +113,20 @@ export default function PengaturanUser() {
         }
     };
 
+    const handleSyncRoles = async () => {
+        if (!currentTenant) return;
+        if (!window.confirm('Sinkronisasi ulang peran bawaan sistem (Admin, Sekretaris, Bendahara, Warga)? Perubahan manual pada role sistem ini akan ditimpa ke nilai default terbaru.')) return;
+        
+        try {
+            await api.post('/role/sync');
+            await loadRoles();
+            alert('Peran sistem berhasil disinkronisasi ke default terbaru.');
+        } catch (error: any) {
+            console.error('Failed to sync roles', error);
+            alert(parseApiError(error, 'Gagal sinkronisasi peran.'));
+        }
+    };
+
     const handleDeleteRole = async (id: string, name: string) => {
         if (confirm(`Apakah Anda yakin ingin menghapus role ${name}? User dengan role ini mungkin kehilangan akses.`)) {
             await api.delete(`/role/${id}`);
@@ -288,14 +302,24 @@ export default function PengaturanUser() {
                                 </button>
                             </HasPermission>
                         ) : (
-                            <HasPermission module="Manajemen User / Role" action="Buat">
-                                <button 
-                                    onClick={() => setShowAddRoleForm(v => !v)}
-                                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200 shadow-none' : 'bg-brand-600 text-white hover:scale-105 active:scale-95'}`}>
-                                    {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
-                                    <Text.Label className="!normal-case !tracking-normal !text-inherit">{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</Text.Label>
-                                </button>
-                            </HasPermission>
+                            <div className="flex gap-2">
+                                <HasPermission module="Manajemen User / Role" action="Ubah">
+                                    <button 
+                                        onClick={handleSyncRoles}
+                                        className="flex items-center gap-2 px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold shadow-sm transition-all text-[14px]">
+                                        <ShieldCheck weight="bold" />
+                                        <Text.Label className="!normal-case !tracking-normal">Sync Default</Text.Label>
+                                    </button>
+                                </HasPermission>
+                                <HasPermission module="Manajemen User / Role" action="Buat">
+                                    <button 
+                                        onClick={() => setShowAddRoleForm(v => !v)}
+                                        className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold shadow-lg transition-all text-[14px] ${showAddRoleForm ? 'bg-red-50 text-red-600 border border-red-200 shadow-none' : 'bg-brand-600 text-white hover:scale-105 active:scale-95'}`}>
+                                        {showAddRoleForm ? <X weight="bold" /> : <Plus weight="bold" />}
+                                        <Text.Label className="!normal-case !tracking-normal !text-inherit">{showAddRoleForm ? 'Batal' : 'Tambah Peran'}</Text.Label>
+                                    </button>
+                                </HasPermission>
+                            </div>
                         )}
                     </div>
                 </div>

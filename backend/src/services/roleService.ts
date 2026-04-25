@@ -78,11 +78,14 @@ export const SYSTEM_ROLES = [
     {
         name: 'Warga',
         permissions: {
-            "Warga": { actions: ["Lihat"], scope: "all" },
+            "Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
             "Pengurus": { actions: ["Lihat"], scope: "all" },
-            "Agenda": { actions: ["Lihat"], scope: "all" },
-            "Jadwal Ronda": { actions: ["Lihat"], scope: "all" },
+            "Iuran Warga": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
             "Aduan & Usulan": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
+            "Surat / Cetak": { actions: ["Lihat", "Buat", "Ubah"], scope: "personal" },
+            "Agenda": { actions: ["Lihat"], scope: "all" },
+            "Aset": { actions: ["Lihat"], scope: "all" },
+            "Jadwal Ronda": { actions: ["Lihat"], scope: "all" },
             "Dashboard": { actions: ["Lihat"], scope: "all" }
         }
     }
