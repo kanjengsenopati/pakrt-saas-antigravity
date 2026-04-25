@@ -630,15 +630,15 @@ export default function PengaturanUser() {
                                                         <button onClick={() => setExpandedRoleId(null)} className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[11px] font-bold transition-colors">Batal</button>
                                                         <button onClick={() => savePermissions(undefined, role)} className="px-3.5 py-1.5 bg-brand-600 text-white hover:bg-brand-700 rounded-lg text-[11px] font-bold transition-all shadow-lg shadow-brand-900/20">Simpan</button>
                                                     </div>
-                                                </div>
-                                                <div className="overflow-x-auto no-scrollbar">
-                                                    <table className="w-full text-left min-w-[450px]">
+                                                                                                           <div className="hidden md:block overflow-x-auto no-scrollbar">
+                                                    <table className="w-full text-left min-w-[500px]">
                                                         <thead>
                                                             <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                <th className="py-3 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
+                                                                <th className="py-4 px-4 pl-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 sticky left-0 z-10">Modul</th>
                                                                 {CRUD_ACTIONS.map(action => (
                                                                     <th key={action.id} className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">{action.label}</th>
                                                                 ))}
+                                                                <th className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scope</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody className="divide-y divide-slate-50">
@@ -657,13 +657,43 @@ export default function PengaturanUser() {
                                                                             </td>
                                                                         );
                                                                     })}
+                                                                    <td className="p-2 text-center">
+                                                                        <button onClick={() => toggleScope(module.id)} className="px-2 py-1 text-[10px] font-bold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                                                                            {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                        </button>
+                                                                    </td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>
                                                     </table>
                                                 </div>
+                                                <div className="md:hidden divide-y divide-slate-50">
+                                                    {APP_MODULES.map((module) => (
+                                                        <div key={module.id} className="p-4">
+                                                            <div className="flex items-center justify-between mb-3">
+                                                                <Text.Body className="!text-[12px] !font-bold !text-slate-800 uppercase">{module.label}</Text.Body>
+                                                                <button onClick={() => toggleScope(module.id)} className={`px-2 py-1 text-[10px] font-bold rounded-lg ${userPermissions[module.id]?.scope === 'personal' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}`}>
+                                                                    {userPermissions[module.id]?.scope === 'personal' ? 'Personal' : 'Semua'}
+                                                                </button>
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {CRUD_ACTIONS.map(action => {
+                                                                    const isChecked = userPermissions[module.id]?.actions?.includes(action.id);
+                                                                    return (
+                                                                        <button key={action.id} onClick={() => togglePermission(module.id, action.id)}
+                                                                            className={`px-3 py-1.5 text-[11px] font-bold rounded-xl border transition-all flex items-center gap-1.5 ${isChecked ? 'bg-brand-50 border-brand-200 text-brand-700' : 'bg-white border-slate-200 text-slate-400'}`}>
+                                                                            <CheckCircle weight={isChecked ? "fill" : "bold"} className="w-3.5 h-3.5" />
+                                                                            {action.label}
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
                                     )}
                                 </div>
                             ))}
