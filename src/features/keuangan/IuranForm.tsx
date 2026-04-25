@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useState, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,10 +7,9 @@ import { iuranService } from '../../services/iuranService';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
 import { PembayaranIuran, Warga } from '../../database/db';
-import { CurrencyInput } from '../../components/ui/CurrencyInput';
-import { ArrowLeft, CheckCircle, ChartPieSlice, Users, CalendarBlank, CircleNotch, Warning, X, Clock } from '@phosphor-icons/react';
-import { FileUpload } from '../../components/ui/FileUpload';
 import { Text } from '../../components/ui/Typography';
+import { ArrowLeft, CheckCircle, CircleNotch, CaretDown, Warning, Copy, Bank } from '@phosphor-icons/react';
+import { FileUpload } from '../../components/ui/FileUpload';
 import { formatRupiah } from '../../utils/currency';
 import { parseApiError } from '../../utils/errorParser';
 
@@ -30,57 +29,50 @@ export default function IuranForm() {
     const { id } = useParams<{ id: string }>();
     const isEdit = !!id;
     const { currentTenant, currentScope } = useTenant();
+    const { user: authUser } = useAuth();
+    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const loggedInWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
 
     const [wargaList, setWargaList] = useState<Warga[]>([]);
     const [defaultNominal, setDefaultNominal] = useState(0);
     const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
     const [tahunOptions, setTahunOptions] = useState<number[]>([new Date().getFullYear()]);
-    const [kategoriOptions, setKategoriOptions] = useState<string[]>(['Iuran Warga']);
     const [isUploading, setIsUploading] = useState(false);
-    const [paymentMode, setPaymentMode] = useState<'Pas' | 'Bebas'>('Pas');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [hasInteracted, setHasInteracted] = useState(false);
     const [isLoadingBilling, setIsLoadingBilling] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
     const [currentStatus, setCurrentStatus] = useState<'PENDING' | 'VERIFIED' | 'REJECTED' | null>(null);
-    const [rejectionReason, setRejectionReason] = useState<string | null>(null);
 
-    // Summary Data State
-    const [alreadyPaid, setAlreadyPaid] = useState(0);
-    const [pendingAmount, setPendingAmount] = useState(0);
     const [paidMonthsRecord, setPaidMonthsRecord] = useState<number[]>([]);
     const [pendingMonthsRecord, setPendingMonthsRecord] = useState<number[]>([]);
 
-    const isYearFullySettled = (paidMonthsRecord.length + pendingMonthsRecord.length) === 12;
+    const invoiceId = useMemo(() => {
+        const d = new Date();
+        const rand = Math.floor(100 + Math.random() * 900);
+        return `INV-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${rand}`;
+    }, []);
 
-    const { user: authUser } = useAuth();
-    const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
-    const loggedInWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
-
-    const { register, handleSubmit, setValue, watch, control, formState: { errors } } = useForm<IuranFormData>({
+    const { register, handleSubmit, setValue, watch } = useForm<IuranFormData>({
         defaultValues: {
             tanggal_bayar: new Date().toISOString().split('T')[0],
             periode_tahun: new Date().getFullYear(),
             warga_id: loggedInWargaId || '',
-            kategori: 'Iuran Warga'
+            kategori: 'Iuran Warga',
+            nominal: 0
         }
     });
 
     const watchWargaId = watch('warga_id');
-    const watchKategori = watch('kategori');
     const watchTahun = watch('periode_tahun');
 
     useEffect(() => {
         if (loggedInWargaId && !isEdit) {
             setValue('warga_id', loggedInWargaId);
         }
-    }, [loggedInWargaId, setValue, isEdit]);
-
-    useEffect(() => {
         if (currentTenant) {
-            // Get Warga for current scope
             wargaService.getAll(currentTenant.id, currentScope).then(data => setWargaList(data.items || []));
-
-            // Fetch data if editing
+            
             if (isEdit && id) {
                 iuranService.getById(id).then(data => {
                     if (data) {
@@ -92,61 +84,23 @@ export default function IuranForm() {
                         setValue('url_bukti', data.url_bukti);
                         setSelectedMonths(Array.isArray(data.periode_bulan) ? data.periode_bulan : []);
                         setCurrentStatus((data.status as any) || 'PENDING');
-                        setRejectionReason(data.alasan_penolakan || null);
                     }
                 });
             }
 
-            // Get default settings
             pengaturanService.getAll(currentTenant.id, currentScope).then(items => {
                 const config: Record<string, any> = {};
                 items.forEach(item => { config[item.key] = item.value; });
-
-                const tieredRates = {
-                    'Tetap-Dihuni': Number(config.iuran_tetap_dihuni || 0),
-                    'Tetap-Kosong': Number(config.iuran_tetap_kosong || 0),
-                    'Kontrak-Dihuni': Number(config.iuran_kontrak_dihuni || 0),
-                    'Kontrak-Kosong': Number(config.iuran_kontrak_kosong || 0),
-                    'Default': Number(config.iuran_per_bulan || 0)
-                };
-
-                // Store config in a ref or local state to use during citizen selection
-                (window as any)._pakrt_config = config;
-
-                // Fallback / Initial
-                const baseIuran = tieredRates['Tetap-Dihuni'] || tieredRates['Default'];
+                
+                const baseIuran = Number(config.iuran_per_bulan || config.iuran_tetap_dihuni || 100000);
                 setDefaultNominal(baseIuran);
-                // Biarkan nominal 0 sampai bulan dipilih
-                setValue('nominal', 0);
-
-                if (config.jenis_pemasukan) {
-                    try {
-                        const parsedJenis = JSON.parse(config.jenis_pemasukan);
-                        if (Array.isArray(parsedJenis)) {
-                            // Filter for citizen-related items (Mandatory or Occasional/Insidental)
-                            const citizenDues = parsedJenis.filter((item: any) => item.is_mandatory || item.is_occasional);
-                            const categories = citizenDues.map((item: any) => item.nama);
-                            
-                            setKategoriOptions(categories);
-                            
-                            // Store the full objects for nominal lookup
-                            (window as any)._citizen_dues_metadata = citizenDues;
-
-                            if (!categories.includes(watch('kategori'))) {
-                                setValue('kategori', categories[0] || 'Iuran Warga');
-                            }
-                        }
-                    } catch (e) {
-                        console.error("Gagal parse opsi kategori dari jenis_pemasukan", e);
-                    }
-                }
 
                 if (config.opsi_tahun_iuran) {
                     try {
                         const parsedTahun = JSON.parse(config.opsi_tahun_iuran);
                         if (Array.isArray(parsedTahun) && parsedTahun.length > 0) {
                             setTahunOptions(parsedTahun);
-                            if (!parsedTahun.includes(watch('periode_tahun'))) {
+                            if (!parsedTahun.includes(watchTahun)) {
                                 setValue('periode_tahun', parsedTahun[0]);
                             }
                         }
@@ -156,530 +110,324 @@ export default function IuranForm() {
                 }
             });
         }
-    }, [currentTenant, currentScope, setValue]);
-
-    // Konsolidasi Kalkulasi Nominal (Mode Pas & Bebas)
-    useEffect(() => {
-        const shouldCalculate = !isEdit || (isEdit && hasInteracted);
-        if (!shouldCalculate) return;
-
-        if (paymentMode === 'Pas') {
-            if (selectedMonths.length > 0 && defaultNominal > 0) {
-                setValue('nominal', defaultNominal * selectedMonths.length);
-            } else {
-                setValue('nominal', 0);
-            }
-        }
-    }, [selectedMonths, defaultNominal, paymentMode, setValue, isEdit, hasInteracted]);
-
-    // Handle Metadata Nominal Update
-    useEffect(() => {
-        const metadata = (window as any)._citizen_dues_metadata;
-        if (Array.isArray(metadata)) {
-            const selected = metadata.find((m: any) => m.nama === watchKategori);
-            if (selected && selected.nominal > 0) {
-                setDefaultNominal(selected.nominal);
-            }
-        }
-    }, [watchKategori]);
+    }, [currentTenant, currentScope, isEdit, id, loggedInWargaId, setValue, watchTahun]);
 
     useEffect(() => {
-        if (watchWargaId && watchTahun && watchKategori && currentTenant) {
-            const fetchBillingSummary = async () => {
+        if (watchWargaId && watchTahun && currentTenant) {
+            const fetchBilling = async () => {
                 setIsLoadingBilling(true);
                 try {
                     const result = await iuranService.getBillingSummary(
-                        currentTenant.id,
-                        watchWargaId, 
-                        watchTahun, 
-                        watchKategori, 
-                        currentScope
+                        currentTenant.id, watchWargaId, watchTahun, 'Iuran Warga', currentScope
                     );
-                    setAlreadyPaid(result.totalPaid);
-                    setPendingAmount(result.pendingAmount);
                     setPaidMonthsRecord(result.paidMonths || []);
                     setPendingMonthsRecord(result.pendingMonths || []);
-
-                    // Sinkronisasi selectedMonths: Hapus bulan yang ternyata sudah dibayar/pending
-                    setSelectedMonths(prev => {
-                        const paid = result.paidMonths || [];
-                        const pending = result.pendingMonths || [];
-                        return prev.filter(m => !paid.includes(m) && !pending.includes(m));
-                    });
+                    
+                    if (!isEdit) {
+                        setSelectedMonths(prev => prev.filter(m => !result.paidMonths?.includes(m) && !result.pendingMonths?.includes(m)));
+                    }
                 } catch (error) {
-                    console.error("Failed to fetch billing summary:", error);
-                    setAlreadyPaid(0);
+                    console.error("Failed to fetch billing:", error);
                 } finally {
                     setIsLoadingBilling(false);
                 }
             };
-            fetchBillingSummary();
-        } else {
-            setAlreadyPaid(0);
-            setPaidMonthsRecord([]);
+            fetchBilling();
         }
-    }, [watchWargaId, watchTahun, watchKategori, currentTenant, currentScope, isEdit]);
+    }, [watchWargaId, watchTahun, currentTenant, currentScope, isEdit]);
 
-    const toggleMonth = (monthValue: number) => {
-        setHasInteracted(true);
-        setSelectedMonths(prev => {
-            const current = Array.isArray(prev) ? prev : [];
-            return current.includes(monthValue)
-                ? current.filter(m => m !== monthValue)
-                : [...current, monthValue].sort((a, b) => a - b);
-        });
+    const toggleMonth = (val: number) => {
+        if (paidMonthsRecord.includes(val) || pendingMonthsRecord.includes(val)) return;
+        setSelectedMonths(prev => 
+            prev.includes(val) ? prev.filter(m => m !== val) : [...prev, val].sort((a, b) => a - b)
+        );
     };
 
-    const onSubmit = async (data: IuranFormData) => {
-        setErrorMessage(null); // Reset error state on each submission attempt
+    const totalPayment = useMemo(() => {
+        return defaultNominal * selectedMonths.length;
+    }, [defaultNominal, selectedMonths]);
 
+    useEffect(() => {
+        setValue('nominal', totalPayment);
+    }, [totalPayment, setValue]);
+
+    const onSubmit = async (data: IuranFormData) => {
+        setErrorMessage(null);
         if (!currentTenant) return;
         if (selectedMonths.length === 0) {
             setErrorMessage("Harap pilih minimal 1 bulan pembayaran.");
             return;
         }
 
+        setIsSubmitting(true);
         try {
             const payload = {
                 ...data,
                 periode_bulan: selectedMonths,
                 tenant_id: currentTenant.id,
                 scope: currentScope,
-                metadata: { mode: paymentMode }
+                kategori: 'Iuran Warga',
+                metadata: { mode: 'Pas', source: isWarga ? 'warga_app' : 'pengurus_dashboard' }
             };
-
+            
             if (isEdit && id) {
                 if (currentStatus === 'REJECTED') {
-                    // Warga resubmitting rejected payment
                     await iuranService.resubmit(id, { url_bukti: payload.url_bukti });
                 } else {
-                    // Normal admin update
                     await iuranService.update(id, payload);
                 }
             } else {
+                (payload as any).status = isWarga ? 'PENDING' : 'VERIFIED';
                 await iuranService.create(payload);
             }
             navigate('/iuran');
         } catch (error: any) {
-            console.error("Gagal menyimpan pembayaran iuran:", error);
-            // Capture specific errorMessage sent from the backend API if available
-            setErrorMessage(parseApiError(error, "Terjadi kesalahan koneksi saat menyimpan data transaksi."));
+            console.error(error);
+            setErrorMessage(parseApiError(error, "Gagal menyimpan data iuran."));
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+    const selectedWargaName = useMemo(() => {
+        const w = wargaList.find(x => x.id === watchWargaId);
+        return w ? w.nama : '-';
+    }, [wargaList, watchWargaId]);
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        alert('Nomor rekening disalin!');
+    };
+
     return (
-        <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12 px-5">
-            <div className="flex items-center gap-4">
+        <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-32 px-5 pt-4">
+            <div className="flex items-center gap-4 mb-6">
                 <button
                     onClick={() => navigate('/iuran')}
-                    className="p-2 hover:bg-white bg-transparent text-gray-500 hover:text-gray-900 rounded-lg transition-colors border border-transparent hover:border-gray-200"
+                    className="p-2 hover:bg-slate-100 bg-transparent text-slate-500 rounded-full transition-colors"
                 >
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
-                <div>
-                    <Text.H1>{isEdit ? 'Ubah Pembayaran Iuran' : 'Catat Pembayaran Iuran'}</Text.H1>
-                    <Text.Body className="mt-0.5">Pembayaran bulanan wajib untuk warga <span className="font-semibold text-brand-600">{currentScope}</span></Text.Body>
-                </div>
+                <Text.H1 className="!text-xl">{isWarga ? 'Bill Payment' : 'Catat Pembayaran Iuran'}</Text.H1>
             </div>
 
             {errorMessage && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-start gap-3 animate-shake">
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-[16px] flex items-start gap-3 animate-shake">
                     <Warning className="w-5 h-5 shrink-0 mt-0.5" />
                     <Text.Label className="!text-red-600">{errorMessage}</Text.Label>
                 </div>
             )}
 
-            {currentStatus && (
-                <div className={`px-4 py-3 rounded-xl border flex items-center gap-3 animate-fade-in ${
-                    currentStatus === 'VERIFIED' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
-                    currentStatus === 'REJECTED' ? 'bg-red-50 border-red-200 text-red-700' :
-                    'bg-amber-50 border-amber-200 text-amber-700'
-                }`}>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                         currentStatus === 'VERIFIED' ? 'bg-emerald-100 text-emerald-600' :
-                         currentStatus === 'REJECTED' ? 'bg-red-100 text-red-600' :
-                         'bg-amber-100 text-amber-600'
-                    }`}>
-                        {currentStatus === 'VERIFIED' ? <CheckCircle weight="fill" className="w-6 h-6" /> :
-                         currentStatus === 'REJECTED' ? <X weight="bold" className="w-6 h-6" /> :
-                         <CircleNotch weight="bold" className="w-6 h-6 animate-spin" />}
-                    </div>
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                            <Text.Label className="opacity-60">Status Pembayaran:</Text.Label>
-                            <Text.Body className="!font-bold">
-                                {currentStatus === 'VERIFIED' ? 'Lunas' :
-                                 currentStatus === 'REJECTED' ? 'Ditolak' :
-                                 'Menunggu Verifikasi'}
-                            </Text.Body>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <Text.Label className="!text-slate-500">Tahun</Text.Label>
+                        <div className="relative">
+                            <select
+                                {...register('periode_tahun', { required: true, valueAsNumber: true })}
+                                className="w-full appearance-none bg-white border border-slate-200 rounded-[12px] px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm transition-all"
+                            >
+                                {tahunOptions.map(th => <option key={th} value={th}>{th}</option>)}
+                            </select>
+                            <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                         </div>
-                        {currentStatus === 'REJECTED' && rejectionReason && (
-                            <Text.Body className="!font-bold mt-1">Alasan: {rejectionReason}</Text.Body>
-                        )}
-                        {currentStatus === 'VERIFIED' && (
-                            <Text.Caption className="!font-medium !italic mt-0.5">Data ini sudah diverifikasi oleh Bendahara dan tidak dapat diubah lagi.</Text.Caption>
-                        )}
-                        {currentStatus === 'PENDING' && (
-                            <Text.Caption className="!font-medium mt-0.5">Pembayaran Anda sedang dalam antrian verifikasi Bendahara.</Text.Caption>
-                        )}
+                    </div>
+                    <div className="space-y-1">
+                        <Text.Label className="!text-slate-500">Tanggal Pembayaran</Text.Label>
+                        <div className="relative">
+                            <input
+                                type="date"
+                                {...register('tanggal_bayar', { required: true })}
+                                className="w-full appearance-none bg-white border border-slate-200 rounded-[12px] px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-sm transition-all [&::-webkit-calendar-picker-indicator]:opacity-50 [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
+                            />
+                        </div>
                     </div>
                 </div>
-            )}
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                {/* LEFT COLUMN: SUMMARY */}
-                <div className="md:col-span-4 space-y-6 sticky top-24">
+                {!isWarga && (
+                    <div className="space-y-1">
+                        <Text.Label className="!text-slate-500">Pilih Warga Pembayar <span className="text-red-500">*</span></Text.Label>
+                        <select
+                            {...register('warga_id', { required: 'Warga wajib dipilih' })}
+                            className="w-full bg-white border border-slate-200 rounded-[12px] px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-brand-500 shadow-sm"
+                        >
+                            <option value="">-- Pilih Warga --</option>
+                            {wargaList.map(w => <option key={w.id} value={w.id}>{w.nama}</option>)}
+                        </select>
+                    </div>
+                )}
+
+                <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+                    <div className="flex justify-between items-center p-4 bg-slate-50 border-b border-slate-100">
+                        <Text.H2 className="!text-[15px]">Daftar Bayar</Text.H2>
+                        <Text.Label className="!text-brand-600 !normal-case tracking-normal cursor-pointer active:scale-95 transition-transform" onClick={() => {
+                            const available = MONTHS.map(m => m.value).filter(m => !paidMonthsRecord.includes(m) && !pendingMonthsRecord.includes(m));
+                            setSelectedMonths(available);
+                        }}>Pilih semua</Text.Label>
+                    </div>
+                    
                     {isLoadingBilling ? (
-                        <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-8 text-center animate-pulse">
-                            <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin mx-auto mb-3" />
-                            <Text.Caption className="!font-bold !text-slate-400">Memuat Data Tagihan...</Text.Caption>
+                        <div className="p-8 text-center flex flex-col items-center justify-center space-y-3">
+                            <CircleNotch weight="bold" className="w-8 h-8 text-brand-500 animate-spin" />
+                            <Text.Label className="!text-slate-400">Memuat status tagihan...</Text.Label>
                         </div>
-                    ) : watchWargaId && watchKategori ? (
-                        <div className="bg-white rounded-[32px] shadow-premium border border-slate-100 overflow-hidden animate-in slide-in-from-left-4 duration-500">
-                            <div className="bg-gradient-to-br from-brand-600 to-brand-700 p-6 text-white relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-2 mb-1.5">
-                                        <ChartPieSlice weight="fill" className="w-5 h-5 text-brand-200" />
-                                        <Text.Label className="!text-white opacity-90">Ringkasan Kewajiban</Text.Label>
+                    ) : (
+                        <div className="divide-y divide-slate-50">
+                            {MONTHS.map(m => {
+                                const isPaid = paidMonthsRecord.includes(m.value);
+                                const isPending = pendingMonthsRecord.includes(m.value);
+                                const isSelected = selectedMonths.includes(m.value);
+
+                                return (
+                                    <div 
+                                        key={m.value} 
+                                        onClick={() => toggleMonth(m.value)}
+                                        className={`flex justify-between items-center p-4 transition-colors ${
+                                            isPaid || isPending ? 'opacity-70 bg-slate-50/50' : 'cursor-pointer hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-5 h-5 rounded-[6px] border flex items-center justify-center transition-all ${
+                                                isPaid ? 'bg-emerald-500 border-emerald-500' :
+                                                isSelected ? 'bg-brand-600 border-brand-600' : 
+                                                'border-slate-300 bg-white'
+                                            }`}>
+                                                {(isSelected || isPaid) && <CheckCircle weight="bold" className="w-3.5 h-3.5 text-white" />}
+                                            </div>
+                                            <Text.Body className="!font-medium">{m.label}</Text.Body>
+                                        </div>
+                                        
+                                        <div>
+                                            {isPaid ? (
+                                                <div className="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Lunas</div>
+                                            ) : isPending ? (
+                                                <div className="px-4 py-1.5 bg-amber-100 text-amber-600 rounded-full text-xs font-bold">Menunggu</div>
+                                            ) : isSelected ? (
+                                                <div className="px-4 py-1.5 bg-brand-600 text-white rounded-full text-xs font-bold shadow-md">Bayar</div>
+                                            ) : (
+                                                <div className="px-4 py-1.5 bg-brand-50 text-brand-600 rounded-full text-xs font-bold hover:bg-brand-100 transition-colors">Bayar</div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <Text.H1 className="!text-white !text-2xl !tracking-tight">Tahun {watchTahun || new Date().getFullYear()}</Text.H1>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+
+                {isWarga && selectedMonths.length > 0 && (
+                    <div className="space-y-6 animate-fade-in-up">
+                        <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden mt-8">
+                            <div className="p-5 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+                                <div className="space-y-1">
+                                    <Text.Label className="!text-slate-500">INVOICE ID</Text.Label>
+                                    <Text.H2 className="!text-brand-600 !text-[18px]">{invoiceId}</Text.H2>
+                                </div>
+                                <div className="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                    UNPAID
                                 </div>
                             </div>
                             
-                            <div className="p-6 space-y-6">
-                                <div className="flex justify-between items-start pb-4 border-b border-slate-50">
-                                    <div className="space-y-1">
-                                        <Text.Label className="!text-slate-500">Total Tagihan 12 Bulan</Text.Label>
-                                        <div className="flex items-baseline gap-1">
-                                            <Text.Amount className="!text-slate-900 !text-xl">{formatRupiah(defaultNominal * 12).replace(/,00$/, '')}</Text.Amount>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <Text.Label className="!text-slate-400">Tarif</Text.Label>
-                                        <Text.Body className="!text-[10px] !font-black !text-slate-500">{formatRupiah(defaultNominal).replace(/,00$/, '')} / Bln</Text.Body>
-                                    </div>
-                                </div>
-
-                                <div className="pb-4 border-b border-slate-50">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <Text.Label className="!text-emerald-600">Sudah Dibayar (Sistem)</Text.Label>
-                                        <Text.Amount className="!text-emerald-600 !text-lg">{formatRupiah(alreadyPaid).replace(/,00$/, '')}</Text.Amount>
-                                    </div>
-                                    {pendingAmount > 0 ? (
-                                        <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100/50">
-                                            <Clock weight="fill" className="w-3 h-3 text-amber-500" />
-                                            <Text.Caption className="!text-[9px] !font-black !text-amber-700">Menunggu Verifikasi: {formatRupiah(pendingAmount).replace(/,00$/, '')}</Text.Caption>
-                                        </div>
-                                    ) : (
-                                        <Text.Caption className="!text-[9px] !font-bold !text-slate-500 !italic">Hingga periode saat ini</Text.Caption>
-                                    )}
-                                </div>
-
-                                <div className="p-5 bg-gradient-to-br from-brand-50 to-white rounded-3xl border border-brand-100 shadow-inner relative overflow-hidden group">
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/40 to-transparent pointer-events-none" />
-                                    <div className="relative z-10 flex flex-col items-center text-center">
-                                        <Text.Label className="!text-brand-600 mb-2">Sisa Kewajiban</Text.Label>
-                                        <Text.Amount className="!text-brand-700 !text-3xl !tracking-tighter">
-                                            {formatRupiah(Math.max(0, (defaultNominal * 12) - alreadyPaid - pendingAmount)).replace(/,00$/, '')}
-                                        </Text.Amount>
-                                        <div className="mt-3 py-1 px-3 bg-brand-600 rounded-full">
-                                            <Text.Label className="!text-white !text-[8px]">
-                                                {paymentMode === 'Pas' ? 'Otomatis Mode Pas' : 'Target Pelunasan'}
-                                            </Text.Label>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="p-5 border-b border-slate-100">
+                                <Text.Label className="!text-slate-500 mb-1">NAMA WARGA</Text.Label>
+                                <Text.H2 className="!text-[16px]">{selectedWargaName}</Text.H2>
                             </div>
-                        </div>
-                    ) : (
-                        <div className="bg-white rounded-3xl border-2 border-dashed border-slate-100 p-8 text-center space-y-4">
-                            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
-                                <Users weight="duotone" className="w-8 h-8 text-slate-200" />
-                            </div>
-                            <div>
-                                <Text.Label className="!text-slate-400 font-bold">Menunggu Data Warga</Text.Label>
-                                <Text.Caption className="mt-1 block max-w-[160px] mx-auto !leading-relaxed">Pilih warga & jenis pembayaran untuk melihat ringkasan</Text.Caption>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* QUICK STATS / INFO */}
-                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 items-start translate-y-0 hover:-translate-y-1 transition-transform">
-                        <div className="p-2 bg-white rounded-lg shadow-sm text-blue-600">
-                            <CalendarBlank weight="fill" className="w-4 h-4" />
-                        </div>
-                        <div>
-                            <Text.H2 className="!leading-tight !text-blue-900">Info Periode</Text.H2>
-                            <Text.Body className="!text-blue-700 mt-0.5 leading-relaxed">Pastikan periode tahun sesuai dengan iuran yang sedang berjalan.</Text.Body>
-                        </div>
-                    </div>
-                </div>
-
-                {/* RIGHT COLUMN: FORM */}
-                <div className="md:col-span-8 bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="border-b border-gray-50 p-4 bg-slate-50/10 flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-brand-500" />
-                        <Text.Label className="!tracking-widest">Input Transaksi Pembayaran</Text.Label>
-                    </div>
-
-                    <div className="p-6 md:p-8">
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-5 border-b border-slate-100 space-y-4">
+                                <Text.Label className="!text-slate-500 mb-2">BILLING DETAILS</Text.Label>
                                 
-                                {/* ROW 1: WARGA & KATEGORI */}
-                                {!isWarga && (
-                                    <div className="space-y-1">
-                                        <Text.Label>
-                                            Pilih Warga Pembayar <span className="text-red-500">*</span>
-                                        </Text.Label>
-                                        <select
-                                            {...register('warga_id', { 
-                                                required: 'Warga wajib dipilih',
-                                                onChange: () => setHasInteracted(true)
-                                            })}
-                                            disabled={isWarga && !isEdit}
-                                            className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${isWarga && !isEdit ? 'bg-gray-100 cursor-not-allowed text-gray-400' : 'bg-white'} ${errors.warga_id ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500'}`}
-                                        >
-                                            <option value="">-- Cari atau Pilih Warga --</option>
-                                            {wargaList.map(w => (
-                                                <option key={w.id} value={w.id}>{w.nama}</option>
-                                            ))}
-                                        </select>
-                                        {errors.warga_id && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.warga_id.message}</p>}
-                                    </div>
-                                )}
-
-                                <div className={`${isWarga ? 'md:col-span-2' : ''} space-y-1`}>
-                                    <Text.Label>
-                                        Jenis Pembayaran <span className="text-red-500">*</span>
-                                    </Text.Label>
-                                    <select
-                                        {...register('kategori', { required: 'Kategori wajib dipilih' })}
-                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.kategori ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
-                                    >
-                                        <option value="">-- Pilih Jenis Pembayaran --</option>
-                                        {kategoriOptions.map(cat => (
-                                            <option key={cat} value={cat}>{cat}</option>
-                                        ))}
-                                    </select>
-                                    {errors.kategori && <p className="text-red-500 text-sm font-semibold mt-1 px-1">{errors.kategori.message}</p>}
-                                </div>
-
-                                {/* ROW 2: PAYMENT MODE */}
-                                <div className="md:col-span-2 space-y-1">
-                                    <Text.Label>
-                                        Mode Pembayaran <span className="text-red-500">*</span>
-                                    </Text.Label>
-                                    <div className="flex gap-2">
-                                        <label className={`flex-1 flex items-center gap-2 p-2 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Pas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
-                                            <input 
-                                                type="radio" 
-                                                name="paymentMode" 
-                                                value="Pas" 
-                                                checked={paymentMode === 'Pas'} 
-                                                onChange={() => { setPaymentMode('Pas'); setHasInteracted(true); }}
-                                                className="w-3.5 h-3.5 text-brand-600 focus:ring-brand-500"
-                                            />
-                                            <div className="flex-1">
-                                                <Text.Body className="!font-bold !text-slate-900 leading-tight">Mode Pas</Text.Body>
-                                                <Text.Caption className="!text-slate-500">Sesuai tarif</Text.Caption>
+                                {selectedMonths.map(m => {
+                                    const monthLabel = MONTHS.find(x => x.value === m)?.label;
+                                    return (
+                                        <div key={m} className="flex justify-between items-start pb-3 border-b border-slate-50 last:border-0 last:pb-0">
+                                            <div>
+                                                <Text.H2 className="!text-[14px]">{monthLabel} {watchTahun}</Text.H2>
+                                                <Text.Caption className="!text-slate-400 mt-0.5">Iuran Bulanan Rutin</Text.Caption>
                                             </div>
-                                        </label>
-                                        <label className={`flex-1 flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer ${paymentMode === 'Bebas' ? 'border-brand-500 bg-brand-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
-                                            <input 
-                                                type="radio" 
-                                                name="paymentMode" 
-                                                value="Bebas" 
-                                                checked={paymentMode === 'Bebas'} 
-                                                onChange={() => { setPaymentMode('Bebas'); setHasInteracted(true); }}
-                                                className="w-4 h-4 text-brand-600 focus:ring-brand-500"
-                                            />
-                                            <div className="flex-1">
-                                                <Text.Body className="!font-bold !text-slate-900 leading-tight">Mode Bebas</Text.Body>
-                                                <Text.Caption className="!text-slate-500">Input manual</Text.Caption>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                {/* ROW 3: DATE & YEAR */}
-                                <div className="space-y-1">
-                                    <Text.Label>
-                                        Tahun Periode <span className="text-red-500">*</span>
-                                    </Text.Label>
-                                    <select
-                                        {...register('periode_tahun', { required: true, valueAsNumber: true })}
-                                        className="w-full rounded-xl shadow-sm pl-4 pr-4 py-2.5 text-sm font-medium text-gray-900 border border-gray-200 focus:ring-2 focus:ring-brand-500 bg-white outline-none transition-all"
-                                    >
-                                        {tahunOptions.map(tahun => (
-                                            <option key={tahun} value={tahun}>{tahun}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <Text.Label>
-                                        Tanggal Bayar <span className="text-red-500">*</span>
-                                    </Text.Label>
-                                    <input
-                                        type="date"
-                                        {...register('tanggal_bayar', { required: 'Tanggal wajib diisi' })}
-                                        className={`w-full rounded-lg shadow-sm p-3 text-main border focus:ring-2 focus:ring-brand-500 outline-none transition-all ${errors.tanggal_bayar ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:border-brand-500 bg-white'}`}
-                                    />
-                                </div>
-
-                                {/* ROW 4: MONTHS & NOMINAL */}
-                                <div className="md:col-span-2 space-y-3">
-                                    <div>
-                                        <Text.Label className="mb-2 block">
-                                            Pilih Bulan Pembayaran <span className="text-red-500">*</span>
-                                        </Text.Label>
-                                        {isYearFullySettled ? (
-                                            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-4 animate-in zoom-in duration-500 shadow-sm">
-                                                <div className="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shrink-0">
-                                                    <CheckCircle weight="bold" className="w-7 h-7" />
-                                                </div>
-                                                <div className="text-left">
-                                                    <Text.H2 className="!text-emerald-700 !text-sm">Status Pembayaran Sudah Lunas</Text.H2>
-                                                    <Text.Caption className="!text-emerald-600/80 !font-bold">Seluruh periode tahun {watchTahun} telah terbayar/diverifikasi.</Text.Caption>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-6 gap-1 lg:grid-cols-6">
-                                                {MONTHS.map(m => {
-                                                    const isPaid = paidMonthsRecord.includes(m.value);
-                                                    const isPending = pendingMonthsRecord.includes(m.value);
-                                                    const isSelected = selectedMonths.includes(m.value);
-
-                                                    return (
-                                                        <button
-                                                            key={m.value}
-                                                            type="button"
-                                                            disabled={isPaid || isPending}
-                                                            onClick={() => toggleMonth(m.value)}
-                                                            className={`py-2 px-1 text-sm font-bold rounded-xl border-2 transition-all relative ${
-                                                                isPaid
-                                                                    ? 'bg-emerald-50 border-emerald-100 text-emerald-600 cursor-not-allowed'
-                                                                    : isPending
-                                                                        ? 'bg-amber-50 border-amber-100 text-amber-600 cursor-not-allowed opacity-90'
-                                                                        : isSelected
-                                                                            ? 'bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-200 scale-105 z-10'
-                                                                            : 'bg-slate-100 border-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-700 hover:scale-105 active:scale-95'
-                                                                }`}
-                                                        >
-                                                            {m.label.substring(0, 3)}
-                                                            {isPaid ? (
-                                                                <div className="absolute -top-2 -right-1 bg-white text-emerald-600 rounded-full p-0.5 shadow-sm border border-emerald-100">
-                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
-                                                                </div>
-                                                            ) : isPending ? (
-                                                                <div className="absolute -top-2 -right-1 bg-white text-amber-500 rounded-full p-0.5 shadow-sm border border-amber-100">
-                                                                    <Clock weight="fill" className="w-3 h-3" />
-                                                                </div>
-                                                            ) : isSelected && (
-                                                                <div className="absolute -top-2 -right-1 bg-white text-blue-600 rounded-full p-0.5 shadow-sm border border-blue-100 animate-in zoom-in duration-300">
-                                                                    <CheckCircle weight="fill" className="w-3 h-3" />
-                                                                </div>
-                                                            )}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
-                                        {selectedMonths.length === 0 && !isYearFullySettled && <p className="text-red-500 text-xs font-semibold mt-1.5 px-1">Minimal 1 bulan harus dipilih</p>}
-                                    </div>
-
-                                     {selectedMonths.length > 0 ? (
-                                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                                            <div className="flex justify-between items-center">
-                                                <Text.Label>
-                                                    Nominal Transaksi (Rp)
-                                                </Text.Label>
-                                                {paymentMode === 'Pas' && (
-                                                    <span className="text-sm font-semibold text-brand-600 bg-white px-2 py-0.5 rounded-full border border-brand-100 shadow-sm">Mode Pas</span>
-                                                )}
-                                            </div>
-                                            <div className="relative">
-                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-semibold text-gray-400 z-10">Rp</span>
-                                                <Controller
-                                                    name="nominal"
-                                                    control={control}
-                                                    rules={{ required: !isYearFullySettled && 'Nominal wajib diisi', min: { value: 1, message: 'Nominal tidak boleh 0' } }}
-                                                    render={({ field }) => (
-                                                        <CurrencyInput
-                                                            {...field}
-                                                            className={`w-full !pl-16 py-3 text-lg font-semibold ${paymentMode === 'Pas' ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-900 focus:ring-brand-500'}`}
-                                                            error={!!errors.nominal}
-                                                            disabled={paymentMode === 'Pas'}
-                                                        />
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="flex justify-between items-end">
-                                                <p className="text-sm text-gray-400 italic font-medium">
-                                                    {defaultNominal > 0 ? `*Tarif Dasar: ${formatRupiah(defaultNominal)} x ${selectedMonths.length} bln` : '*Menunggu pilihan warga'}
-                                                </p>
-                                                {errors.nominal && <p className="text-red-500 text-sm font-semibold">{errors.nominal.message}</p>}
-                                            </div>
+                                            <Text.H2 className="!text-[14px]">{formatRupiah(defaultNominal)}</Text.H2>
                                         </div>
-                                    ) : (
-                                        !isYearFullySettled && (
-                                            <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center group">
-                                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-3 group-hover:scale-110 transition-transform">
-                                                    <CalendarBlank weight="fill" className="text-slate-300 w-5 h-5" />
-                                                </div>
-                                                <p className="text-[11px] font-black text-slate-400 tracking-widest">Pilih Bulan Pembayaran</p>
-                                                <p className="text-[10px] text-slate-400/60 mt-1 font-medium italic">Nominal otomatis muncul setelah periode dipilih</p>
-                                            </div>
-                                        )
-                                    )}
-                                </div>
+                                    );
+                                })}
 
-                                {/* ROW 5: BUKTI */}
-                                 {!isYearFullySettled && (
-                                    <div className="md:col-span-2">
-                                        <Text.Label className="!text-slate-400 mb-2 block">
-                                            Lampiran Bukti (Opsional)
-                                        </Text.Label>
-                                        <div className="bg-gray-50/50 border border-dashed border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                            <FileUpload
-                                                onUploadSuccess={(url) => setValue('url_bukti', url)}
-                                                existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
-                                                onRemove={() => setValue('url_bukti', '')}
-                                                label=""
-                                                helperText="JPG, PNG maksimal 2MB &bull; Dikompres otomatis"
-                                                onLoadingChange={setIsUploading}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
+                                <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                    <Text.Body className="!text-slate-500">Subtotal</Text.Body>
+                                    <Text.Body>{formatRupiah(totalPayment)}</Text.Body>
+                                </div>
+                                <div className="flex justify-between items-center bg-blue-50/50 p-3 rounded-[12px]">
+                                    <Text.H2 className="!text-[15px]">Total Payment</Text.H2>
+                                    <Text.Amount className="!text-brand-600 !text-[20px]">{formatRupiah(totalPayment)}</Text.Amount>
+                                </div>
                             </div>
 
-                            <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
-                                <p className="text-sm text-gray-400 font-medium">* Pastikan data warga dan nominal sudah benar.</p>
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => navigate('/iuran')}
-                                        className="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
-                                    >
-                                        Batal
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isUploading || currentStatus === 'VERIFIED' || isYearFullySettled}
-                                        className={`px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-md active:scale-95 ${isUploading || currentStatus === 'VERIFIED' || isYearFullySettled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                        {isUploading ? <CircleNotch weight="bold" className="animate-spin w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
-                                        <Text.Label className="!text-white">{isEdit ? 'Simpan' : 'Bayar'}</Text.Label>
-                                    </button>
+                            <div className="p-5 bg-slate-50/30">
+                                <Text.Label className="!text-slate-500 mb-3">PAYMENT DESTINATION</Text.Label>
+                                <div className="bg-white border border-slate-200 rounded-[16px] p-4 flex items-center justify-between shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-blue-50 rounded-[12px] flex items-center justify-center text-blue-600">
+                                            <Bank weight="duotone" className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <Text.H2 className="!text-[15px]">Bank BCA</Text.H2>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <Text.Caption className="!font-mono !text-slate-600">1234567890</Text.Caption>
+                                                <Copy onClick={() => copyToClipboard('1234567890')} weight="bold" className="w-3.5 h-3.5 text-brand-600 cursor-pointer active:scale-95" />
+                                            </div>
+                                            <Text.Caption className="!text-[10px] !text-slate-500">A/N: KAS WARGA</Text.Caption>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 bg-amber-50 border border-amber-100 p-3 rounded-[12px] flex items-start gap-3">
+                                    <Warning weight="fill" className="text-amber-500 shrink-0 w-5 h-5" />
+                                    <Text.Caption className="!text-amber-700 !font-medium !leading-relaxed">
+                                        Mohon transfer sesuai dengan Total Payment untuk mempercepat proses verifikasi oleh Bendahara.
+                                    </Text.Caption>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+
+                        <div className="space-y-3 pt-4">
+                            <Text.H2 className="!text-[16px]">Upload Bukti Bayar</Text.H2>
+                            <div className="bg-white border-2 border-dashed border-brand-200 rounded-[24px] p-6 hover:bg-brand-50/50 transition-colors">
+                                <FileUpload
+                                    onUploadSuccess={(url) => setValue('url_bukti', url)}
+                                    existingUrls={watch('url_bukti') ? [watch('url_bukti')!] : []}
+                                    onRemove={() => setValue('url_bukti', '')}
+                                    label=""
+                                    helperText="Tarik file ke sini atau klik pilih. Maks. 5MB"
+                                    onLoadingChange={setIsUploading}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="fixed bottom-0 left-0 right-0 p-5 bg-white/80 backdrop-blur-md border-t border-slate-100 z-50 md:relative md:bg-transparent md:border-none md:p-0">
+                    <div className="max-w-3xl mx-auto flex gap-3">
+                        {isWarga ? (
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || isUploading || selectedMonths.length === 0}
+                                className="w-full py-4 bg-brand-600 text-white rounded-[16px] text-[15px] font-bold shadow-[0_8px_20px_rgb(37,99,235,0.25)] flex justify-center items-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting || isUploading ? <CircleNotch weight="bold" className="w-5 h-5 animate-spin" /> : <CheckCircle weight="bold" className="w-5 h-5" />}
+                                Konfirmasi Pembayaran
+                            </button>
+                        ) : (
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || selectedMonths.length === 0}
+                                className="w-full py-4 bg-brand-600 text-white rounded-[16px] text-[15px] font-bold shadow-[0_8px_20px_rgb(37,99,235,0.25)] flex justify-center items-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? <CircleNotch weight="bold" className="w-5 h-5 animate-spin" /> : <CheckCircle weight="bold" className="w-5 h-5" />}
+                                Simpan Pembayaran Tunai
+                            </button>
+                        )}
                     </div>
                 </div>
-            </div>
+
+            </form>
         </div>
     );
 }
