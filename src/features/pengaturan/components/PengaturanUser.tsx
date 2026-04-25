@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 import { useTenant } from '../../../contexts/TenantContext';
 import { userService } from '../../../services/userService';
@@ -648,10 +649,10 @@ export default function PengaturanUser() {
             </div>
 
             {/* Reset Password Modal */}
-            {resetPasswordModal.isOpen && (
-                <>
-                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 animate-fade-in" onClick={() => setResetPasswordModal({ ...resetPasswordModal, isOpen: false })} />
-                    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm bg-white rounded-[32px] p-6 z-50 shadow-2xl animate-scale-in">
+            {resetPasswordModal.isOpen && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade-in" onClick={() => setResetPasswordModal({ ...resetPasswordModal, isOpen: false })} />
+                    <div className="relative w-full max-w-sm bg-white rounded-[32px] p-6 shadow-2xl animate-scale-in">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
@@ -698,7 +699,8 @@ export default function PengaturanUser() {
                             </button>
                         </div>
                     </div>
-                </>
+                </div>,
+                document.body
             )}
         </div>
     );
