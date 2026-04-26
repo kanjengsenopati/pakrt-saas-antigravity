@@ -7,6 +7,7 @@ import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
 import { toTitleCase } from '../../utils/text';
 import { useConfirm } from '../../hooks/useConfirm';
+import { toast } from 'sonner';
 
 interface Props {
     wargaId: string;
@@ -93,7 +94,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
             loadData();
         } catch (error) {
             console.error("Gagal menyimpan anggota keluarga:", error);
-            alert("Terjadi kesalahan saat menyimpan data.");
+            toast.error("Terjadi kesalahan saat menyimpan data.");
         }
     };
 

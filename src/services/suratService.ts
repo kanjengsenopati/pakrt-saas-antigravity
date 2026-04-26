@@ -10,13 +10,21 @@ export const suratService = {
             params: { tenant_id: tenantId, scope }
         });
         const data = response.data;
-        return Array.isArray(data) ? data : (data.items || []);
+        const items = Array.isArray(data) ? data : (data.items || []);
+        return items.map((item: any) => ({
+            ...item,
+            pemohon: item.pemohon || item.warga
+        }));
     },
 
     async getById(id: string): Promise<SuratWithWarga | undefined> {
         try {
             const response = await api.get(`/surat/${id}`);
-            return response.data;
+            const data = response.data;
+            if (data) {
+                data.pemohon = data.pemohon || data.warga;
+            }
+            return data;
         } catch (error) {
             console.error('Error fetching surat by ID:', error);
             return undefined;

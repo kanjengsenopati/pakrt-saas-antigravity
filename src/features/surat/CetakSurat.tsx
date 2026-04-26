@@ -10,6 +10,7 @@ import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { toast } from 'sonner';
 
 export default function CetakSurat() {
     const { id } = useParams<{ id: string }>();
@@ -70,7 +71,7 @@ export default function CetakSurat() {
             pdf.save(`Surat_Pengantar_${surat?.pemohon?.nama?.replace(/\s+/g, '_') || 'Dokumen'}_${Date.now()}.pdf`);
         } catch (error) {
             console.error("Gagal export PDF:", error);
-            alert("Terjadi kesalahan saat mengekspor PDF.");
+            toast.error("Terjadi kesalahan saat mengekspor PDF.");
         } finally {
             setIsExporting(false);
         }

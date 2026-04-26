@@ -22,6 +22,7 @@ import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
 import { useConfirm } from '../../hooks/useConfirm';
+import { toast } from 'sonner';
 
 
 const toTitleCase = (str: string) => {
@@ -72,7 +73,7 @@ export default function IuranList() {
             await iuranService.exportToXlsx(currentTenant.id, currentScope);
         } catch (error) {
             console.error("Export failed:", error);
-            alert("Gagal melakukan export data.");
+            toast.error("Gagal melakukan export data.");
         } finally {
             setIsExporting(false);
         }

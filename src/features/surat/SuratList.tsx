@@ -8,9 +8,13 @@ import { Plus, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCir
 import { HasPermission } from '../../components/auth/HasPermission';
 import { Text } from '../../components/ui/Typography';
 import { useConfirm } from '../../hooks/useConfirm';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function SuratList() {
     const { currentTenant, currentScope } = useTenant();
+    const { user } = useAuth();
+    const isWarga = user?.role?.toLowerCase() === 'warga' || user?.role_entity?.name?.toLowerCase() === 'warga';
+    
     const [suratList, setSuratList] = useState<SuratWithWarga[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');

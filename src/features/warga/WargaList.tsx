@@ -11,6 +11,7 @@ import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
 import { toTitleCase } from '../../utils/text';
 import { useConfirm } from '../../hooks/useConfirm';
+import { toast } from 'sonner';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -49,7 +50,7 @@ export default function WargaList() {
             await wargaService.exportWarga(currentScope);
         } catch (error) {
             console.error("Export failed:", error);
-            alert('Gagal mengekspor data');
+            toast.error('Gagal mengekspor data');
         }
     };
 
@@ -58,7 +59,7 @@ export default function WargaList() {
             await wargaService.downloadTemplate();
         } catch (error) {
             console.error("Template download failed:", error);
-            alert('Gagal mengunduh template');
+            toast.error('Gagal mengunduh template');
         }
     };
 
@@ -74,11 +75,11 @@ export default function WargaList() {
 
         try {
             const count = await wargaService.importWarga(file);
-            alert(`Berhasil mengimport ${count} data warga baru.`);
+            toast.success(`Berhasil mengimport ${count} data warga baru.`);
             loadData();
         } catch (error: any) {
             console.error("Import failed:", error);
-            alert(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
+            toast.error(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
         } finally {
             if (fileInputRef.current) fileInputRef.current.value = '';
         }
@@ -123,7 +124,7 @@ export default function WargaList() {
         if (!currentTenant) return;
         const link = `${window.location.origin}/join/${currentTenant.id}`;
         navigator.clipboard.writeText(link);
-        alert('Link pendaftaran berhasil disalin!');
+        toast.success('Link pendaftaran berhasil disalin!');
     };
 
     const handleDelete = async (id: string, nama: string) => {
