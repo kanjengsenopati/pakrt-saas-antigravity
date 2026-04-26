@@ -702,7 +702,6 @@ export default function PengaturanUser() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     )}
                                 </div>
                             ))}
