@@ -590,7 +590,7 @@ export default function IuranList() {
                                                             <Text.Caption className="!text-slate-500 !font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
                                                         </div>
                                                         <div className="text-right flex items-center gap-3">
-                                                            <div>
+                                                            <div className="flex items-center gap-2">
                                                                 <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
                                                                 {h.status !== 'VERIFIED' ? (
                                                                     <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
