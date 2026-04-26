@@ -219,7 +219,7 @@ export default function IuranForm() {
                 (payload as any).status = isWarga ? 'PENDING' : 'VERIFIED';
                 await iuranService.create(payload);
             }
-            navigate('/iuran');
+            navigate(isWarga ? '/warga-portal' : '/iuran');
         } catch (error: any) {
             console.error(error);
             setErrorMessage(parseApiError(error, "Gagal menyimpan data iuran."));
@@ -245,7 +245,7 @@ export default function IuranForm() {
                     type="button"
                     onClick={() => {
                         if (isWarga && step > 1) handlePrevStep();
-                        else navigate('/iuran');
+                        else navigate(isWarga ? '/warga-portal' : '/iuran');
                     }}
                     className="p-2 hover:bg-slate-100 bg-transparent text-slate-500 rounded-full transition-colors"
                 >

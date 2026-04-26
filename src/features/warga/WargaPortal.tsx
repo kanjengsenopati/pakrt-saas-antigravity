@@ -175,7 +175,7 @@ export default function WargaPortal() {
                                     : 'Sudah Lunas'}
                         </Text.Amount>
                         <button 
-                            onClick={() => navigate('/iuran')}
+                            onClick={() => navigate('/iuran/baru')}
                             className="bg-brand-50 border border-brand-100 text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
                         >
                             <Text.Label className="!text-brand-600">{(data.iuranUnpaidMonths || 0) > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
@@ -202,7 +202,7 @@ export default function WargaPortal() {
                             </div>
                             <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Aduan</Text.Label>
                         </div>
-                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran')}>
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran/baru')}>
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <CurrencyCircleDollar weight="regular" className="text-[1.8rem] text-emerald-600" />
                             </div>
