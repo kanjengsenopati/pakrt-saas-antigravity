@@ -83,7 +83,6 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
         // Only subscribe warga users who have a linked warga profile
         if (!user?.warga_id) {
-            console.log("Push subscription skipped: user has no warga_id");
             return;
         }
 

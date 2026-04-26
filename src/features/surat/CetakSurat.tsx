@@ -45,7 +45,19 @@ export default function CetakSurat() {
         loadData();
     }, [id, currentTenant, currentScope]);
 
+    const isIframe = () => {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    };
+
     const downloadPDF = async () => {
+        if (isIframe()) {
+            toast.error("Fitur unduh diblokir pada mode preview. Silakan buka aplikasi di tab baru.");
+            return;
+        }
         if (!printRef.current) return;
         setIsExporting(true);
         try {
@@ -122,7 +134,13 @@ export default function CetakSurat() {
                         <Text.Label className="!text-white">{isExporting ? 'Proses...' : 'Unduh PDF'}</Text.Label>
                     </button>
                     <button
-                        onClick={() => window.print()}
+                        onClick={() => {
+                            if (isIframe()) {
+                                toast.error("Fitur cetak diblokir pada mode preview. Silakan buka aplikasi di tab baru.");
+                                return;
+                            }
+                            window.print();
+                        }}
                         className="flex items-center gap-2 px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium shadow-sm transition-colors"
                     >
                         <Printer weight="bold" className="w-5 h-5" /> <Text.Label className="!text-white">Cetak Surat</Text.Label>
