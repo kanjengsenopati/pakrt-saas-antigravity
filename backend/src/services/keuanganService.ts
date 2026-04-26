@@ -122,7 +122,7 @@ export const keuanganService = {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Laporan Keuangan');
 
-    const headers = ['Tanggal', 'Keterangan', 'Tipe', 'Nominal', 'Metode', 'Referal ID'];
+    const headers = ['Tanggal', 'Keterangan', 'Tipe', 'Nominal'];
     sheet.addRow(headers);
     
     const headerRow = sheet.getRow(1);
@@ -138,9 +138,7 @@ export const keuanganService = {
         item.tanggal,
         item.keterangan,
         item.tipe.toUpperCase(),
-        item.nominal,
-        item.metode || '-',
-        item.ref_id || '-'
+        item.nominal
       ]);
     });
 

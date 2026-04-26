@@ -120,7 +120,9 @@ export default async function statsRoutes(fastify: FastifyInstance) {
                 } else if (fallbackSummary && !fallbackSummary.type) {
                     // Single category fallback logic
                     for (let m = 1; m <= currentMonth; m++) {
-                        if (!fallbackSummary.paidMonths.includes(m) && !fallbackSummary.pendingMonths.includes(m)) {
+                        const paid = fallbackSummary.paidMonths || [];
+                        const pending = fallbackSummary.pendingMonths || [];
+                        if (!paid.includes(m) && !pending.includes(m)) {
                             iuranUnpaidMonths++;
                         }
                     }
