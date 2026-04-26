@@ -62,6 +62,7 @@ export default function IuranList() {
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [expandedHistoryIds, setExpandedHistoryIds] = useState<string[]>([]);
+    const [isSharingId, setIsSharingId] = useState<string | null>(null);
     const [shareData, setShareData] = useState<{ history: any, iuran: IuranWithWarga } | null>(null);
 
     const shareBuktiBayar = (h: any, iuran: IuranWithWarga) => {
