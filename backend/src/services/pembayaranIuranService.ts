@@ -493,13 +493,13 @@ export const pembayaranIuranService = {
     const verifiedPayments = allPayments.filter(p => {
       if (p.status !== 'VERIFIED') return false;
       if (!targetKat) return true;
-      return p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
+      return (p.kategori || '').trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
     });
 
     const pendingPayments = allPayments.filter(p => {
       if (p.status !== 'PENDING') return false;
       if (!targetKat) return true;
-      return p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
+      return (p.kategori || '').trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
     });
 
     const totalPaid = verifiedPayments.reduce((sum, curr) => sum + curr.nominal, 0);

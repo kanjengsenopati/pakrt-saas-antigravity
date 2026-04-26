@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { prisma } from '../prisma';
 import { requirePermission } from '../middleware/auth';
+import { pembayaranIuranService } from '../services/pembayaranIuranService';
 
 export default async function statsRoutes(fastify: FastifyInstance) {
     fastify.get('/dashboard', { preHandler: [requirePermission('Dashboard', 'Lihat')] }, async (request, reply) => {
@@ -77,6 +78,44 @@ export default async function statsRoutes(fastify: FastifyInstance) {
         const kasRT = financials.reduce((acc: number, curr: any) => 
             curr.tipe === 'pemasukan' ? acc + (curr._sum.nominal || 0) : acc - (curr._sum.nominal || 0), 0) || 0;
 
-        return { warga, iuranHeader, surat, kasRT, iuranPendingCount, suratProsesCount };
+        // Calculate actual unpaid months up to current month for the current year
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        let iuranUnpaidMonths = 0;
+        
+        try {
+            const billingSummary = await pembayaranIuranService.getBillingSummary(
+                user.tenant_id, 
+                user.warga_id, 
+                currentYear, 
+                undefined, // Checks default 'Iuran Warga' or equivalent
+                'RT'
+            );
+            
+            // Explicitly verify the property names and count unpaid months up to current month
+            if (billingSummary && Array.isArray(billingSummary.paidMonths) && Array.isArray(billingSummary.pendingMonths)) {
+                for (let m = 1; m <= currentMonth; m++) {
+                    if (!billingSummary.paidMonths.includes(m) && !billingSummary.pendingMonths.includes(m)) {
+                        iuranUnpaidMonths++;
+                    }
+                }
+            } else if (billingSummary && billingSummary.type === 'MANIFEST') {
+                // Handle the case where the default category is 'SEMUA' or falls back to it
+                const iuranWarga = billingSummary.items.find((item: any) => item.nama.toLowerCase().includes('iuran warga')) || billingSummary.items[0];
+                if (iuranWarga && Array.isArray(iuranWarga.paidMonths) && Array.isArray(iuranWarga.pendingMonths)) {
+                    for (let m = 1; m <= currentMonth; m++) {
+                        if (!iuranWarga.paidMonths.includes(m) && !iuranWarga.pendingMonths.includes(m)) {
+                            iuranUnpaidMonths++;
+                        }
+                    }
+                }
+            }
+        } catch (err: any) {
+            fastify.log.warn("Failed to fetch billing summary for warga-personal stats: " + (err.message || err));
+            // Default to 0 on failure to not break the UI
+            iuranUnpaidMonths = 0;
+        }
+
+        return { warga, iuranHeader, surat, kasRT, iuranPendingCount, suratProsesCount, iuranUnpaidMonths };
     });
 }

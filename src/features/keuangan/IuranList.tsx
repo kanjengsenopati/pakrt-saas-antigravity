@@ -433,7 +433,26 @@ export default function IuranList() {
                             }, {} as Record<string, { latest: IuranWithWarga, allPaidMonths: Set<number>, history: IuranWithWarga[] }>)
                         ).sort((a, b) => new Date(b.latest.tanggal_bayar).getTime() - new Date(a.latest.tanggal_bayar).getTime());
 
-                        return grouped.map(({ latest: iuran, allPaidMonths, history }) => (
+                        return grouped.map(({ latest: iuran, allPaidMonths, history }) => {
+                            const expectedMonthCount = filterYear === currentYearNum.toString() || filterYear === '' ? currentMonth : 12;
+                            let isFullyPaid = true;
+                            let hasPending = false;
+                            
+                            for (const h of history) {
+                                if (h.status === 'PENDING') hasPending = true;
+                            }
+                            
+                            const verifiedMonths = new Set(history.filter(h => h.status === 'VERIFIED').flatMap(h => h.periode_bulan));
+                            for (let i = 1; i <= expectedMonthCount; i++) {
+                                if (!verifiedMonths.has(i)) {
+                                    isFullyPaid = false;
+                                    break;
+                                }
+                            }
+                            
+                            const overallStatus = hasPending ? 'PENDING' : isFullyPaid ? 'VERIFIED' : history.some(h => h.status === 'REJECTED') ? 'REJECTED' : 'UNPAID';
+
+                            return (
                             <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-500 hover:shadow-xl active:scale-[0.99]">
                                  <div className="p-5">
                                     <div className="flex justify-between items-start mb-4">
@@ -455,20 +474,24 @@ export default function IuranList() {
 
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-2">
-                                            {iuran.status === 'VERIFIED' ? (
+                                            {overallStatus === 'VERIFIED' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-emerald-600 !text-white flex items-center gap-1.5 shadow-premium">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                     Lunas
                                                 </Text.Label>
-                                            ) : iuran.status === 'REJECTED' ? (
+                                            ) : overallStatus === 'REJECTED' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-rose-50 !text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm">
                                                     <X weight="bold" className="w-3.5 h-3.5" />
                                                     Ditolak
                                                 </Text.Label>
-                                            ) : (
+                                            ) : overallStatus === 'PENDING' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-amber-50 !text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
                                                     <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
                                                     Menunggu
+                                                </Text.Label>
+                                            ) : (
+                                                <Text.Label className="!px-3 !py-1.5 rounded-full !bg-slate-50 !text-slate-600 border border-slate-200 flex items-center gap-1.5 shadow-sm">
+                                                    Belum Lunas
                                                 </Text.Label>
                                             )}
                                             
@@ -599,7 +622,8 @@ export default function IuranList() {
                                     </div>
                                 </div>
                             </div>
-                        ));
+                            );
+                        });
                     })()}
                 </div>
             </div>
