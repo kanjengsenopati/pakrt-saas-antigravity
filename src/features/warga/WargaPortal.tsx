@@ -185,20 +185,39 @@ export default function WargaPortal() {
 
                 {/* Card Status (Floating) - Tagihan Iuran */}
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
-                    <Text.Label className="mb-2">Tagihan Bulan Ini</Text.Label>
+                    <div className="flex justify-between items-center mb-2">
+                        <Text.Label>Status Iuran</Text.Label>
+                        <button 
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                setIsLoading(true);
+                                const res = await statsService.getWargaPersonalStats();
+                                setData(res);
+                                setIsLoading(false);
+                            }}
+                            className="p-1 hover:bg-slate-50 rounded-full transition-colors"
+                        >
+                            <ClockCounterClockwise size={14} weight="bold" className="text-slate-400" />
+                        </button>
+                    </div>
                     <div className="flex justify-between items-center">
-                        <Text.Amount className="!text-[#1A1A1A] !text-[26px] !leading-none">
-                            {(data.iuranUnpaidMonths || 0) > 0 
-                                ? `${data.iuranUnpaidMonths} Bln Tertagih` 
-                                : data.iuranPendingCount > 0 
-                                    ? 'Proses Verifikasi' 
-                                    : 'Sudah Lunas'}
-                        </Text.Amount>
+                        <div className="flex flex-col">
+                            <Text.Amount className="!text-[#1A1A1A] !text-[24px] !leading-none">
+                                {(data.iuranUnpaidMonths || 0) > 0 
+                                    ? `${data.iuranUnpaidMonths} Bln Tertagih` 
+                                    : data.iuranPendingCount > 0 
+                                        ? 'Proses Verifikasi' 
+                                        : 'Status: Lunas'}
+                            </Text.Amount>
+                            <Text.Caption className="!mt-1 !not-italic !text-[10px] !text-slate-400">
+                                {data.iuranUnpaidMonths === 0 && data.iuranPendingCount === 0 ? 'Semua tagihan tahun ini telah terbayar' : 'Silakan selesaikan pembayaran'}
+                            </Text.Caption>
+                        </div>
                         <button 
                             onClick={() => navigate('/iuran/baru')}
-                            className="bg-brand-50 border border-brand-100 text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
+                            className="bg-brand-600 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-brand-500/20 flex items-center gap-1.5 active:scale-95 transition-transform"
                         >
-                            <Text.Label className="!text-brand-600">{(data.iuranUnpaidMonths || 0) > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
+                            <Text.Label className="!text-white">{(data.iuranUnpaidMonths || 0) > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
                         </button>
                     </div>
                 </div>

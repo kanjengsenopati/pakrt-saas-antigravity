@@ -145,9 +145,13 @@ export default function IuranForm() {
             const fetchBilling = async () => {
                 setIsLoadingBilling(true);
                 try {
+                    // Try fetching with specific category first
                     const result = await iuranService.getBillingSummary(
                         currentTenant.id, watchWargaId, watchTahun, watchKategori || 'Iuran Warga', currentScope
                     );
+                    
+                    // If result is empty or we want to be safe, we could fetch all? 
+                    // But for now, let's just make sure we handle what the backend gives us.
                     setPaidMonthsRecord(result.paidMonths || []);
                     setPendingMonthsRecord(result.pendingMonths || []);
 

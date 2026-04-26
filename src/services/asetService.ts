@@ -30,6 +30,26 @@ export const asetService = {
         await api.delete(`/aset/${id}`);
     },
 
+    // Booking Methods
+    async getAllBookings(asetId?: string, status?: string) {
+        const response = await api.get('/aset/booking', {
+            params: { aset_id: asetId, status }
+        });
+        return response.data;
+    },
+
+    async createBooking(data: any) {
+        return await api.post('/aset/booking', data);
+    },
+
+    async updateBookingStatus(id: string, status: string, catatan_admin?: string) {
+        return await api.put(`/aset/booking/${id}/status`, { status, catatan_admin });
+    },
+
+    async deleteBooking(id: string) {
+        return await api.delete(`/aset/booking/${id}`);
+    },
+
     async count(tenantId: string, scope: ScopeType): Promise<number> {
         const response = await api.get('/aset/count', {
             params: { tenant_id: tenantId, scope }

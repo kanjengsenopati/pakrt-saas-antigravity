@@ -8,6 +8,7 @@ import pengurusRoutes from './routes/pengurusRoutes';
 import notulensiRoutes from './routes/notulensiRoutes';
 import kehadiranRoutes from './routes/kehadiranRoutes';
 import asetRoutes from './routes/asetRoutes';
+import asetBookingRoutes from './routes/asetBookingRoutes';
 import suratPengantarRoutes from './routes/suratPengantarRoutes';
 import jadwalRondaRoutes from './routes/jadwalRondaRoutes';
 import agendaRoutes from './routes/agendaRoutes';
@@ -104,6 +105,7 @@ fastify.register(async (protectedRoutes) => {
   protectedRoutes.register(notulensiRoutes, { prefix: '/notulensi' });
   protectedRoutes.register(kehadiranRoutes, { prefix: '/kehadiran' });
   protectedRoutes.register(asetRoutes, { prefix: '/aset' });
+  protectedRoutes.register(asetBookingRoutes, { prefix: '/aset/booking' });
   protectedRoutes.register(suratPengantarRoutes, { prefix: '/suratPengantar' });
   protectedRoutes.register(jadwalRondaRoutes, { prefix: '/jadwalRonda' });
   protectedRoutes.register(agendaRoutes, { prefix: '/agenda' });

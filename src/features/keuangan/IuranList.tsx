@@ -20,6 +20,7 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 
 const toTitleCase = (str: string) => {
@@ -646,10 +647,11 @@ export default function IuranList() {
                                 </button>
                             </div>
                             <div className="p-4 overflow-auto max-h-[80vh] flex justify-center bg-gray-50">
-                                <img
+                                <OptimizedImage
                                     src={getFullUrl(viewProofUrl)}
                                     alt="Bukti Pembayaran"
                                     className="max-w-full h-auto rounded-lg shadow-lg border border-white"
+                                    containerClassName="rounded-xl min-h-[300px] w-full"
                                 />
                             </div>
                         </div>

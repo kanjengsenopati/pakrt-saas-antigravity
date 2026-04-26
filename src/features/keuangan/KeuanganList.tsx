@@ -379,15 +379,30 @@ export default function KeuanganList() {
                 <div>
                     <Text.H1>Laporan Kas RT</Text.H1>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                     <HasPermission module="Buku Kas / Transaksi" action="Lihat">
-                        <button
-                            onClick={handleExport}
-                            className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all shadow-sm hover:bg-slate-50 active:scale-95"
-                        >
-                            <FileArrowDown weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-slate-700 !font-bold">Ekspor Excel</Text.Body>
-                        </button>
+                        <div className="flex bg-white border border-slate-200 rounded-2xl p-1 shadow-sm">
+                            <button
+                                onClick={handleExport}
+                                className="flex items-center gap-2 px-4 py-2 text-slate-700 rounded-xl text-sm font-bold transition-all hover:bg-slate-50 active:scale-95"
+                                title="Ekspor ke Excel"
+                            >
+                                <FileArrowDown weight="bold" size={18} />
+                                <span className="hidden lg:inline">Excel</span>
+                            </button>
+                            <div className="w-px h-6 bg-slate-200 my-auto mx-1" />
+                            <button
+                                onClick={() => {
+                                    const now = new Date();
+                                    navigate(`/keuangan/cetak/${now.getMonth() + 1}/${now.getFullYear()}`);
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 text-rose-600 rounded-xl text-sm font-bold transition-all hover:bg-rose-50 active:scale-95"
+                                title="Cetak Laporan Bulanan (PDF)"
+                            >
+                                <FilePdf weight="bold" size={18} />
+                                <span className="hidden lg:inline">PDF</span>
+                            </button>
+                        </div>
                     </HasPermission>
 
                     {!isWarga && (
@@ -397,7 +412,7 @@ export default function KeuanganList() {
                                 className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                             >
                                 <Plus weight="bold" size={18} />
-                                <Text.Body component="span" className="!text-white !font-bold">Catat Transaksi</Text.Body>
+                                <Text.Body component="span" className="!text-white !font-bold">Baru</Text.Body>
                             </button>
                             
                             <button

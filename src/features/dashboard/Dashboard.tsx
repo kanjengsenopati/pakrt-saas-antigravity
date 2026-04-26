@@ -100,6 +100,16 @@ export default function Dashboard() {
         return () => clearInterval(interval);
     }, [currentTenant?.id, currentScope, authUser?.id, fetchStats]);
 
+    if (isWarga) {
+        return (
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <Text.H2>Menyiapkan Portal Warga...</Text.H2>
+                <Text.Body className="mt-2">Anda akan segera dialihkan ke halaman utama.</Text.Body>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-background text-on-background font-body min-h-screen pb-24 animate-fade-in" translate="no">
             <>

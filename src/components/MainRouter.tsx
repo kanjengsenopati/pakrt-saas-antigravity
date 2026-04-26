@@ -28,6 +28,7 @@ import AgendaList from '../features/agenda/AgendaList';
 import AgendaForm from '../features/agenda/AgendaForm';
 import KeuanganList from '../features/keuangan/KeuanganList';
 import KeuanganForm from '../features/keuangan/KeuanganForm';
+import CetakKeuangan from '../features/keuangan/CetakKeuangan';
 import IuranList from '../features/keuangan/IuranList';
 import IuranForm from '../features/keuangan/IuranForm';
 import Pengaturan from '../features/pengaturan/Pengaturan';
@@ -287,6 +288,14 @@ const router = createBrowserRouter([
                         element: (
                             <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Ubah' }}>
                                 <KeuanganForm />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'keuangan/cetak/:month/:year',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Lihat' }}>
+                                <CetakKeuangan />
                             </ProtectedRoute>
                         )
                     },
