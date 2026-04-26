@@ -60,12 +60,16 @@ export default function WargaPortal() {
             // Wait for core contexts to resolve before we even try to load dashboard data
             if (authLoading || tenantLoading) return;
             
+            // If we have no user session at all, let ProtectedRoute handle it
+            if (!user) return;
+
             if (!user?.warga_id || !currentTenant) {
-                // Once contexts are ready, if we still have no data, we stop local loading
+                // Once contexts are ready, if we still have no warga_id, we stop local loading
                 setIsLoading(false);
                 return;
             }
             try {
+                setIsLoading(true);
                 // Fetch essential data. Wrap Polling in a separate try to isolate 403s.
                 const [res, upcomingAgendas] = await Promise.all([
                     statsService.getWargaPersonalStats(),
@@ -89,14 +93,18 @@ export default function WargaPortal() {
             }
         };
         load();
-    }, [currentScope, currentTenant, user?.warga_id, authLoading, tenantLoading]);
+    }, [currentScope, currentTenant, user?.id, user?.warga_id, authLoading, tenantLoading]);
 
     if (isLoading || authLoading || tenantLoading) return (
         <div className="min-h-screen bg-slate-50 p-8 text-center animate-pulse flex items-center justify-center">
-            <Text.Body className="!text-brand-600 !font-bold">Memuat Dashboard Warga...</Text.Body>
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+                <Text.Body className="!text-brand-600 !font-bold">Memuat Dashboard Warga...</Text.Body>
+            </div>
         </div>
     );
     
+    // Only show "Account Not Linked" if we are definitely NOT loading AND warga_id is missing or fetch failed
     if (!user?.warga_id || !data?.warga) {
         return (
             <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center space-y-6">
@@ -105,7 +113,7 @@ export default function WargaPortal() {
                 </div>
                 <div className="text-center">
                     <Text.H1 className="!text-xl">Akun Belum Terhubung</Text.H1>
-                    <Text.Body className="max-w-xs mx-auto mt-2">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda.</Text.Body>
+                    <Text.Body className="max-w-xs mx-auto mt-2 text-slate-500">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda untuk menautkan akun Anda.</Text.Body>
                 </div>
                 <button 
                   onClick={() => navigate('/login')} 
