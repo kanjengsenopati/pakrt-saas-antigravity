@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../services/api';
 
 const VAPID_PUBLIC_KEY = 'BJc3s1SmGPBZf0QFffD56FdYsHlbzAF4FK_hBvhiGy_m3UEV1sqArM1cTLQg0VaBkwtXUflXybJsU9DxKqU0_Wo';
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -32,12 +32,9 @@ export const pushNotificationUtil = {
             });
 
             // Send to backend
-            const token = localStorage.getItem('token');
-            await axios.post(`${API_URL}/push/subscribe`, {
+            await api.post('/push/subscribe', {
                 subscription: subscription.toJSON(),
                 warga_id: wargaId
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
 
             console.log('Push subscription successful');
@@ -54,11 +51,8 @@ export const pushNotificationUtil = {
             const subscription = await registration.pushManager.getSubscription();
             
             if (subscription) {
-                const token = localStorage.getItem('token');
-                await axios.post(`${API_URL}/push/unsubscribe`, {
+                await api.post('/push/unsubscribe', {
                     endpoint: subscription.endpoint
-                }, {
-                    headers: { Authorization: `Bearer ${token}` }
                 });
                 
                 await subscription.unsubscribe();

@@ -55,6 +55,21 @@ export default function AsetList() {
     const [catatanAdmin, setCatatanAdmin] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Confirmation Modal
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => Promise<void>;
+        confirmText?: string;
+        confirmColor?: string;
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        onConfirm: async () => {},
+    });
+
     // Data Fetching
     const { 
         mergedData: asetItems, 
@@ -102,11 +117,19 @@ export default function AsetList() {
     const API_URL = (import.meta as any).env.VITE_API_URL || '/api';
     const IMAGE_BASE_URL = API_URL.replace('/api', '');
 
-    const handleDelete = async (id: string, namaBarang: string) => {
-        if (window.confirm(`Hapus data aset ${namaBarang}?`)) {
-            await asetService.delete(id);
-            loadAset();
-        }
+    const handleDelete = (id: string, namaBarang: string) => {
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Aset',
+            message: `Apakah Anda yakin ingin menghapus data aset "${namaBarang}"? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: 'HAPUS ASET',
+            confirmColor: 'bg-rose-600 hover:bg-rose-700',
+            onConfirm: async () => {
+                await asetService.delete(id);
+                loadAset();
+                setConfirmModal(prev => ({ ...prev, open: false }));
+            }
+        });
     };
 
     const handleBorrowClick = (aset: Aset) => {
@@ -172,14 +195,22 @@ export default function AsetList() {
             return;
         }
 
-        if (window.confirm(`Setujui peminjaman ${booking.aset.nama_barang} oleh ${booking.warga.nama}?`)) {
-            try {
-                await asetService.updateBookingStatus(booking.id, 'APPROVED');
-                loadBookings();
-            } catch (error) {
-                console.error("Failed to update status", error);
+        setConfirmModal({
+            open: true,
+            title: 'Setujui Peminjaman',
+            message: `Konfirmasi persetujuan peminjaman "${booking.aset.nama_barang}" oleh ${booking.warga.nama}?`,
+            confirmText: 'SETUJUI SEKARANG',
+            confirmColor: 'bg-emerald-600 hover:bg-emerald-700',
+            onConfirm: async () => {
+                try {
+                    await asetService.updateBookingStatus(booking.id, 'APPROVED');
+                    loadBookings();
+                    setConfirmModal(prev => ({ ...prev, open: false }));
+                } catch (error) {
+                    console.error("Failed to update status", error);
+                }
             }
-        }
+        });
     };
 
     const submitStatusUpdate = async (status: 'APPROVED' | 'REJECTED') => {
@@ -194,21 +225,28 @@ export default function AsetList() {
         }
     };
 
-    const handleReturn = async (aset: Aset) => {
-        if (window.confirm(`Konfirmasi pengembalian aset: ${aset.nama_barang}?`)) {
-            try {
-                await asetService.update(aset.id, {
-                    status_pinjam: 'tersedia',
-                    peminjam_id: null as any,
-                    tanggal_pinjam: null as any,
-                    kondisi: aset.kondisi
-                });
-                loadAset();
-            } catch (error) {
-                console.error("Failed to return aset:", error);
-                alert("Gagal memproses pengembalian.");
+    const handleReturn = (aset: Aset) => {
+        setConfirmModal({
+            open: true,
+            title: 'Konfirmasi Pengembalian',
+            message: `Apakah aset "${aset.nama_barang}" sudah dikembalikan dengan kondisi baik?`,
+            confirmText: 'KONFIRMASI KEMBALI',
+            confirmColor: 'bg-brand-600 hover:bg-brand-700',
+            onConfirm: async () => {
+                try {
+                    await asetService.update(aset.id, {
+                        status_pinjam: 'tersedia',
+                        peminjam_id: null as any,
+                        tanggal_pinjam: null as any,
+                        kondisi: aset.kondisi
+                    });
+                    loadAset();
+                    setConfirmModal(prev => ({ ...prev, open: false }));
+                } catch (error) {
+                    console.error("Failed to return aset:", error);
+                }
             }
-        }
+        });
     };
 
     const filteredAset = useMemo(() => {
@@ -636,6 +674,37 @@ export default function AsetList() {
                                     TOLAK PERMINTAAN
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Generic Confirmation Modal */}
+            {confirmModal.open && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 text-center">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                                <Info size={32} className="text-slate-400" />
+                            </div>
+                            <Text.H2 className="mb-2">{confirmModal.title}</Text.H2>
+                            <Text.Body className="!text-slate-500 !text-sm leading-relaxed px-2">
+                                {confirmModal.message}
+                            </Text.Body>
+                        </div>
+                        <div className="p-6 pt-0 flex flex-col gap-2">
+                            <button 
+                                onClick={confirmModal.onConfirm}
+                                className={`w-full py-4 ${confirmModal.confirmColor || 'bg-brand-600'} text-white rounded-2xl font-black shadow-lg transition-all active:scale-95`}
+                            >
+                                {confirmModal.confirmText || 'KONFIRMASI'}
+                            </button>
+                            <button 
+                                onClick={() => setConfirmModal(prev => ({ ...prev, open: false }))}
+                                className="w-full py-3 bg-transparent text-slate-400 font-bold hover:text-slate-600 transition-all"
+                            >
+                                BATAL
+                            </button>
                         </div>
                     </div>
                 </div>

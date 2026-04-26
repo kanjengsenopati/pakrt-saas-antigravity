@@ -77,54 +77,57 @@ fastify.register(fastifyRateLimit, {
   timeWindow: '1 minute'
 });
 
-// Public routes
-fastify.register(authRoutes, { prefix: '/api/auth' });
-fastify.register(wilayahRoutes, { prefix: '/api/wilayah' });
-fastify.register(wilayahRoutes, { prefix: '/api/location' });
-fastify.register(superAdminRoutes, { prefix: '/api/super-admin' });
-fastify.register(pricePackageRoutes, { prefix: '/api/packages' });
-fastify.post('/api/test-upload', async () => ({ status: 'found' }));
+// API Routes Group
+fastify.register(async (apiGroup) => {
+  // Public routes
+  apiGroup.register(authRoutes, { prefix: '/auth' });
+  apiGroup.register(wilayahRoutes, { prefix: '/wilayah' });
+  apiGroup.register(wilayahRoutes, { prefix: '/location' });
+  apiGroup.register(superAdminRoutes, { prefix: '/super-admin' });
+  apiGroup.register(pricePackageRoutes, { prefix: '/packages' });
+  apiGroup.post('/test-upload', async () => ({ status: 'found' }));
 
-// Protected routes
-fastify.register(async (protectedRoutes) => {
-  protectedRoutes.addHook('preHandler', authenticate);
-  
-  // Wrap every protected request in a tenant context for automated Prisma isolation
-  protectedRoutes.addHook('preHandler', (request, reply, done) => {
-    const user = (request as any).user;
-    if (user?.tenant_id) {
-      tenantContext.run({ tenantId: user.tenant_id }, done);
-    } else {
-      done();
-    }
+  // Protected routes
+  apiGroup.register(async (protectedRoutes) => {
+    protectedRoutes.addHook('preHandler', authenticate);
+    
+    // Wrap every protected request in a tenant context for automated Prisma isolation
+    protectedRoutes.addHook('preHandler', (request, reply, done) => {
+      const user = (request as any).user;
+      if (user?.tenant_id) {
+        tenantContext.run({ tenantId: user.tenant_id }, done);
+      } else {
+        done();
+      }
+    });
+
+    protectedRoutes.register(wargaRoutes, { prefix: '/warga' });
+    protectedRoutes.register(pengaturanRoutes, { prefix: '/pengaturan' });
+    protectedRoutes.register(pengurusRoutes, { prefix: '/pengurus' });
+    protectedRoutes.register(notulensiRoutes, { prefix: '/notulensi' });
+    protectedRoutes.register(kehadiranRoutes, { prefix: '/kehadiran' });
+    protectedRoutes.register(asetRoutes, { prefix: '/aset' });
+    protectedRoutes.register(asetBookingRoutes, { prefix: '/aset/booking' });
+    protectedRoutes.register(suratPengantarRoutes, { prefix: '/suratPengantar' });
+    protectedRoutes.register(jadwalRondaRoutes, { prefix: '/jadwalRonda' });
+    protectedRoutes.register(agendaRoutes, { prefix: '/agenda' });
+    protectedRoutes.register(keuanganRoutes, { prefix: '/keuangan' });
+    protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/pembayaranIuran' });
+    protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/iuran' });
+    protectedRoutes.register(aktivitasRoutes, { prefix: '/aktivitas' });
+    protectedRoutes.register(anggotaKeluargaRoutes, { prefix: '/anggotaKeluarga' });
+    protectedRoutes.register(userRoutes, { prefix: '/user' });
+    protectedRoutes.register(userRoutes, { prefix: '/users' });
+    protectedRoutes.register(roleRoutes, { prefix: '/role' });
+    protectedRoutes.register(jadwalRondaRoutes, { prefix: '/ronda' });
+    protectedRoutes.register(suratPengantarRoutes, { prefix: '/surat' });
+    protectedRoutes.register(pushRoutes, { prefix: '/push' });
+    protectedRoutes.register(statsRoutes, { prefix: '/stats' });
+    protectedRoutes.register(aduanRoutes, { prefix: '/aduan' });
+    protectedRoutes.register(pollingRoutes, { prefix: '/polling' });
+    protectedRoutes.register(subscriptionRoutes, { prefix: '/subscription' });
+    protectedRoutes.register(uploadRoutes);
   });
-
-  protectedRoutes.register(wargaRoutes, { prefix: '/warga' });
-  protectedRoutes.register(pengaturanRoutes, { prefix: '/pengaturan' });
-  protectedRoutes.register(pengurusRoutes, { prefix: '/pengurus' });
-  protectedRoutes.register(notulensiRoutes, { prefix: '/notulensi' });
-  protectedRoutes.register(kehadiranRoutes, { prefix: '/kehadiran' });
-  protectedRoutes.register(asetRoutes, { prefix: '/aset' });
-  protectedRoutes.register(asetBookingRoutes, { prefix: '/aset/booking' });
-  protectedRoutes.register(suratPengantarRoutes, { prefix: '/suratPengantar' });
-  protectedRoutes.register(jadwalRondaRoutes, { prefix: '/jadwalRonda' });
-  protectedRoutes.register(agendaRoutes, { prefix: '/agenda' });
-  protectedRoutes.register(keuanganRoutes, { prefix: '/keuangan' });
-  protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/pembayaranIuran' });
-  protectedRoutes.register(pembayaranIuranRoutes, { prefix: '/iuran' });
-  protectedRoutes.register(aktivitasRoutes, { prefix: '/aktivitas' });
-  protectedRoutes.register(anggotaKeluargaRoutes, { prefix: '/anggotaKeluarga' });
-  protectedRoutes.register(userRoutes, { prefix: '/user' });
-  protectedRoutes.register(userRoutes, { prefix: '/users' });
-  protectedRoutes.register(roleRoutes, { prefix: '/role' });
-  protectedRoutes.register(jadwalRondaRoutes, { prefix: '/ronda' });
-  protectedRoutes.register(suratPengantarRoutes, { prefix: '/surat' });
-  protectedRoutes.register(pushRoutes, { prefix: '/push' });
-  protectedRoutes.register(statsRoutes, { prefix: '/stats' });
-  protectedRoutes.register(aduanRoutes, { prefix: '/aduan' });
-  protectedRoutes.register(pollingRoutes, { prefix: '/polling' });
-  protectedRoutes.register(subscriptionRoutes, { prefix: '/subscription' });
-  protectedRoutes.register(uploadRoutes);
 }, { prefix: '/api' });
 
 fastify.get('/ping', async () => ({ status: 'ok', time: new Date().toISOString() }));
