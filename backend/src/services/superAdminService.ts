@@ -1,5 +1,6 @@
 import { prisma } from '../prisma';
 import { DocumentUtils } from '../utils/DocumentUtils';
+import bcrypt from 'bcryptjs';
 
 /**
  * Super Admin Service — Platform-wide operations across all tenants.
@@ -181,7 +182,6 @@ export const superAdminService = {
     if (!adminUser) throw new Error('Admin user tidak ditemukan untuk tenant ini');
     
     const password = newPassword || 'pakrt123';
-    const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash(password, 10);
     
     await prisma.user.update({

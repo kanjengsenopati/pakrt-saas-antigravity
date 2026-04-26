@@ -60,7 +60,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
             scope: user.scope 
         }, { expiresIn: '1d' });
 
-        const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL_URL;
+        const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL_URL;
 
         // Set HttpOnly Cookie
         reply.setCookie('auth_token', token, {
@@ -99,7 +99,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
     // Logout endpoint to clear cookie
     fastify.post('/logout', async (request, reply) => {
-        const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL_URL;
+        const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL_URL;
         reply.clearCookie('auth_token', {
             path: '/',
             httpOnly: true,
