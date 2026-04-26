@@ -10,7 +10,11 @@ const DEFAULT_ADMIN_PERMISSIONS = {
     "Agenda": ["Lihat", "Buat", "Ubah", "Hapus"],
     "Aset": ["Lihat", "Buat", "Ubah", "Hapus"],
     "Notulensi": ["Lihat", "Buat", "Ubah", "Hapus"],
-    "Setup / Pengaturan": ["Lihat", "Buat", "Ubah", "Hapus"]
+    "Jadwal Ronda": ["Lihat", "Buat", "Ubah", "Hapus"],
+    "Setup / Pengaturan": ["Lihat", "Buat", "Ubah", "Hapus"],
+    "Aduan & Usulan": ["Lihat", "Buat", "Ubah", "Hapus"],
+    "Log Aktivitas": ["Lihat"],
+    "Dashboard": ["Lihat"]
 };
 
 export const authService = {

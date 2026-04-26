@@ -44,7 +44,10 @@ export const APP_MODULES = [
     { id: 'Jadwal Ronda', label: 'Jadwal Ronda' },
     { id: 'Agenda', label: 'Agenda Kegiatan' },
     { id: 'Setup / Pengaturan', label: 'Pengaturan Sistem' },
-    { id: 'Manajemen User / Role', label: 'Manajemen User & Role' }
+    { id: 'Manajemen User / Role', label: 'Manajemen User & Role' },
+    { id: 'Log Aktivitas', label: 'Log Aktivitas' },
+    { id: 'Aduan & Usulan', label: 'Aduan & Usulan' },
+    { id: 'Dashboard', label: 'Dashboard Utama' }
 ];
 
 export const CRUD_ACTIONS = [

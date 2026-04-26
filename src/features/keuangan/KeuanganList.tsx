@@ -406,24 +406,22 @@ export default function KeuanganList() {
                         </div>
                     </HasPermission>
 
-                    {!isWarga && (
-                        <HasPermission module="Buku Kas / Transaksi" action="Buat">
-                            <button
-                                onClick={() => navigate('/keuangan/baru')}
-                                className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
-                            >
-                                <Plus weight="bold" size={18} />
-                                <Text.Body component="span" className="!text-white !font-bold">Baru</Text.Body>
-                            </button>
-                            
-                            <button
-                                onClick={() => navigate('/keuangan/baru')}
-                                className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
-                            >
-                                <Plus weight="bold" size={24} />
-                            </button>
-                        </HasPermission>
-                    )}
+                    <HasPermission module="Buku Kas / Transaksi" action="Buat">
+                        <button
+                            onClick={() => navigate('/keuangan/baru')}
+                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                        >
+                            <Plus weight="bold" size={18} />
+                            <Text.Body component="span" className="!text-white !font-bold">Baru</Text.Body>
+                        </button>
+                        
+                        <button
+                            onClick={() => navigate('/keuangan/baru')}
+                            className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                        >
+                            <Plus weight="bold" size={24} />
+                        </button>
+                    </HasPermission>
                 </div>
             </div>
 

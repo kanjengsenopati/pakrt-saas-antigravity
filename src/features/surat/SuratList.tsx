@@ -72,7 +72,7 @@ export default function SuratList() {
                     <Text.H1>Surat Pengantar</Text.H1>
                     <Text.Body>Kelola Permohonan Surat Pengantar Warga</Text.Body>
                 </div>
-                <HasPermission module="Surat Pengantar" action="Buat">
+                <HasPermission module="Surat / Cetak" action="Buat">
                     <button
                         onClick={() => navigate('/surat/new')}
                         className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
@@ -187,14 +187,14 @@ export default function SuratList() {
                                             <div className="flex justify-end gap-2">
                                                 {surat.status === 'proses' && (
                                                     <>
-                                                        <HasPermission module="Surat Pengantar" action="Ubah">
+                                                        <HasPermission module="Surat / Cetak" action="Ubah">
                                                             <button
                                                                 onClick={() => handleUpdateStatus(surat.id, 'selesai')}
                                                                 className="p-1.5 text-brand-600 hover:bg-brand-50 rounded-md transition-colors" title="Setujui & Terbitkan">
                                                                 <CheckCircle weight="duotone" className="w-5 h-5" />
                                                             </button>
                                                         </HasPermission>
-                                                        <HasPermission module="Surat Pengantar" action="Ubah">
+                                                        <HasPermission module="Surat / Cetak" action="Ubah">
                                                             <button
                                                                 onClick={() => handleUpdateStatus(surat.id, 'ditolak')}
                                                                 className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-md transition-colors" title="Tolak">
@@ -210,7 +210,7 @@ export default function SuratList() {
                                                         <Printer weight="duotone" className="w-5 h-5" />
                                                     </button>
                                                 )}
-                                                <HasPermission module="Surat Pengantar" action="Hapus">
+                                                <HasPermission module="Surat / Cetak" action="Hapus">
                                                     <button
                                                         onClick={() => handleDelete(surat.id, surat.jenis_surat)}
                                                         className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors" title="Hapus">
@@ -303,7 +303,7 @@ export default function SuratList() {
                                     <div className="flex justify-end items-center pt-4 border-t border-slate-50 gap-2 mt-4">
                                         {surat.status === 'proses' ? (
                                             <>
-                                                <HasPermission module="Surat Pengantar" action="Ubah">
+                                                <HasPermission module="Surat / Cetak" action="Ubah">
                                                     <button
                                                         onClick={() => handleUpdateStatus(surat.id, 'selesai')}
                                                         className="flex-1 py-2 bg-brand-600 text-white rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px] font-bold tracking-tighter shadow-md active:scale-95"
@@ -312,7 +312,7 @@ export default function SuratList() {
                                                         <Text.Label className="!text-white !text-[11px]">Setujui</Text.Label>
                                                     </button>
                                                 </HasPermission>
-                                                <HasPermission module="Surat Pengantar" action="Ubah">
+                                                <HasPermission module="Surat / Cetak" action="Ubah">
                                                     <button
                                                         onClick={() => handleUpdateStatus(surat.id, 'ditolak')}
                                                         className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all shadow-sm border border-rose-100/50"
@@ -330,7 +330,7 @@ export default function SuratList() {
                                                 <Text.Label className="!text-white !text-[11px]">Cetak Surat</Text.Label>
                                             </button>
                                         ) : null}
-                                        <HasPermission module="Surat Pengantar" action="Hapus">
+                                        <HasPermission module="Surat / Cetak" action="Hapus">
                                             <button
                                                 onClick={() => handleDelete(surat.id, surat.jenis_surat)}
                                                 className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-transparent shadow-sm"
