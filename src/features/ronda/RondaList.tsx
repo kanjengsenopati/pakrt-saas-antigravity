@@ -43,7 +43,7 @@ export default function RondaList() {
 
     const rondaList = rondaItems || [];
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortConfig, setSortConfig] = useState<{ key: 'tanggal' | 'regu', direction: 'asc' | 'desc' } | null>({ key: 'tanggal', direction: 'desc' });
+    const sortConfig = { key: 'tanggal' as const, direction: 'desc' as const };
     const [activeTab, setActiveTab] = useState<TabType>('kalender');
     const [viewDate, setViewDate] = useState(new Date());
     const [selectedDayRonda, setSelectedDayRonda] = useState<RondaWithWarga | null>(null);
