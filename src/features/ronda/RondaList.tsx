@@ -96,13 +96,11 @@ export default function RondaList() {
             if (key === 'tanggal') {
                 const dateA = new Date(a.tanggal).getTime();
                 const dateB = new Date(b.tanggal).getTime();
-                return direction === 'asc' ? dateA - dateB : dateB - dateA;
+                return dateB - dateA; // Always desc
             }
 
             if (key === 'regu') {
-                return direction === 'asc'
-                    ? a.regu.localeCompare(b.regu)
-                    : b.regu.localeCompare(a.regu);
+                return b.regu.localeCompare(a.regu); // Always desc
             }
 
             return 0;
