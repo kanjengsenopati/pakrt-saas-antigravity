@@ -317,6 +317,7 @@ model Aktivitas {
   scope     String   @default("RT")
   action    String
   details   String
+  target_url String?
   timestamp Float
 
   @@index([tenant_id, scope, timestamp])

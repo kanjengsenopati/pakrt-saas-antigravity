@@ -220,6 +220,7 @@ export interface Aktivitas {
     scope: 'RT' | 'PKK' | 'Dasa Wisma' | string;
     action: string; // e.g., 'Tambah Warga', 'Hapus Aset'
     details: string;
+    target_url?: string;
     timestamp: number;
 }
 

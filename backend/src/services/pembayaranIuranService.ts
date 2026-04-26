@@ -180,6 +180,7 @@ export const pembayaranIuranService = {
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
                         details: `Pembayaran iuran tunai oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Terverifikasi`,
+                        target_url: '/iuran',
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -192,6 +193,7 @@ export const pembayaranIuranService = {
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
                         details: `Pembayaran iuran oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                        target_url: '/iuran',
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -233,6 +235,7 @@ export const pembayaranIuranService = {
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
                 details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITERIMA]`,
+                target_url: '/iuran',
                 timestamp: Date.now()
             });
 
@@ -253,6 +256,7 @@ export const pembayaranIuranService = {
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
                 details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITOLAK]: ${alasan}`,
+                target_url: '/iuran',
                 timestamp: Date.now()
             });
 

@@ -63,6 +63,7 @@ export const suratPengantarService = {
         scope: data.scope || 'RT',
         action: 'Surat Pengantar',
         details: `**${warga?.nama || 'Warga'}** mengajukan surat pengantar baru: ${data.jenis_surat}`,
+        target_url: '/surat',
         timestamp: Date.now()
       });
       
@@ -99,6 +100,7 @@ export const suratPengantarService = {
           scope: result.scope || 'RT',
           action: 'Update Surat',
           details: `Status surat pengantar **${existing?.warga?.nama || 'Warga'}** (${result.jenis_surat}) diperbarui menjadi: ${result.status.toUpperCase()}`,
+          target_url: '/surat',
           timestamp: Date.now()
         });
 

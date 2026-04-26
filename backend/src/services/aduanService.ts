@@ -79,6 +79,7 @@ export const aduanService = {
         scope: data.scope || 'RT',
         action: 'Aduan Warga',
         details: `**${warga?.nama || 'Warga'}** mengirimkan aduan: ${data.judul}`,
+        target_url: '/aduan',
         timestamp: Date.now()
       });
       
@@ -107,6 +108,7 @@ export const aduanService = {
           scope: result.scope || 'RT',
           action: 'Update Aduan',
           details: `Status aduan **${aduan?.warga?.nama || 'Warga'}** (${result.judul}) diperbarui menjadi: ${result.status}`,
+          target_url: '/aduan',
           timestamp: Date.now()
         });
 

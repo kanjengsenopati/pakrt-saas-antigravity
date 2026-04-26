@@ -17,9 +17,11 @@ import {
     CurrencyCircleDollar,
     CalendarCheck,
     Flashlight,
-    Minus
+    Minus,
+    Bell
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../../contexts/NotificationContext';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
@@ -29,6 +31,7 @@ import { toTitleCase } from '../../utils/text';
 export default function WargaPortal() {
     const { user, logout, isLoading: authLoading } = useAuth();
     const { currentScope, currentTenant, isLoading: tenantLoading } = useTenant();
+    const { unreadCount } = useNotifications();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -150,6 +153,15 @@ export default function WargaPortal() {
                                 <Plus size={12} weight="bold" />
                             </button>
                         </div>
+                        <button 
+                            onClick={() => navigate('/notifications')}
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-500/50 border border-brand-400/30 text-white active:scale-95 transition-all relative"
+                        >
+                            <Bell size={20} weight="bold" />
+                            {unreadCount > 0 && (
+                                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-brand-600 animate-pulse"></span>
+                            )}
+                        </button>
                         <div 
                             onClick={() => navigate('/profile')} 
                             className="w-12 h-12 rounded-full border-2 border-brand-100/30 bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-inner cursor-pointer active:scale-95 transition-transform overflow-hidden shrink-0"

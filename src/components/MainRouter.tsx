@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { TenantProvider } from '../contexts/TenantContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import { NotificationProvider } from '../contexts/NotificationContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import App from '../App';
 import Login from '../features/auth/Login';
@@ -412,7 +413,9 @@ export function MainRouter() {
                 <FontProvider>
                     <AuthProvider>
                         <TenantProvider>
-                            <RouterProvider router={router} />
+                            <NotificationProvider>
+                                <RouterProvider router={router} />
+                            </NotificationProvider>
                         </TenantProvider>
                     </AuthProvider>
                 </FontProvider>
