@@ -87,4 +87,23 @@ export default async function suratPengantarRoutes(fastify: FastifyInstance) {
       return reply.code(500).send({ error: 'Failed to delete' });
     }
   });
+
+  fastify.post('/status/:id', { preHandler: [requirePermission('Surat / Cetak', 'Ubah')] }, async (request, reply) => {
+    try {
+      const { id } = request.params as any;
+      const user = (request as any).user;
+      const { status, alasan_penolakan } = request.body as any;
+
+      const existing = await suratPengantarService.getById(id);
+      if (!existing || existing.tenant_id !== user.tenant_id) {
+          return reply.code(404).send({ error: 'Not found or unauthorized' });
+      }
+
+      const item = await suratPengantarService.update(id, { status, alasan_penolakan });
+      return item;
+    } catch (err: any) {
+      fastify.log.error(err);
+      return reply.code(400).send({ error: err.message || 'Failed to update status' });
+    }
+  });
 }

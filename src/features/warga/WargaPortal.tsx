@@ -17,9 +17,11 @@ import {
     CurrencyCircleDollar,
     CalendarCheck,
     Flashlight,
-    Minus
+    Minus,
+    Bell
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../../contexts/NotificationContext';
 import { pollingService } from '../../services/pollingService';
 import { agendaService } from '../../services/agendaService';
 import PollingParticipation from '../aduan/PollingParticipation';
@@ -29,6 +31,7 @@ import { toTitleCase } from '../../utils/text';
 export default function WargaPortal() {
     const { user, logout, isLoading: authLoading } = useAuth();
     const { currentScope, currentTenant, isLoading: tenantLoading } = useTenant();
+    const { unreadCount } = useNotifications();
     const navigate = useNavigate();
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -57,12 +60,16 @@ export default function WargaPortal() {
             // Wait for core contexts to resolve before we even try to load dashboard data
             if (authLoading || tenantLoading) return;
             
+            // If we have no user session at all, let ProtectedRoute handle it
+            if (!user) return;
+
             if (!user?.warga_id || !currentTenant) {
-                // Once contexts are ready, if we still have no data, we stop local loading
+                // Once contexts are ready, if we still have no warga_id, we stop local loading
                 setIsLoading(false);
                 return;
             }
             try {
+                setIsLoading(true);
                 // Fetch essential data. Wrap Polling in a separate try to isolate 403s.
                 const [res, upcomingAgendas] = await Promise.all([
                     statsService.getWargaPersonalStats(),
@@ -86,14 +93,18 @@ export default function WargaPortal() {
             }
         };
         load();
-    }, [currentScope, currentTenant, user?.warga_id, authLoading, tenantLoading]);
+    }, [currentScope, currentTenant, user?.id, user?.warga_id, authLoading, tenantLoading]);
 
     if (isLoading || authLoading || tenantLoading) return (
         <div className="min-h-screen bg-slate-50 p-8 text-center animate-pulse flex items-center justify-center">
-            <Text.Body className="!text-brand-600 !font-bold">Memuat Dashboard Warga...</Text.Body>
+            <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+                <Text.Body className="!text-brand-600 !font-bold">Memuat Dashboard Warga...</Text.Body>
+            </div>
         </div>
     );
     
+    // Only show "Account Not Linked" if we are definitely NOT loading AND warga_id is missing or fetch failed
     if (!user?.warga_id || !data?.warga) {
         return (
             <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center space-y-6">
@@ -102,7 +113,7 @@ export default function WargaPortal() {
                 </div>
                 <div className="text-center">
                     <Text.H1 className="!text-xl">Akun Belum Terhubung</Text.H1>
-                    <Text.Body className="max-w-xs mx-auto mt-2">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda.</Text.Body>
+                    <Text.Body className="max-w-xs mx-auto mt-2 text-slate-500">Data warga Anda belum tersinkronisasi. Silakan hubungi pengurus RT Anda untuk menautkan akun Anda.</Text.Body>
                 </div>
                 <button 
                   onClick={() => navigate('/login')} 
@@ -150,6 +161,15 @@ export default function WargaPortal() {
                                 <Plus size={12} weight="bold" />
                             </button>
                         </div>
+                        <button 
+                            onClick={() => navigate('/notifications')}
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-brand-500/50 border border-brand-400/30 text-white active:scale-95 transition-all relative"
+                        >
+                            <Bell size={20} weight="bold" />
+                            {unreadCount > 0 && (
+                                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-brand-600 animate-pulse"></span>
+                            )}
+                        </button>
                         <div 
                             onClick={() => navigate('/profile')} 
                             className="w-12 h-12 rounded-full border-2 border-brand-100/30 bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-inner cursor-pointer active:scale-95 transition-transform overflow-hidden shrink-0"
@@ -165,16 +185,39 @@ export default function WargaPortal() {
 
                 {/* Card Status (Floating) - Tagihan Iuran */}
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] absolute left-6 right-6 -bottom-14 z-10 transition-all active:scale-[0.98] border border-black/[0.03]">
-                    <Text.Label className="mb-2">Status Tagihan Iuran Anda</Text.Label>
-                    <div className="flex justify-between items-center">
-                        <Text.Amount className="!text-[#1A1A1A] !text-[28px] !leading-none">
-                            {data.iuranPendingCount > 0 ? `${data.iuranPendingCount} Bulan Tertagih` : 'Sudah Lunas'}
-                        </Text.Amount>
+                    <div className="flex justify-between items-center mb-2">
+                        <Text.Label>Status Iuran</Text.Label>
                         <button 
-                            onClick={() => navigate('/iuran')}
-                            className="bg-brand-50 border border-brand-100 text-brand-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95 transition-transform"
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                setIsLoading(true);
+                                const res = await statsService.getWargaPersonalStats();
+                                setData(res);
+                                setIsLoading(false);
+                            }}
+                            className="p-1 hover:bg-slate-50 rounded-full transition-colors"
                         >
-                            <Text.Label className="!text-brand-600">{data.iuranPendingCount > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
+                            <ClockCounterClockwise size={14} weight="bold" className="text-slate-400" />
+                        </button>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <div className="flex flex-col">
+                            <Text.Amount className="!text-[#1A1A1A] !text-[24px] !leading-none">
+                                {(data.iuranUnpaidMonths || 0) > 0 
+                                    ? `${data.iuranUnpaidMonths} Bln Tertagih` 
+                                    : data.iuranPendingCount > 0 
+                                        ? 'Proses Verifikasi' 
+                                        : 'Status: Lunas'}
+                            </Text.Amount>
+                            <Text.Caption className="!mt-1 !not-italic !text-[10px] !text-slate-400">
+                                {data.iuranUnpaidMonths === 0 && data.iuranPendingCount === 0 ? 'Semua tagihan tahun ini telah terbayar' : 'Silakan selesaikan pembayaran'}
+                            </Text.Caption>
+                        </div>
+                        <button 
+                            onClick={() => navigate('/iuran/baru')}
+                            className="bg-brand-600 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-brand-500/20 flex items-center gap-1.5 active:scale-95 transition-transform"
+                        >
+                            <Text.Label className="!text-white">{(data.iuranUnpaidMonths || 0) > 0 ? 'Bayar' : 'Cek'}</Text.Label> <ArrowRight weight="bold" />
                         </button>
                     </div>
                 </div>
@@ -198,7 +241,7 @@ export default function WargaPortal() {
                             </div>
                             <Text.Label className="text-center leading-[1.2] !normal-case !tracking-tight !text-slate-700">Aduan</Text.Label>
                         </div>
-                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran')}>
+                        <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran/baru')}>
                             <div className="w-[60px] h-[60px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                 <CurrencyCircleDollar weight="regular" className="text-[1.8rem] text-emerald-600" />
                             </div>

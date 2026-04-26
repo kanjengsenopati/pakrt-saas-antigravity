@@ -12,7 +12,8 @@ import {
     Image as ImageIcon,
     PencilSimple,
     CircleNotch,
-    FileArrowDown
+    FileArrowDown,
+    ShareNetwork
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
@@ -20,6 +21,11 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
+import { useConfirm } from '../../hooks/useConfirm';
+import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
+import { ShareUtils } from '../../utils/shareUtils';
 
 
 const toTitleCase = (str: string) => {
@@ -32,6 +38,7 @@ export default function IuranList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const { confirm, ConfirmDialog } = useConfirm();
 
 
     const {
@@ -55,6 +62,43 @@ export default function IuranList() {
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [expandedHistoryIds, setExpandedHistoryIds] = useState<string[]>([]);
+    const [isSharingId, setIsSharingId] = useState<string | null>(null);
+    const [shareData, setShareData] = useState<{ history: any, iuran: IuranWithWarga } | null>(null);
+
+    const shareBuktiBayar = (h: any, iuran: IuranWithWarga) => {
+        setShareData({ history: h, iuran });
+        setIsSharingId(h.id);
+        
+        setTimeout(async () => {
+            const element = document.getElementById('receipt-share-capture');
+            if (!element) {
+                setIsSharingId(null);
+                setShareData(null);
+                return;
+            }
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null
+                });
+                canvas.toBlob(async (blob) => {
+                    if (blob) {
+                        const wargaName = iuran.warga?.nama || 'Warga';
+                        const file = new File([blob], `Bukti_Bayar_${wargaName.replace(/\s+/g, '_')}_${h.id}.png`, { type: 'image/png' });
+                        await ShareUtils.shareOrDownloadFile(file, undefined, `Bukti Bayar Iuran`, `Berikut adalah bukti pembayaran iuran lunas atas nama ${wargaName} sejumlah ${formatRupiah(h.nominal)}.`);
+                    }
+                    setIsSharingId(null);
+                    setShareData(null);
+                }, 'image/png');
+            } catch (error) {
+                console.error("Gagal membagikan bukti bayar:", error);
+                toast.error("Terjadi kesalahan saat membagikan bukti bayar.");
+                setIsSharingId(null);
+                setShareData(null);
+            }
+        }, 100);
+    };
 
     const toggleHistory = (wargaId: string) => {
         setExpandedHistoryIds(prev => 
@@ -69,7 +113,7 @@ export default function IuranList() {
             await iuranService.exportToXlsx(currentTenant.id, currentScope);
         } catch (error) {
             console.error("Export failed:", error);
-            alert("Gagal melakukan export data.");
+            toast.error("Gagal melakukan export data.");
         } finally {
             setIsExporting(false);
         }
@@ -90,7 +134,8 @@ export default function IuranList() {
     }, [iuranList]);
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Apakah Anda yakin ingin menghapus data pembayaran ini? Entri Kas Masuk terkait juga akan dihapus.")) {
+        const ok = await confirm({ title: 'Hapus Data Pembayaran', message: 'Hapus data pembayaran ini? Entri Kas Masuk terkait juga akan ikut terhapus.', confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await iuranService.delete(id, currentTenant!.id, currentScope);
             loadData();
         }
@@ -134,6 +179,7 @@ export default function IuranList() {
     };
 
     return (
+        <>
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -217,10 +263,10 @@ export default function IuranList() {
                         <HasPermission module="Buku Kas / Transaksi" action="Buat">
                             <button
                                 onClick={async () => {
-                                    if (window.confirm("Sinkronkan semua data iuran ke Kas Masuk? (Hanya entri yang belum ada yang akan ditambahkan)")) {
+                                    const ok = await confirm({ title: 'Sinkronisasi Data Kas', message: 'Sinkronkan semua data iuran ke Kas Masuk? Hanya entri yang belum ada yang akan ditambahkan.', confirmText: 'SINKRONKAN', variant: 'warning' });
+                                    if (ok) {
                                         await iuranService.syncAllToKeuangan(currentTenant!.id, currentScope);
                                         await loadData();
-                                        alert("Sinkronisasi data selesai.");
                                     }
                                 }}
                                 className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-brand-600 bg-brand-50 border border-brand-100 rounded-lg hover:bg-brand-100 transition-colors w-full sm:w-auto shadow-sm"
@@ -433,7 +479,26 @@ export default function IuranList() {
                             }, {} as Record<string, { latest: IuranWithWarga, allPaidMonths: Set<number>, history: IuranWithWarga[] }>)
                         ).sort((a, b) => new Date(b.latest.tanggal_bayar).getTime() - new Date(a.latest.tanggal_bayar).getTime());
 
-                        return grouped.map(({ latest: iuran, allPaidMonths, history }) => (
+                        return grouped.map(({ latest: iuran, allPaidMonths, history }) => {
+                            const expectedMonthCount = filterYear === currentYearNum.toString() || filterYear === '' ? currentMonth : 12;
+                            let isFullyPaid = true;
+                            let hasPending = false;
+                            
+                            for (const h of history) {
+                                if (h.status === 'PENDING') hasPending = true;
+                            }
+                            
+                            const verifiedMonths = new Set(history.filter(h => h.status === 'VERIFIED').flatMap(h => h.periode_bulan));
+                            for (let i = 1; i <= expectedMonthCount; i++) {
+                                if (!verifiedMonths.has(i)) {
+                                    isFullyPaid = false;
+                                    break;
+                                }
+                            }
+                            
+                            const overallStatus = hasPending ? 'PENDING' : isFullyPaid ? 'VERIFIED' : history.some(h => h.status === 'REJECTED') ? 'REJECTED' : 'UNPAID';
+
+                            return (
                             <div key={iuran.warga_id} className="bg-white border border-slate-100 rounded-[20px] shadow-premium overflow-hidden flex flex-col transition-all duration-500 hover:shadow-xl active:scale-[0.99]">
                                  <div className="p-5">
                                     <div className="flex justify-between items-start mb-4">
@@ -455,20 +520,24 @@ export default function IuranList() {
 
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-2">
-                                            {iuran.status === 'VERIFIED' ? (
+                                            {overallStatus === 'VERIFIED' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-emerald-600 !text-white flex items-center gap-1.5 shadow-premium">
                                                     <CheckCircle weight="fill" className="w-3.5 h-3.5" />
                                                     Lunas
                                                 </Text.Label>
-                                            ) : iuran.status === 'REJECTED' ? (
+                                            ) : overallStatus === 'REJECTED' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-rose-50 !text-rose-600 border border-rose-100 flex items-center gap-1.5 shadow-sm">
                                                     <X weight="bold" className="w-3.5 h-3.5" />
                                                     Ditolak
                                                 </Text.Label>
-                                            ) : (
+                                            ) : overallStatus === 'PENDING' ? (
                                                 <Text.Label className="!px-3 !py-1.5 rounded-full !bg-amber-50 !text-amber-600 border border-amber-100 flex items-center gap-1.5 shadow-sm animate-pulse">
                                                     <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
                                                     Menunggu
+                                                </Text.Label>
+                                            ) : (
+                                                <Text.Label className="!px-3 !py-1.5 rounded-full !bg-slate-50 !text-slate-600 border border-slate-200 flex items-center gap-1.5 shadow-sm">
+                                                    Belum Lunas
                                                 </Text.Label>
                                             )}
                                             
@@ -516,17 +585,31 @@ export default function IuranList() {
                                             <Text.Label className="!text-slate-400 mb-2">Riwayat Pembayaran {filterYear}</Text.Label>
                                             <div className="space-y-2">
                                                 {history.map((h) => (
-                                                    <div key={h.id} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
+                                                    <div key={h.id} id={`bukti-bayar-${h.id}`} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0 bg-white p-2 rounded-lg">
                                                         <div>
                                                             <Text.Body className="!font-medium !text-slate-700 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
                                                             <Text.Caption className="!text-slate-500 !font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
                                                         </div>
-                                                        <div className="text-right">
-                                                            <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
-                                                            {h.status !== 'VERIFIED' && (
-                                                                <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
-                                                                    {h.status}
-                                                                </Text.Label>
+                                                        <div className="text-right flex items-center gap-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
+                                                                {h.status !== 'VERIFIED' ? (
+                                                                    <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
+                                                                        {h.status}
+                                                                    </Text.Label>
+                                                                ) : (
+                                                                    <Text.Label className="!font-bold !text-emerald-500">LUNAS</Text.Label>
+                                                                )}
+                                                            </div>
+                                                            {h.status === 'VERIFIED' && (
+                                                                <button
+                                                                    onClick={() => shareBuktiBayar(h, iuran)}
+                                                                    disabled={isSharingId === h.id}
+                                                                    className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50"
+                                                                    title="Bagikan Bukti Bayar"
+                                                                >
+                                                                    {isSharingId === h.id ? <CircleNotch className="w-4 h-4 animate-spin" /> : <ShareNetwork weight="bold" className="w-4 h-4" />}
+                                                                </button>
                                                             )}
                                                         </div>
                                                     </div>
@@ -599,7 +682,8 @@ export default function IuranList() {
                                     </div>
                                 </div>
                             </div>
-                        ));
+                            );
+                        });
                     })()}
                 </div>
             </div>
@@ -622,10 +706,11 @@ export default function IuranList() {
                                 </button>
                             </div>
                             <div className="p-4 overflow-auto max-h-[80vh] flex justify-center bg-gray-50">
-                                <img
+                                <OptimizedImage
                                     src={getFullUrl(viewProofUrl)}
                                     alt="Bukti Pembayaran"
                                     className="max-w-full h-auto rounded-lg shadow-lg border border-white"
+                                    containerClassName="rounded-xl min-h-[300px] w-full"
                                 />
                             </div>
                         </div>
@@ -735,5 +820,52 @@ export default function IuranList() {
                 </button>
             </HasPermission>
         </div>
+        <ConfirmDialog />
+        
+        {/* OFF-SCREEN RECEIPT CAPTURE UI */}
+        {shareData && (
+            <div className="fixed top-0 left-[-9999px] z-[-1]">
+                <div id="receipt-share-capture" className="w-[380px] bg-slate-50 p-6 flex flex-col">
+                    <div className="bg-white rounded-[24px] p-6 shadow-premium border border-slate-100">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">ID TAGIHAN</Text.Label>
+                                <Text.H2 className="!text-brand-600 !font-bold">INV-{dateUtils.format(shareData.history.tanggal_bayar, 'yyyyMMdd')}-{shareData.history.id.substring(0,4).toUpperCase()}</Text.H2>
+                            </div>
+                            <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-100">
+                                LUNAS
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">NAMA WARGA</Text.Label>
+                            <Text.H2 className="!text-slate-800 !font-bold">{shareData.iuran.warga?.nama?.toUpperCase()}</Text.H2>
+                        </div>
+
+                        <div className="border-t border-slate-100 pt-6">
+                            <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-4">RINCIAN TAGIHAN</Text.Label>
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <Text.Body className="!font-bold !text-slate-800">{shareData.history.periode_bulan.map((m: number) => getMonthName(m)).join(', ')} {shareData.history.periode_tahun}</Text.Body>
+                                    <Text.Caption className="!text-slate-400 italic mt-0.5">Iuran Warga</Text.Caption>
+                                </div>
+                                <Text.Body className="!font-bold !text-slate-800">{formatRupiah(shareData.history.nominal)}</Text.Body>
+                            </div>
+
+                            <div className="border-t border-dashed border-slate-200 py-4 flex justify-between">
+                                <Text.Body className="!text-slate-500">Subtotal</Text.Body>
+                                <Text.Body className="!font-bold !text-slate-800">{formatRupiah(shareData.history.nominal)}</Text.Body>
+                            </div>
+
+                            <div className="bg-slate-50 rounded-[16px] p-5 flex justify-between items-center mt-2 border border-slate-100">
+                                <Text.Body className="!font-bold !text-slate-800">Total Pembayaran</Text.Body>
+                                <Text.Amount className="!text-brand-600 !text-xl">{formatRupiah(shareData.history.nominal)}</Text.Amount>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

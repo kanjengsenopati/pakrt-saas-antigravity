@@ -81,5 +81,13 @@ export const userService = {
         return await prisma.user.delete({
             where: { id }
         });
+    },
+
+    async updatePermissions(id: string, permissions: any) {
+        return await prisma.user.update({
+            where: { id },
+            data: { permissions },
+            include: { role_entity: true }
+        });
     }
 };

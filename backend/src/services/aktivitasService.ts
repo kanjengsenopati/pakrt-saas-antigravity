@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+// Trigger reload after schema update
 
 export const aktivitasService = {
   async getAll(tenantId: string, scope?: string, page: number = 1, limit: number = 20) {

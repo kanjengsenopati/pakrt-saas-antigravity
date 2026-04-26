@@ -3,9 +3,26 @@ import { userService } from '../services/userService';
 import { requirePermission } from '../middleware/auth';
 
 export default async function userRoutes(fastify: FastifyInstance) {
-    fastify.get('/', { preHandler: [requirePermission('Manajemen User / Role', 'Lihat')] }, async (request, reply) => {
-        const user = (request as any).user;
-        const tenantId = user.tenant_id;
+    fastify.get('/', async (request, reply) => {
+        const userSession = (request as any).user;
+        
+        // Only Admin or those with management permission can see all users
+        const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+        if (!isAdmin) {
+            const userPerms = (userSession.permissions as any) || {};
+            const rolePerms = (userSession.role_entity?.permissions as any) || {};
+            const check = (perms: any) => {
+                const data = perms['Manajemen User / Role'];
+                if (!data) return false;
+                if (Array.isArray(data)) return data.includes('Lihat') || data.includes('manage');
+                return data.actions?.includes('Lihat') || data.actions?.includes('manage');
+            };
+            if (!check(userPerms) && !check(rolePerms)) {
+                return reply.code(403).send({ error: 'Forbidden' });
+            }
+        }
+
+        const tenantId = userSession.tenant_id;
         const users = await userService.getAllByTenant(tenantId);
         return users;
     });
@@ -15,19 +32,22 @@ export default async function userRoutes(fastify: FastifyInstance) {
         const userSession = (request as any).user;
         
         // Allow if user is an admin OR if they are requesting their own profile
-        const isAdmin = userSession.role?.toLowerCase() === 'admin';
+        const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
         const isSelf = userSession.id === id;
 
         if (!isAdmin && !isSelf) {
-            // If not self, must have management permission
-            try {
-                // Manual check for permission since we removed it from preHandler for this specific route
-                // Alternatively, we could define a more flexible requirePermission
-                const hasPerm = await (request as any).hasPermission?.('Manajemen User / Role', 'Lihat');
-                if (!hasPerm) {
-                    return reply.code(403).send({ error: 'Forbidden' });
-                }
-            } catch (authError) {
+            // Manual check for permission
+            const userPerms = (userSession.permissions as any) || {};
+            const rolePerms = (userSession.role_entity?.permissions as any) || {};
+            
+            const check = (perms: any) => {
+                const data = perms['Manajemen User / Role'];
+                if (!data) return false;
+                if (Array.isArray(data)) return data.includes('Lihat') || data.includes('manage');
+                return data.actions?.includes('Lihat') || data.actions?.includes('manage');
+            };
+
+            if (!check(userPerms) && !check(rolePerms)) {
                 return reply.code(403).send({ error: 'Forbidden' });
             }
         }
@@ -41,7 +61,24 @@ export default async function userRoutes(fastify: FastifyInstance) {
         return user;
     });
 
-    fastify.post('/', { preHandler: [requirePermission('Manajemen User / Role', 'Buat')] }, async (request, reply) => {
+    fastify.post('/', async (request, reply) => {
+        const userSession = (request as any).user;
+        const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+        
+        if (!isAdmin) {
+            const userPerms = (userSession.permissions as any) || {};
+            const rolePerms = (userSession.role_entity?.permissions as any) || {};
+            const check = (perms: any) => {
+                const data = perms['Manajemen User / Role'];
+                if (!data) return false;
+                if (Array.isArray(data)) return data.includes('Buat') || data.includes('manage');
+                return data.actions?.includes('Buat') || data.actions?.includes('manage');
+            };
+            if (!check(userPerms) && !check(rolePerms)) {
+                return reply.code(403).send({ error: 'Forbidden' });
+            }
+        }
+
         try {
             const userSession = (request as any).user;
             const data = request.body as any;
@@ -83,7 +120,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.put('/:id', { preHandler: [requirePermission('Manajemen User / Role', 'Ubah')] }, async (request, reply) => {
+    fastify.put('/:id', async (request, reply) => {
         try {
             const { id } = request.params as { id: string };
             const userSession = (request as any).user;
@@ -91,6 +128,22 @@ export default async function userRoutes(fastify: FastifyInstance) {
             const existing = await userService.getById(id);
             if (!existing || existing.tenant_id !== userSession.tenant_id) {
                 return reply.code(404).send({ error: 'User not found or unauthorized' });
+            }
+
+            // Allow if admin or management permission
+            const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+            if (!isAdmin) {
+                const userPerms = (userSession.permissions as any) || {};
+                const rolePerms = (userSession.role_entity?.permissions as any) || {};
+                const check = (perms: any) => {
+                    const data = perms['Manajemen User / Role'];
+                    if (!data) return false;
+                    if (Array.isArray(data)) return data.includes('Ubah') || data.includes('manage');
+                    return data.actions?.includes('Ubah') || data.actions?.includes('manage');
+                };
+                if (!check(userPerms) && !check(rolePerms)) {
+                    return reply.code(403).send({ error: 'Forbidden' });
+                }
             }
 
             const data = request.body as any;
@@ -104,7 +157,60 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.delete('/:id', { preHandler: [requirePermission('Manajemen User / Role', 'Hapus')] }, async (request, reply) => {
+    fastify.put('/:id/permissions', async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const userSession = (request as any).user;
+            
+            const existing = await userService.getById(id);
+            if (!existing || existing.tenant_id !== userSession.tenant_id) {
+                return reply.code(404).send({ error: 'User not found or unauthorized' });
+            }
+
+            // Allow if admin or management permission
+            const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+            if (!isAdmin) {
+                const userPerms = (userSession.permissions as any) || {};
+                const rolePerms = (userSession.role_entity?.permissions as any) || {};
+                const check = (perms: any) => {
+                    const data = perms['Manajemen User / Role'];
+                    if (!data) return false;
+                    if (Array.isArray(data)) return data.includes('Ubah') || data.includes('manage');
+                    return data.actions?.includes('Ubah') || data.actions?.includes('manage');
+                };
+                if (!check(userPerms) && !check(rolePerms)) {
+                    return reply.code(403).send({ error: 'Forbidden' });
+                }
+            }
+
+            const { permissions } = request.body as { permissions: any };
+
+            const updatedUser = await userService.updatePermissions(id, permissions);
+            return updatedUser;
+        } catch (error: any) {
+            fastify.log.error(error);
+            return reply.code(500).send({ error: 'Failed to update user permissions', details: error.message });
+        }
+    });
+
+    fastify.delete('/:id', async (request, reply) => {
+        const userSession = (request as any).user;
+        const isAdmin = userSession.role?.toLowerCase() === 'admin' || userSession.role_entity?.name === 'Admin';
+
+        if (!isAdmin) {
+            const userPerms = (userSession.permissions as any) || {};
+            const rolePerms = (userSession.role_entity?.permissions as any) || {};
+            const check = (perms: any) => {
+                const data = perms['Manajemen User / Role'];
+                if (!data) return false;
+                if (Array.isArray(data)) return data.includes('Hapus') || data.includes('manage');
+                return data.actions?.includes('Hapus') || data.actions?.includes('manage');
+            };
+            if (!check(userPerms) && !check(rolePerms)) {
+                return reply.code(403).send({ error: 'Forbidden' });
+            }
+        }
+
         try {
             const { id } = request.params as { id: string };
             const userSession = (request as any).user;

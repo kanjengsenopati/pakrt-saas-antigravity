@@ -4,7 +4,7 @@ import { useTenant } from '../../contexts/TenantContext';
 import { agendaService } from '../../services/agendaService';
 import { notulensiService } from '../../services/notulensiService';
 import { Agenda, Notulensi } from '../../database/db';
-import { Plus, PencilSimple, Trash, Users, CheckCircle, FileText, X, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, Calendar, Image as ImageIcon } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Users, CheckCircle, FileText, X, CircleNotch, ChartPieSlice, TrendUp, MapPin, House, Clock, Tag, CaretDown, Calendar, Image as ImageIcon, ShareNetwork } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
@@ -14,6 +14,10 @@ import { dateUtils } from '../../utils/date';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { useConfirm } from '../../hooks/useConfirm';
+import html2canvas from 'html2canvas';
+import { ShareUtils } from '../../utils/shareUtils';
+import { toast } from 'sonner';
 
 interface ReportPanelProps {
     agenda: Agenda;
@@ -194,6 +198,7 @@ export default function AgendaList() {
 
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const currentWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const { 
         mergedData: agendaItems, 
@@ -222,9 +227,35 @@ export default function AgendaList() {
     const [fotoDokumentasi, setFotoDokumentasi] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [activeTab, setActiveTab] = useState<'summary' | 'list'>('list');
+    const [isSharingId, setIsSharingId] = useState<string | null>(null);
+
+    const shareAgenda = async (agenda: Agenda, elementId: string) => {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        setIsSharingId(agenda.id);
+        try {
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+            canvas.toBlob(async (blob) => {
+                if (blob) {
+                    const file = new File([blob], `Agenda_${agenda.judul.replace(/\s+/g, '_')}.png`, { type: 'image/png' });
+                    await ShareUtils.shareOrDownloadFile(file, undefined, `Agenda: ${agenda.judul}`, `Berikut informasi agenda kegiatan RT: ${agenda.judul}`);
+                }
+                setIsSharingId(null);
+            }, 'image/png');
+        } catch (error) {
+            console.error("Gagal membagikan agenda:", error);
+            toast.error("Terjadi kesalahan saat membagikan agenda.");
+            setIsSharingId(null);
+        }
+    };
 
     const handleDelete = async (id: string, judul: string) => {
-        if (window.confirm(`Hapus agenda "${judul}"?`)) {
+        const ok = await confirm({ title: 'Hapus Agenda', message: `Hapus agenda "${judul}"? Tindakan ini tidak dapat dibatalkan.`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await agendaService.delete(id);
             loadData();
         }
@@ -307,6 +338,7 @@ export default function AgendaList() {
     }));
 
     return (
+        <>
         <div className="space-y-8 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
@@ -671,7 +703,7 @@ export default function AgendaList() {
                             filteredAgenda.map((agenda) => {
                                 const isExpanded = expandedId === agenda.id;
                                 return (
-                                    <div key={agenda.id} className={`bg-white rounded-[20px] border border-slate-100 shadow-premium overflow-hidden transition-all ${isExpanded ? 'ring-2 ring-brand-500 border-transparent shadow-2xl' : ''}`}>
+                                    <div key={agenda.id} id={`agenda-card-${agenda.id}`} className={`bg-white rounded-[20px] border border-slate-100 shadow-premium overflow-hidden transition-all ${isExpanded ? 'ring-2 ring-brand-500 border-transparent shadow-2xl' : ''}`}>
                                         <div className="p-6">
                                             <div className="flex items-start justify-between mb-5">
                                                 <div className={`px-3 py-2 rounded-[12px] flex flex-col items-center justify-center border ${agenda.is_terlaksana ? 'bg-slate-50 border-slate-100 text-slate-400' : 'bg-brand-600 text-white border-transparent shadow-premium'}`}>
@@ -716,6 +748,14 @@ export default function AgendaList() {
 
                                                 <div className="flex items-center justify-between pt-2">
                                                     <div className="flex gap-3">
+                                                        <button 
+                                                            onClick={() => shareAgenda(agenda, `agenda-card-${agenda.id}`)} 
+                                                            disabled={isSharingId === agenda.id}
+                                                            className="p-2.5 text-green-600 bg-green-50 rounded-[12px] active-press disabled:opacity-50"
+                                                            title="Bagikan WA"
+                                                        >
+                                                            {isSharingId === agenda.id ? <CircleNotch className="w-4 h-4 animate-spin" /> : <ShareNetwork weight="bold" className="w-4 h-4" />}
+                                                        </button>
                                                         <HasPermission module="Agenda" action="Ubah">
                                                             <button onClick={() => navigate(`/agenda/edit/${agenda.id}`)} className="p-2.5 text-slate-500 bg-slate-50 rounded-[12px] active-press">
                                                                 <PencilSimple weight="bold" className="w-4 h-4" />
@@ -834,5 +874,7 @@ export default function AgendaList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
+        </>
     );
 }

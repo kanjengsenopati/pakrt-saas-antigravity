@@ -13,7 +13,9 @@ import {
     Image as ImageIcon,
     X,
     CheckCircle,
-    Coins
+    Coins,
+    FileArrowDown,
+    FilePdf
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
@@ -22,6 +24,7 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
+import { useConfirm } from '../../hooks/useConfirm';
 // Removed unused Recharts imports to fix lint warnings
 
 const getMonthNumber = (monthName: string) => {
@@ -47,6 +50,7 @@ export default function KeuanganList() {
     const { currentTenant, currentScope } = useTenant();
     const { user } = useAuth();
     const isWarga = user?.role === 'WARGA';
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const [transactions, setTransactions] = useState<Keuangan[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -138,9 +142,20 @@ export default function KeuanganList() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
+        const ok = await confirm({ title: 'Hapus Transaksi', message: 'Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.', confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await keuanganService.delete(id);
             loadData();
+        }
+    };
+
+    const handleExport = async () => {
+        if (!currentTenant) return;
+        try {
+            await keuanganService.exportToXlsx(currentTenant.id, currentScope);
+        } catch (error) {
+            console.error("Failed to export", error);
+            alert("Gagal mengekspor laporan keuangan");
         }
     };
 
@@ -363,19 +378,45 @@ export default function KeuanganList() {
     };
 
     return (
+        <>
         <div className="space-y-4 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <Text.H1>Laporan Kas RT</Text.H1>
                 </div>
-                {!isWarga && (
+                <div className="flex items-center gap-2">
+                    <HasPermission module="Buku Kas / Transaksi" action="Lihat">
+                        <div className="flex bg-white border border-slate-200 rounded-2xl p-1 shadow-sm">
+                            <button
+                                onClick={handleExport}
+                                className="flex items-center gap-2 px-4 py-2 text-slate-700 rounded-xl text-sm font-bold transition-all hover:bg-slate-50 active:scale-95"
+                                title="Ekspor ke Excel"
+                            >
+                                <FileArrowDown weight="bold" size={18} />
+                                <span className="hidden lg:inline">Excel</span>
+                            </button>
+                            <div className="w-px h-6 bg-slate-200 my-auto mx-1" />
+                            <button
+                                onClick={() => {
+                                    const now = new Date();
+                                    navigate(`/keuangan/cetak/${now.getMonth() + 1}/${now.getFullYear()}`);
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 text-rose-600 rounded-xl text-sm font-bold transition-all hover:bg-rose-50 active:scale-95"
+                                title="Cetak Laporan Bulanan (PDF)"
+                            >
+                                <FilePdf weight="bold" size={18} />
+                                <span className="hidden lg:inline">PDF</span>
+                            </button>
+                        </div>
+                    </HasPermission>
+
                     <HasPermission module="Buku Kas / Transaksi" action="Buat">
                         <button
                             onClick={() => navigate('/keuangan/baru')}
                             className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
                         >
                             <Plus weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-white !font-bold">Catat Transaksi</Text.Body>
+                            <Text.Body component="span" className="!text-white !font-bold">Baru</Text.Body>
                         </button>
                         
                         <button
@@ -385,7 +426,7 @@ export default function KeuanganList() {
                             <Plus weight="bold" size={24} />
                         </button>
                     </HasPermission>
-                )}
+                </div>
             </div>
 
             {/* Tab Switcher */}
@@ -996,5 +1037,7 @@ export default function KeuanganList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
+        </>
     );
 }

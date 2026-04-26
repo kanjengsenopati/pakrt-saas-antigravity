@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { userService } from '../../services/userService';
-import { User as UserIcon, Envelope, Phone, Lock, FloppyDisk, ShieldCheck, SignOut, Eye, EyeSlash } from '@phosphor-icons/react';
+import { User as UserIcon, Envelope, Phone, Lock, FloppyDisk, ShieldCheck, SignOut, Eye, EyeSlash, PencilSimple, Key } from '@phosphor-icons/react';
 
 export default function Profile() {
     const { user, logout, updateUser } = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingPassword, setIsEditingPassword] = useState(false);
+    
+    // Separate states for password
+    const [passwordData, setPasswordData] = useState({
+        password: '',
+        confirmPassword: ''
+    });
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -28,40 +35,59 @@ export default function Profile() {
         }
     }, [user]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleProfileSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) return;
+        
+        try {
+            setIsLoading(true);
+            const updateData: any = {
+                name: formData.name,
+                kontak: formData.kontak,
+            };
 
-        if (formData.password && formData.password !== formData.confirmPassword) {
+            if (formData.email !== user.email) {
+                updateData.email = formData.email;
+            }
+
+            const updatedUser = await userService.update(user.id, updateData);
+            
+            setIsEditingProfile(false);
+            updateUser(updatedUser);
+            alert('Profil berhasil diperbarui!');
+            
+            if (formData.email !== user.email) {
+                alert('Silahkan login kembali karena perubahan email.');
+                logout();
+            }
+            
+        } catch (error: any) {
+            alert(error.message || 'Terjadi kesalahan saat memperbarui profil');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handlePasswordSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return;
+        
+        if (passwordData.password !== passwordData.confirmPassword) {
             alert('Password konfirmasi tidak cocok!');
             return;
         }
 
-        setIsLoading(true);
         try {
-            const updateData: any = {
-                name: formData.name,
-                email: formData.email,
-                kontak: formData.kontak,
-            };
-
-            if (formData.password) {
-                updateData.password = formData.password;
-            }
-
-            const updatedUser = await userService.update(user.id, updateData);
-            alert('Profil berhasil diperbarui!');
+            setIsLoading(true);
+            await userService.update(user.id, { password: passwordData.password });
             
-            if (formData.password || formData.email !== user.email) {
-                alert('Silahkan login kembali karena perubahan keamanan.');
-                logout();
-            } else {
-                updateUser(updatedUser);
-                setIsEditing(false);
-            }
-        } catch (error) {
-            console.error('Failed to update profile', error);
-            alert('Gagal memperbarui profil.');
+            setIsEditingPassword(false);
+            setPasswordData({ password: '', confirmPassword: '' });
+            alert('Password berhasil diperbarui! Silahkan login kembali dengan password baru.');
+            logout();
+            
+        } catch (error: any) {
+            alert(error.message || 'Terjadi kesalahan saat memperbarui password');
         } finally {
             setIsLoading(false);
         }
@@ -85,11 +111,12 @@ export default function Profile() {
                         <SignOut weight="bold" className="w-5 h-5" />
                         Keluar Sesi
                     </button>
-                    {!isEditing && (
+                    {!isEditingProfile && (
                         <button 
-                            onClick={() => setIsEditing(true)}
-                            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 text-white font-bold shadow-lg shadow-brand-200 hover:bg-brand-700 transition-all active:scale-95 text-sm"
+                            onClick={() => setIsEditingProfile(true)}
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-brand-600 shadow-xl shadow-slate-200 transition-all active:scale-95 text-sm"
                         >
+                            <PencilSimple weight="bold" className="w-4 h-4" />
                             Edit Profil
                         </button>
                     )}
@@ -144,8 +171,9 @@ export default function Profile() {
                 </div>
 
                 {/* Main Form Area */}
-                <div className="lg:col-span-2">
-                    <form onSubmit={handleSubmit} className={`bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 p-6 md:p-7 space-y-6 ${isEditing ? 'ring-2 ring-brand-500/20' : ''}`}>
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Profil Form */}
+                    <form onSubmit={handleProfileSubmit} className={`bg-white rounded-[1.5rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-7 space-y-6 ${isEditingProfile ? 'ring-2 ring-brand-500/20' : ''}`}>
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 pb-3 border-b border-slate-50">
                                 <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
@@ -159,7 +187,7 @@ export default function Profile() {
                                     <label className="block text-sm font-medium text-slate-500 tracking-wide">Nama Lengkap</label>
                                     <input 
                                         type="text"
-                                        disabled={!isEditing}
+                                        disabled={!isEditingProfile}
                                         value={formData.name}
                                         onChange={e => setFormData(p => ({...p, name: e.target.value}))}
                                         className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all disabled:opacity-75 text-sm"
@@ -169,7 +197,7 @@ export default function Profile() {
                                     <label className="block text-sm font-medium text-slate-500 tracking-wide">Email</label>
                                     <input 
                                         type="email"
-                                        disabled={!isEditing}
+                                        disabled={!isEditingProfile}
                                         value={formData.email}
                                         onChange={e => setFormData(p => ({...p, email: e.target.value}))}
                                         className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all disabled:opacity-75 text-sm"
@@ -179,7 +207,7 @@ export default function Profile() {
                                     <label className="block text-sm font-medium text-slate-500 tracking-wide">Kontak (WhatsApp)</label>
                                     <input 
                                         type="text"
-                                        disabled={!isEditing}
+                                        disabled={!isEditingProfile}
                                         value={formData.kontak}
                                         onChange={e => setFormData(p => ({...p, kontak: e.target.value}))}
                                         className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all disabled:opacity-75 text-sm"
@@ -188,67 +216,11 @@ export default function Profile() {
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-2">
-                            <div className="flex items-center gap-3 pb-3 border-b border-slate-50">
-                                <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                                    <Lock weight="duotone" className="w-5 h-5" />
-                                </div>
-                                <h3 className="text-sm font-medium text-slate-500 tracking-wide">Keamanan & Password</h3>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1.5 relative">
-                                    <label className="block text-sm font-medium text-slate-500 tracking-wide">Password Baru</label>
-                                    <div className="relative">
-                                        <input 
-                                            type={showPassword ? "text" : "password"}
-                                            disabled={!isEditing}
-                                            placeholder={isEditing ? "Isi hanya jika ingin ganti..." : "••••••••"}
-                                            value={formData.password}
-                                            onChange={e => setFormData(p => ({...p, password: e.target.value}))}
-                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 pr-10 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all disabled:opacity-75 text-sm"
-                                        />
-                                        {isEditing && (
-                                            <button 
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                            >
-                                                {showPassword ? <EyeSlash weight="bold" /> : <Eye weight="bold" />}
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="space-y-1.5 relative">
-                                    <label className="block text-sm font-medium text-slate-500 tracking-wide">Konfirmasi Password Baru</label>
-                                    <div className="relative">
-                                        <input 
-                                            type={showConfirmPassword ? "text" : "password"}
-                                            disabled={!isEditing}
-                                            placeholder={isEditing ? "Ketik ulang password baru..." : "••••••••"}
-                                            value={formData.confirmPassword}
-                                            onChange={e => setFormData(p => ({...p, confirmPassword: e.target.value}))}
-                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 pr-10 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all disabled:opacity-75 text-sm"
-                                        />
-                                        {isEditing && (
-                                            <button 
-                                                type="button"
-                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                            >
-                                                {showConfirmPassword ? <EyeSlash weight="bold" /> : <Eye weight="bold" />}
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {isEditing && (
+                        {isEditingProfile && (
                             <div className="pt-4 flex justify-end gap-3">
                                 <button 
                                     type="button"
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={() => setIsEditingProfile(false)}
                                     className="px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 text-sm"
                                 >
                                     Batal
@@ -261,7 +233,108 @@ export default function Profile() {
                                     {isLoading ? 'Menyimpan...' : (
                                         <>
                                             <FloppyDisk weight="fill" className="w-5 h-5" />
-                                            Simpan Perubahan
+                                            Simpan Profil
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                    </form>
+
+                    {/* Password Reset Form */}
+                    <form onSubmit={handlePasswordSubmit} className={`bg-white rounded-[1.5rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-7 space-y-6 ${isEditingPassword ? 'ring-2 ring-orange-500/20' : ''}`}>
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                                    <Lock weight="duotone" className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-slate-500 tracking-wide leading-tight">Keamanan & Password</h3>
+                                    <p className="text-[11px] text-slate-400 font-normal">Perbarui kata sandi akun Anda</p>
+                                </div>
+                            </div>
+                            {!isEditingPassword && (
+                                <button 
+                                    type="button"
+                                    onClick={() => setIsEditingPassword(true)}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-50 text-orange-600 font-bold hover:bg-orange-100 transition-all active:scale-95 text-xs"
+                                >
+                                    <Key weight="bold" className="w-4 h-4" />
+                                    Ubah Password
+                                </button>
+                            )}
+                        </div>
+
+                        {isEditingPassword ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+                                <div className="space-y-1.5 relative">
+                                    <label className="block text-sm font-medium text-slate-500 tracking-wide">Password Baru</label>
+                                    <div className="relative">
+                                        <input 
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            placeholder="Ketik password baru..."
+                                            value={passwordData.password}
+                                            onChange={e => setPasswordData(p => ({...p, password: e.target.value}))}
+                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 pr-10 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-sm"
+                                        />
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        >
+                                            {showPassword ? <EyeSlash weight="bold" /> : <Eye weight="bold" />}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5 relative">
+                                    <label className="block text-sm font-medium text-slate-500 tracking-wide">Konfirmasi Password Baru</label>
+                                    <div className="relative">
+                                        <input 
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            required
+                                            placeholder="Ketik ulang password baru..."
+                                            value={passwordData.confirmPassword}
+                                            onChange={e => setPasswordData(p => ({...p, confirmPassword: e.target.value}))}
+                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl px-4 py-2.5 pr-10 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-sm"
+                                        />
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        >
+                                            {showConfirmPassword ? <EyeSlash weight="bold" /> : <Eye weight="bold" />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100 flex items-center justify-center">
+                                <p className="text-sm font-bold text-slate-400 italic">Password tersembunyi untuk keamanan</p>
+                            </div>
+                        )}
+
+                        {isEditingPassword && (
+                            <div className="pt-4 flex justify-end gap-3 border-t border-slate-50 mt-4">
+                                <button 
+                                    type="button"
+                                    onClick={() => {
+                                        setIsEditingPassword(false);
+                                        setPasswordData({ password: '', confirmPassword: '' });
+                                    }}
+                                    className="px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 text-sm"
+                                >
+                                    Batal
+                                </button>
+                                <button 
+                                    type="submit"
+                                    disabled={isLoading || !passwordData.password}
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 shadow-xl shadow-orange-500/20 transition-all active:scale-95 disabled:opacity-50 text-sm"
+                                >
+                                    {isLoading ? 'Menyimpan...' : (
+                                        <>
+                                            <Key weight="fill" className="w-5 h-5" />
+                                            Update Password
                                         </>
                                     )}
                                 </button>

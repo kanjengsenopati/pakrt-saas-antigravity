@@ -1,5 +1,7 @@
 import api from './api';
 import { ScopeType } from '../contexts/TenantContext';
+import { pushService } from './pushService';
+import { aktivitasService } from './aktivitasService';
 
 export interface AduanUsulan {
     id: string;
@@ -36,7 +38,28 @@ export const aduanService = {
 
     async create(data: Partial<AduanUsulan>): Promise<AduanUsulan> {
         const response = await api.post('/aduan', data);
-        return response.data;
+        const newAduan = response.data;
+
+        // Notify Admins/Pengurus
+        try {
+            await pushService.sendToRole(newAduan.tenant_id, newAduan.scope as ScopeType, 'PENGURUS', {
+                title: `📩 ${newAduan.tipe} Baru`,
+                body: `${newAduan.is_anonymous ? 'Warga' : (newAduan.warga?.nama || 'Warga')} melaporkan: ${newAduan.judul}`,
+                data: { url: '/aduan', type: 'ADUAN' }
+            });
+        } catch (e) {
+            console.warn("Failed to notify admins:", e);
+        }
+
+        // Log Activity
+        await aktivitasService.logActivity(
+            newAduan.tenant_id,
+            newAduan.scope as ScopeType,
+            `Kirim ${newAduan.tipe}`,
+            `Melaporkan ${newAduan.tipe.toLowerCase()}: ${newAduan.judul}`
+        );
+
+        return newAduan;
     },
 
     async update(id: string, data: Partial<AduanUsulan>): Promise<AduanUsulan> {

@@ -25,7 +25,7 @@ export class IuranCalculator {
 
       const statusKey = `${warga?.status_penduduk || 'Tetap'}-${warga?.status_rumah || 'Dihuni'}`;
       const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-      const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
+      const rate = Number(config[rateField] || config.iuran_per_bulan || config.iuran_tetap_dihuni || 100000);
       
       if (rate === 0) {
         console.warn(`Warga ${wargaId} has 0 iuran rate. Check settings for ${rateField}`);
@@ -46,8 +46,9 @@ export class IuranCalculator {
       const config: Record<string, any> = {};
       settings.forEach((p: any) => { config[p.key] = p.value; });
 
-      if (!config.jenis_pemasukan) return null;
-      const jenisList: any[] = JSON.parse(config.jenis_pemasukan);
+      const rawJenis = config.jenis_pemasukan || config.kategori_pemasukan;
+      if (!rawJenis) return null;
+      const jenisList: any[] = typeof rawJenis === 'string' ? JSON.parse(rawJenis) : rawJenis;
       const match = jenisList.find((j: any) =>
         j.nama?.trim().toLowerCase() === kategori?.trim().toLowerCase()
       );

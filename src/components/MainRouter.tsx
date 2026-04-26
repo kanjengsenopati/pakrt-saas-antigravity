@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { TenantProvider } from '../contexts/TenantContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import { NotificationProvider } from '../contexts/NotificationContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import App from '../App';
 import Login from '../features/auth/Login';
@@ -27,12 +28,14 @@ import AgendaList from '../features/agenda/AgendaList';
 import AgendaForm from '../features/agenda/AgendaForm';
 import KeuanganList from '../features/keuangan/KeuanganList';
 import KeuanganForm from '../features/keuangan/KeuanganForm';
+import CetakKeuangan from '../features/keuangan/CetakKeuangan';
 import IuranList from '../features/keuangan/IuranList';
 import IuranForm from '../features/keuangan/IuranForm';
 import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
 import JoinRT from '../features/auth/JoinRT';
 import WargaPortal from '../features/warga/WargaPortal';
+import NotificationList from '../features/notifications/NotificationList';
 import AduanList from '../features/aduan/AduanList';
 import AduanForm from '../features/aduan/AduanForm';
 import PollingForm from '../features/aduan/PollingForm';
@@ -289,6 +292,14 @@ const router = createBrowserRouter([
                         )
                     },
                     {
+                        path: 'keuangan/cetak/:month/:year',
+                        element: (
+                            <ProtectedRoute requiredPermission={{ module: 'Buku Kas / Transaksi', action: 'Lihat' }}>
+                                <CetakKeuangan />
+                            </ProtectedRoute>
+                        )
+                    },
+                    {
                         path: 'iuran',
                         element: (
                             <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Lihat' }}>
@@ -319,6 +330,10 @@ const router = createBrowserRouter([
                                 <Pengaturan />
                             </ProtectedRoute>
                         )
+                    },
+                    {
+                        path: 'notifications',
+                        element: <NotificationList />
                     },
                     {
                         path: 'profile',
@@ -407,7 +422,9 @@ export function MainRouter() {
                 <FontProvider>
                     <AuthProvider>
                         <TenantProvider>
-                            <RouterProvider router={router} />
+                            <NotificationProvider>
+                                <RouterProvider router={router} />
+                            </NotificationProvider>
                         </TenantProvider>
                     </AuthProvider>
                 </FontProvider>

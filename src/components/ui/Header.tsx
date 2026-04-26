@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bell, SignOut, CaretDown, User as UserIcon, Plus, Minus } from '@phosphor-icons/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFont } from '../../contexts/FontContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import { SyncStatus } from './SyncStatus';
 
 
@@ -10,6 +11,7 @@ export function Header() {
     const navigate = useNavigate();
     const { logout, user: currentUser } = useAuth();
     const { fontSizeOffset, increaseFont, decreaseFont } = useFont();
+    const { unreadCount } = useNotifications();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const handleLogout = () => {
@@ -66,9 +68,14 @@ export function Header() {
                         </button>
                     </div>
 
-                    <button className="text-gray-400 hover:text-brand-600 transition-colors relative hidden sm:block">
+                    <button 
+                        onClick={() => navigate('/notifications')}
+                        className="text-gray-400 hover:text-brand-600 transition-colors relative hidden sm:block"
+                    >
                         <Bell weight="duotone" className="w-5 h-5 md:w-6 md:h-6" />
-                        <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                        {unreadCount > 0 && (
+                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        )}
                     </button>
 
                     {/* User Profile Dropdown */}

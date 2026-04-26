@@ -42,6 +42,13 @@ export const requirePermission = (moduleName: string, action: string) => {
                 return reply.code(401).send({ error: 'Unauthorized', message: 'User not authenticated' });
             }
 
+            // Explicitly allow if user is an admin by role name or string role
+            const isAdmin = user.role?.toLowerCase() === 'admin' || user.role_entity?.name === 'Admin';
+            if (isAdmin) {
+                (request as any).permissionScope = 'all';
+                return;
+            }
+
             // Combine direct user permissions and role permissions
             const userPerms = (user.permissions as any) || {};
             const rolePerms = (user.role_entity?.permissions as any) || {};

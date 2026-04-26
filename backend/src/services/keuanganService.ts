@@ -107,5 +107,44 @@ export const keuanganService = {
       kasKeluar,
       saldo: kasMasuk - kasKeluar
     };
+  },
+
+  async exportToXlsx(tenantId: string, scope?: string) {
+    const where: any = { tenant_id: tenantId };
+    if (scope) where.scope = scope;
+
+    const items = await prisma.keuangan.findMany({
+      where,
+      orderBy: { tanggal: 'desc' }
+    });
+
+    const ExcelJS = await import('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Laporan Keuangan');
+
+    const headers = ['Tanggal', 'Keterangan', 'Tipe', 'Nominal'];
+    sheet.addRow(headers);
+    
+    const headerRow = sheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    items.forEach((item) => {
+      sheet.addRow([
+        item.tanggal,
+        item.keterangan,
+        item.tipe.toUpperCase(),
+        item.nominal
+      ]);
+    });
+
+    sheet.columns.forEach(col => col.width = 20);
+    sheet.getColumn(2).width = 40; // Keterangan wider
+
+    return await workbook.xlsx.writeBuffer();
   }
 };

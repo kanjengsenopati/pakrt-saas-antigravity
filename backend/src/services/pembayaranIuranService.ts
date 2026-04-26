@@ -4,6 +4,7 @@ import { aktivitasService } from './aktivitasService';
 import { pengaturanService } from './pengaturanService';
 import { wargaService } from './wargaService';
 import { IuranCalculator } from '../utils/IuranCalculator';
+import { pushService } from './pushService';
 
 /**
  * Validates and synchronizes iuran payments with the Keuangan (financial) ledger.
@@ -180,6 +181,7 @@ export const pembayaranIuranService = {
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
                         details: `Pembayaran iuran tunai oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Terverifikasi`,
+                        target_url: '/iuran',
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -192,6 +194,7 @@ export const pembayaranIuranService = {
                         scope: processedData.scope || 'RT',
                         action: 'Bayar Iuran',
                         details: `Pembayaran iuran oleh **${wargaNama}**: ${processedData.kategori} [${metadataMode || 'Manual'}] - Menunggu Verifikasi`,
+                        target_url: '/iuran',
                         timestamp: Date.now()
                     });
                 } catch (aErr) {
@@ -233,8 +236,19 @@ export const pembayaranIuranService = {
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
                 details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITERIMA]`,
+                target_url: '/iuran',
                 timestamp: Date.now()
             });
+
+            // Send Push Notification
+            if (iuran.warga_id) {
+                pushService.sendNotificationToWarga(iuran.warga_id, {
+                    title: 'Pembayaran Diverifikasi ✅',
+                    body: `Iuran ${result.kategori} Anda telah diverifikasi oleh Bendahara. Terima kasih!`,
+                    icon: '/pwa-192x192.png',
+                    data: { url: '/iuran' }
+                }).catch(e => console.warn("Push failed:", e));
+            }
 
             return result;
         } else {
@@ -253,8 +267,19 @@ export const pembayaranIuranService = {
                 scope: result.scope || 'RT',
                 action: 'Verifikasi Iuran',
                 details: `Verifikasi pembayaran iuran oleh **${wargaNama}** [DITOLAK]: ${alasan}`,
+                target_url: '/iuran',
                 timestamp: Date.now()
             });
+
+            // Send Push Notification
+            if (iuran.warga_id) {
+                pushService.sendNotificationToWarga(iuran.warga_id, {
+                    title: 'Pembayaran Ditolak ❌',
+                    body: `Pembayaran iuran Anda ditolak: ${alasan}. Silakan cek kembali bukti transfer Anda.`,
+                    icon: '/pwa-192x192.png',
+                    data: { url: '/iuran' }
+                }).catch(e => console.warn("Push failed:", e));
+            }
 
             return result;
         }
@@ -434,7 +459,8 @@ export const pembayaranIuranService = {
 
     let jenisList: any[] = [];
     try {
-        jenisList = config.jenis_pemasukan ? JSON.parse(config.jenis_pemasukan) : [];
+        const rawJenis = config.jenis_pemasukan || config.kategori_pemasukan;
+        jenisList = rawJenis ? (typeof rawJenis === 'string' ? JSON.parse(rawJenis) : rawJenis) : [];
     } catch {
         jenisList = [];
     }
@@ -478,6 +504,28 @@ export const pembayaranIuranService = {
                 sisa: Math.max(0, expectedTotal - totalPaid - pendingAmount)
             });
         }
+        if (manifest.length === 0 && allPayments.length > 0) {
+            // Fallback: If settings are empty but payments exist, group by category
+            const categories = [...new Set(allPayments.map(p => p.kategori))];
+            for (const catName of categories) {
+                const verified = allPayments.filter(p => p.status === 'VERIFIED' && p.kategori === catName);
+                const pending = allPayments.filter(p => p.status === 'PENDING' && p.kategori === catName);
+                const rate = await IuranCalculator.getWargaIuranRate(wargaId, tenantId, scope);
+                
+                manifest.push({
+                    nama: catName,
+                    tipe: 'BULANAN',
+                    is_mandatory: true,
+                    rate,
+                    expectedTotal: rate * 12,
+                    totalPaid: verified.reduce((sum, curr) => sum + curr.nominal, 0),
+                    pendingAmount: pending.reduce((sum, curr) => sum + curr.nominal, 0),
+                    paidMonths: [...new Set(verified.flatMap(e => e.periode_bulan))].sort((a, b) => a - b),
+                    pendingMonths: [...new Set(pending.flatMap(e => e.periode_bulan))].sort((a, b) => a - b),
+                    sisa: 0
+                });
+            }
+        }
         return { type: 'MANIFEST', items: manifest };
     }
 
@@ -489,17 +537,22 @@ export const pembayaranIuranService = {
       : await IuranCalculator.getWargaIuranRate(wargaId, tenantId, scope);
     
     const targetKat = kategori?.trim().replace(/\s+/g, ' ').toLowerCase();
+    const isMainIuran = targetKat === 'iuran warga' || targetKat === 'iuran bulanan' || targetKat === 'iuran';
 
     const verifiedPayments = allPayments.filter(p => {
       if (p.status !== 'VERIFIED') return false;
-      if (!targetKat) return true;
-      return p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
+      if (!targetKat || targetKat === 'semua') return true;
+      const pKat = (p.kategori || '').trim().replace(/\s+/g, ' ').toLowerCase();
+      if (isMainIuran && (pKat === 'iuran warga' || pKat === 'iuran bulanan' || pKat === 'iuran')) return true;
+      return pKat === targetKat;
     });
 
     const pendingPayments = allPayments.filter(p => {
       if (p.status !== 'PENDING') return false;
-      if (!targetKat) return true;
-      return p.kategori.trim().replace(/\s+/g, ' ').toLowerCase() === targetKat;
+      if (!targetKat || targetKat === 'semua') return true;
+      const pKat = (p.kategori || '').trim().replace(/\s+/g, ' ').toLowerCase();
+      if (isMainIuran && (pKat === 'iuran warga' || pKat === 'iuran bulanan' || pKat === 'iuran')) return true;
+      return pKat === targetKat;
     });
 
     const totalPaid = verifiedPayments.reduce((sum, curr) => sum + curr.nominal, 0);

@@ -10,6 +10,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
 import { toTitleCase } from '../../utils/text';
+import { useConfirm } from '../../hooks/useConfirm';
+import { toast } from 'sonner';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -23,6 +25,7 @@ export default function WargaList() {
     const [showShareModal, setShowShareModal] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirm();
 
 
     const { 
@@ -47,7 +50,7 @@ export default function WargaList() {
             await wargaService.exportWarga(currentScope);
         } catch (error) {
             console.error("Export failed:", error);
-            alert('Gagal mengekspor data');
+            toast.error('Gagal mengekspor data');
         }
     };
 
@@ -56,7 +59,7 @@ export default function WargaList() {
             await wargaService.downloadTemplate();
         } catch (error) {
             console.error("Template download failed:", error);
-            alert('Gagal mengunduh template');
+            toast.error('Gagal mengunduh template');
         }
     };
 
@@ -64,19 +67,19 @@ export default function WargaList() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        if (!window.confirm(`Import data warga dari file ${file.name}?`)) {
+        const ok = await confirm({ title: 'Import Data Warga', message: `Import data warga dari file "${file.name}"? Data baru akan ditambahkan ke daftar.`, confirmText: 'IMPORT', variant: 'warning' });
+        if (!ok) {
             if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
-        // We use local loading state for mutations
         try {
             const count = await wargaService.importWarga(file);
-            alert(`Berhasil mengimport ${count} data warga baru.`);
+            toast.success(`Berhasil mengimport ${count} data warga baru.`);
             loadData();
         } catch (error: any) {
             console.error("Import failed:", error);
-            alert(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
+            toast.error(`Gagal mengimport data: ${error.response?.data?.error || error.message}`);
         } finally {
             if (fileInputRef.current) fileInputRef.current.value = '';
         }
@@ -105,16 +108,15 @@ export default function WargaList() {
 
     const handleVerify = async (id: string, status: 'VERIFIED' | 'REJECTED', name: string) => {
         const action = status === 'VERIFIED' ? 'Setujui' : 'Tolak';
-        if (!window.confirm(`${action} pendaftaran ${name}?`)) return;
+        const ok = await confirm({ title: `${action} Pendaftaran`, message: `${action} pendaftaran warga "${name}"?`, confirmText: action.toUpperCase(), variant: status === 'VERIFIED' ? 'default' : 'danger' });
+        if (!ok) return;
 
         try {
             await wargaService.verifyWarga(id, status);
-            alert(`Pendaftaran ${name} telah ${status === 'VERIFIED' ? 'disetujui' : 'ditolak'}.`);
             loadData();
             loadPendingData();
         } catch (error) {
             console.error("Verification failed:", error);
-            alert('Gagal memproses verifikasi.');
         }
     };
 
@@ -122,11 +124,12 @@ export default function WargaList() {
         if (!currentTenant) return;
         const link = `${window.location.origin}/join/${currentTenant.id}`;
         navigator.clipboard.writeText(link);
-        alert('Link pendaftaran berhasil disalin!');
+        toast.success('Link pendaftaran berhasil disalin!');
     };
 
     const handleDelete = async (id: string, nama: string) => {
-        if (window.confirm(`Hapus data warga ${nama}?`)) {
+        const ok = await confirm({ title: 'Hapus Data Warga', message: `Hapus data warga "${nama}"? Semua data terkait termasuk surat dan kehadiran akan ikut terhapus.`, confirmText: 'HAPUS PERMANEN', variant: 'danger' });
+        if (ok) {
             await wargaService.delete(id);
             loadData();
         }
@@ -139,6 +142,7 @@ export default function WargaList() {
 
 
     return (
+        <>
         <div className="space-y-4 sm:space-y-6 animate-fade-in overflow-x-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -671,5 +675,7 @@ export default function WargaList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
+        </>
     );
 }

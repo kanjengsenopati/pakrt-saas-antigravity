@@ -84,6 +84,7 @@ model Warga {
   surat_pengantars  SuratPengantar[]
   pembayaran_iurans PembayaranIuran[]
   aset_dipinjam     Aset[] @relation("WargaPeminjam")
+  aset_bookings     AsetBooking[]
   push_subscriptions PushSubscription[]
   aduan_usulans     AduanUsulan[]
   polling_votes     PollingVote[]
@@ -203,8 +204,27 @@ model Aset {
   tanggal_pinjam String?
 
   peminjam       Warga?   @relation("WargaPeminjam", fields: [peminjam_id], references: [id], onDelete: SetNull)
+  bookings       AsetBooking[]
 
   @@index([tenant_id, scope])
+}
+
+model AsetBooking {
+  id              String   @id @default(uuid())
+  tenant_id       String
+  aset_id         String
+  warga_id        String
+  tanggal_mulai   String
+  tanggal_selesai String
+  keperluan       String?
+  status          String   @default("PENDING") // 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'CANCELLED'
+  catatan_admin   String?
+  createdAt       DateTime @default(now())
+
+  aset            Aset     @relation(fields: [aset_id], references: [id], onDelete: Cascade)
+  warga           Warga    @relation(fields: [warga_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id, aset_id, status])
 }
 
 model SuratPengantar {
@@ -317,6 +337,7 @@ model Aktivitas {
   scope     String   @default("RT")
   action    String
   details   String
+  target_url String?
   timestamp Float
 
   @@index([tenant_id, scope, timestamp])

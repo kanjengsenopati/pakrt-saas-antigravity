@@ -3,6 +3,7 @@ import { Agenda } from '../types/database';
 import { ScopeType } from '../contexts/TenantContext';
 import { aktivitasService } from './aktivitasService';
 import { notulensiService } from './notulensiService';
+import { pushService } from './pushService';
 
 export const agendaService = {
     async getAll(tenantId: string, scope: ScopeType): Promise<Agenda[]> {
@@ -82,6 +83,18 @@ export const agendaService = {
             'Buat Agenda',
             `Membuat agenda baru: ${data.judul} ${data.perlu_rapat ? '(Auto-create Notulen)' : ''}`
         );
+
+        // Notify all residents
+        try {
+            await pushService.broadcast(data.tenant_id, data.scope as ScopeType, {
+                title: '📢 Agenda Baru',
+                body: `${data.judul} pada tanggal ${new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long' })}`,
+                data: { url: '/agenda', type: 'AGENDA' }
+            });
+        } catch (e) {
+            console.warn("Failed to send push notification:", e);
+        }
+
         return newId;
     },
 

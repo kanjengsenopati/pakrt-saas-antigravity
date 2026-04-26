@@ -24,12 +24,14 @@ import { formatRupiah } from '../../utils/currency';
 import { agendaService } from '../../services/agendaService';
 import { statsService } from '../../services/statsService';
 import { pengurusService } from '../../services/pengurusService';
+import { useNotifications } from '../../contexts/NotificationContext';
 import { Text } from '../../components/ui/Typography';
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const { user: authUser, logout } = useAuth();
     const { currentTenant, currentScope } = useTenant();
+    const { unreadCount } = useNotifications();
     
     const [stats, setStats] = useState({ warga: 0, pengurus: 0, aset: 0, agenda: 0, saldo: 0, pendingSurat: 0, pendingIuran: 0 });
     
@@ -98,6 +100,16 @@ export default function Dashboard() {
         return () => clearInterval(interval);
     }, [currentTenant?.id, currentScope, authUser?.id, fetchStats]);
 
+    if (isWarga) {
+        return (
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <Text.H2>Menyiapkan Portal Warga...</Text.H2>
+                <Text.Body className="mt-2">Anda akan segera dialihkan ke halaman utama.</Text.Body>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-background text-on-background font-body min-h-screen pb-24 animate-fade-in" translate="no">
             <>
@@ -128,8 +140,11 @@ export default function Dashboard() {
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/profile')}>
                                     <User weight="bold" className="text-xl" />
                                 </button>
-                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => navigate('/notifications')}>
+                                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90 relative" onClick={() => navigate('/notifications')}>
                                     <Bell weight="bold" className="text-xl" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-primary animate-pulse"></span>
+                                    )}
                                 </button>
                                 <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white active:scale-90" onClick={() => logout()}>
                                     <SignOut weight="bold" className="text-xl" />
