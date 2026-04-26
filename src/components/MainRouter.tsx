@@ -29,8 +29,8 @@ import AgendaForm from '../features/agenda/AgendaForm';
 import KeuanganList from '../features/keuangan/KeuanganList';
 import KeuanganForm from '../features/keuangan/KeuanganForm';
 import CetakKeuangan from '../features/keuangan/CetakKeuangan';
-import IuranList from '../features/keuangan/IuranList';
 import IuranForm from '../features/keuangan/IuranForm';
+import IuranPage from '../features/keuangan/IuranPage';
 import Pengaturan from '../features/pengaturan/Pengaturan';
 import Profile from '../features/profile/Profile';
 import JoinRT from '../features/auth/JoinRT';
@@ -303,7 +303,7 @@ const router = createBrowserRouter([
                         path: 'iuran',
                         element: (
                             <ProtectedRoute requiredPermission={{ module: 'Iuran Warga', action: 'Lihat' }}>
-                                <IuranList />
+                                <IuranPage />
                             </ProtectedRoute>
                         )
                     },

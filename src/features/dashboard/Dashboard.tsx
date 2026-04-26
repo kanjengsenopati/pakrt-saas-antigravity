@@ -227,7 +227,7 @@ export default function Dashboard() {
                     {/* Services Section Grid 3x3 - Now without header for cleaner look */}
                     <section className="pb-10">
                         <div className="grid grid-cols-4 gap-x-2 gap-y-7 mt-2">
-                            <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran/baru')}>
+                            <div className="flex flex-col items-center gap-3 cursor-pointer group" onClick={() => navigate('/iuran')}>
                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.05)] flex items-center justify-center group-active:scale-95 transition-transform">
                                     <HandCoins weight="regular" className="text-[1.8rem] text-orange-500" />
                                 </div>

@@ -24,7 +24,14 @@ const MONTHS = [
     { value: 11, label: 'November' }, { value: 12, label: 'Desember' }
 ];
 
-export default function IuranForm() {
+interface IuranFormProps {
+    /** Jika true: sembunyikan header & back-button (digunakan dalam Tab layout) */
+    inlineMode?: boolean;
+    /** Callback setelah submit berhasil (gantikan navigate) */
+    onSuccess?: () => void;
+}
+
+export default function IuranForm({ inlineMode = false, onSuccess }: IuranFormProps = {}) {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const isEdit = !!id;
@@ -229,7 +236,8 @@ export default function IuranForm() {
                 (payload as any).status = isWarga ? 'PENDING' : 'VERIFIED';
                 await iuranService.create(payload);
             }
-            navigate(isWarga ? '/warga-portal' : '/iuran');
+            if (onSuccess) onSuccess();
+            else navigate(isWarga ? '/warga-portal' : '/iuran');
         } catch (error: any) {
             console.error(error);
             setErrorMessage(parseApiError(error, "Gagal menyimpan data iuran."));
@@ -250,19 +258,21 @@ export default function IuranForm() {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-32 px-5 pt-4">
-            <div className="flex items-center gap-4 mb-6">
-                <button
-                    type="button"
-                    onClick={() => {
-                        if (isWarga && step > 1) handlePrevStep();
-                        else navigate(isWarga ? '/warga-portal' : '/iuran');
-                    }}
-                    className="p-2 hover:bg-slate-100 bg-transparent text-slate-500 rounded-full transition-colors"
-                >
-                    <ArrowLeft weight="bold" className="w-5 h-5" />
-                </button>
-                <Text.H1 className="!text-xl">{isWarga ? 'Bayar Iuran' : 'Catat Pembayaran Iuran'}</Text.H1>
-            </div>
+            {!inlineMode && (
+                <div className="flex items-center gap-4 mb-6">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (isWarga && step > 1) handlePrevStep();
+                            else navigate(isWarga ? '/warga-portal' : '/iuran');
+                        }}
+                        className="p-2 hover:bg-slate-100 bg-transparent text-slate-500 rounded-full transition-colors"
+                    >
+                        <ArrowLeft weight="bold" className="w-5 h-5" />
+                    </button>
+                    <Text.H1 className="!text-xl">{isWarga ? 'Bayar Iuran' : 'Catat Pembayaran Iuran'}</Text.H1>
+                </div>
+            )}
 
             {/* Stepper Indicator for Warga */}
             {isWarga && (
@@ -385,8 +395,12 @@ export default function IuranForm() {
                                                     </div>
                                                     <Text.Body className="!font-medium">{m.label}</Text.Body>
                                                 </div>
+
+                                                <div className="flex-1 flex justify-center">
+                                                    <Text.Amount className="!text-[14px] !text-slate-400 !font-medium">{formatRupiah(defaultNominal)}</Text.Amount>
+                                                </div>
                                                 
-                                                <div>
+                                                <div className="shrink-0">
                                                     {isPaid ? (
                                                         <div className="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Lunas</div>
                                                     ) : isPending ? (
@@ -503,7 +517,7 @@ export default function IuranForm() {
                 )}
 
                 {/* BOTTOM ACTION BAR (Sticky on Mobile) */}
-                <div className="fixed bottom-[76px] left-0 right-0 p-5 bg-white/90 backdrop-blur-xl border-t border-slate-100 z-40 md:relative md:bottom-auto md:bg-transparent md:border-none md:p-0 shadow-[0_-8px_20px_-4px_rgba(0,0,0,0.02)]">
+                <div className={`p-5 border-t border-slate-100 z-40 shadow-[0_-8px_20px_-4px_rgba(0,0,0,0.02)] ${inlineMode ? 'bg-white/90 backdrop-blur-xl sticky bottom-0' : 'fixed bottom-[76px] left-0 right-0 bg-white/90 backdrop-blur-xl md:relative md:bottom-auto md:bg-transparent md:border-none md:p-0'}`}>
                     <div className="max-w-3xl mx-auto flex gap-3">
                         {isWarga ? (
                             <>
