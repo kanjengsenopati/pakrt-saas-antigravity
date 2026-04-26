@@ -4,6 +4,7 @@ import { aktivitasService } from './aktivitasService';
 import { pengaturanService } from './pengaturanService';
 import { wargaService } from './wargaService';
 import { IuranCalculator } from '../utils/IuranCalculator';
+import { pushService } from './pushService';
 
 /**
  * Validates and synchronizes iuran payments with the Keuangan (financial) ledger.
@@ -239,6 +240,16 @@ export const pembayaranIuranService = {
                 timestamp: Date.now()
             });
 
+            // Send Push Notification
+            if (iuran.warga_id) {
+                pushService.sendNotificationToWarga(iuran.warga_id, {
+                    title: 'Pembayaran Diverifikasi ✅',
+                    body: `Iuran ${result.kategori} Anda telah diverifikasi oleh Bendahara. Terima kasih!`,
+                    icon: '/pwa-192x192.png',
+                    data: { url: '/iuran' }
+                }).catch(e => console.warn("Push failed:", e));
+            }
+
             return result;
         } else {
             const result = await tx.pembayaranIuran.update({
@@ -259,6 +270,16 @@ export const pembayaranIuranService = {
                 target_url: '/iuran',
                 timestamp: Date.now()
             });
+
+            // Send Push Notification
+            if (iuran.warga_id) {
+                pushService.sendNotificationToWarga(iuran.warga_id, {
+                    title: 'Pembayaran Ditolak ❌',
+                    body: `Pembayaran iuran Anda ditolak: ${alasan}. Silakan cek kembali bukti transfer Anda.`,
+                    icon: '/pwa-192x192.png',
+                    data: { url: '/iuran' }
+                }).catch(e => console.warn("Push failed:", e));
+            }
 
             return result;
         }

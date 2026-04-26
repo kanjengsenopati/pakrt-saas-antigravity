@@ -26,6 +26,18 @@ export default async function keuanganRoutes(fastify: FastifyInstance) {
     return result;
   });
 
+  fastify.get('/export', { preHandler: [requirePermission('Buku Kas / Transaksi', 'Lihat')] }, async (request, reply) => {
+    const { scope } = request.query as any;
+    const user = (request as any).user;
+    const tenantId = user.tenant_id;
+
+    const buffer = await keuanganService.exportToXlsx(tenantId, scope);
+    
+    reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    reply.header('Content-Disposition', `attachment; filename="Laporan_Keuangan_${tenantId}.xlsx"`);
+    return buffer;
+  });
+
   fastify.get('/:id', { preHandler: [requirePermission('Buku Kas / Transaksi', 'Lihat')] }, async (request, reply) => {
     const { id } = request.params as any;
     const user = (request as any).user;

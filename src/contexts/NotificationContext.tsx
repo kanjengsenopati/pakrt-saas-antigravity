@@ -3,7 +3,21 @@ import { toast, Toaster } from 'sonner';
 import { useAuth } from './AuthContext';
 import { useTenant } from './TenantContext';
 import { aktivitasService } from '../services/aktivitasService';
+import { pushService } from '../services/pushService';
 import { Aktivitas } from '../types/database';
+
+const VAPID_PUBLIC_KEY = "BJc3s1SmGPBZf0QFffD56FdYsHlbzAF4FK_hBvhiGy_m3UEV1sqArM1cTLQg0VaBkwtXUflXybJsU9DxKqU0_Wo";
+
+function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
 
 interface NotificationContextType {
     notifications: Aktivitas[];
@@ -61,13 +75,43 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         setUnreadCount(0);
     };
 
+    const subscribeToPush = useCallback(async () => {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.warn("Push notifications not supported");
+            return;
+        }
+
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            
+            // Check existing subscription
+            let subscription = await registration.pushManager.getSubscription();
+            
+            if (!subscription) {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') return;
+
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+            }
+
+            await pushService.subscribe(subscription);
+            console.log("Push subscription sync successful");
+        } catch (error) {
+            console.error("Failed to subscribe to push notifications:", error);
+        }
+    }, []);
+
     useEffect(() => {
         if (user && currentTenant) {
             refresh();
+            subscribeToPush();
             const interval = setInterval(refresh, 30000); // Poll every 30s
             return () => clearInterval(interval);
         }
-    }, [user, currentTenant, refresh]);
+    }, [user, currentTenant, refresh, subscribeToPush]);
 
     return (
         <NotificationContext.Provider value={{ notifications, unreadCount, markAsRead, refresh }}>

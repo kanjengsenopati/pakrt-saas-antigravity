@@ -1,22 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTenant } from '../../contexts/TenantContext';
 import { getFullUrl } from '../../utils/url';
 import { suratService, SuratWithWarga } from '../../services/suratService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { Printer, ArrowLeft } from '@phosphor-icons/react';
+import { Printer, ArrowLeft, FilePdf } from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function CetakSurat() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
+    const printRef = useRef<HTMLDivElement>(null);
 
     const [surat, setSurat] = useState<SuratWithWarga | null>(null);
     const [config, setConfig] = useState<any>({});
     const [isLoading, setIsLoading] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -40,7 +44,37 @@ export default function CetakSurat() {
         loadData();
     }, [id, currentTenant, currentScope]);
 
+    const downloadPDF = async () => {
+        if (!printRef.current) return;
+        setIsExporting(true);
+        try {
+            const element = printRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
 
+            const imgWidth = 210; // A4 width in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save(`Surat_Pengantar_${surat?.pemohon?.nama?.replace(/\s+/g, '_') || 'Dokumen'}_${Date.now()}.pdf`);
+        } catch (error) {
+            console.error("Gagal export PDF:", error);
+            alert("Terjadi kesalahan saat mengekspor PDF.");
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     if (isLoading) return <div className="p-8 text-center flex items-center justify-center min-h-screen"><Text.Body className="!text-slate-500">Memuat Dokumen...</Text.Body></div>;
     if (!surat || !surat.pemohon) return <div className="p-8 text-center flex flex-col items-center justify-center min-h-screen gap-4">
@@ -69,23 +103,34 @@ export default function CetakSurat() {
 
     return (
         <div className="bg-gray-100 min-h-screen py-8 print:py-0 print:bg-white">
-            <div className="max-w-4xl mx-auto mb-6 px-4 print:hidden flex justify-between items-center">
+            <div className="max-w-4xl mx-auto mb-6 px-4 print:hidden flex justify-between items-center gap-4">
                 <button
                     onClick={() => navigate('/surat')}
                     className="flex items-center gap-2 pl-3 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
                     <ArrowLeft weight="bold" /> <Text.Label className="!text-slate-700">Kembali</Text.Label>
                 </button>
-                <button
-                    onClick={() => window.print()}
-                    className="flex items-center gap-2 px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium shadow-sm transition-colors"
-                >
-                    <Printer weight="bold" className="w-5 h-5" /> <Text.Label className="!text-white">Cetak Surat</Text.Label>
-                </button>
+                
+                <div className="flex gap-3">
+                    <button
+                        onClick={downloadPDF}
+                        disabled={isExporting}
+                        className="flex items-center gap-2 px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50"
+                    >
+                        <FilePdf weight="bold" className="w-5 h-5" /> 
+                        <Text.Label className="!text-white">{isExporting ? 'Proses...' : 'Unduh PDF'}</Text.Label>
+                    </button>
+                    <button
+                        onClick={() => window.print()}
+                        className="flex items-center gap-2 px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium shadow-sm transition-colors"
+                    >
+                        <Printer weight="bold" className="w-5 h-5" /> <Text.Label className="!text-white">Cetak Surat</Text.Label>
+                    </button>
+                </div>
             </div>
 
             {/* A4 Paper Container */}
-            <div className="max-w-4xl mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:w-full min-h-[29.7cm] p-[1cm] overflow-hidden">
+            <div ref={printRef} className="max-w-4xl mx-auto bg-white shadow-xl print:shadow-none print:max-w-none print:w-full min-h-[29.7cm] p-[1cm] overflow-hidden">
 
                 {/* KOP SURAT */}
                 <div className="flex items-center gap-4 border-b-[4px] border-double border-black pb-3 mb-4">

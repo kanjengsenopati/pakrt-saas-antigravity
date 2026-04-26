@@ -55,5 +55,20 @@ export const keuanganService = {
             params: { tenant_id: tenantId, scope }
         });
         return response.data;
+    },
+
+    async exportToXlsx(tenantId: string, scope: ScopeType): Promise<void> {
+        const response = await api.get('/keuangan/export', {
+            params: { tenant_id: tenantId, scope },
+            responseType: 'blob'
+        });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Laporan_Keuangan_${tenantId}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 };

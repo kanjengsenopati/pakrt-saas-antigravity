@@ -13,7 +13,8 @@ import {
     Image as ImageIcon,
     X,
     CheckCircle,
-    Coins
+    Coins,
+    FileArrowDown
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';
@@ -141,6 +142,16 @@ export default function KeuanganList() {
         if (window.confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
             await keuanganService.delete(id);
             loadData();
+        }
+    };
+
+    const handleExport = async () => {
+        if (!currentTenant) return;
+        try {
+            await keuanganService.exportToXlsx(currentTenant.id, currentScope);
+        } catch (error) {
+            console.error("Failed to export", error);
+            alert("Gagal mengekspor laporan keuangan");
         }
     };
 
@@ -368,24 +379,36 @@ export default function KeuanganList() {
                 <div>
                     <Text.H1>Laporan Kas RT</Text.H1>
                 </div>
-                {!isWarga && (
-                    <HasPermission module="Buku Kas / Transaksi" action="Buat">
+                <div className="flex items-center gap-3">
+                    <HasPermission module="Buku Kas / Transaksi" action="Lihat">
                         <button
-                            onClick={() => navigate('/keuangan/baru')}
-                            className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                            onClick={handleExport}
+                            className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all shadow-sm hover:bg-slate-50 active:scale-95"
                         >
-                            <Plus weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-white !font-bold">Catat Transaksi</Text.Body>
-                        </button>
-                        
-                        <button
-                            onClick={() => navigate('/keuangan/baru')}
-                            className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
-                        >
-                            <Plus weight="bold" size={24} />
+                            <FileArrowDown weight="bold" size={18} />
+                            <Text.Body component="span" className="!text-slate-700 !font-bold">Ekspor Excel</Text.Body>
                         </button>
                     </HasPermission>
-                )}
+
+                    {!isWarga && (
+                        <HasPermission module="Buku Kas / Transaksi" action="Buat">
+                            <button
+                                onClick={() => navigate('/keuangan/baru')}
+                                className="hidden md:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-sm font-bold transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                            >
+                                <Plus weight="bold" size={18} />
+                                <Text.Body component="span" className="!text-white !font-bold">Catat Transaksi</Text.Body>
+                            </button>
+                            
+                            <button
+                                onClick={() => navigate('/keuangan/baru')}
+                                className="md:hidden fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform active-press"
+                            >
+                                <Plus weight="bold" size={24} />
+                            </button>
+                        </HasPermission>
+                    )}
+                </div>
             </div>
 
             {/* Tab Switcher */}
