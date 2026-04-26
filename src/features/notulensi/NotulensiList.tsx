@@ -7,6 +7,7 @@ import { Plus, Funnel, Trash, Notebook, CalendarBlank, Eye, XCircle, CheckCircle
 import { HasPermission } from '../../components/auth/HasPermission';
 import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
+import { useConfirm } from '../../hooks/useConfirm';
 
 export default function NotulensiList() {
     const { currentTenant, currentScope } = useTenant();
@@ -19,6 +20,7 @@ export default function NotulensiList() {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [detailsCache, setDetailsCache] = useState<Record<string, NotulensiWithKehadiran>>({});
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirm();
 
 
     const loadData = async () => {
@@ -59,7 +61,8 @@ export default function NotulensiList() {
     };
 
     const handleDelete = async (id: string, judul: string) => {
-        if (window.confirm(`Hapus notulensi "${judul}" beserta data kehadirannya?`)) {
+        const ok = await confirm({ title: 'Hapus Notulensi', message: `Hapus notulensi "${judul}" beserta data kehadirannya? Tindakan ini tidak dapat dibatalkan.`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await notulensiService.delete(id);
             loadData();
         }
@@ -549,5 +552,6 @@ export default function NotulensiList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }

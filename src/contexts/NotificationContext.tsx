@@ -81,6 +81,12 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
             return;
         }
 
+        // Only subscribe warga users who have a linked warga profile
+        if (!user?.warga_id) {
+            console.log("Push subscription skipped: user has no warga_id");
+            return;
+        }
+
         try {
             const registration = await navigator.serviceWorker.ready;
             
@@ -97,12 +103,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                 });
             }
 
-            await pushService.subscribe(subscription);
+            // Pass warga_id so backend validation passes
+            await pushService.subscribe(subscription, user.warga_id);
             console.log("Push subscription sync successful");
         } catch (error) {
             console.error("Failed to subscribe to push notifications:", error);
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         if (user && currentTenant) {

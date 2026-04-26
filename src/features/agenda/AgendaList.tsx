@@ -14,6 +14,7 @@ import { dateUtils } from '../../utils/date';
 import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { useConfirm } from '../../hooks/useConfirm';
 
 interface ReportPanelProps {
     agenda: Agenda;
@@ -194,6 +195,7 @@ export default function AgendaList() {
 
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
     const currentWargaId = authUser?.id && isWarga ? (authUser as any).warga_id || authUser.id : null;
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const { 
         mergedData: agendaItems, 
@@ -224,7 +226,8 @@ export default function AgendaList() {
     const [activeTab, setActiveTab] = useState<'summary' | 'list'>('list');
 
     const handleDelete = async (id: string, judul: string) => {
-        if (window.confirm(`Hapus agenda "${judul}"?`)) {
+        const ok = await confirm({ title: 'Hapus Agenda', message: `Hapus agenda "${judul}"? Tindakan ini tidak dapat dibatalkan.`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await agendaService.delete(id);
             loadData();
         }
@@ -834,5 +837,6 @@ export default function AgendaList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }

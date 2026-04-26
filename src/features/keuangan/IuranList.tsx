@@ -21,6 +21,7 @@ import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
+import { useConfirm } from '../../hooks/useConfirm';
 
 
 const toTitleCase = (str: string) => {
@@ -33,6 +34,7 @@ export default function IuranList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
     const isWarga = authUser?.role?.toLowerCase() === 'warga' || authUser?.role_entity?.name?.toLowerCase() === 'warga';
+    const { confirm, ConfirmDialog } = useConfirm();
 
 
     const {
@@ -91,7 +93,8 @@ export default function IuranList() {
     }, [iuranList]);
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Apakah Anda yakin ingin menghapus data pembayaran ini? Entri Kas Masuk terkait juga akan dihapus.")) {
+        const ok = await confirm({ title: 'Hapus Data Pembayaran', message: 'Hapus data pembayaran ini? Entri Kas Masuk terkait juga akan ikut terhapus.', confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await iuranService.delete(id, currentTenant!.id, currentScope);
             loadData();
         }
@@ -218,10 +221,10 @@ export default function IuranList() {
                         <HasPermission module="Buku Kas / Transaksi" action="Buat">
                             <button
                                 onClick={async () => {
-                                    if (window.confirm("Sinkronkan semua data iuran ke Kas Masuk? (Hanya entri yang belum ada yang akan ditambahkan)")) {
+                                    const ok = await confirm({ title: 'Sinkronisasi Data Kas', message: 'Sinkronkan semua data iuran ke Kas Masuk? Hanya entri yang belum ada yang akan ditambahkan.', confirmText: 'SINKRONKAN', variant: 'warning' });
+                                    if (ok) {
                                         await iuranService.syncAllToKeuangan(currentTenant!.id, currentScope);
                                         await loadData();
-                                        alert("Sinkronisasi data selesai.");
                                     }
                                 }}
                                 className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-brand-600 bg-brand-50 border border-brand-100 rounded-lg hover:bg-brand-100 transition-colors w-full sm:w-auto shadow-sm"
@@ -761,5 +764,6 @@ export default function IuranList() {
                 </button>
             </HasPermission>
         </div>
+        <ConfirmDialog />
     );
 }

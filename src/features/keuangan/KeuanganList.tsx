@@ -24,6 +24,7 @@ import { getFullUrl } from '../../utils/url';
 import { dateUtils } from '../../utils/date';
 import { wargaService } from '../../services/wargaService';
 import { pengaturanService } from '../../services/pengaturanService';
+import { useConfirm } from '../../hooks/useConfirm';
 // Removed unused Recharts imports to fix lint warnings
 
 const getMonthNumber = (monthName: string) => {
@@ -49,6 +50,7 @@ export default function KeuanganList() {
     const { currentTenant, currentScope } = useTenant();
     const { user } = useAuth();
     const isWarga = user?.role === 'WARGA';
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const [transactions, setTransactions] = useState<Keuangan[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -140,7 +142,8 @@ export default function KeuanganList() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
+        const ok = await confirm({ title: 'Hapus Transaksi', message: 'Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.', confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await keuanganService.delete(id);
             loadData();
         }
@@ -1033,5 +1036,6 @@ export default function KeuanganList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }

@@ -7,6 +7,7 @@ import { dateUtils } from '../../utils/date';
 import { Plus, Funnel, Trash, FileText, CheckCircle, ClockCounterClockwise, XCircle, Printer } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { Text } from '../../components/ui/Typography';
+import { useConfirm } from '../../hooks/useConfirm';
 
 export default function SuratList() {
     const { currentTenant, currentScope } = useTenant();
@@ -14,6 +15,7 @@ export default function SuratList() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const loadData = async () => {
         if (!currentTenant) return;
@@ -33,7 +35,8 @@ export default function SuratList() {
     }, [currentTenant, currentScope]);
 
     const handleDelete = async (id: string, jenis: string) => {
-        if (window.confirm(`Hapus permohonan surat ${jenis}?`)) {
+        const ok = await confirm({ title: 'Hapus Permohonan', message: `Hapus permohonan surat "${jenis}"? Tindakan ini tidak dapat dibatalkan.`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await suratService.delete(id);
             loadData();
         }
@@ -41,7 +44,8 @@ export default function SuratList() {
 
     const handleUpdateStatus = async (id: string, status: SuratPengantar['status']) => {
         if (status === 'selesai') {
-            if (!window.confirm("Setujui dan terbitkan surat ini?")) return;
+            const ok = await confirm({ title: 'Terbitkan Surat', message: 'Setujui dan terbitkan surat ini? Status akan berubah menjadi Selesai.', confirmText: 'TERBITKAN', variant: 'default' });
+            if (!ok) return;
         }
 
         await suratService.updateStatus(id, status);
@@ -348,5 +352,6 @@ export default function SuratList() {
                 </div>
             </div>
         </div>
+        <ConfirmDialog />
     );
 }

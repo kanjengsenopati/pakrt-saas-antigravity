@@ -10,6 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
 import { toTitleCase } from '../../utils/text';
+import { useConfirm } from '../../hooks/useConfirm';
 
 export default function WargaList() {
     const { currentTenant, currentScope } = useTenant();
@@ -23,6 +24,7 @@ export default function WargaList() {
     const [showShareModal, setShowShareModal] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirm();
 
 
     const { 
@@ -64,12 +66,12 @@ export default function WargaList() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        if (!window.confirm(`Import data warga dari file ${file.name}?`)) {
+        const ok = await confirm({ title: 'Import Data Warga', message: `Import data warga dari file "${file.name}"? Data baru akan ditambahkan ke daftar.`, confirmText: 'IMPORT', variant: 'warning' });
+        if (!ok) {
             if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
-        // We use local loading state for mutations
         try {
             const count = await wargaService.importWarga(file);
             alert(`Berhasil mengimport ${count} data warga baru.`);
@@ -105,16 +107,15 @@ export default function WargaList() {
 
     const handleVerify = async (id: string, status: 'VERIFIED' | 'REJECTED', name: string) => {
         const action = status === 'VERIFIED' ? 'Setujui' : 'Tolak';
-        if (!window.confirm(`${action} pendaftaran ${name}?`)) return;
+        const ok = await confirm({ title: `${action} Pendaftaran`, message: `${action} pendaftaran warga "${name}"?`, confirmText: action.toUpperCase(), variant: status === 'VERIFIED' ? 'default' : 'danger' });
+        if (!ok) return;
 
         try {
             await wargaService.verifyWarga(id, status);
-            alert(`Pendaftaran ${name} telah ${status === 'VERIFIED' ? 'disetujui' : 'ditolak'}.`);
             loadData();
             loadPendingData();
         } catch (error) {
             console.error("Verification failed:", error);
-            alert('Gagal memproses verifikasi.');
         }
     };
 
@@ -126,7 +127,8 @@ export default function WargaList() {
     };
 
     const handleDelete = async (id: string, nama: string) => {
-        if (window.confirm(`Hapus data warga ${nama}?`)) {
+        const ok = await confirm({ title: 'Hapus Data Warga', message: `Hapus data warga "${nama}"? Semua data terkait termasuk surat dan kehadiran akan ikut terhapus.`, confirmText: 'HAPUS PERMANEN', variant: 'danger' });
+        if (ok) {
             await wargaService.delete(id);
             loadData();
         }
@@ -671,5 +673,6 @@ export default function WargaList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }

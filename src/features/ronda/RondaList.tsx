@@ -24,6 +24,7 @@ import { HasPermission } from '../../components/auth/HasPermission';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
+import { useConfirm } from '../../hooks/useConfirm';
 
 type TabType = 'regu' | 'kalender' | 'riwayat';
 
@@ -32,6 +33,7 @@ export default function RondaList() {
     const { user: authUser } = useAuth();
     const isAdmin = authUser?.role?.toLowerCase() !== 'warga';
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const { 
         mergedData: rondaItems, 
@@ -79,7 +81,8 @@ export default function RondaList() {
     };
 
     const handleDelete = async (id: string, tanggal: string) => {
-        if (window.confirm(`Hapus jadwal ronda untuk tanggal ${tanggal}?`)) {
+        const ok = await confirm({ title: 'Hapus Jadwal Ronda', message: `Hapus jadwal ronda untuk tanggal ${tanggal}? Tindakan ini tidak dapat dibatalkan.`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await rondaService.delete(id);
             loadData();
         }
@@ -557,6 +560,7 @@ export default function RondaList() {
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }
 

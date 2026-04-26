@@ -10,6 +10,7 @@ import { FileText, Money, ShieldCheck, Printer, CheckCircle, FloppyDisk } from '
 import { HasPermission } from '../../components/auth/HasPermission';
 import { Text } from '../../components/ui/Typography';
 import { PengaturanFormData, JenisPemasukan } from './types';
+import { useConfirm } from '../../hooks/useConfirm';
 
 // Subcomponents
 import PengaturanProfil from './components/PengaturanProfil';
@@ -50,6 +51,7 @@ export default function Pengaturan() {
     const [allPengurus, setAllPengurus] = useState<any[]>([]);
     const [jabatanSaving, setJabatanSaving] = useState(false);
     const [periodeSaving, setPeriodeSaving] = useState(false);
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const methods = useForm<PengaturanFormData>();
     const { handleSubmit, reset, setValue, watch } = methods;
@@ -307,28 +309,40 @@ export default function Pengaturan() {
         } else if (type === 'tahun') {
             setTahunIuran(tahunIuran.filter(y => y !== catOrId as number));
         } else if (type === 'jabatan') {
-            const inUse = (allPengurus || []).filter(p => p.jabatan === catOrId && p.status === 'aktif');
-            if (inUse.length > 0) {
-                const names = inUse.map(p => p.warga?.nama || 'Unknown').join(', ');
-                const confirm = window.confirm(
-                    `Jabatan "${catOrId}" masih digunakan oleh ${inUse.length} pengurus aktif (${names}).\n\nHapus jabatan ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun jabatan tersebut tidak akan muncul di pilihan baru.`
-                );
-                if (!confirm) return;
-            }
-            const updated = (jabatanOptions || []).filter(j => j !== catOrId as string);
-            setJabatanOptions(updated);
-            persistJabatan(updated);
+            const doRemoveJabatan = async () => {
+                const inUse = (allPengurus || []).filter(p => p.jabatan === catOrId && p.status === 'aktif');
+                if (inUse.length > 0) {
+                    const names = inUse.map(p => p.warga?.nama || 'Unknown').join(', ');
+                    const ok = await confirm({
+                        title: `Hapus Jabatan?`,
+                        message: `Jabatan "${catOrId}" masih digunakan oleh ${inUse.length} pengurus aktif (${names}). Hapus dari daftar pengaturan? Data pengurus tidak akan dihapus.`,
+                        confirmText: 'HAPUS',
+                        variant: 'warning'
+                    });
+                    if (!ok) return;
+                }
+                const updated = (jabatanOptions || []).filter(j => j !== catOrId as string);
+                setJabatanOptions(updated);
+                persistJabatan(updated);
+            };
+            doRemoveJabatan();
         } else if (type === 'periode') {
-            const inUse = (allPengurus || []).filter(p => p.periode === catOrId);
-            if (inUse.length > 0) {
-                const confirm = window.confirm(
-                    `Periode "${catOrId}" masih memiliki ${inUse.length} data pengurus (termasuk riwayat).\n\nHapus periode ini dari daftar pengaturan? Data pengurus yang ada tidak akan dihapus, namun periode tersebut tidak akan muncul di pilihan baru.`
-                );
-                if (!confirm) return;
-            }
-            const updated = (periodeOptions || []).filter(p => p !== catOrId as string);
-            setPeriodeOptions(updated);
-            persistPeriode(updated);
+            const doRemovePeriode = async () => {
+                const inUse = (allPengurus || []).filter(p => p.periode === catOrId);
+                if (inUse.length > 0) {
+                    const ok = await confirm({
+                        title: 'Hapus Periode?',
+                        message: `Periode "${catOrId}" masih memiliki ${inUse.length} data pengurus. Hapus dari daftar pengaturan? Data pengurus tidak akan dihapus.`,
+                        confirmText: 'HAPUS',
+                        variant: 'warning'
+                    });
+                    if (!ok) return;
+                }
+                const updated = (periodeOptions || []).filter(p => p !== catOrId as string);
+                setPeriodeOptions(updated);
+                persistPeriode(updated);
+            };
+            doRemovePeriode();
         }
     };
 
@@ -372,7 +386,8 @@ export default function Pengaturan() {
 
     const handleRemoveStempel = async () => {
         if (!currentTenant) return;
-        if (!window.confirm("Hapus logo stempel RT secara permanen?")) return;
+        const ok = await confirm({ title: 'Hapus Stempel', message: 'Hapus logo stempel RT secara permanen dari database?', confirmText: 'HAPUS', variant: 'danger' });
+        if (!ok) return;
 
         try {
             await pengaturanService.save(currentTenant.id, currentScope, 'ttd_stempel', '');
@@ -545,5 +560,6 @@ export default function Pengaturan() {
 
             {activeTab === 'user' && <PengaturanUser />}
         </div>
+        <ConfirmDialog />
     );
 }

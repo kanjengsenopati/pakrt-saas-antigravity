@@ -6,6 +6,7 @@ import { Plus, PencilSimple, Trash, FloppyDisk, Users } from '@phosphor-icons/re
 import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
 import { toTitleCase } from '../../utils/text';
+import { useConfirm } from '../../hooks/useConfirm';
 
 interface Props {
     wargaId: string;
@@ -21,6 +22,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const { register, handleSubmit, reset } = useForm<AnggotaFormData>();
+    const { confirm, ConfirmDialog } = useConfirm();
 
     const loadData = async () => {
         setIsLoading(true);
@@ -96,7 +98,8 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
     };
 
     const handleDelete = async (id: string, nama: string) => {
-        if (window.confirm(`Hapus data ${nama} dari daftar keluarga?`)) {
+        const ok = await confirm({ title: 'Hapus Anggota Keluarga', message: `Hapus data "${nama}" dari daftar anggota keluarga?`, confirmText: 'HAPUS', variant: 'danger' });
+        if (ok) {
             await anggotaKeluargaService.delete(id);
             loadData();
         }
@@ -361,5 +364,6 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
                 </div>
             )}
         </div>
+        <ConfirmDialog />
     );
 }
