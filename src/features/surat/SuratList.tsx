@@ -50,7 +50,7 @@ export default function SuratList() {
 
     const filteredSurat = suratList.filter(s =>
         s.jenis_surat.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (s.pemohon?.nama && s.pemohon.nama.toLowerCase().includes(searchQuery.toLowerCase()))
+        (s.warga?.nama && s.warga.nama.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const getStatusBadge = (status: SuratPengantar['status']) => {
@@ -167,8 +167,9 @@ export default function SuratList() {
                                 filteredSurat.map((surat) => (
                                     <tr key={surat.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="p-3">
-                                            <Text.H2 className="!text-sm uppercase">{surat.pemohon?.nama}</Text.H2>
-                                            <Text.Caption className="!text-[10px]">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
+                                            <Text.H2 className="!text-sm uppercase">{surat.warga?.nama || 'Pemohon Tidak Ditemukan'}</Text.H2>
+                                            <Text.Caption className="!text-[10px] block">NIK: {surat.warga?.nik || '-'}</Text.Caption>
+                                            <Text.Caption className="!text-[9px] !italic !normal-case text-slate-400 line-clamp-1">{surat.warga?.alamat || '-'}</Text.Caption>
                                         </td>
                                         <td className="p-3">
                                             <Text.Body className="!font-bold !text-brand-700 !text-xs">{surat.jenis_surat}</Text.Body>
@@ -284,12 +285,13 @@ export default function SuratList() {
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
                                             <Text.Label className="mb-2 leading-none">Identitas Pemohon</Text.Label>
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-                                                    <Text.Caption className="font-black text-brand-600">{surat.pemohon?.nama[0].toUpperCase()}</Text.Caption>
+                                                <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm shrink-0">
+                                                    <Text.Caption className="font-black text-brand-600 text-lg">{surat.warga?.nama ? surat.warga.nama[0].toUpperCase() : '?'}</Text.Caption>
                                                 </div>
-                                                <div>
-                                                    <Text.H2 className="!text-[12px] leading-none uppercase">{surat.pemohon?.nama}</Text.H2>
-                                                    <Text.Caption className="mt-1">NIK: {surat.pemohon?.nik || '-'}</Text.Caption>
+                                                <div className="flex-1 min-w-0">
+                                                    <Text.H2 className="!text-[13px] leading-tight uppercase truncate">{surat.warga?.nama || 'Pemohon Tidak Ditemukan'}</Text.H2>
+                                                    <Text.Caption className="mt-0.5 block">NIK: {surat.warga?.nik || '-'}</Text.Caption>
+                                                    <Text.Caption className="mt-0.5 !text-[10px] !italic !normal-case text-slate-400 line-clamp-1">{surat.warga?.alamat || '-'}</Text.Caption>
                                                 </div>
                                             </div>
                                         </div>
