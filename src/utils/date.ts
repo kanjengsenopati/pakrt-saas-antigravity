@@ -69,6 +69,7 @@ export const dateStoreFormat = (dateInput: string | Date | null | undefined, for
 
     return formatStr
         .replace('dd', String(day).padStart(2, '0'))
+        .replace('MM', String(month + 1).padStart(2, '0'))
         .replace('MMM', months[month])
         .replace('MMMM', monthsFull[month])
         .replace('YYYY', String(year))

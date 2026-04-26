@@ -830,12 +830,14 @@ export default function IuranList() {
                         <div className="flex justify-between items-start mb-6">
                             <div>
                                 <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">ID TAGIHAN</Text.Label>
-                                <Text.H2 className="!text-brand-600 !font-bold">INV-{dateUtils.format(shareData.history.tanggal_bayar, 'yyyyMMdd')}-{shareData.history.id.substring(0,4).toUpperCase()}</Text.H2>
+                                <Text.H2 className="!text-brand-600 !font-bold">INV-{dateUtils.format(shareData.history.tanggal_bayar, 'YYYYMMdd')}-{shareData.history.id.substring(0,4).toUpperCase()}</Text.H2>
                             </div>
                             <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-100">
                                 LUNAS
                             </div>
                         </div>
+
+                        <div className="border-t border-slate-100 my-5"></div>
 
                         <div className="mb-6">
                             <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">NAMA WARGA</Text.Label>
