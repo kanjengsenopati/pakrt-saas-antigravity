@@ -91,7 +91,7 @@ export default function RondaList() {
             r.anggota_warga?.some(w => w.nama.toLowerCase().includes(searchQuery.toLowerCase()))
         ).sort((a, b) => {
             if (!sortConfig) return 0;
-            const { key, direction } = sortConfig;
+            const { key } = sortConfig;
 
             if (key === 'tanggal') {
                 const dateA = new Date(a.tanggal).getTime();
