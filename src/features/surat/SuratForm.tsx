@@ -7,6 +7,7 @@ import { wargaService } from '../../services/wargaService';
 import { SuratPengantar, Warga } from '../../database/db';
 import { ArrowLeft, PaperPlaneRight } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
+import { toast } from 'sonner';
 
 type SuratFormData = Omit<SuratPengantar, 'id' | 'tenant_id' | 'scope' | 'status'>;
 
@@ -49,9 +50,10 @@ export default function SuratForm() {
                 status: 'proses'
             });
             navigate('/surat');
+            toast.success("Permohonan surat berhasil dikirim!");
         } catch (error) {
             console.error("Gagal menyimpan permohonan:", error);
-            alert("Terjadi kesalahan saat menyimpan permohonan surat.");
+            toast.error("Terjadi kesalahan saat menyimpan permohonan surat.");
         }
     };
 
