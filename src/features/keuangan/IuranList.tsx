@@ -12,7 +12,8 @@ import {
     Image as ImageIcon,
     PencilSimple,
     CircleNotch,
-    FileArrowDown
+    FileArrowDown,
+    ShareNetwork
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { formatRupiah } from '../../utils/currency';
@@ -23,6 +24,8 @@ import { Text } from '../../components/ui/Typography';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
 import { useConfirm } from '../../hooks/useConfirm';
 import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
+import { ShareUtils } from '../../utils/shareUtils';
 
 
 const toTitleCase = (str: string) => {
@@ -59,6 +62,31 @@ export default function IuranList() {
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [expandedHistoryIds, setExpandedHistoryIds] = useState<string[]>([]);
+    const [isSharingId, setIsSharingId] = useState<string | null>(null);
+
+    const shareBuktiBayar = async (id: string, wargaName: string, nominal: number) => {
+        const element = document.getElementById(`bukti-bayar-${id}`);
+        if (!element) return;
+        setIsSharingId(id);
+        try {
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+            canvas.toBlob(async (blob) => {
+                if (blob) {
+                    const file = new File([blob], `Bukti_Bayar_${wargaName.replace(/\s+/g, '_')}_${id}.png`, { type: 'image/png' });
+                    await ShareUtils.shareOrDownloadFile(file, undefined, `Bukti Bayar Iuran`, `Berikut adalah bukti pembayaran iuran lunas atas nama ${wargaName} sejumlah ${formatRupiah(nominal)}.`);
+                }
+                setIsSharingId(null);
+            }, 'image/png');
+        } catch (error) {
+            console.error("Gagal membagikan bukti bayar:", error);
+            toast.error("Terjadi kesalahan saat membagikan bukti bayar.");
+            setIsSharingId(null);
+        }
+    };
 
     const toggleHistory = (wargaId: string) => {
         setExpandedHistoryIds(prev => 
@@ -545,17 +573,31 @@ export default function IuranList() {
                                             <Text.Label className="!text-slate-400 mb-2">Riwayat Pembayaran {filterYear}</Text.Label>
                                             <div className="space-y-2">
                                                 {history.map((h) => (
-                                                    <div key={h.id} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
+                                                    <div key={h.id} id={`bukti-bayar-${h.id}`} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0 bg-white p-2 rounded-lg">
                                                         <div>
                                                             <Text.Body className="!font-medium !text-slate-700 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
                                                             <Text.Caption className="!text-slate-500 !font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
                                                         </div>
-                                                        <div className="text-right">
-                                                            <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
-                                                            {h.status !== 'VERIFIED' && (
-                                                                <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
-                                                                    {h.status}
-                                                                </Text.Label>
+                                                        <div className="text-right flex items-center gap-3">
+                                                            <div>
+                                                                <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
+                                                                {h.status !== 'VERIFIED' ? (
+                                                                    <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
+                                                                        {h.status}
+                                                                    </Text.Label>
+                                                                ) : (
+                                                                    <Text.Label className="!font-bold !text-emerald-500">LUNAS</Text.Label>
+                                                                )}
+                                                            </div>
+                                                            {h.status === 'VERIFIED' && (
+                                                                <button
+                                                                    onClick={() => shareBuktiBayar(h.id, iuran.warga?.nama || 'Warga', h.nominal)}
+                                                                    disabled={isSharingId === h.id}
+                                                                    className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50"
+                                                                    title="Bagikan Bukti Bayar"
+                                                                >
+                                                                    {isSharingId === h.id ? <CircleNotch className="w-4 h-4 animate-spin" /> : <ShareNetwork weight="bold" className="w-4 h-4" />}
+                                                                </button>
                                                             )}
                                                         </div>
                                                     </div>

@@ -4,13 +4,14 @@ import { useTenant } from '../../contexts/TenantContext';
 import { getFullUrl } from '../../utils/url';
 import { suratService, SuratWithWarga } from '../../services/suratService';
 import { pengaturanService } from '../../services/pengaturanService';
-import { Printer, ArrowLeft, FilePdf } from '@phosphor-icons/react';
+import { Printer, ArrowLeft, FilePdf, ShareNetwork } from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { dateUtils } from '../../utils/date';
 import { Text } from '../../components/ui/Typography';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
+import { ShareUtils } from '../../utils/shareUtils';
 
 export default function CetakSurat() {
     const { id } = useParams<{ id: string }>();
@@ -53,34 +54,66 @@ export default function CetakSurat() {
         }
     };
 
+    const generatePDF = async () => {
+        if (!printRef.current) return null;
+        const element = printRef.current;
+        const canvas = await html2canvas(element, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        return pdf;
+    };
+
     const downloadPDF = async () => {
         if (isIframe()) {
             toast.error("Fitur unduh diblokir pada mode preview. Silakan buka aplikasi di tab baru.");
             return;
         }
-        if (!printRef.current) return;
         setIsExporting(true);
         try {
-            const element = printRef.current;
-            const canvas = await html2canvas(element, {
-                scale: 2, // Higher scale for better quality
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-            
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            const pdf = await generatePDF();
+            if (pdf) {
+                pdf.save(`Surat_Pengantar_${surat?.pemohon?.nama?.replace(/\s+/g, '_') || 'Dokumen'}_${Date.now()}.pdf`);
+            }
+        } catch (error) {
+            console.error("Gagal export PDF:", error);
+            toast.error("Terjadi kesalahan saat mengekspor PDF.");
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
-            const imgWidth = 210; // A4 width in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            pdf.save(`Surat_Pengantar_${surat?.pemohon?.nama?.replace(/\s+/g, '_') || 'Dokumen'}_${Date.now()}.pdf`);
+    const sharePDF = async () => {
+        setIsExporting(true);
+        try {
+            const pdf = await generatePDF();
+            if (pdf) {
+                const pdfBlob = pdf.output('blob');
+                const fileName = `Surat_Pengantar_${surat?.pemohon?.nama?.replace(/\s+/g, '_') || 'Dokumen'}_${Date.now()}.pdf`;
+                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+                await ShareUtils.shareOrDownloadFile(file, downloadPDF, 'Surat Pengantar RT', `Berikut lampiran Surat Pengantar untuk ${surat?.pemohon?.nama || 'Warga'}.`);
+            }
+        } catch (error) {
+            console.error("Gagal bagikan PDF:", error);
+            toast.error("Terjadi kesalahan saat membagikan dokumen.");
+        } finally {
+            setIsExporting(false);
+        }
+    };
         } catch (error) {
             console.error("Gagal export PDF:", error);
             toast.error("Terjadi kesalahan saat mengekspor PDF.");
@@ -126,9 +159,17 @@ export default function CetakSurat() {
                 
                 <div className="flex gap-3">
                     <button
+                        onClick={sharePDF}
+                        disabled={isExporting}
+                        className="sm:hidden flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50"
+                    >
+                        <ShareNetwork weight="bold" className="w-5 h-5" /> 
+                        <Text.Label className="!text-white">{isExporting ? 'Proses...' : 'Bagikan WA'}</Text.Label>
+                    </button>
+                    <button
                         onClick={downloadPDF}
                         disabled={isExporting}
-                        className="flex items-center gap-2 px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50"
+                        className="hidden sm:flex items-center gap-2 px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50"
                     >
                         <FilePdf weight="bold" className="w-5 h-5" /> 
                         <Text.Label className="!text-white">{isExporting ? 'Proses...' : 'Unduh PDF'}</Text.Label>

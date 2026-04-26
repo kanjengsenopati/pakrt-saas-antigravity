@@ -18,11 +18,15 @@ import {
     Info, 
     Coffee,
     User,
-    MagnifyingGlass
+    MagnifyingGlass,
+    ShareNetwork
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
+import { ShareUtils } from '../../utils/shareUtils';
+import html2canvas from 'html2canvas';
+import { toast } from 'sonner';
 import { Text } from '../../components/ui/Typography';
 import { useConfirm } from '../../hooks/useConfirm';
 
@@ -55,6 +59,32 @@ export default function RondaList() {
     const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
     const [selectedRonda, setSelectedRonda] = useState<RondaWithWarga | null>(null);
     const [attendanceSelections, setAttendanceSelections] = useState<string[]>([]);
+    const [isSharing, setIsSharing] = useState(false);
+
+    const shareJadwal = async () => {
+        const element = document.getElementById('jadwal-ronda-calendar');
+        if (!element) return;
+        setIsSharing(true);
+        try {
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+            canvas.toBlob(async (blob) => {
+                if (blob) {
+                    const monthName = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(viewDate);
+                    const file = new File([blob], `Jadwal_Ronda_${monthName.replace(/\s+/g, '_')}.png`, { type: 'image/png' });
+                    await ShareUtils.shareOrDownloadFile(file, undefined, `Jadwal Ronda ${monthName}`, `Berikut jadwal ronda untuk bulan ${monthName}.`);
+                }
+                setIsSharing(false);
+            }, 'image/png');
+        } catch (error) {
+            console.error("Gagal membagikan jadwal:", error);
+            toast.error("Terjadi kesalahan saat membagikan jadwal.");
+            setIsSharing(false);
+        }
+    };
 
     // Calendar Calculations
     const calendarDays = useMemo(() => {
@@ -220,23 +250,32 @@ export default function RondaList() {
 
             {activeTab === 'kalender' ? (
                 <div className="space-y-6">
-                    {/* Calendar Header */}
-                    <div className="flex justify-between items-center bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm">
-                        <button onClick={() => changeMonth(-1)} className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all">
-                            <CaretLeft weight="bold" size={20} />
-                        </button>
-                        <div className="text-center">
-                            <Text.H2 className="!text-[18px]">
-                                {new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(viewDate)}
-                            </Text.H2>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex justify-between items-center bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm relative">
+                            <button onClick={() => changeMonth(-1)} className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all">
+                                <CaretLeft weight="bold" size={20} />
+                            </button>
+                            <div className="text-center">
+                                <Text.H2 className="!text-[18px]">
+                                    {new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(viewDate)}
+                                </Text.H2>
+                            </div>
+                            <button onClick={() => changeMonth(1)} className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all">
+                                <CaretRight weight="bold" size={20} />
+                            </button>
                         </div>
-                        <button onClick={() => changeMonth(1)} className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all">
-                            <CaretRight weight="bold" size={20} />
+                        <button
+                            onClick={shareJadwal}
+                            disabled={isSharing}
+                            className="md:hidden flex items-center justify-center gap-2 py-3 bg-green-600 text-white rounded-2xl font-bold active:scale-95 transition-all shadow-sm disabled:opacity-50"
+                        >
+                            <ShareNetwork weight="bold" size={18} />
+                            <Text.Label className="!text-white">{isSharing ? 'Memproses...' : 'Bagikan Jadwal'}</Text.Label>
                         </button>
                     </div>
 
                     {/* Calendar Grid */}
-                    <div className="bg-white rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+                    <div id="jadwal-ronda-calendar" className="bg-white rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
                         <div className="grid grid-cols-7 border-b border-slate-50 bg-slate-50/50">
                             {['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'].map(day => (
                                 <div key={day} className="py-4 text-center">
