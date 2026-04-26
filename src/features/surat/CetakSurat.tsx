@@ -114,13 +114,6 @@ export default function CetakSurat() {
             setIsExporting(false);
         }
     };
-        } catch (error) {
-            console.error("Gagal export PDF:", error);
-            toast.error("Terjadi kesalahan saat mengekspor PDF.");
-        } finally {
-            setIsExporting(false);
-        }
-    };
 
     if (isLoading) return <div className="p-8 text-center flex items-center justify-center min-h-screen"><Text.Body className="!text-slate-500">Memuat Dokumen...</Text.Body></div>;
     if (!surat || !surat.pemohon) return <div className="p-8 text-center flex flex-col items-center justify-center min-h-screen gap-4">
