@@ -587,32 +587,45 @@ export default function IuranList({ inTab = false }: { inTab?: boolean }) {
                                             <Text.Label className="!text-slate-400 mb-2">Riwayat Pembayaran {filterYear}</Text.Label>
                                             <div className="space-y-2">
                                                 {history.map((h) => (
-                                                    <div key={h.id} id={`bukti-bayar-${h.id}`} className="flex justify-between items-center text-[10px] border-b border-slate-200/50 pb-2 last:border-0 last:pb-0 bg-white p-2 rounded-lg">
-                                                        <div>
-                                                            <Text.Body className="!font-medium !text-slate-700 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
-                                                            <Text.Caption className="!text-slate-500 !font-medium">Bulan: {h.periode_bulan.map(m => getMonthName(m).substring(0, 3)).join(', ')}</Text.Caption>
+                                                    <div key={h.id} id={`bukti-bayar-${h.id}`} className="flex flex-col gap-2 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                                        {/* BARIS 1: TANGGAL */}
+                                                        <div className="flex justify-between items-center border-b border-slate-50 pb-2 mb-0.5">
+                                                            <Text.Body className="!font-bold !text-slate-800 !text-xs">{dateUtils.toDisplay(h.tanggal_bayar)}</Text.Body>
+                                                            <Text.Caption className="!text-slate-300 !text-[9px] !tracking-widest uppercase !font-black">Transaksi</Text.Caption>
                                                         </div>
-                                                        <div className="text-right flex items-center gap-3">
+
+                                                        {/* BARIS 2: NOMINAL + STATUS + SHARE */}
+                                                        <div className="flex justify-between items-center">
                                                             <div className="flex items-center gap-2">
+                                                                <Text.Caption className="!text-slate-400 !font-bold !text-[10px] uppercase tracking-wider">Bulan:</Text.Caption>
                                                                 <Text.Amount className="!text-slate-900 !text-sm">{formatRupiah(h.nominal)}</Text.Amount>
+                                                            </div>
+                                                            <div className="flex items-center gap-3">
                                                                 {h.status !== 'VERIFIED' ? (
-                                                                    <Text.Label className={`!font-bold ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
+                                                                    <Text.Label className={`!font-black !text-[10px] ${h.status === 'REJECTED' ? '!text-rose-500' : '!text-amber-500'}`}>
                                                                         {h.status}
                                                                     </Text.Label>
                                                                 ) : (
-                                                                    <Text.Label className="!font-bold !text-emerald-500">LUNAS</Text.Label>
+                                                                    <Text.Label className="!font-black !text-emerald-500 !text-[10px]">LUNAS</Text.Label>
+                                                                )}
+                                                                
+                                                                {h.status === 'VERIFIED' && (
+                                                                    <button
+                                                                        onClick={() => shareBuktiBayar(h, iuran)}
+                                                                        disabled={isSharingId === h.id}
+                                                                        className="p-2 bg-emerald-50 text-emerald-600 rounded-xl active:scale-95 transition-all shadow-sm"
+                                                                    >
+                                                                        {isSharingId === h.id ? <CircleNotch className="w-3.5 h-3.5 animate-spin" /> : <ShareNetwork weight="bold" className="w-3.5 h-3.5" />}
+                                                                    </button>
                                                                 )}
                                                             </div>
-                                                            {h.status === 'VERIFIED' && (
-                                                                <button
-                                                                    onClick={() => shareBuktiBayar(h, iuran)}
-                                                                    disabled={isSharingId === h.id}
-                                                                    className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50"
-                                                                    title="Bagikan Bukti Bayar"
-                                                                >
-                                                                    {isSharingId === h.id ? <CircleNotch className="w-4 h-4 animate-spin" /> : <ShareNetwork weight="bold" className="w-4 h-4" />}
-                                                                </button>
-                                                            )}
+                                                        </div>
+
+                                                        {/* BARIS 3: DAFTAR BULAN */}
+                                                        <div className="bg-slate-50/50 rounded-lg p-2 mt-0.5">
+                                                            <Text.Caption className="!text-slate-500 !font-medium !italic !leading-relaxed">
+                                                                {h.periode_bulan.map(m => getMonthName(m)).join(', ')}
+                                                            </Text.Caption>
                                                         </div>
                                                     </div>
                                                 ))}
