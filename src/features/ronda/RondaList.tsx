@@ -46,6 +46,8 @@ export default function RondaList() {
     const [sortConfig, setSortConfig] = useState<{ key: 'tanggal' | 'regu', direction: 'asc' | 'desc' } | null>({ key: 'tanggal', direction: 'desc' });
     const [activeTab, setActiveTab] = useState<TabType>('kalender');
     const [viewDate, setViewDate] = useState(new Date());
+    const [selectedDayRonda, setSelectedDayRonda] = useState<RondaWithWarga | null>(null);
+    const wargaId = authUser?.id && !isAdmin ? (authUser as any).warga_id || authUser.id : null;
     
     // Attendance Modal state
     const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
@@ -107,14 +109,7 @@ export default function RondaList() {
         });
     }, [rondaList, searchQuery, sortConfig]);
 
-    const handleSort = (key: 'tanggal' | 'regu') => {
-        setSortConfig(prev => {
-            if (prev?.key === key) {
-                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
-            }
-            return { key, direction: 'asc' };
-        });
-    };
+    /* handleSort removed as it is not used in the UI header */
 
     // Grouping logic for "Regu" tab
     const groups = useMemo(() => {
@@ -319,7 +314,7 @@ export default function RondaList() {
                                         <UsersThree size={16} className="text-brand-500" /> Petugas Piket
                                     </Text.Label>
                                     <div className="flex flex-wrap gap-2">
-                                        {selectedDayRonda.anggota_warga?.map(w => (
+                                        {selectedDayRonda.anggota_warga?.map((w: any) => (
                                             <div key={w.id} className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-100">
                                                 <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-[10px] font-black text-brand-600 shadow-sm border border-slate-100">
                                                     {w.nama[0].toUpperCase()}
@@ -336,7 +331,7 @@ export default function RondaList() {
                                     </Text.Label>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedDayRonda.anggota_konsumsi && selectedDayRonda.anggota_konsumsi.length > 0 ? (
-                                            selectedDayRonda.anggota_konsumsi.map(w => (
+                                            selectedDayRonda.anggota_konsumsi.map((w: any) => (
                                                 <div key={w.id} className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100">
                                                     <Text.Body className="!text-[12px] !font-bold !text-amber-700 uppercase">{w.nama}</Text.Body>
                                                 </div>
