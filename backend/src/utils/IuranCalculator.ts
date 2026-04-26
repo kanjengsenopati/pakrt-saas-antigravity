@@ -46,8 +46,9 @@ export class IuranCalculator {
       const config: Record<string, any> = {};
       settings.forEach((p: any) => { config[p.key] = p.value; });
 
-      if (!config.jenis_pemasukan) return null;
-      const jenisList: any[] = JSON.parse(config.jenis_pemasukan);
+      const rawJenis = config.jenis_pemasukan || config.kategori_pemasukan;
+      if (!rawJenis) return null;
+      const jenisList: any[] = typeof rawJenis === 'string' ? JSON.parse(rawJenis) : rawJenis;
       const match = jenisList.find((j: any) =>
         j.nama?.trim().toLowerCase() === kategori?.trim().toLowerCase()
       );

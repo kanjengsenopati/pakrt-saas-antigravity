@@ -113,11 +113,12 @@ export default function IuranForm() {
                     });
                 }
 
-                if (config.jenis_pemasukan) {
+                const rawJenis = config.jenis_pemasukan || config.kategori_pemasukan;
+                if (rawJenis) {
                     try {
-                        const parsedKategori = JSON.parse(config.jenis_pemasukan);
+                        const parsedKategori = typeof rawJenis === 'string' ? JSON.parse(rawJenis) : rawJenis;
                         if (Array.isArray(parsedKategori) && parsedKategori.length > 0) {
-                            setKategoriOptions(parsedKategori);
+                            setKategoriOptions(parsedKategori.map(k => typeof k === 'string' ? k : k.nama));
                         }
                     } catch (e) { console.error(e); }
                 }
@@ -159,7 +160,7 @@ export default function IuranForm() {
                         setSelectedMonths(prev => prev.filter(m => !result.paidMonths?.includes(m) && !result.pendingMonths?.includes(m)));
                     }
                 } catch (error) {
-                    console.error("Failed to fetch billing:", error);
+                    console.error("Failed to fetch billing summary:", error);
                 } finally {
                     setIsLoadingBilling(false);
                 }

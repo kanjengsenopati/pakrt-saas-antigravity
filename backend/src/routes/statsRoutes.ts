@@ -84,35 +84,57 @@ export default async function statsRoutes(fastify: FastifyInstance) {
         let iuranUnpaidMonths = 0;
         
         try {
+            // Target the main 'Iuran Warga' category for personal dashboard stats
+            const mainKategori = 'Iuran Warga';
             const billingSummary = await pembayaranIuranService.getBillingSummary(
                 user.tenant_id, 
                 user.warga_id, 
                 currentYear, 
-                undefined, // Checks default 'Iuran Warga' or equivalent
+                mainKategori,
                 'RT'
             );
             
-            // Explicitly verify the property names and count unpaid months up to current month
-            if (billingSummary && Array.isArray(billingSummary.paidMonths) && Array.isArray(billingSummary.pendingMonths)) {
+            // If main category returns nothing, try a fallback to a generic catch-all summary
+            if (!billingSummary || (!billingSummary.paidMonths?.length && !billingSummary.pendingMonths?.length)) {
+                 const fallbackSummary = await pembayaranIuranService.getBillingSummary(
+                    user.tenant_id, 
+                    user.warga_id, 
+                    currentYear, 
+                    'SEMUA',
+                    'RT'
+                );
+                
+                if (fallbackSummary && fallbackSummary.type === 'MANIFEST') {
+                    const iuranWarga = fallbackSummary.items.find((item: any) => 
+                        item.nama.toLowerCase().includes('iuran warga') || 
+                        item.nama.toLowerCase().includes('iuran wajib')
+                    ) || fallbackSummary.items[0];
+                    
+                    if (iuranWarga) {
+                        for (let m = 1; m <= currentMonth; m++) {
+                            if (!iuranWarga.paidMonths.includes(m) && !iuranWarga.pendingMonths.includes(m)) {
+                                iuranUnpaidMonths++;
+                            }
+                        }
+                    }
+                } else if (fallbackSummary && !fallbackSummary.type) {
+                    // Single category fallback logic
+                    for (let m = 1; m <= currentMonth; m++) {
+                        if (!fallbackSummary.paidMonths.includes(m) && !fallbackSummary.pendingMonths.includes(m)) {
+                            iuranUnpaidMonths++;
+                        }
+                    }
+                }
+            } else {
+                // Success with 'Iuran Warga'
                 for (let m = 1; m <= currentMonth; m++) {
                     if (!billingSummary.paidMonths.includes(m) && !billingSummary.pendingMonths.includes(m)) {
                         iuranUnpaidMonths++;
                     }
                 }
-            } else if (billingSummary && billingSummary.type === 'MANIFEST') {
-                // Handle the case where the default category is 'SEMUA' or falls back to it
-                const iuranWarga = billingSummary.items.find((item: any) => item.nama.toLowerCase().includes('iuran warga')) || billingSummary.items[0];
-                if (iuranWarga && Array.isArray(iuranWarga.paidMonths) && Array.isArray(iuranWarga.pendingMonths)) {
-                    for (let m = 1; m <= currentMonth; m++) {
-                        if (!iuranWarga.paidMonths.includes(m) && !iuranWarga.pendingMonths.includes(m)) {
-                            iuranUnpaidMonths++;
-                        }
-                    }
-                }
             }
         } catch (err: any) {
             fastify.log.warn("Failed to fetch billing summary for warga-personal stats: " + (err.message || err));
-            // Default to 0 on failure to not break the UI
             iuranUnpaidMonths = 0;
         }
 
