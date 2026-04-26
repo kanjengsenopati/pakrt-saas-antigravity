@@ -62,30 +62,41 @@ export default function IuranList() {
     const [isSubmittingVerify, setIsSubmittingVerify] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [expandedHistoryIds, setExpandedHistoryIds] = useState<string[]>([]);
-    const [isSharingId, setIsSharingId] = useState<string | null>(null);
+    const [shareData, setShareData] = useState<{ history: any, iuran: IuranWithWarga } | null>(null);
 
-    const shareBuktiBayar = async (id: string, wargaName: string, nominal: number) => {
-        const element = document.getElementById(`bukti-bayar-${id}`);
-        if (!element) return;
-        setIsSharingId(id);
-        try {
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff'
-            });
-            canvas.toBlob(async (blob) => {
-                if (blob) {
-                    const file = new File([blob], `Bukti_Bayar_${wargaName.replace(/\s+/g, '_')}_${id}.png`, { type: 'image/png' });
-                    await ShareUtils.shareOrDownloadFile(file, undefined, `Bukti Bayar Iuran`, `Berikut adalah bukti pembayaran iuran lunas atas nama ${wargaName} sejumlah ${formatRupiah(nominal)}.`);
-                }
+    const shareBuktiBayar = (h: any, iuran: IuranWithWarga) => {
+        setShareData({ history: h, iuran });
+        setIsSharingId(h.id);
+        
+        setTimeout(async () => {
+            const element = document.getElementById('receipt-share-capture');
+            if (!element) {
                 setIsSharingId(null);
-            }, 'image/png');
-        } catch (error) {
-            console.error("Gagal membagikan bukti bayar:", error);
-            toast.error("Terjadi kesalahan saat membagikan bukti bayar.");
-            setIsSharingId(null);
-        }
+                setShareData(null);
+                return;
+            }
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null
+                });
+                canvas.toBlob(async (blob) => {
+                    if (blob) {
+                        const wargaName = iuran.warga?.nama || 'Warga';
+                        const file = new File([blob], `Bukti_Bayar_${wargaName.replace(/\s+/g, '_')}_${h.id}.png`, { type: 'image/png' });
+                        await ShareUtils.shareOrDownloadFile(file, undefined, `Bukti Bayar Iuran`, `Berikut adalah bukti pembayaran iuran lunas atas nama ${wargaName} sejumlah ${formatRupiah(h.nominal)}.`);
+                    }
+                    setIsSharingId(null);
+                    setShareData(null);
+                }, 'image/png');
+            } catch (error) {
+                console.error("Gagal membagikan bukti bayar:", error);
+                toast.error("Terjadi kesalahan saat membagikan bukti bayar.");
+                setIsSharingId(null);
+                setShareData(null);
+            }
+        }, 100);
     };
 
     const toggleHistory = (wargaId: string) => {
@@ -591,7 +602,7 @@ export default function IuranList() {
                                                             </div>
                                                             {h.status === 'VERIFIED' && (
                                                                 <button
-                                                                    onClick={() => shareBuktiBayar(h.id, iuran.warga?.nama || 'Warga', h.nominal)}
+                                                                    onClick={() => shareBuktiBayar(h, iuran)}
                                                                     disabled={isSharingId === h.id}
                                                                     className="p-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors disabled:opacity-50"
                                                                     title="Bagikan Bukti Bayar"
@@ -809,6 +820,51 @@ export default function IuranList() {
             </HasPermission>
         </div>
         <ConfirmDialog />
+        
+        {/* OFF-SCREEN RECEIPT CAPTURE UI */}
+        {shareData && (
+            <div className="fixed top-0 left-[-9999px] z-[-1]">
+                <div id="receipt-share-capture" className="w-[380px] bg-slate-50 p-6 flex flex-col">
+                    <div className="bg-white rounded-[24px] p-6 shadow-premium border border-slate-100">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">ID TAGIHAN</Text.Label>
+                                <Text.H2 className="!text-brand-600 !font-bold">INV-{dateUtils.format(shareData.history.tanggal_bayar, 'yyyyMMdd')}-{shareData.history.id.substring(0,4).toUpperCase()}</Text.H2>
+                            </div>
+                            <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-100">
+                                LUNAS
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-1">NAMA WARGA</Text.Label>
+                            <Text.H2 className="!text-slate-800 !font-bold">{shareData.iuran.warga?.nama?.toUpperCase()}</Text.H2>
+                        </div>
+
+                        <div className="border-t border-slate-100 pt-6">
+                            <Text.Label className="!text-slate-400 !tracking-widest !text-[10px] block mb-4">RINCIAN TAGIHAN</Text.Label>
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <Text.Body className="!font-bold !text-slate-800">{shareData.history.periode_bulan.map((m: number) => getMonthName(m)).join(', ')} {shareData.history.periode_tahun}</Text.Body>
+                                    <Text.Caption className="!text-slate-400 italic mt-0.5">Iuran Warga</Text.Caption>
+                                </div>
+                                <Text.Body className="!font-bold !text-slate-800">{formatRupiah(shareData.history.nominal)}</Text.Body>
+                            </div>
+
+                            <div className="border-t border-dashed border-slate-200 py-4 flex justify-between">
+                                <Text.Body className="!text-slate-500">Subtotal</Text.Body>
+                                <Text.Body className="!font-bold !text-slate-800">{formatRupiah(shareData.history.nominal)}</Text.Body>
+                            </div>
+
+                            <div className="bg-slate-50 rounded-[16px] p-5 flex justify-between items-center mt-2 border border-slate-100">
+                                <Text.Body className="!font-bold !text-slate-800">Total Pembayaran</Text.Body>
+                                <Text.Amount className="!text-brand-600 !text-xl">{formatRupiah(shareData.history.nominal)}</Text.Amount>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
         </>
     );
 }
