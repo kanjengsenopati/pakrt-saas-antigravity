@@ -813,14 +813,16 @@ export default function IuranList({ inTab = false }: { inTab?: boolean }) {
                 </div>
             )}
             {/* MOBILE FAB */}
-            <HasPermission module="Iuran Warga" action="Buat">
-                <button
-                    onClick={() => navigate('/iuran/baru')}
-                    className="sm:hidden fixed bottom-24 right-6 w-14 h-14 bg-brand-600 text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex items-center justify-center hover:bg-brand-700 transition-all active:scale-95 z-[50] border-4 border-white"
-                >
-                    <Plus weight="bold" size={24} />
-                </button>
-            </HasPermission>
+            {!inTab && (
+                <HasPermission module="Iuran Warga" action="Buat">
+                    <button
+                        onClick={() => navigate('/iuran/baru')}
+                        className="sm:hidden fixed bottom-24 right-6 w-14 h-14 bg-brand-600 text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex items-center justify-center hover:bg-brand-700 transition-all active:scale-95 z-[50] border-4 border-white"
+                    >
+                        <Plus weight="bold" size={24} />
+                    </button>
+                </HasPermission>
+            )}
         </div>
         <ConfirmDialog />
         

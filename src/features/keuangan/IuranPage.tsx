@@ -41,7 +41,7 @@ export default function IuranPage() {
                     </div>
 
                     {/* Tab Switcher Pill */}
-                    <div className="flex gap-1 bg-slate-100 rounded-[14px] p-1 w-full max-w-[220px]">
+                    <div className="flex gap-1 bg-slate-100 rounded-[14px] p-1 w-full max-w-[280px]">
                         {tabs.map((tab) => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;
@@ -72,7 +72,7 @@ export default function IuranPage() {
                     </div>
 
                     {/* Sliding indicator line */}
-                    <div className="relative h-[2px] mt-1 w-full max-w-[220px]">
+                    <div className="relative h-[2px] mt-1 w-full max-w-[280px]">
                         <div className="absolute inset-0 bg-slate-100 rounded-full" />
                         <div
                             className={`absolute top-0 h-[2px] w-1/2 rounded-full transition-all duration-300 ${
