@@ -101,25 +101,23 @@ export default function SuratList() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brand-300 transition-all duration-300 hover:shadow-md">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-500" />
-                    <Text.Label className="mb-1.5 flex items-center gap-2">
+                    <Text.Label className="mb-1.5 flex justify-center items-center gap-2 !normal-case !tracking-tight">
                         <FileText weight="duotone" className="text-brand-500 w-4 h-4" />
                         Total Surat
                     </Text.Label>
-                    <div className="flex items-baseline gap-1">
-                        <Text.Amount className="text-2xl text-slate-900">{suratList.length}</Text.Amount>
-                        <Text.Caption className="leading-none tracking-widest text-slate-400">Permohonan</Text.Caption>
+                    <div className="flex justify-center items-center">
+                        <Text.Amount className="text-2xl text-slate-900 text-center">{suratList.length}</Text.Amount>
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:bg-slate-950 transition-all duration-300">
+                <div className="bg-brand-600 p-5 rounded-2xl border border-brand-500 shadow-xl relative overflow-hidden group hover:bg-brand-700 transition-all duration-300">
                     <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                    <Text.Label className="mb-1.5 flex items-center gap-2 text-slate-400">
+                    <Text.Label className="mb-1.5 flex justify-center items-center gap-2 text-brand-100 !normal-case !tracking-tight">
                         <ClockCounterClockwise weight="duotone" className="text-amber-400 w-4 h-4" />
-                        Antrian Berjalan
+                        Proses
                     </Text.Label>
-                    <div className="flex items-baseline gap-1">
-                        <Text.Amount className="text-2xl text-white">{suratList.filter(s => s.status === 'proses').length}</Text.Amount>
-                        <Text.Caption className="leading-none tracking-widest text-slate-500">Berjalan</Text.Caption>
+                    <div className="flex justify-center items-center">
+                        <Text.Amount className="text-2xl text-white text-center">{suratList.filter(s => s.status === 'proses').length}</Text.Amount>
                     </div>
                 </div>
             </div>
@@ -289,7 +287,7 @@ export default function SuratList() {
 
                                     <div className="space-y-4">
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                            <Text.Label className="mb-2 leading-none">Identitas Pemohon</Text.Label>
+                                            <Text.Label className="mb-2 leading-none !normal-case !tracking-tight">Identitas Pemohon</Text.Label>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm shrink-0">
                                                     <Text.Caption className="font-black text-brand-600 text-lg">{surat.warga?.nama ? surat.warga.nama[0].toUpperCase() : '?'}</Text.Caption>
@@ -303,7 +301,7 @@ export default function SuratList() {
                                         </div>
 
                                         <div className="bg-slate-50/50 rounded-xl border border-slate-100 p-3">
-                                            <Text.Label className="mb-2 leading-none">Tujuan / Keperluan</Text.Label>
+                                            <Text.Label className="mb-2 leading-none !normal-case !tracking-tight">Tujuan / Keperluan</Text.Label>
                                             <Text.Body className="!text-[12px] italic leading-relaxed">"{surat.keperluan}"</Text.Body>
                                         </div>
                                     </div>
