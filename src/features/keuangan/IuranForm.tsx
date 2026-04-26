@@ -149,6 +149,11 @@ export default function IuranForm() {
                     );
                     setPaidMonthsRecord(result.paidMonths || []);
                     setPendingMonthsRecord(result.pendingMonths || []);
+
+                    // Database Driven Nominal: Use rate from backend if available
+                    if (result.rate > 0) {
+                        setDefaultNominal(result.rate);
+                    }
                     
                     if (!isEdit) {
                         setSelectedMonths(prev => prev.filter(m => !result.paidMonths?.includes(m) && !result.pendingMonths?.includes(m)));
@@ -251,7 +256,7 @@ export default function IuranForm() {
                 >
                     <ArrowLeft weight="bold" className="w-5 h-5" />
                 </button>
-                <Text.H1 className="!text-xl">{isWarga ? 'Bill Payment' : 'Catat Pembayaran Iuran'}</Text.H1>
+                <Text.H1 className="!text-xl">{isWarga ? 'Bayar Iuran' : 'Catat Pembayaran Iuran'}</Text.H1>
             </div>
 
             {/* Stepper Indicator for Warga */}
@@ -402,11 +407,11 @@ export default function IuranForm() {
                         <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
                             <div className="p-5 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
                                 <div className="space-y-1">
-                                    <Text.Label className="!text-slate-500">INVOICE ID</Text.Label>
+                                    <Text.Label className="!text-slate-500">ID TAGIHAN</Text.Label>
                                     <Text.H2 className="!text-brand-600 !text-[18px]">{invoiceId}</Text.H2>
                                 </div>
                                 <div className="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                    UNPAID
+                                    BELUM BAYAR
                                 </div>
                             </div>
                             
@@ -416,7 +421,7 @@ export default function IuranForm() {
                             </div>
 
                             <div className="p-5 border-b border-slate-100 space-y-4">
-                                <Text.Label className="!text-slate-500 mb-2">BILLING DETAILS</Text.Label>
+                                <Text.Label className="!text-slate-500 mb-2">RINCIAN TAGIHAN</Text.Label>
                                 
                                 {selectedMonths.map(m => {
                                     const monthLabel = MONTHS.find(x => x.value === m)?.label;
@@ -436,14 +441,14 @@ export default function IuranForm() {
                                     <Text.Body>{formatRupiah(totalPayment)}</Text.Body>
                                 </div>
                                 <div className="flex justify-between items-center bg-blue-50/50 p-3 rounded-[12px]">
-                                    <Text.H2 className="!text-[15px]">Total Payment</Text.H2>
+                                    <Text.H2 className="!text-[15px]">Total Pembayaran</Text.H2>
                                     <Text.Amount className="!text-brand-600 !text-[20px]">{formatRupiah(totalPayment)}</Text.Amount>
                                 </div>
                             </div>
 
                             {/* Database Driven Bank Details */}
                             <div className="p-5 bg-slate-50/30">
-                                <Text.Label className="!text-slate-500 mb-3">PAYMENT DESTINATION</Text.Label>
+                                <Text.Label className="!text-slate-500 mb-3">TUJUAN PEMBAYARAN</Text.Label>
                                 <div className="bg-white border border-slate-200 rounded-[16px] p-4 flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-blue-50 rounded-[12px] flex items-center justify-center text-blue-600">
@@ -463,7 +468,7 @@ export default function IuranForm() {
                                 <div className="mt-4 bg-amber-50 border border-amber-100 p-3 rounded-[12px] flex items-start gap-3">
                                     <Warning weight="fill" className="text-amber-500 shrink-0 w-5 h-5" />
                                     <Text.Caption className="!text-amber-700 !font-medium !leading-relaxed">
-                                        Mohon transfer sesuai dengan Total Payment untuk mempercepat proses verifikasi oleh Bendahara.
+                                        Mohon transfer sesuai dengan Total Pembayaran untuk mempercepat proses verifikasi oleh Bendahara.
                                     </Text.Caption>
                                 </div>
                             </div>

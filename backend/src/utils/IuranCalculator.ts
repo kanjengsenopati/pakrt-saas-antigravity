@@ -25,7 +25,7 @@ export class IuranCalculator {
 
       const statusKey = `${warga?.status_penduduk || 'Tetap'}-${warga?.status_rumah || 'Dihuni'}`;
       const rateField = `iuran_${statusKey.toLowerCase().replace('-', '_')}`;
-      const rate = Number(config[rateField] || config.iuran_per_bulan || 0);
+      const rate = Number(config[rateField] || config.iuran_per_bulan || config.iuran_tetap_dihuni || 100000);
       
       if (rate === 0) {
         console.warn(`Warga ${wargaId} has 0 iuran rate. Check settings for ${rateField}`);
