@@ -33,7 +33,7 @@ const toTitleCase = (str: string) => {
     return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
-export default function IuranList() {
+export default function IuranList({ inTab = false }: { inTab?: boolean }) {
     const navigate = useNavigate();
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
@@ -181,30 +181,32 @@ export default function IuranList() {
     return (
         <>
         <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <Text.H1>Pembayaran Iuran</Text.H1>
-                    <div className="mt-2 flex flex-col gap-0.5">
-                        <Text.Label className="!text-brand-600 !bg-brand-50 !px-2 !py-1 !rounded-[6px] !border !border-brand-100/50 !w-fit">
-                            {currentScope}
-                        </Text.Label>
-                        {currentTenant?.location_detail && (
-                            <Text.Caption className="!text-slate-400 !pl-0.5 !italic">
-                                {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
-                            </Text.Caption>
-                        )}
+            {!inTab && (
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <Text.H1>Pembayaran Iuran</Text.H1>
+                        <div className="mt-2 flex flex-col gap-0.5">
+                            <Text.Label className="!text-brand-600 !bg-brand-50 !px-2 !py-1 !rounded-[6px] !border !border-brand-100/50 !w-fit">
+                                {currentScope}
+                            </Text.Label>
+                            {currentTenant?.location_detail && (
+                                <Text.Caption className="!text-slate-400 !pl-0.5 !italic">
+                                    {currentTenant.location_detail.split(' • ').slice(1).join(' • ')}
+                                </Text.Caption>
+                            )}
+                        </div>
                     </div>
+                        <HasPermission module="Iuran Warga" action="Buat">
+                            <button
+                                onClick={() => navigate('/iuran/baru')}
+                                className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
+                            >
+                                <Plus weight="bold" size={18} />
+                                <Text.Body component="span" className="!text-white !font-bold">Catat Pembayaran</Text.Body>
+                            </button>
+                        </HasPermission>
                 </div>
-                    <HasPermission module="Iuran Warga" action="Buat">
-                        <button
-                            onClick={() => navigate('/iuran/baru')}
-                            className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-brand-500/20 hover-lift active-press"
-                        >
-                            <Plus weight="bold" size={18} />
-                            <Text.Body component="span" className="!text-white !font-bold">Catat Pembayaran</Text.Body>
-                        </button>
-                    </HasPermission>
-            </div>
+            )}
 
             {/* STATS WIDGETS */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-2 -mt-2">
