@@ -14,7 +14,8 @@ import {
     X,
     CheckCircle,
     Coins,
-    FileArrowDown
+    FileArrowDown,
+    FilePdf
 } from '@phosphor-icons/react';
 import { Text } from '../../components/ui/Typography';
 import { formatRupiah } from '../../utils/currency';

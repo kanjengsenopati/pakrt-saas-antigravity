@@ -19,12 +19,9 @@ import {
     CalendarCheck,
     Clock,
     CheckCircle,
-    Prohibit,
-    Info,
-    ArrowRight
+    Info
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
-import { formatRupiah } from '../../utils/currency';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';

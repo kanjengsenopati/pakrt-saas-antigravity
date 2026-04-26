@@ -5,14 +5,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { rondaService, RondaWithWarga } from '../../services/rondaService';
 import { 
     Plus, 
-    Funnel, 
     Trash, 
     ShieldCheck, 
     PencilSimple, 
     CheckCircle, 
     X, 
-    CaretUp, 
-    CaretDown, 
     CaretLeft, 
     CaretRight, 
     CalendarBlank, 
@@ -20,25 +17,24 @@ import {
     Clock, 
     Info, 
     Coffee,
-    User
+    User,
+    MagnifyingGlass
 } from '@phosphor-icons/react';
 import { HasPermission } from '../../components/auth/HasPermission';
 import { dateUtils } from '../../utils/date';
 import { useHybridData } from '../../hooks/useHybridData';
 import { Text } from '../../components/ui/Typography';
-import { toTitleCase } from '../../utils/text';
 
 type TabType = 'regu' | 'kalender' | 'riwayat';
 
 export default function RondaList() {
     const { currentTenant, currentScope } = useTenant();
     const { user: authUser } = useAuth();
-    const isAdmin = authUser?.role !== 'WARGA';
+    const isAdmin = authUser?.role?.toLowerCase() !== 'warga';
     const navigate = useNavigate();
 
     const { 
         mergedData: rondaItems, 
-        isFetching: isLoading, 
         refresh: loadData 
     } = useHybridData<RondaWithWarga[]>({
         fetcher: () => rondaService.getAll(currentTenant?.id || '', currentScope),
@@ -47,16 +43,12 @@ export default function RondaList() {
 
     const rondaList = rondaItems || [];
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortConfig, setSortConfig] = useState<{ key: 'tanggal' | 'regu', direction: 'asc' | 'desc' } | null>({ key: 'tanggal', direction: 'desc' });
     const [activeTab, setActiveTab] = useState<TabType>('kalender');
     const [viewDate, setViewDate] = useState(new Date());
-    const [selectedDayRonda, setSelectedDayRonda] = useState<RondaWithWarga | null>(null);
     
-    const [sortConfig, setSortConfig] = useState<{ key: 'tanggal' | 'regu', direction: 'asc' | 'desc' } | null>({ key: 'tanggal', direction: 'desc' });
-    const wargaId = authUser?.id && !isAdmin ? (authUser as any).warga_id || authUser.id : null;
-
     // Attendance Modal state
     const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
-    const [activeSnackId, setActiveSnackId] = useState<string | null>(null);
     const [selectedRonda, setSelectedRonda] = useState<RondaWithWarga | null>(null);
     const [attendanceSelections, setAttendanceSelections] = useState<string[]>([]);
 
