@@ -23,8 +23,8 @@ export default function IuranPage() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* ─── Sticky Tab Header ─── */}
-            <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_2px_12px_rgb(0,0,0,0.04)]">
-                <div className="px-5 pt-4 pb-0">
+            <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+                <div className="max-w-3xl mx-auto px-5 pt-5 pb-0">
                     {/* Page Title Row */}
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-[14px] bg-emerald-50 flex items-center justify-center shrink-0">
@@ -41,7 +41,7 @@ export default function IuranPage() {
                     </div>
 
                     {/* Tab Switcher Pill */}
-                    <div className="flex gap-1 bg-slate-100 rounded-[14px] p-1 w-full max-w-[280px]">
+                    <div className="flex gap-1 bg-slate-100 rounded-[16px] p-1 w-full max-w-md mx-auto">
                         {tabs.map((tab) => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;
@@ -72,8 +72,8 @@ export default function IuranPage() {
                     </div>
 
                     {/* Sliding indicator line */}
-                    <div className="relative h-[2px] mt-1 w-full max-w-[280px]">
-                        <div className="absolute inset-0 bg-slate-100 rounded-full" />
+                    <div className="relative h-[2.5px] mt-1 w-full max-w-md mx-auto">
+                        <div className="absolute inset-0 bg-slate-200/50 rounded-full" />
                         <div
                             className={`absolute top-0 h-[2px] w-1/2 rounded-full transition-all duration-300 ${
                                 activeTab === 'bayar'
