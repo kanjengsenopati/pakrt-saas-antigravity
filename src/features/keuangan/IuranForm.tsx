@@ -395,8 +395,12 @@ export default function IuranForm({ inlineMode = false, onSuccess }: IuranFormPr
                                                     </div>
                                                     <Text.Body className="!font-medium">{m.label}</Text.Body>
                                                 </div>
+
+                                                <div className="flex-1 flex justify-center">
+                                                    <Text.Amount className="!text-[14px] !text-slate-400 !font-medium">{formatRupiah(defaultNominal)}</Text.Amount>
+                                                </div>
                                                 
-                                                <div>
+                                                <div className="shrink-0">
                                                     {isPaid ? (
                                                         <div className="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Lunas</div>
                                                     ) : isPending ? (
