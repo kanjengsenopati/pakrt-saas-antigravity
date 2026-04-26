@@ -1,7 +1,7 @@
 import api from '../services/api';
 
 const VAPID_PUBLIC_KEY = 'BJc3s1SmGPBZf0QFffD56FdYsHlbzAF4FK_hBvhiGy_m3UEV1sqArM1cTLQg0VaBkwtXUflXybJsU9DxKqU0_Wo';
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 
 export const pushNotificationUtil = {
     async isSupported() {
