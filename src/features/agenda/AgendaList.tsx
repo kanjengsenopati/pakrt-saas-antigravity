@@ -310,6 +310,7 @@ export default function AgendaList() {
     }));
 
     return (
+        <>
         <div className="space-y-8 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
@@ -838,5 +839,6 @@ export default function AgendaList() {
             )}
         </div>
         <ConfirmDialog />
+        </>
     );
 }

@@ -167,6 +167,7 @@ export default function RondaList() {
     };
 
     return (
+        <>
         <div className="space-y-6 animate-fade-in px-5 md:px-0">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -561,6 +562,7 @@ export default function RondaList() {
             )}
         </div>
         <ConfirmDialog />
+        </>
     );
 }
 

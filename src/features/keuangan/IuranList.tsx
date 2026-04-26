@@ -138,6 +138,7 @@ export default function IuranList() {
     };
 
     return (
+        <>
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -765,5 +766,6 @@ export default function IuranList() {
             </HasPermission>
         </div>
         <ConfirmDialog />
+        </>
     );
 }

@@ -141,6 +141,7 @@ export default function WargaList() {
 
 
     return (
+        <>
         <div className="space-y-4 sm:space-y-6 animate-fade-in overflow-x-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -674,5 +675,6 @@ export default function WargaList() {
             )}
         </div>
         <ConfirmDialog />
+        </>
     );
 }

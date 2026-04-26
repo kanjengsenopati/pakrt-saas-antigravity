@@ -106,6 +106,7 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
     };
 
     return (
+        <>
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
@@ -365,5 +366,6 @@ export default function AnggotaKeluargaPanel({ wargaId, tenantId, initialData }:
             )}
         </div>
         <ConfirmDialog />
+        </>
     );
 }

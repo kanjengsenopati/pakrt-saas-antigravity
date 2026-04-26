@@ -378,6 +378,7 @@ export default function KeuanganList() {
     };
 
     return (
+        <>
         <div className="space-y-4 animate-fade-in relative px-3 md:px-0">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -1037,5 +1038,6 @@ export default function KeuanganList() {
             )}
         </div>
         <ConfirmDialog />
+        </>
     );
 }

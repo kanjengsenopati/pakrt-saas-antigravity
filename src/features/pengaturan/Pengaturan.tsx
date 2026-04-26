@@ -423,6 +423,7 @@ export default function Pengaturan() {
     };
 
     return (
+        <>
         <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-10">
             <div className="flex justify-between items-end">
                 <div>
@@ -561,5 +562,6 @@ export default function Pengaturan() {
             {activeTab === 'user' && <PengaturanUser />}
         </div>
         <ConfirmDialog />
+        </>
     );
 }
